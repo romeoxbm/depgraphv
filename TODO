@@ -1,0 +1,24 @@
+This is the list of features I would like to add in dep-graph.
+I don't have any kind of time-table of when I plan to implement these
+features, and there's no particular order.
+
+* Localization;
+* Multiple graph layout algorithms;
+* A "manual-mode" to manually arrange some graph vertices by dragging them;
+* Copy-paste support (???);
+* Selecting background and graph theme;
+* Optionally subdividing an huge graph into multiple small portions, maybe accessible by multiple tab pages;
+* Selecting font family used by vertices labels;
+* Per-folder and/or per-src subgraphs;
+* Highlightning of vertex and of its connected edges;
+* Multi-threaded folders scan;
+* Saving graphs to file, by using image formats like .png, .jpg, etc;
+* Detecting graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);
+* Running as stand-alone or as Qt Creator plugin (or any other "compatible" IDE);
+* Watch over file system changes and automatically update the graph;
+* Folders exclude list; It should be possible to specify a list of folders ignored when recursively scanning a source folder.
+  This feature should allow users to add, enable(default state after adding a folder), disable or remove a folder from this list.
+* Optionally add redundand include guards;
+
+Known issues and bugs:
+* "Scrolling glitch" when using Image renderer type;

@@ -1,0 +1,34 @@
+dep-graph An useful tool to analize header dependendencies via graphs.
+
+Copyright (C) 2013, by Francesco Guastella (guastella.francesco@gmail.com)
+Report bugs and download new versions at http://sourceforge.net/projects/depgraph
+
+This is the distribution of dep-graph, which is an useful development tool,
+written in C++ and powered by Qt and GraphViz, that creates a graph of your codebase,
+by parsing every #include statements found in the project's root folder.
+It is helpful when you need to analize and visualize the dependecy tree,
+highlightining cycles and "useless paths", and It means, in short, that you could drastically
+reduce build times, especially when working on large-scale projects.
+
+Main Features:
+* CMake based build, so it's easy to switch between different platforms/IDEs;
+* Build against Qt4 or Qt5 by simply changing QT_USE_QT5 variable value in CMake;
+* OpenGL rendering support;
+* Optional recursive folder scan;
+* Customizable file extension filters (for both header and source files);
+* Graphs can be saved as images (.png, .jpg and .svg) or in GraphViz dot format.
+
+The distribution contains the following folders and files:
+
+	cmake/	- CMake scripts
+	res/	- Resources
+	src/	- Header and source files
+
+	AUTHORS
+	ChangeLog
+	CMakeLists.txt
+	COPYING
+	README - this file.
+	TODO
+
+ 
