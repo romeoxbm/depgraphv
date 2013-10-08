@@ -2,45 +2,73 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>depgraph::Graph</name>
+    <message>
+        <location filename="../src/graph.cpp" line="98"/>
+        <source>Invalid vertex:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/graph.cpp" line="155"/>
+        <source>Layout render error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/graph.cpp" line="183"/>
+        <source>Save as dot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/graph.cpp" line="183"/>
+        <source>Unable to save file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/graph.cpp" line="268"/>
+        <source>Invalid egde:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>depgraph::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="88"/>
+        <location filename="../src/mainwindow.cpp" line="110"/>
         <source>Select root folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="111"/>
+        <location filename="../src/mainwindow.cpp" line="133"/>
         <source>Clear graph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="112"/>
+        <location filename="../src/mainwindow.cpp" line="134"/>
         <source>Are you sure?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="132"/>
+        <location filename="../src/mainwindow.cpp" line="154"/>
         <source>Cannot read about informations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="141"/>
+        <location filename="../src/mainwindow.cpp" line="163"/>
         <source>About...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="160"/>
+        <location filename="../src/mainwindow.cpp" line="197"/>
         <source>Select path and name of the image file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="175"/>
+        <location filename="../src/mainwindow.cpp" line="212"/>
         <source>Select path and name of the dot file</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>MainWindow</source>
+        <source>dep-Graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -271,7 +299,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="519"/>
+        <location filename="../src/mainwindow.ui" line="525"/>
         <source>System language</source>
         <translation type="unfinished"></translation>
     </message>
