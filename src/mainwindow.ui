@@ -416,8 +416,17 @@
      <addaction name="actionOpenGL"/>
      <addaction name="actionImage"/>
     </widget>
+    <widget class="QMenu" name="menu_Language">
+     <property name="title">
+      <string>&amp;Language</string>
+     </property>
+     <addaction name="actionSystem_language"/>
+     <addaction name="separator"/>
+    </widget>
     <addaction name="menuRenderer"/>
     <addaction name="actionHigh_Quality_Antialiasing"/>
+    <addaction name="separator"/>
+    <addaction name="menu_Language"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuOptions"/>
@@ -503,6 +512,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionSystem_language">
+   <property name="text">
+    <string>System language</string>
    </property>
   </action>
  </widget>

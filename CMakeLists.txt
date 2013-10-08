@@ -44,8 +44,46 @@ set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
  
 project( ${ProjectName} )
 
+set( Headers
+	src/graph.h
+	src/mainwindow.h
+)
+
+set( Sources
+	src/graph.cpp
+	src/main.cpp
+	src/mainwindow.cpp
+)
+
+set( Sources_ui
+	src/mainwindow.ui
+)
+
+set( Resources
+	res/resources.qrc
+)
+
+set( FilesToTranslate
+    ${Sources_ui}
+    ${Sources}
+)
+
+set( Translations
+	i18n/core_en_US.ts
+	i18n/core_it_IT.ts
+)
+
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
+
+#Looking for Graphviz
+message( STATUS "* Looking for Graphviz..." )
+find_package( GraphViz REQUIRED )
+if( NOT GRAPHVIZ_FOUND )
+	message( SEND_ERROR "* Failed to find Graphviz." )
+else()
+	message( STATUS "* Found" )
+endif()
 
 if( QT_USE_QT5 )
 
@@ -82,6 +120,24 @@ if( QT_USE_QT5 )
 		endif()
 	endif( QT_USE_OPENGL )
 
+	message( STATUS "* Looking for Qt5 Linguist tools..." )
+	find_package( Qt5LinguistTools REQUIRED )
+	if( NOT Qt5LinguistTools_FOUND )
+		message( SEND_ERROR "* Failed to find Qt5 Linguist tools." )
+	else()
+		message( STATUS "* Found" )
+	endif()
+
+	qt5_wrap_ui( UISrcs ${Sources_ui} )
+
+	# generate rules for building source files from the resources
+	qt5_add_resources( RCCSrcs ${Resources} )
+
+	qt5_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+
+	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )
+	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY}" )
+
 else()
 
 	set( definitions "" )
@@ -102,35 +158,17 @@ else()
 	
 	include( ${QT_USE_FILE} )
 
+	qt4_wrap_ui( UISrcs ${Sources_ui} )
+
+	# generate rules for building source files from the resources
+	qt4_add_resources( RCCSrcs ${Resources} )
+
+	 qt4_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+
+	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
+	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY};${QT_LIBRARIES}" )
+
 endif( QT_USE_QT5 )
-
-#Looking for Graphviz
-message( STATUS "* Looking for Graphviz..." )
-find_package( GraphViz REQUIRED )
-if( NOT GRAPHVIZ_FOUND )
-	message( SEND_ERROR "* Failed to find Graphviz." )
-else()
-	message( STATUS "* Found" )
-endif()
- 
-set( Headers
-	src/graph.h
-	src/mainwindow.h
-)
-
-set( Sources
-	src/graph.cpp
-	src/main.cpp
-	src/mainwindow.cpp
-)
-
-set( Sources_ui
-	src/mainwindow.ui
-)
-
-set( Resources
-	res/resources.qrc
-)
 
 # enable warnings and other required definitions
 if( QT_USE_OPENGL )
@@ -146,28 +184,6 @@ endif()
 message( STATUS "* Using definitions: ${definitions}" )
 add_definitions( ${definitions} )
 
-if( QT_USE_QT5 )
-
-	qt5_wrap_ui( UISrcs ${Sources_ui} )
-
-	# generate rules for building source files from the resources
-	qt5_add_resources( RCCSrcs ${Resources} )
-	
-	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )
-	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY}" )
-
-else()
-
-	qt4_wrap_ui( UISrcs ${Sources_ui} )
-
-	# generate rules for building source files from the resources
-	qt4_add_resources( RCCSrcs ${Resources} )
-	
-	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
-	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY};${QT_LIBRARIES}" )
-
-endif( QT_USE_QT5 )
-
 include_directories( ${includes} )
 
 add_executable( ${ProjectName}
@@ -176,6 +192,7 @@ add_executable( ${ProjectName}
 	${MOCSrcs}
 	${UISrcs}
 	${RCCSrcs}
+	${i18nSrcs}
 )
 
 if( QT_USE_QT5 )

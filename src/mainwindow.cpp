@@ -108,8 +108,8 @@ namespace depgraph
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
 					this,
-					"Clear graph",
-					"Are you sure?",
+					tr( "Clear graph" ),
+					tr( "Are you sure?" ),
 					QMessageBox::Yes | QMessageBox::No,
 					QMessageBox::No
 		);
@@ -129,7 +129,7 @@ namespace depgraph
 			QFile f( ":/text/about.html" );
 			if( !f.open( QFile::ReadOnly | QFile::Text ) )
 			{
-				qWarning() << "Cannot read about informations.";
+				qWarning() << tr( "Cannot read about informations." );
 				return;
 			}
 
@@ -138,7 +138,7 @@ namespace depgraph
 			f.close();
 		}
 
-		QMessageBox::about( this, "About...", _aboutText.arg( QApplication::applicationName(), QApplication::applicationVersion() ) );
+		QMessageBox::about( this, tr( "About..." ), _aboutText.arg( QApplication::applicationName(), QApplication::applicationVersion() ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )
@@ -157,7 +157,7 @@ namespace depgraph
 	{
 		QString path = QFileDialog::getSaveFileName(
 					const_cast<MainWindow*>( this ),
-					"Select path and name of the image file",
+					tr( "Select path and name of the image file" ),
 					QDir::currentPath(), "PNG(*.png);;SVG(*.svg);;JPEG(*.jpg)" );
 
 		if( path.isEmpty() )
@@ -172,7 +172,7 @@ namespace depgraph
 	{
 		QString path = QFileDialog::getSaveFileName(
 					const_cast<MainWindow*>( this ),
-					"Select path and name of the dot file",
+					tr( "Select path and name of the dot file" ),
 					QDir::currentPath(), "DOT(*.dot)" );
 
 		if( path.isEmpty() )

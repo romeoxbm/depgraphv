@@ -28,12 +28,29 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
+
+#include <QDebug>
 
 int main( int argc, char *argv[] )
 {
 	QApplication app( argc, argv );
 	app.setApplicationName( "dep-graph" );
-	app.setApplicationVersion( "0.1" );
+	app.setApplicationVersion( "0.2" );
+
+	//Loading translations
+	QTranslator qtTranslator;
+	QString tPath = QLibraryInfo::location( QLibraryInfo::TranslationsPath );
+	qDebug() << tPath;
+
+	qtTranslator.load( QString( "qt_%1" ).arg( QLocale::system().name() ), tPath );
+	app.installTranslator( &qtTranslator );
+
+	QTranslator appTranslator;
+	appTranslator.load( QString( "core_%1").arg( QLocale::system().name() ) );
+	app.installTranslator( &appTranslator );
 
 	depgraph::MainWindow w;
 	//Place the mainWindow at center screen
