@@ -2,4 +2,8 @@
     <qresource prefix="/text">
         <file>about.html</file>
     </qresource>
+    <qresource prefix="/flags">
+        <file>en_US.png</file>
+        <file>it_IT.png</file>
+    </qresource>
 </RCC>

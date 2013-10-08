@@ -95,7 +95,7 @@ namespace depgraph
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
 		if( !v )
 		{
-			qWarning() << "Invalid vertex:" << label;
+			qWarning() << tr( "Invalid vertex:" ) << label;
 			return 0;
 		}
 
@@ -152,7 +152,7 @@ namespace depgraph
 		Q_ASSERT( _context && _graph && !_svgItem );
 		if( gvLayout( _context, _graph, "dot" ) != 0 )
 		{
-			qCritical() << "Layout render error" << agerrors() << QString::fromUtf8( aglasterr() );
+			qCritical() << tr( "Layout render error" ) << agerrors() << QString::fromUtf8( aglasterr() );
 			return;
 		}
 
@@ -180,7 +180,7 @@ namespace depgraph
 		QFile f( filename );
 		if( !f.open( QIODevice::WriteOnly | QIODevice::Text ) )
 		{
-			QMessageBox::critical( 0, "Save as dot", "Unable to save file" );
+			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
 			return;
 		}
 
@@ -265,7 +265,7 @@ namespace depgraph
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
 		if( !e )
 		{
-			qWarning() << "Invalid egde:" << label;
+			qWarning() << tr( "Invalid egde:" ) << label;
 			return 0;
 		}
 

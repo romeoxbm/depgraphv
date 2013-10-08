@@ -69,8 +69,8 @@ set( FilesToTranslate
 )
 
 set( Translations
-	i18n/core_en_US.ts
-	i18n/core_it_IT.ts
+	i18n/${ProjectName}_en_US.ts
+	i18n/${ProjectName}_it_IT.ts
 )
 
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )

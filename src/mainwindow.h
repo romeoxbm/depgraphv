@@ -29,6 +29,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QActionGroup>
+#include <QTranslator>
 #include "graph.h"
 
 namespace depgraph
@@ -46,6 +48,9 @@ namespace depgraph
 		explicit MainWindow( QWidget* parent = 0 );
 		~MainWindow();
 
+	protected:
+		virtual void changeEvent( QEvent* );
+
 	private slots:
 		void on_selectedRootFolder_textChanged( const QString& );
 		void selectRootFolder();
@@ -53,6 +58,7 @@ namespace depgraph
 		void on_clearButton_clicked();
 		void about();
 		void rendererTypeChanged( QAction* );
+		void languageChanged( QAction* );
 		void parseOptionsChanged();
 		void saveAsImage() const;
 		void saveAsDot() const;
@@ -60,7 +66,11 @@ namespace depgraph
 
 	private:
 		Ui::MainWindow* ui;
+		QActionGroup* _langGroup;
+		QTranslator _qtTranslator;
+		QTranslator _appTranslator;
 		QString _aboutText;
+		QStringList _availableLanguages;
 		bool _isValidDirSelected;
 
 		void _setGraphAttributes() const;
@@ -68,6 +78,9 @@ namespace depgraph
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		void _scanFolder( const QString& dirName ) const;
 		QStringList _getNameFilters() const;
+
+		void _lookForTranslations( const QString& path );
+		void _switchTranslator( QTranslator* t, const QString& fileName, const QString& directory = "" );
 	};
 }
 

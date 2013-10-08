@@ -30,6 +30,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
+#include <QDirIterator>
+#include <QLibraryInfo>
 
 namespace depgraph
 {
@@ -38,7 +40,6 @@ namespace depgraph
 		ui( new Ui::MainWindow )
 	{
 		ui->setupUi( this );
-		this->setWindowTitle( QApplication::applicationName() );
 		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
 
 		//Action groups
@@ -60,6 +61,16 @@ namespace depgraph
 		ui->headersFilter->setValidator( validator );
 		ui->sourcesFilter->setValidator( validator );
 
+		_langGroup = new QActionGroup( ui->menu_Language );
+
+		ui->actionSystem_language->setIcon( QIcon( ":/flags/" + QLocale::system().name() ) );
+		ui->actionSystem_language->setData( QLocale::system().name() );
+		_langGroup->addAction( ui->actionSystem_language );
+
+		_lookForTranslations( QApplication::applicationDirPath() );
+		languageChanged( ui->actionSystem_language );
+
+		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
 		connect( ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 	}
@@ -67,6 +78,17 @@ namespace depgraph
 	MainWindow::~MainWindow()
 	{
 		delete ui;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::changeEvent( QEvent* event )
+	{
+		if( event )
+		{
+			if( event->type() == QEvent::LanguageChange )
+				ui->retranslateUi( this );
+		}
+
+		QMainWindow::changeEvent( event );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_selectedRootFolder_textChanged( const QString& value )
@@ -143,7 +165,22 @@ namespace depgraph
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )
 	{
+		Q_ASSERT( action );
 		ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::languageChanged( QAction* action )
+	{
+		Q_ASSERT( action );
+		QString locale = action->data().toString();
+
+		if( !_availableLanguages.contains( locale ) )
+			locale = "en_US";
+
+		QString appFileName = QString( "%1_%2" ).arg( QApplication::applicationName(), locale );
+		QString qtFileName = QString( "qt_%1" ).arg( locale );
+		_switchTranslator( &_appTranslator, appFileName );
+		_switchTranslator( &_qtTranslator, qtFileName, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::parseOptionsChanged()
@@ -267,5 +304,39 @@ namespace depgraph
 		}
 
 		return nameFilters;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::_lookForTranslations( const QString& path )
+	{
+		QDir::Filters filters( QDir::NoDotAndDotDot | QDir::Files );
+		QStringList nameFilters( QApplication::applicationName() + "*.qm" );
+		QDirIterator it( path, nameFilters, filters, QDirIterator::Subdirectories );
+		while( it.hasNext() )
+		{
+			QString filename( it.next() );
+			int startPos = path.length() + QApplication::applicationName().length() + 2;
+			QString locale( filename.mid( startPos, 5 )  );
+			_availableLanguages << locale;
+
+			//Creating the action
+			QAction* newLang = new QAction( this );
+			newLang->setObjectName( filename );
+			newLang->setText( QLocale::languageToString( QLocale( locale ).language() ) );
+			newLang->setData( locale );
+			newLang->setCheckable( true );
+			newLang->setIcon( QIcon( ":/flags/" + locale ) );
+			ui->menu_Language->addAction( newLang );
+			_langGroup->addAction( newLang );
+		}
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory )
+	{
+		//remove the old one
+		QApplication::removeTranslator( t );
+
+		//and then..load the new one
+		if( t->load( fileName, directory ) )
+			QApplication::installTranslator( t );
 	}
 } // end of depgraph namespace
