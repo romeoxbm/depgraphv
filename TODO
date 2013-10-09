@@ -2,7 +2,6 @@ This is the list of features I would like to add in dep-graphV.
 I don't have any kind of time-table of when I plan to implement these
 features, and there's no particular order.
 
-* Localization;
 * Multiple graph layout algorithms;
 * A "manual-mode" to manually arrange some graph vertices by dragging them;
 * Copy-paste support (???);
