@@ -1,7 +1,7 @@
 /**
  * graph.cpp
  *
- * This source file is part of dep-graph - An useful tool to analize header
+ * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
  *
  * This software is distributed under the MIT License:
@@ -26,7 +26,6 @@
  * THE SOFTWARE.
  */
 #include "graph.h"
-#include <QGraphicsSceneContextMenuEvent>
 #include <QSvgRenderer>
 #include <QTextStream>
 #include <QXmlStreamReader>
@@ -40,7 +39,7 @@
 
 #define G_STR( str ) str.toUtf8().data()
 
-namespace depgraph
+namespace depgraphV
 {
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),

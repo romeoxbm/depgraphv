@@ -1,7 +1,7 @@
 #####################################################################################
 # CMakeLists.txt
 #
-# This file is part of dep-graph - An useful tool to analize header
+# This file is part of dep-graphV - An useful tool to analize header
 # dependendencies via graphs.
 #
 # This software is distributed under the MIT License:
@@ -28,20 +28,24 @@
 #####################################################################################
 cmake_minimum_required( VERSION 2.8.11 )
 
-set( ProjectName "dep-graph" )
+set( ProjectName "dep-graphV" )
+set( ProjectVersion "0.2" )
 set( CMAKE_AUTOMOC ON )
-
-if( WIN32 )
-	#Default installation path of Qt5.1.1
-	set( CMAKE_PREFIX_PATH "C:\\Qt\\5.1.1\\mingw48_32\\" )
-endif()
 
 # As moc files are generated in the binary dir, tell CMake
 # to always look for includes there:
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
- 
+
+if( WIN32 )
+	#Default installation path of Qt5.1.1
+	set( CMAKE_PREFIX_PATH "C:\\Qt\\5.1.1\\mingw48_32\\" )
+	set( TRANSLATION_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/translations" )
+else()
+	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
+endif()
+
 project( ${ProjectName} )
 
 set( Headers
@@ -75,6 +79,7 @@ set( Translations
 
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
+option( QT_UPDATE_TRANSLATIONS false )
 
 #Looking for Graphviz
 message( STATUS "* Looking for Graphviz..." )
@@ -133,7 +138,11 @@ if( QT_USE_QT5 )
 	# generate rules for building source files from the resources
 	qt5_add_resources( RCCSrcs ${Resources} )
 
-	qt5_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+	if( QT_UPDATE_TRANSLATIONS )
+		qt5_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+	else()
+		qt5_add_translation( i18nSrcs ${Translations} )
+	endif( QT_UPDATE_TRANSLATIONS )
 
 	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )
 	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY}" )
@@ -163,7 +172,11 @@ else()
 	# generate rules for building source files from the resources
 	qt4_add_resources( RCCSrcs ${Resources} )
 
-	 qt4_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+	if( QT_UPDATE_TRANSLATIONS )
+		qt4_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
+	else()
+		qt4_add_translation( i18nSrcs ${Translations} )
+	endif( QT_UPDATE_TRANSLATIONS )
 
 	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
 	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY};${QT_LIBRARIES}" )
@@ -202,6 +215,17 @@ endif( QT_USE_QT5 )
 target_link_libraries( ${ProjectName} ${libraries} )
 
 install( TARGETS ${ProjectName} RUNTIME DESTINATION bin )
+
+#Install translations
+file( GLOB Translations_rel "${CMAKE_CURRENT_BINARY_DIR}/*.qm" )
+install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} )
+
+#Configure buildsettings file
+configure_file(
+	"${CMAKE_SCRIPTS_PATH}/buildsettings.h.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h"
+	IMMEDIATE @ONLY
+)
 
 # uninstall target
 configure_file(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>depgraph::MainWindow</class>
- <widget class="QMainWindow" name="depgraph::MainWindow">
+ <class>depgraphV::MainWindow</class>
+ <widget class="QMainWindow" name="depgraphV::MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>dep-Graph</string>
+   <string>windowTile</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -350,7 +350,7 @@
      </widget>
     </item>
     <item>
-     <widget class="depgraph::Graph" name="graph">
+     <widget class="depgraphV::Graph" name="graph">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -529,7 +529,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>depgraph::Graph</class>
+   <class>depgraphV::Graph</class>
    <extends>QGraphicsView</extends>
    <header>graph.h</header>
    <slots>
@@ -673,7 +673,7 @@
   <connection>
    <sender>parseHeadersCheckbox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>parseOptionsChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -689,7 +689,7 @@
   <connection>
    <sender>parseSourcesCheckbox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>parseOptionsChanged()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -705,7 +705,7 @@
   <connection>
    <sender>actionSave_as_Image</sender>
    <signal>triggered()</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>saveAsImage()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -721,7 +721,7 @@
   <connection>
    <sender>actionSave_as_dot</sender>
    <signal>triggered()</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>saveAsDot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -737,7 +737,7 @@
   <connection>
    <sender>actionExit</sender>
    <signal>triggered()</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>exitApp()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -753,7 +753,7 @@
   <connection>
    <sender>actionAbout</sender>
    <signal>triggered()</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>about()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -769,7 +769,7 @@
   <connection>
    <sender>pickFolderButton</sender>
    <signal>clicked()</signal>
-   <receiver>depgraph::MainWindow</receiver>
+   <receiver>depgraphV::MainWindow</receiver>
    <slot>selectRootFolder()</slot>
    <hints>
     <hint type="sourcelabel">

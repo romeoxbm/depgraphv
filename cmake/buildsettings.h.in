@@ -1,5 +1,5 @@
 /**
- * main.cpp
+ * buildsettings.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,21 +25,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "mainwindow.h"
-#include "buildsettings.h"
-#include <QApplication>
-#include <QDesktopWidget>
+#ifndef BUILDSETTINGS_H
+#define BUILDSETTINGS_H
 
-int main( int argc, char *argv[] )
-{
-	QApplication app( argc, argv );
-	app.setApplicationName( APP_NAME );
-	app.setApplicationVersion( APP_VER );
+#define APP_NAME "@ProjectName@"
+#define APP_VER "@ProjectVersion@"
+#define LANG_PATH "@CMAKE_INSTALL_PREFIX@/@TRANSLATION_INSTALL_PATH@"
 
-	depgraphV::MainWindow w;
-	//Place the mainWindow at center screen
-	w.move( QApplication::desktop()->screenGeometry().center() - w.rect().center() );
-	w.show();
-
-	return app.exec();
-}
+#endif // BUILDSETTINGS_H

@@ -1,307 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.0" language="it_IT">
 <context>
-    <name>depgraph::Graph</name>
+    <name>depgraphV::Graph</name>
     <message>
-        <location filename="../src/graph.cpp" line="98"/>
+        <location filename="../src/graph.cpp" line="97"/>
         <source>Invalid vertex:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertice non valido:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="155"/>
+        <location filename="../src/graph.cpp" line="154"/>
         <source>Layout render error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nel render del layout</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="183"/>
+        <location filename="../src/graph.cpp" line="182"/>
         <source>Save as dot</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come dot</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="183"/>
+        <location filename="../src/graph.cpp" line="182"/>
         <source>Unable to save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="268"/>
+        <location filename="../src/graph.cpp" line="267"/>
         <source>Invalid egde:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arco non valido:</translation>
     </message>
 </context>
 <context>
-    <name>depgraph::MainWindow</name>
+    <name>depgraphV::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="121"/>
+        <location filename="../src/mainwindow.cpp" line="130"/>
         <source>Select root folder</source>
-        <translation></translation>
+        <translation>Seleziona la cartella radice</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="144"/>
+        <location filename="../src/mainwindow.cpp" line="153"/>
         <source>Clear graph</source>
-        <translation></translation>
+        <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="145"/>
+        <location filename="../src/mainwindow.cpp" line="154"/>
         <source>Are you sure?</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="165"/>
-        <source>Cannot read about informations.</source>
-        <translation></translation>
+        <translation>Sei sicuro?</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="174"/>
+        <source>Cannot read about informations.</source>
+        <translation>Non riesco a leggere le informazioni di about.</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="183"/>
         <source>About...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="215"/>
+        <location filename="../src/mainwindow.cpp" line="227"/>
         <source>Select path and name of the image file</source>
-        <translation></translation>
+        <translation>Seleziona percorso e nome del file immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="230"/>
+        <location filename="../src/mainwindow.cpp" line="242"/>
         <source>Select path and name of the dot file</source>
-        <translation></translation>
+        <translation>Seleziona percorso e nome del file dot</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="373"/>
+        <source>Switched to translation file </source>
+        <translation>Selezionato il file di tradizione </translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="14"/>
-        <source>dep-Graph</source>
-        <translation type="unfinished"></translation>
+        <source>windowTile</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="37"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="49"/>
         <source>Root folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella radice</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="76"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="85"/>
         <source>Scan recursively</source>
-        <translation type="unfinished"></translation>
+        <translation>Scansiona ricorsivamente</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="101"/>
         <source>Parse options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opzioni di analisi</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="107"/>
         <source>Parse headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Analizza header</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="117"/>
         <source>Parse sources</source>
-        <translation type="unfinished"></translation>
+        <translation>Analizza sorgenti</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="133"/>
         <source>Headers filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtri sugli header</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="139"/>
         <location filename="../src/mainwindow.ui" line="225"/>
         <source>Standard filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtri standard</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="150"/>
         <source>*.h</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="155"/>
         <source>*.hh</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="160"/>
         <source>*.hxx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="165"/>
         <source>*.hpp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="170"/>
         <source>*.hp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="184"/>
         <location filename="../src/mainwindow.ui" line="275"/>
         <source>Custom (semicolon-separated)</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalizzato (separati da ; )</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="197"/>
         <source>*.h; *.hh; *.hxx; *.hpp; *.hp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="219"/>
         <source>Sources filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtri sui sorgenti</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="236"/>
         <source>*.cpp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="241"/>
         <source>*.cc</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="246"/>
         <source>*.cp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="251"/>
         <source>*.cxx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="256"/>
         <source>*.c++</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="261"/>
         <source>*.C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="288"/>
         <source>*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="332"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Pulisci</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="342"/>
         <source>Draw</source>
-        <translation type="unfinished"></translation>
+        <translation>Disegna</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="393"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="402"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aiuto</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="409"/>
         <source>&amp;Options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opzioni</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="413"/>
         <source>&amp;Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="421"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lingua</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="438"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="449"/>
         <source>&amp;Native</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nativo</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="452"/>
         <source>Ctrl+R, Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="460"/>
         <source>&amp;OpenGL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="463"/>
         <source>Ctrl+R, Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="471"/>
         <source>&amp;Image</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Immagine</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="474"/>
         <source>Ctrl+R, Ctrl+I</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="482"/>
         <source>High Quality &amp;Antialiasing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Antialiasing ad alta qualità</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="490"/>
         <source>Save as &amp;image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come &amp;immagine...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="493"/>
         <source>Ctrl+I</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="501"/>
         <source>&amp;Save as dot...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salva come dot...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="504"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="509"/>
         <source>&amp;Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Esci</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="514"/>
         <source>&amp;About</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="525"/>
         <source>System language</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingua di sistema</translation>
     </message>
 </context>
 </TS>

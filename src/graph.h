@@ -1,7 +1,7 @@
 /**
  * graph.h
  *
- * This source file is part of dep-graph - An useful tool to analize header
+ * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
  *
  * This software is distributed under the MIT License:
@@ -36,7 +36,7 @@
 #include <gvc.h>
 #include <cgraph.h>
 
-namespace depgraph
+namespace depgraphV
 {
 	/**
 	 * @brief The Graph class

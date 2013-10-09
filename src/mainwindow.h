@@ -1,7 +1,7 @@
 /**
  * mainwindow.h
  *
- * This source file is part of dep-graph - An useful tool to analize header
+ * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
  *
  * This software is distributed under the MIT License:
@@ -33,7 +33,7 @@
 #include <QTranslator>
 #include "graph.h"
 
-namespace depgraph
+namespace depgraphV
 {
 	namespace Ui
 	{
@@ -69,8 +69,9 @@ namespace depgraph
 		QActionGroup* _langGroup;
 		QTranslator _qtTranslator;
 		QTranslator _appTranslator;
+		QString _currentLocale;
 		QString _aboutText;
-		QStringList _availableLanguages;
+		QMap<QString, QString> _availableLanguages;
 		bool _isValidDirSelected;
 
 		void _setGraphAttributes() const;
