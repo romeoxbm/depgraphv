@@ -1,6 +1,9 @@
 <RCC>
-    <qresource prefix="/text">
-        <file>about.html</file>
+    <qresource lang="en_US" prefix="/text">
+        <file alias="about.html">about_en_US.html</file>
+    </qresource>
+    <qresource lang="it_IT" prefix="/text">
+        <file alias="about.html">about_it_IT.html</file>
     </qresource>
     <qresource prefix="/flags">
         <file>en_US.png</file>
