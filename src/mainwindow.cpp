@@ -176,6 +176,7 @@ namespace depgraphV
 			}
 
 			QTextStream in( &f );
+			in.setCodec( "UTF-8" );
 			_aboutText = in.readAll();
 			f.close();
 		}

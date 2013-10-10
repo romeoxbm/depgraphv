@@ -41,8 +41,11 @@ set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
 if( WIN32 )
 	#Default installation path of Qt5.1.1
 	set( CMAKE_PREFIX_PATH "C:\\Qt\\5.1.1\\mingw48_32\\" )
-	set( TRANSLATION_INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/translations" )
+	set( INSTALL_PATH "${CMAKE_INSTALL_PREFIX}" )
+	set( TRANSLATION_INSTALL_PATH "translations" )
 else()
+
+	set( INSTALL_PATH "bin" )
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 endif()
 
@@ -214,7 +217,7 @@ endif( QT_USE_QT5 )
 
 target_link_libraries( ${ProjectName} ${libraries} )
 
-install( TARGETS ${ProjectName} RUNTIME DESTINATION bin )
+install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} )
 
 #Install translations
 file( GLOB Translations_rel "${CMAKE_CURRENT_BINARY_DIR}/*.qm" )
