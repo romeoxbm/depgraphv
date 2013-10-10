@@ -14,17 +14,7 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="182"/>
-        <source>Save as dot</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/graph.cpp" line="182"/>
-        <source>Unable to save file</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/graph.cpp" line="267"/>
+        <location filename="../src/graph.cpp" line="276"/>
         <source>Invalid egde:</source>
         <translation></translation>
     </message>
@@ -269,42 +259,74 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="130"/>
+        <location filename="../src/mainwindow.cpp" line="90"/>
+        <source>ready</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="132"/>
         <source>Select root folder</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="153"/>
+        <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Clear graph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="154"/>
+        <location filename="../src/mainwindow.cpp" line="156"/>
         <source>Are you sure?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="174"/>
+        <location filename="../src/mainwindow.cpp" line="176"/>
         <source>Cannot read about informations.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="183"/>
+        <location filename="../src/mainwindow.cpp" line="186"/>
         <source>About...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="227"/>
+        <location filename="../src/mainwindow.cpp" line="196"/>
+        <source>Renderer method changed</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="231"/>
         <source>Select path and name of the image file</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.cpp" line="240"/>
+        <location filename="../src/mainwindow.cpp" line="256"/>
+        <source>File successfully saved.</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.cpp" line="242"/>
+        <source>Save as image</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="242"/>
+        <location filename="../src/mainwindow.cpp" line="258"/>
+        <source>Unable to save file</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="249"/>
         <source>Select path and name of the dot file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="373"/>
+        <location filename="../src/mainwindow.cpp" line="258"/>
+        <source>Save as dot</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="383"/>
         <source>Switched to translation file </source>
         <translation></translation>
     </message>

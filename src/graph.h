@@ -120,14 +120,16 @@ namespace depgraphV
 		 * @brief saveImage Save the graph as image.
 		 * @param filename The filename where to save.
 		 * @param format The image format name ("png" or "svg" for instance).
+		 * @return True if the file has been saved successfully, false otherwise
 		 */
-		void saveImage( const QString& filename, const QString& format ) const;
+		bool saveImage( const QString& filename, const QString& format ) const;
 
 		/**
 		 * @brief saveDot Save the graph as GraphViz dot file.
 		 * @param filename The filename where to save.
+		 * @return True if the file has been saved successfully, false otherwise.
 		 */
-		void saveDot( const QString& filename ) const;
+		bool saveDot( const QString& filename ) const;
 
 		/**
 		 * @brief prepare Prepare every logic structure to be popoluated before creating the graph.
@@ -203,9 +205,10 @@ namespace depgraphV
 		/**
 		 * @brief _renderDataAs Helper method used to "translate" the graph into different formats.
 		 * @param format The selected format.
-		 * @return A string containing the graph representation in the selected format.
+		 * @param outString A string containing the graph representation in the selected format.
+		 * @return True if everything went fine, false otherwise.
 		 */
-		QString _renderDataAs( const QString& format ) const;
+		bool _renderDataAs( const QString& format, QString* outString ) const;
 	};
 }
 

@@ -155,7 +155,11 @@ namespace depgraphV
 			return;
 		}
 
-		QXmlStreamReader xmlReader( _renderDataAs( "svg" ) );
+		QString data;
+		if( !_renderDataAs( "svg", &data ) )
+			return;
+
+		QXmlStreamReader xmlReader( data );
 		QSvgRenderer* r = new QSvgRenderer( &xmlReader );
 
 		_svgItem = new QGraphicsSvgItem();
@@ -169,23 +173,28 @@ namespace depgraphV
 		s->setSceneRect( _svgItem->boundingRect().adjusted( -10, -10, 10, 10 ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void Graph::saveImage( const QString& filename, const QString& format ) const
+	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
-		gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) );
+		return gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void Graph::saveDot( const QString& filename ) const
+	bool Graph::saveDot( const QString& filename ) const
 	{
+		bool retValue = false;
 		QFile f( filename );
 		if( !f.open( QIODevice::WriteOnly | QIODevice::Text ) )
+			return retValue;
+
+		QString data;
+		if( _renderDataAs( "dot", &data ) )
 		{
-			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
-			return;
+			QTextStream stream( &f );
+			stream << data;
+			retValue = true;
 		}
 
-		QTextStream stream( &f );
-		stream << _renderDataAs( "dot" );
 		f.close();
+		return retValue;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::prepare()
@@ -272,12 +281,16 @@ namespace depgraphV
 		return e;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	QString Graph::_renderDataAs( const QString& format ) const
+	bool Graph::_renderDataAs( const QString& format, QString* outString ) const
 	{
 		unsigned int length;
 		char* rawData = 0;
-		gvRenderData( _context, _graph, G_STR( format ), &rawData, &length );
-		Q_ASSERT( rawData );
-		return QString::fromUtf8( rawData, length );
+		bool retValue = gvRenderData( _context, _graph, G_STR( format ), &rawData, &length ) == 0;
+		retValue = retValue && rawData;
+
+		if( retValue )
+			*outString = QString::fromUtf8( rawData, length );
+
+		return retValue;
 	}
 } // end of depgraph namespace

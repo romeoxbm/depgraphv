@@ -86,6 +86,8 @@ namespace depgraphV
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
 		connect( ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
+
+		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	MainWindow::~MainWindow()
@@ -191,6 +193,7 @@ namespace depgraphV
 	{
 		Q_ASSERT( action );
 		ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
+		ui->statusBar->showMessage( tr( "Renderer method changed" ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::languageChanged( QAction* action )
@@ -233,7 +236,10 @@ namespace depgraphV
 
 		QStringList split = path.split( "." );
 		QString format = split[ split.size() - 1 ];
-		ui->graph->saveImage( path, format );
+		if( ui->graph->saveImage( path, format ) )
+			ui->statusBar->showMessage( tr( "File successfully saved." ) );
+		else
+			QMessageBox::critical( 0, tr( "Save as image" ), tr( "Unable to save file" ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::saveAsDot() const
@@ -246,7 +252,10 @@ namespace depgraphV
 		if( path.isEmpty() )
 			return;
 
-		ui->graph->saveDot( path );
+		if( ui->graph->saveDot( path ) )
+			ui->statusBar->showMessage( tr( "File successfully saved." ) );
+		else
+			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::exitApp()
