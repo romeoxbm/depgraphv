@@ -30,7 +30,6 @@
 
 #include <QGraphicsView>
 #include <QWheelEvent>
-#include <QPaintEvent>
 #include <QGraphicsSvgItem>
 
 #include <gvc.h>
@@ -54,8 +53,7 @@ namespace depgraphV
 		enum RendererType
 		{
 			Native = 0x1,
-			OpenGL = 0x2,
-			Image = 0x4
+			OpenGL = 0x2
 		};
 
 		/**
@@ -180,12 +178,10 @@ namespace depgraphV
 
 	protected:
 		virtual void wheelEvent( QWheelEvent* event );
-		virtual void paintEvent( QPaintEvent* event );
 
 	private:
 		RendererType _renderer;
 		QGraphicsSvgItem* _svgItem;
-		QImage _image;
 
 		GVC_t* _context;
 		Agraph_t* _graph;

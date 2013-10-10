@@ -43,12 +43,12 @@ namespace depgraphV
 {
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
-		  _renderer( Native ),
 		  _svgItem( 0 ),
 		  _context( 0 ),
 		  _graph( 0 )
 	{
 		setScene( new QGraphicsScene( this ) );
+		this->setRenderer( Native );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	Graph::~Graph()
@@ -246,25 +246,6 @@ namespace depgraphV
 		qreal factor = qPow( 1.2, event->delta() / 240.0 );
 		scale( factor, factor );
 		event->accept();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void Graph::paintEvent( QPaintEvent* event )
-	{
-		if( _renderer != Image )
-		{
-			QGraphicsView::paintEvent( event );
-			return;
-		}
-
-		if( _image.size() != viewport()->size() )
-			_image = QImage( viewport()->size(), QImage::Format_ARGB32_Premultiplied );
-
-		QPainter imagePainter( &_image );
-		QGraphicsView::render( &imagePainter );
-		imagePainter.end();
-
-		QPainter p( viewport() );
-		p.drawImage( 0, 0, _image );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )

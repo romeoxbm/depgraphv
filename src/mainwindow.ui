@@ -414,7 +414,6 @@
      </property>
      <addaction name="actionNative"/>
      <addaction name="actionOpenGL"/>
-     <addaction name="actionImage"/>
     </widget>
     <widget class="QMenu" name="menu_Language">
      <property name="title">
@@ -461,17 +460,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R, Ctrl+O</string>
-   </property>
-  </action>
-  <action name="actionImage">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Image</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+R, Ctrl+I</string>
    </property>
   </action>
   <action name="actionHigh_Quality_Antialiasing">

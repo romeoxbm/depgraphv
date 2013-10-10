@@ -5,7 +5,7 @@ Report bugs and download new versions at http://sourceforge.net/projects/depgrap
 
 This is the distribution of dep-graphV, which is an useful development tool,
 written in C++ and powered by Qt and GraphViz, that creates a graph of your codebase,
-by parsing every #include statements found in the project's root folder.
+by parsing every #include statement found in the project's root folder.
 It is helpful when you need to analize and visualize the dependecy tree,
 highlightining cycles and "useless paths", and It means, in short, that you could drastically
 reduce build times, especially when working on large-scale projects.

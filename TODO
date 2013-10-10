@@ -18,6 +18,3 @@ features, and there's no particular order.
 * Folders exclude list; It should be possible to specify a list of folders ignored when recursively scanning a source folder.
   This feature should allow users to add, enable(default state after adding a folder), disable or remove a folder from this list.
 * Optionally add redundand include guards;
-
-Known issues and bugs:
-* "Scrolling glitch" when using Image renderer type;

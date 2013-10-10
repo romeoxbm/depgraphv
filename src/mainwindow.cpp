@@ -46,11 +46,9 @@ namespace depgraphV
 		QActionGroup* rendererGroup = new QActionGroup( ui->menuRenderer );
 		rendererGroup->addAction( ui->actionNative );
 		rendererGroup->addAction( ui->actionOpenGL );
-		rendererGroup->addAction( ui->actionImage );
 
 		ui->actionNative->setData( Graph::Native );
 		ui->actionOpenGL->setData( Graph::OpenGL );
-		ui->actionImage->setData( Graph::Image );
 
 #ifndef USE_OPENGL
 		ui->actionOpenGL->setEnabled( false );

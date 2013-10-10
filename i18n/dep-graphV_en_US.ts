@@ -214,11 +214,6 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="474"/>
-        <source>Ctrl+R, Ctrl+I</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="482"/>
         <source>High Quality &amp;Antialiasing</source>
         <translation></translation>
