@@ -1,5 +1,5 @@
 /**
- * main.cpp
+ * appconfig.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,18 +25,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#ifndef APPCONFIG_H
+#define APPCONFIG_H
+
 #include "mainwindow.h"
-#include "buildsettings.h"
-#include <QApplication>
+#include <QSettings>
 
-int main( int argc, char *argv[] )
+namespace depgraphV
 {
-	QApplication app( argc, argv );
-	app.setApplicationName( APP_NAME );
-	app.setApplicationVersion( APP_VER );
+	class AppConfig
+	{
+	public:
+		AppConfig( MainWindow* win );
 
-	depgraphV::MainWindow w;
-	w.show();
+		void save();
+		void restore();
 
-	return app.exec();
+	private:
+		QSettings _settings;
+		MainWindow* _win;
+	};
 }
+
+#endif // APPCONFIG_H

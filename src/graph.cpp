@@ -274,4 +274,4 @@ namespace depgraphV
 
 		return retValue;
 	}
-} // end of depgraph namespace
+} // end of depgraphV namespace

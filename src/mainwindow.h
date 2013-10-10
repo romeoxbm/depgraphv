@@ -40,6 +40,8 @@ namespace depgraphV
 		class MainWindow;
 	}
 
+	class AppConfig;
+
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
@@ -50,6 +52,7 @@ namespace depgraphV
 
 	protected:
 		virtual void changeEvent( QEvent* );
+		virtual void closeEvent( QCloseEvent* );
 
 	private slots:
 		void on_selectedRootFolder_textChanged( const QString& );
@@ -67,6 +70,7 @@ namespace depgraphV
 	private:
 		Ui::MainWindow* ui;
 		QActionGroup* _langGroup;
+		AppConfig* _config;
 		QTranslator _qtTranslator;
 		QTranslator _appTranslator;
 		QString _currentLocale;

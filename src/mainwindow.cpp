@@ -25,7 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "mainwindow.h"
+#include "appconfig.h"
 #include "ui_mainwindow.h"
 #include "buildsettings.h"
 #include <QMessageBox>
@@ -37,7 +37,8 @@ namespace depgraphV
 {
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
-		ui( new Ui::MainWindow )
+		ui( new Ui::MainWindow ),
+		_config( new AppConfig( this ) )
 	{
 		ui->setupUi( this );
 		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
@@ -86,6 +87,7 @@ namespace depgraphV
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 
 		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
+		_config->restore();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	MainWindow::~MainWindow()
@@ -109,6 +111,12 @@ namespace depgraphV
 		}
 
 		QMainWindow::changeEvent( event );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::closeEvent( QCloseEvent* event )
+	{
+		_config->save();
+		event->accept();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_selectedRootFolder_textChanged( const QString& value )
@@ -381,4 +389,4 @@ namespace depgraphV
 			qDebug() << tr( "Switched to translation file " ) << fileName << " in " << directory;
 		}
 	}
-} // end of depgraph namespace
+} // end of depgraphV namespace

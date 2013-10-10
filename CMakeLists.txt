@@ -52,11 +52,13 @@ endif()
 project( ${ProjectName} )
 
 set( Headers
+	src/appconfig.h
 	src/graph.h
 	src/mainwindow.h
 )
 
 set( Sources
+	src/appconfig.cpp
 	src/graph.cpp
 	src/main.cpp
 	src/mainwindow.cpp

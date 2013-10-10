@@ -1,5 +1,5 @@
 /**
- * main.cpp
+ * appconfig.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,18 +25,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "mainwindow.h"
+#include "appconfig.h"
 #include "buildsettings.h"
 #include <QApplication>
+#include <QDesktopWidget>
+#include <QDebug>
 
-int main( int argc, char *argv[] )
+namespace depgraphV
 {
-	QApplication app( argc, argv );
-	app.setApplicationName( APP_NAME );
-	app.setApplicationVersion( APP_VER );
+	AppConfig::AppConfig( MainWindow* win )
+		: _settings( "Francesco Guastella", APP_NAME ),
+		  _win( win )
+	{
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::save()
+	{
+		qDebug() << "Saving settings...";
+		_settings.beginGroup( "MainWindow" );
+		{
+			_settings.setValue( "size", _win->size() );
+			_settings.setValue( "pos", _win->pos() );
+			_settings.setValue( "maximized", _win->isMaximized() );
+		}
+		_settings.endGroup();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::restore()
+	{
+		qDebug() << "Restoring settings...";
+		QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
 
-	depgraphV::MainWindow w;
-	w.show();
-
-	return app.exec();
-}
+		_settings.beginGroup( "MainWindow" );
+		{
+			_win->resize( _settings.value( "size", _win->rect().size() ).toSize() );
+			_win->move( _settings.value( "pos", p ).toPoint() );
+			if( _settings.value( "maximized", false ).toBool() )
+				_win->showMaximized();
+		}
+		_settings.endGroup();
+	}
+} // end of depgraphV namespace
