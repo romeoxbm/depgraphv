@@ -55,6 +55,7 @@ namespace depgraphV
 			_settings.setValue( "pHdr", _win->ui->parseHeadersCheckbox->isChecked() );
 			_settings.setValue( "pSrc", _win->ui->parseSourcesCheckbox->isChecked() );
 			_settings.setValue( "lastRootPath", _win->rootPath() );
+			_settings.setValue( "locale", _win->_langGroup->checkedAction()->data() );
 		}
 		_settings.endGroup();
 
@@ -81,6 +82,7 @@ namespace depgraphV
 			_win->ui->parseHeadersCheckbox->setChecked( _settings.value( "pHdr", true ).toBool() );
 			_win->ui->parseSourcesCheckbox->setChecked( _settings.value( "pSrc", false ).toBool() );
 			_win->ui->selectedRootFolder->setText( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
+			_win->translateUi( _settings.value( "locale", "en_US" ).toString() );
 		}
 		_settings.endGroup();
 

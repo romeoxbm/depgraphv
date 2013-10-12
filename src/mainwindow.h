@@ -51,6 +51,7 @@ namespace depgraphV
 		~MainWindow();
 
 		QString rootPath() const;
+		void translateUi( const QString& locale );
 
 	protected:
 		virtual void changeEvent( QEvent* );
@@ -79,7 +80,7 @@ namespace depgraphV
 		QTranslator _appTranslator;
 		QString _currentLocale;
 		QString _aboutText;
-		QMap<QString, QString> _availableLanguages;
+		QMap<QString, QAction*> _availableLanguages;
 		bool _isValidDirSelected;
 
 		void _setGraphAttributes() const;

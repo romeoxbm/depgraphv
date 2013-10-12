@@ -68,19 +68,6 @@ namespace depgraphV
 		_lookForTranslations( QApplication::applicationDirPath() );
 		_lookForTranslations( LANG_PATH );
 
-		if( !_availableLanguages.contains( QLocale::system().name() ) )
-		{
-			_currentLocale = "en_US";
-			ui->actionSystem_language->setEnabled( false );
-			QLocale::setDefault( QLocale( _currentLocale ) );
-		}
-		else
-		{
-			ui->actionSystem_language->setObjectName( _availableLanguages[ QLocale::system().name() ] );
-			ui->actionSystem_language->setIcon( QIcon( ":/flags/" + QLocale::system().name() ) );
-			languageChanged( ui->actionSystem_language );
-		}
-
 		//Connect signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
 		connect( ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
@@ -99,6 +86,21 @@ namespace depgraphV
 	QString MainWindow::rootPath() const
 	{
 		return _isValidDirSelected ? ui->selectedRootFolder->text() : QDir::currentPath();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::translateUi( const QString& locale )
+	{
+		QString l = locale;
+		if( !_availableLanguages.contains( locale ) )
+		{
+			_currentLocale = "en_US";
+			QLocale::setDefault( QLocale( _currentLocale ) );
+			l = _currentLocale;
+		}
+		else
+			languageChanged( _availableLanguages[ locale ] );
+
+		_availableLanguages[ l ]->setChecked( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -365,7 +367,6 @@ namespace depgraphV
 			if( _availableLanguages.contains( locale ) )
 				continue;
 
-			_availableLanguages.insert( locale, path ) ;
 			qDebug() << "Found locale " << locale << " in " << path;
 
 			//Creating the action
@@ -377,6 +378,15 @@ namespace depgraphV
 			newLang->setIcon( QIcon( ":/flags/" + locale ) );
 			ui->menu_Language->addAction( newLang );
 			_langGroup->addAction( newLang );
+			_availableLanguages.insert( locale, newLang );
+
+			//Also update system language QAction..
+			if( locale == QLocale::system().name() )
+			{
+				ui->actionSystem_language->setObjectName( path );
+				ui->actionSystem_language->setIcon( QIcon( ":/flags/" + locale ) );
+				ui->actionSystem_language->setEnabled( true );
+			}
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
