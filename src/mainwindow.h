@@ -50,6 +50,8 @@ namespace depgraphV
 		explicit MainWindow( QWidget* parent = 0 );
 		~MainWindow();
 
+		QString rootPath() const;
+
 	protected:
 		virtual void changeEvent( QEvent* );
 		virtual void closeEvent( QCloseEvent* );
@@ -68,6 +70,8 @@ namespace depgraphV
 		void exitApp();
 
 	private:
+		friend class AppConfig;
+
 		Ui::MainWindow* ui;
 		QActionGroup* _langGroup;
 		AppConfig* _config;

@@ -38,7 +38,7 @@ namespace depgraphV
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
 		ui( new Ui::MainWindow ),
-		_config( new AppConfig( this ) )
+		_isValidDirSelected( false )
 	{
 		ui->setupUi( this );
 		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
@@ -86,13 +86,19 @@ namespace depgraphV
 		connect( ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 
-		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
+		_config = new AppConfig( this, ui->graph );
 		_config->restore();
+		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	MainWindow::~MainWindow()
 	{
 		delete ui;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	QString MainWindow::rootPath() const
+	{
+		return _isValidDirSelected ? ui->selectedRootFolder->text() : QDir::currentPath();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -135,7 +141,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::selectRootFolder()
 	{
-		QString path = QFileDialog::getExistingDirectory( this, tr( "Select root folder" ), QDir::currentPath() );
+		QString path = QFileDialog::getExistingDirectory( this, tr( "Select root folder" ), rootPath() );
 		if( !path.isNull() )
 			ui->selectedRootFolder->setText( path );
 	}
@@ -189,10 +195,7 @@ namespace depgraphV
 			f.close();
 		}
 
-		QMessageBox::about( this, tr( "About..." ),
-							_aboutText.arg( QApplication::applicationName(),
-											QApplication::applicationVersion() )
-		);
+		QMessageBox::about( this, tr( "About..." ), _aboutText.arg( APP_NAME, APP_VER ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )

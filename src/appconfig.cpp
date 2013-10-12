@@ -26,42 +26,76 @@
  * THE SOFTWARE.
  */
 #include "appconfig.h"
+#include "ui_mainwindow.h"
 #include "buildsettings.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDebug>
+#include <QDir>
 
 namespace depgraphV
 {
-	AppConfig::AppConfig( MainWindow* win )
-		: _settings( "Francesco Guastella", APP_NAME ),
-		  _win( win )
+	AppConfig::AppConfig( MainWindow* win , Graph* g )
+		: QObject( win ),
+		  _settings( "romeoxbm", APP_NAME ),
+		  _win( win ),
+		  _graph( g )
 	{
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::save()
 	{
-		qDebug() << "Saving settings...";
+		qDebug() << tr( "Saving settings..." );
 		_settings.beginGroup( "MainWindow" );
 		{
 			_settings.setValue( "size", _win->size() );
 			_settings.setValue( "pos", _win->pos() );
 			_settings.setValue( "maximized", _win->isMaximized() );
+			_settings.setValue( "recur", _win->ui->recursiveCheckBox->isChecked() );
+			_settings.setValue( "pHdr", _win->ui->parseHeadersCheckbox->isChecked() );
+			_settings.setValue( "pSrc", _win->ui->parseSourcesCheckbox->isChecked() );
+			_settings.setValue( "lastRootPath", _win->rootPath() );
+		}
+		_settings.endGroup();
+
+		_settings.beginGroup( "Graph" );
+		{
+			_settings.setValue( "renderer", _graph->renderer() );
+			_settings.setValue( "antialiasing", _graph->highQualityAntialiasing() );
 		}
 		_settings.endGroup();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::restore()
 	{
-		qDebug() << "Restoring settings...";
-		QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
-
+		qDebug() << tr( "Restoring settings..." );
 		_settings.beginGroup( "MainWindow" );
 		{
+			QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
 			_win->resize( _settings.value( "size", _win->rect().size() ).toSize() );
 			_win->move( _settings.value( "pos", p ).toPoint() );
 			if( _settings.value( "maximized", false ).toBool() )
 				_win->showMaximized();
+
+			_win->ui->recursiveCheckBox->setChecked( _settings.value( "recur", false ).toBool() );
+			_win->ui->parseHeadersCheckbox->setChecked( _settings.value( "pHdr", true ).toBool() );
+			_win->ui->parseSourcesCheckbox->setChecked( _settings.value( "pSrc", false ).toBool() );
+			_win->ui->selectedRootFolder->setText( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
+		}
+		_settings.endGroup();
+
+		_settings.beginGroup( "Graph" );
+		{
+			//renderer
+			Graph::RendererType r = (Graph::RendererType)_settings.value( "renderer", Graph::Native ).toInt();
+			_graph->setRenderer( r );
+			QAction* a = r == Graph::Native ? _win->ui->actionNative : _win->ui->actionOpenGL;
+			a->setChecked( true );
+
+			//antialiasing
+			bool aa = _settings.value( "antialiasing", false ).toBool();
+			_graph->setHighQualityAntialiasing( aa );
+			_win->ui->actionHigh_Quality_Antialiasing->setChecked( aa );
 		}
 		_settings.endGroup();
 	}

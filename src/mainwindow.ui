@@ -54,7 +54,7 @@
              <item>
               <widget class="QLineEdit" name="selectedRootFolder">
                <property name="text">
-                <string/>
+                <string notr="true"/>
                </property>
               </widget>
              </item>
@@ -147,27 +147,27 @@
             <widget class="QComboBox" name="headersFilterComboBox">
              <item>
               <property name="text">
-               <string>*.h</string>
+               <string notr="true">*.h</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.hh</string>
+               <string notr="true">*.hh</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.hxx</string>
+               <string notr="true">*.hxx</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.hpp</string>
+               <string notr="true">*.hpp</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.hp</string>
+               <string notr="true">*.hp</string>
               </property>
              </item>
             </widget>
@@ -194,7 +194,7 @@
               <string/>
              </property>
              <property name="text">
-              <string>*.h; *.hh; *.hxx; *.hpp; *.hp</string>
+              <string notr="true">*.h; *.hh; *.hxx; *.hpp; *.hp</string>
              </property>
              <property name="placeholderText">
               <string/>
@@ -233,32 +233,32 @@
             <widget class="QComboBox" name="sourcesFilterComboBox">
              <item>
               <property name="text">
-               <string>*.cpp</string>
+               <string notr="true">*.cpp</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.cc</string>
+               <string notr="true">*.cc</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.cp</string>
+               <string notr="true">*.cp</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.cxx</string>
+               <string notr="true">*.cxx</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.c++</string>
+               <string notr="true">*.c++</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>*.C</string>
+               <string notr="true">*.C</string>
               </property>
              </item>
             </widget>
@@ -285,7 +285,7 @@
               <string/>
              </property>
              <property name="text">
-              <string>*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C</string>
+              <string notr="true">*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C</string>
              </property>
              <property name="placeholderText">
               <string/>

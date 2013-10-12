@@ -29,14 +29,15 @@
 #define APPCONFIG_H
 
 #include "mainwindow.h"
+#include <QObject>
 #include <QSettings>
 
 namespace depgraphV
 {
-	class AppConfig
+	class AppConfig : public QObject
 	{
 	public:
-		AppConfig( MainWindow* win );
+		AppConfig( MainWindow* win, Graph* g );
 
 		void save();
 		void restore();
@@ -44,6 +45,7 @@ namespace depgraphV
 	private:
 		QSettings _settings;
 		MainWindow* _win;
+		Graph* _graph;
 	};
 }
 
