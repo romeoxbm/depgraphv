@@ -45,8 +45,36 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::save()
 	{
-		qDebug() << tr( "Saving settings..." );
-		_settings.beginGroup( "MainWindow" );
+		_doSave();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::restore()
+	{
+		_doRestore();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::saveDefault()
+	{
+		if( !_settings.childGroups().contains( "default" ) )
+			_doSave( true );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::restoreDefault()
+	{
+		if( !_settings.childGroups().contains( "default" ) )
+		{
+			qCritical() << tr( "Missing default settings" );
+			return;
+		}
+
+		_doRestore( true );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AppConfig::_doSave( bool def )
+	{
+		QString group = def ? "default/" : "current/";
+		qDebug() << ( def ? tr( "Saving default settings..." ) : tr( "Saving settings..." ) );
+		_settings.beginGroup( group + "MainWindow" );
 		{
 			_settings.setValue( "size", _win->size() );
 			_settings.setValue( "pos", _win->pos() );
@@ -65,7 +93,7 @@ namespace depgraphV
 		}
 		_settings.endGroup();
 
-		_settings.beginGroup( "Graph" );
+		_settings.beginGroup( group + "Graph" );
 		{
 			_settings.setValue( "renderer", _graph->renderer() );
 			_settings.setValue( "antialiasing", _graph->highQualityAntialiasing() );
@@ -73,10 +101,11 @@ namespace depgraphV
 		_settings.endGroup();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void AppConfig::restore()
+	void AppConfig::_doRestore( bool def )
 	{
-		qDebug() << tr( "Restoring settings..." );
-		_settings.beginGroup( "MainWindow" );
+		QString group = def ? "default/" : "current/";
+		qDebug() << ( def ? tr( "Restoring default settings..." ) : tr( "Restoring settings..." ) );
+		_settings.beginGroup( group + "MainWindow" );
 		{
 			QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
 			_win->resize( _settings.value( "size", _win->rect().size() ).toSize() );
@@ -98,7 +127,7 @@ namespace depgraphV
 		}
 		_settings.endGroup();
 
-		_settings.beginGroup( "Graph" );
+		_settings.beginGroup( group + "Graph" );
 		{
 			//renderer
 			Graph::RendererType r = (Graph::RendererType)_settings.value( "renderer", Graph::Native ).toInt();

@@ -34,18 +34,53 @@
 
 namespace depgraphV
 {
+	/**
+	 * @brief The AppConfig class
+	 */
 	class AppConfig : public QObject
 	{
+		Q_OBJECT
+
 	public:
 		AppConfig( MainWindow* win, Graph* g );
 
+		/**
+		 * @brief save Save currently in use settings.
+		 */
 		void save();
+
+		/**
+		 * @brief restore Restore previously saved settings.
+		 */
 		void restore();
+
+		/**
+		 * @brief saveDefault Save default settings, only the first time this application run, so when there's
+		 *					  still no default settings saved.
+		 */
+		void saveDefault();
+
+		/**
+		 * @brief restoreDefault Restore default settings.
+		 */
+		void restoreDefault();
 
 	private:
 		QSettings _settings;
 		MainWindow* _win;
 		Graph* _graph;
+
+		/**
+		 * @brief _doSave It does the save job.
+		 * @param def True if saving default settings, false if saving current settings.
+		 */
+		void _doSave( bool def = false );
+
+		/**
+		 * @brief _doRestore It does the restore job.
+		 * @param def True if saving default settings, false if saving current settings.
+		 */
+		void _doRestore( bool def = false );
 	};
 }
 

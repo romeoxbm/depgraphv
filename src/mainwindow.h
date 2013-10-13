@@ -63,6 +63,7 @@ namespace depgraphV
 		void on_drawButton_clicked();
 		void on_clearButton_clicked();
 		void about();
+		void restoreDefaultSettings();
 		void rendererTypeChanged( QAction* );
 		void languageChanged( QAction* );
 		void parseOptionsChanged();

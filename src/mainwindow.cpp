@@ -74,7 +74,13 @@ namespace depgraphV
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 
 		_config = new AppConfig( this, ui->graph );
+
+		//Save default settings, if this is the first time we launch this application
+		_config->saveDefault();
+
+		//Restore last settings
 		_config->restore();
+
 		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -198,6 +204,22 @@ namespace depgraphV
 		}
 
 		QMessageBox::about( this, tr( "About..." ), _aboutText.arg( APP_NAME, APP_VER ) );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::restoreDefaultSettings()
+	{
+		QMessageBox::StandardButton answer = QMessageBox::question(
+					0,
+					tr( "Restore default settings" ),
+					tr( "Are you sure?" ),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::No
+		);
+
+		if( answer == QMessageBox::No )
+			return;
+
+		_config->restoreDefault();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )

@@ -385,7 +385,7 @@
      <x>0</x>
      <y>0</y>
      <width>674</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -426,6 +426,8 @@
     <addaction name="actionHigh_Quality_Antialiasing"/>
     <addaction name="separator"/>
     <addaction name="menu_Language"/>
+    <addaction name="separator"/>
+    <addaction name="actionRestore"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuOptions"/>
@@ -514,6 +516,11 @@
    </property>
    <property name="text">
     <string>System language</string>
+   </property>
+  </action>
+  <action name="actionRestore">
+   <property name="text">
+    <string>Restore default settings</string>
    </property>
   </action>
  </widget>
@@ -773,6 +780,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionRestore</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::MainWindow</receiver>
+   <slot>restoreDefaultSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>336</x>
+     <y>342</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>parseOptionsChanged()</slot>
@@ -781,5 +804,6 @@
   <slot>exitApp()</slot>
   <slot>about()</slot>
   <slot>selectRootFolder()</slot>
+  <slot>restoreDefaultSettings()</slot>
  </slots>
 </ui>
