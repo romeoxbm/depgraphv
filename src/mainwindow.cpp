@@ -41,6 +41,11 @@ namespace depgraphV
 		_isValidDirSelected( false )
 	{
 		ui->setupUi( this );
+
+		//When no language file has been found, We need to set window title here
+		//because QEvent::LanguageChange will not be fired.
+		this->setWindowTitle( APP_NAME );
+
 		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
 
 		//Renderer action group
@@ -106,7 +111,8 @@ namespace depgraphV
 		else
 			languageChanged( _availableLanguages[ locale ] );
 
-		_availableLanguages[ l ]->setChecked( true );
+		if( _availableLanguages.contains( l ) )
+			_availableLanguages[ l ]->setChecked( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -237,7 +243,7 @@ namespace depgraphV
 		if( _currentLocale == locale )
 			return;
 
-		QString appFileName = QString( "%1_%2" ).arg( QApplication::applicationName(), locale );
+		QString appFileName = QString( "%1_%2.qm" ).arg( QApplication::applicationName(), locale );
 		QString qtFileName = QString( "qt_%1" ).arg( locale );
 
 		_currentLocale = locale;
