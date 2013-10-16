@@ -3,7 +3,12 @@ if( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 endif( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 
 file( READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files )
-string( REGEX REPLACE "\n" ";" files "${files}" )
+
+#Split files list, avoiding policy warning CMP0007
+string( REGEX REPLACE "\n" " " files "${files}" )
+string( STRIP ${files} files )
+separate_arguments( files )
+
 list( REVERSE files )
 foreach( file ${files} )
 	message( STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"" )
@@ -20,5 +25,4 @@ foreach( file ${files} )
 	else( EXISTS "$ENV{DESTDIR}${file}" )
 		message( STATUS "File \"$ENV{DESTDIR}${file}\" does not exist." )
 	endif( EXISTS "$ENV{DESTDIR}${file}" )
-
 endforeach( file )
