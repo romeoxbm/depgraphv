@@ -199,7 +199,7 @@ namespace depgraphV
 			QFile f( ":/text/about.html" );
 			if( !f.open( QFile::ReadOnly | QFile::Text ) )
 			{
-				qWarning() << tr( "Cannot read about informations." );
+				qWarning() << qPrintable( tr( "Cannot read about informations." ) );
 				return;
 			}
 
@@ -244,7 +244,7 @@ namespace depgraphV
 			return;
 
 		QString appFileName = QString( "%1_%2.qm" ).arg( QApplication::applicationName(), locale );
-		QString qtFileName = QString( "qt_%1" ).arg( locale );
+		QString qtFileName = QString( "qt_%1.qm" ).arg( locale.mid( 0, 2 ) );
 
 		_currentLocale = locale;
 
@@ -395,7 +395,7 @@ namespace depgraphV
 			if( _availableLanguages.contains( locale ) )
 				continue;
 
-			qDebug() << "Found locale " << locale << " in " << path;
+			qDebug() << qPrintable( "Found locale " + locale + " in " + path );
 
 			//Creating the action
 			QAction* newLang = new QAction( this );
@@ -420,6 +420,14 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory )
 	{
+		QString fName( QString( "%1/%2" ).arg( directory, fileName ) );
+		QFile file( fName );
+		if( !file.exists() )
+		{
+			qDebug() << qPrintable( tr( "Translation file " ) + "\"" + fName + "\"" + tr( " does not exists" ) );
+			return;
+		}
+
 		//remove the old one
 		QApplication::removeTranslator( t );
 
@@ -427,7 +435,7 @@ namespace depgraphV
 		if( t->load( fileName, directory ) )
 		{
 			QApplication::installTranslator( t );
-			qDebug() << tr( "Switched to translation file " ) << fileName << " in " << directory;
+			qDebug() << qPrintable( tr( "Switched to translation file " ) + fileName + " in " + directory );
 		}
 	}
 } // end of depgraphV namespace

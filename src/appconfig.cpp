@@ -63,7 +63,7 @@ namespace depgraphV
 	{
 		if( !_settings.childGroups().contains( "default" ) )
 		{
-			qCritical() << tr( "Missing default settings" );
+			qCritical() << qPrintable( tr( "Missing default settings" ) );
 			return;
 		}
 
@@ -73,7 +73,7 @@ namespace depgraphV
 	void AppConfig::_doSave( bool def )
 	{
 		QString group = def ? "default/" : "current/";
-		qDebug() << ( def ? tr( "Saving default settings..." ) : tr( "Saving settings..." ) );
+		qDebug() << qPrintable( def ? tr( "Saving default settings..." ) : tr( "Saving settings..." ) );
 		_settings.beginGroup( group + "MainWindow" );
 		{
 			_settings.setValue( "size", _win->size() );
@@ -104,7 +104,7 @@ namespace depgraphV
 	void AppConfig::_doRestore( bool def )
 	{
 		QString group = def ? "default/" : "current/";
-		qDebug() << ( def ? tr( "Restoring default settings..." ) : tr( "Restoring settings..." ) );
+		qDebug() << qPrintable( def ? tr( "Restoring default settings..." ) : tr( "Restoring settings..." ) );
 		_settings.beginGroup( group + "MainWindow" );
 		{
 			QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
