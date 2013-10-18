@@ -39,14 +39,14 @@ set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
 
 if( WIN32 )
-	#Default installation path of Qt5.1.1
-	set( CMAKE_PREFIX_PATH "C:\\Qt\\5.1.1\\mingw48_32\\" )
-	set( INSTALL_PATH "${CMAKE_INSTALL_PREFIX}" )
+	set( INSTALL_PATH "." )
 	set( TRANSLATION_INSTALL_PATH "translations" )
+	set( DOCS_INSTALL_PATH "docs" )
+	set( SRC_INSTALL_PATH "src" )
 else()
-
 	set( INSTALL_PATH "bin" )
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
+	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
 endif()
 
 project( ${ProjectName} )
@@ -82,9 +82,24 @@ set( Translations
 	i18n/${ProjectName}_it_IT.ts
 )
 
+set( DOCS
+	AUTHORS
+	ChangeLog
+	COPYING
+	README
+	TODO
+)
+
+foreach( t ${Translations} )
+	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${t} )
+	string( REPLACE ".ts" ".qm" newT ${newT} )
+	list( APPEND Translations_rel ${newT} )
+endforeach( t )
+
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
 option( QT_UPDATE_TRANSLATIONS false )
+option( BUILD_32 "Build 32bit executable (when false, 64bit will be selected)" TRUE )
 
 #Looking for Graphviz
 message( STATUS "* Looking for Graphviz..." )
@@ -95,97 +110,11 @@ else()
 	message( STATUS "* Found" )
 endif()
 
+#Include right file depending on selected Qt version.
 if( QT_USE_QT5 )
-
-	set( definitions "-DQT5" )
-	set( qt5Modules "Widgets;Svg" )
-
-	#Looking for Qt5 Widgets
-	message( STATUS "* Looking for Qt5 Widgets..." )
-	find_package( Qt5Widgets REQUIRED )
-	if( NOT Qt5Widgets_FOUND )
-		message( SEND_ERROR "* Failed to find Qt5 Widgets." )
-	else()
-		message( STATUS "* Found" )
-	endif()
-
-	#Looking for Qt5 Svg
-	message( STATUS "* Looking for Qt5 Svg..." )
-	find_package( Qt5Svg REQUIRED )
-	if( NOT Qt5Svg_FOUND )
-		message( SEND_ERROR "* Failed to find Qt5 Svg." )
-	else()
-		message( STATUS "* Found" )
-	endif()
-
-	#Looking for Qt5 Opengl
-	if( QT_USE_OPENGL )
-		message( STATUS "* Looking for Qt5 OpenGL..." )
-		find_package( Qt5OpenGL REQUIRED )
-		if( NOT Qt5OpenGL_FOUND )
-			message( STATUS "* Failed to find Qt5 OpenGL." )
-		else()
-			set( qt5Modules "${qt5Modules};OpenGL" )
-			message( STATUS "* Found" )
-		endif()
-	endif( QT_USE_OPENGL )
-
-	message( STATUS "* Looking for Qt5 Linguist tools..." )
-	find_package( Qt5LinguistTools REQUIRED )
-	if( NOT Qt5LinguistTools_FOUND )
-		message( SEND_ERROR "* Failed to find Qt5 Linguist tools." )
-	else()
-		message( STATUS "* Found" )
-	endif()
-
-	qt5_wrap_ui( UISrcs ${Sources_ui} )
-
-	# generate rules for building source files from the resources
-	qt5_add_resources( RCCSrcs ${Resources} )
-
-	if( QT_UPDATE_TRANSLATIONS )
-		qt5_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
-	else()
-		qt5_add_translation( i18nSrcs ${Translations} )
-	endif( QT_UPDATE_TRANSLATIONS )
-
-	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )
-	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY}" )
-
+	include( buildQt5 )
 else()
-
-	set( definitions "" )
-
-	#Looking for Qt4
-	message( STATUS "* Looking for Qt4..." )
-	if( QT_USE_OPENGL )
-		find_package( Qt4 REQUIRED QtCore QtSvg QtOpenGL )
-	else()
-		find_package( Qt4 REQUIRED QtCore QtSvg )
-	endif( QT_USE_OPENGL )
-		
-	if( NOT Qt4_FOUND )
-		message( SEND_ERROR "* Failed to find Qt4." )
-	else()
-		message( STATUS "* Found ${QTVERSION}" )
-	endif()
-	
-	include( ${QT_USE_FILE} )
-
-	qt4_wrap_ui( UISrcs ${Sources_ui} )
-
-	# generate rules for building source files from the resources
-	qt4_add_resources( RCCSrcs ${Resources} )
-
-	if( QT_UPDATE_TRANSLATIONS )
-		qt4_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
-	else()
-		qt4_add_translation( i18nSrcs ${Translations} )
-	endif( QT_UPDATE_TRANSLATIONS )
-
-	set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
-	set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY};${QT_LIBRARIES}" )
-
+	include( buildQt4 )
 endif( QT_USE_QT5 )
 
 # enable warnings and other required definitions
@@ -195,8 +124,22 @@ endif( QT_USE_OPENGL )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
 	set( definitions "${definitions} -Wall" )
+	
+	if( BUILD_32 )
+		set( definitions "${definitions} -m32" )
+	else()
+		set( definitions "${definitions} -m64" )
+	endif( BUILD_32 )
+	
 elseif( MSVC_IDE )
 	set( definitions "${definitions} /W4 /MP" )
+	
+	#TODO
+	if( BUILD_32 )
+		#set( definitions "${definitions} -m32" )
+	else()
+		#set( definitions "${definitions} -m64" )
+	endif( BUILD_32 )
 endif()
 
 message( STATUS "* Using definitions: ${definitions}" )
@@ -219,11 +162,29 @@ endif( QT_USE_QT5 )
 
 target_link_libraries( ${ProjectName} ${libraries} )
 
-install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} )
+install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT runtime )
+install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT translations )
+install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
+if( WIN32 )
+	install( FILES "${Headers}${Sources}${Sources_ui}${Resources}${Translations}" DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
+else()
+	#TODO .desktop file
+	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
+	#install( PROGRAMS ktimetracker.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+endif( WIN32 )
 
-#Install translations
-file( GLOB Translations_rel "${CMAKE_CURRENT_BINARY_DIR}/*.qm" )
-install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} )
+#include( GetPrerequisites )
+#LIST_PREREQUISITES( "${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}" )
+
+if( WIN32 )
+	set( LIBS "C:/Qt/5.1.1/mingw48_32/bin;C:/Program Files (x86)/Graphviz2.34/bin" )
+	
+	install( CODE "
+		include( BundleUtilities )
+		fixup_bundle( \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/${ProjectName}.exe\" \"\" \"${LIBS}\" )
+		" COMPONENT runtime
+	)
+endif( WIN32 )
 
 #Configure buildsettings file
 configure_file(
@@ -240,3 +201,5 @@ configure_file(
 )
 
 add_custom_target( uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake )
+
+include( packaging )
