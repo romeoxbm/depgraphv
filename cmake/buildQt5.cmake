@@ -31,7 +31,13 @@ set( qt5Modules "Widgets;Svg" )
 
 if( WIN32 )
 	#Default installation path of Qt5.1.1
-	set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/mingw48_32/" )
+	if( MSVC11 )
+		set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/msvc2012/" )
+	elseif( MSVC10 )
+		set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/msvc2010/" )
+	else()
+		set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/mingw48_32/" )
+	endif( MSVC11 )
 endif( WIN32 )
 
 #Looking for Qt5 Widgets
