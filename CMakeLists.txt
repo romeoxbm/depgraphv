@@ -37,14 +37,13 @@ set( CMAKE_AUTOMOC ON )
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
+set( INSTALL_PATH "bin" )
 
 if( WIN32 )
-	set( INSTALL_PATH "." )
 	set( TRANSLATION_INSTALL_PATH "translations" )
 	set( DOCS_INSTALL_PATH "docs" )
 	set( SRC_INSTALL_PATH "src" )
 else()
-	set( INSTALL_PATH "bin" )
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
 endif()
@@ -166,18 +165,16 @@ install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT ru
 install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT translations )
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 if( WIN32 )
-	install( FILES "${Headers}${Sources}${Sources_ui}${Resources}${Translations}" DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
+	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
+		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
 else()
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
-	#install( PROGRAMS ktimetracker.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+	#install( PROGRAMS dep-graphV.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 endif( WIN32 )
 
-#include( GetPrerequisites )
-#LIST_PREREQUISITES( "${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}" )
-
 if( WIN32 )
-	set( LIBS "C:/Qt/5.1.1/mingw48_32/bin;C:/Program Files (x86)/Graphviz2.34/bin" )
+	set( LIBS "${CMAKE_PREFIX_PATH}bin;${GraphViz_INSTALL_DIRS}/bin" )
 	
 	install( CODE "
 		include( BundleUtilities )
