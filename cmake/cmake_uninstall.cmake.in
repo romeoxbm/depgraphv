@@ -4,17 +4,19 @@ endif( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 
 file( READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files )
 
-#Split files list, avoiding policy warning CMP0007
+#Split files list, avoiding policy warning CMP0007, and using a "replace trick" to solve issues concerning paths containing spaces
+string( REPLACE " " "[]" files "${files}" )
 string( REGEX REPLACE "\n" " " files "${files}" )
 string( STRIP ${files} files )
 separate_arguments( files )
+string( REPLACE "[]" " " files "${files}" )
 
 list( REVERSE files )
 foreach( file ${files} )
 	message( STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"" )
 	if( EXISTS "$ENV{DESTDIR}${file}" )
 		execute_process(
-			COMMAND @CMAKE_COMMAND@ -E remove "$ENV{DESTDIR}${file}"
+			COMMAND "@CMAKE_COMMAND@" -E remove "$ENV{DESTDIR}${file}"
 			OUTPUT_VARIABLE rm_out
 			RESULT_VARIABLE rm_retval
 		)
