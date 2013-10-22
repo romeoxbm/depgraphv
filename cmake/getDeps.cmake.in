@@ -1,0 +1,20 @@
+message( STATUS "* Analizing @ProjectName@.exe..." )
+set( LIBS "@CMAKE_PREFIX_PATH@bin;@GraphViz_INSTALL_DIRS@/bin" )
+	
+include( BundleUtilities )
+get_bundle_keys( "@CMAKE_INSTALL_PREFIX@/@INSTALL_PATH@/@ProjectName@.exe" "" "${LIBS}" keys )
+	
+foreach( key ${keys} )
+	string( REGEX MATCH "@ProjectName@.exe$" result "${${key}_RESOLVED_ITEM}" )
+	if( NOT result )
+		if( deps )
+			set( deps "${deps}\n${${key}_RESOLVED_ITEM}" )
+		else()
+			set( deps "${${key}_RESOLVED_ITEM}" )
+		endif()
+		message( STATUS "* Found dependency ${${key}_RESOLVED_ITEM}" )
+	endif()
+endforeach()
+
+file( WRITE "@CMAKE_CURRENT_BINARY_DIR@/dependencies.txt" ${deps} )
+message( STATUS "* Dependencies have been written into @CMAKE_CURRENT_BINARY_DIR@/dependencies.txt" )

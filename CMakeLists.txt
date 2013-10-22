@@ -164,23 +164,28 @@ target_link_libraries( ${ProjectName} ${libraries} )
 install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT translations )
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
+
 if( WIN32 )
+	#Configure getDeps.cmake
+	configure_file(
+		"${CMAKE_SCRIPTS_PATH}/getDeps.cmake.in"
+		"${CMAKE_CURRENT_BINARY_DIR}/getDeps.cmake"
+		IMMEDIATE @ONLY
+	)
+
 	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
 		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
-else()
+
+	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/getDeps.cmake" )
+	
+	if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" )
+		file( STRINGS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" deps )
+		install( FILES ${deps} DESTINATION ${INSTALL_PATH} COMPONENT runtime )	
+	endif()
+else()	
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
 	#install( PROGRAMS dep-graphV.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-endif( WIN32 )
-
-if( WIN32 )
-	set( LIBS "${CMAKE_PREFIX_PATH}bin;${GraphViz_INSTALL_DIRS}/bin" )
-	
-	install( CODE "
-		include( BundleUtilities )
-		fixup_bundle( \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/${ProjectName}.exe\" \"\" \"${LIBS}\" )
-		" COMPONENT runtime
-	)
 endif( WIN32 )
 
 #Configure buildsettings file

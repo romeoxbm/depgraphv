@@ -2,14 +2,7 @@ if( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 	message( FATAL_ERROR "Cannot find install manifest: \"@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt\"" )
 endif( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 
-file( READ "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files )
-
-#Split files list, avoiding policy warning CMP0007, and using a "replace trick" to solve issues concerning paths containing spaces
-string( REPLACE " " "[]" files "${files}" )
-string( REGEX REPLACE "\n" " " files "${files}" )
-string( STRIP ${files} files )
-separate_arguments( files )
-string( REPLACE "[]" " " files "${files}" )
+file( STRINGS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files )
 
 list( REVERSE files )
 foreach( file ${files} )
