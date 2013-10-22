@@ -166,6 +166,13 @@ install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPO
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 
 if( WIN32 )
+	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}bin;${GraphViz_INSTALL_DIRS}/bin" )
+	
+	if( MSVC_IDE )
+		include( CreateLaunchers )
+		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
+	endif( MSVC_IDE )
+			
 	#Configure getDeps.cmake
 	configure_file(
 		"${CMAKE_SCRIPTS_PATH}/getDeps.cmake.in"
@@ -180,6 +187,7 @@ if( WIN32 )
 	
 	if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" )
 		file( STRINGS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" deps )
+		message( STATUS "* Installing dependencies" )
 		install( FILES ${deps} DESTINATION ${INSTALL_PATH} COMPONENT runtime )	
 	endif()
 else()	

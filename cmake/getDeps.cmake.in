@@ -1,8 +1,7 @@
 message( STATUS "* Analizing @ProjectName@.exe..." )
-set( LIBS "@CMAKE_PREFIX_PATH@bin;@GraphViz_INSTALL_DIRS@/bin" )
 	
 include( BundleUtilities )
-get_bundle_keys( "@CMAKE_INSTALL_PREFIX@/@INSTALL_PATH@/@ProjectName@.exe" "" "${LIBS}" keys )
+get_bundle_keys( "@CMAKE_INSTALL_PREFIX@/@INSTALL_PATH@/@ProjectName@.exe" "" "@RUNTIME_LIBS_PATH@" keys )
 	
 foreach( key ${keys} )
 	string( REGEX MATCH "@ProjectName@.exe$" result "${${key}_RESOLVED_ITEM}" )
