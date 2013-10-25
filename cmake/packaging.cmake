@@ -31,7 +31,7 @@
 set( CPACK_PACKAGE_VENDOR "Guastella Francesco" )
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "dep-graphV is an useful tool to analize header dependendencies via graphs. This is the runtime package of the tool, built against" )
 set( CPACK_PACKAGE_VERSION ${ProjectVersion} )
-set( CPACK_PACKAGE_INSTALL_DIRECTORY "dep-graphV" )
+set( CPACK_PACKAGE_INSTALL_DIRECTORY ${ProjectName} )
 
 #Qt version
 if( QT_USE_QT5 )
@@ -70,6 +70,8 @@ if( WIN32 )
 	
 	set( CPACK_COMPONENT_SOURCES_DISPLAY_NAME "Sources" ) #TODO
 	set( CPACK_COMPONENT_SOURCES_DESCRIPTION "Sources description goes here" ) #TODO
+	
+	set( CPACK_NSIS_MUI_FINISHPAGE_RUN "${ProjectName}.exe" )
 else()
 	set( CPACK_GENERATOR "DEB" )
 	
