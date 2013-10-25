@@ -111,8 +111,9 @@ namespace depgraphV
 
 		/**
 		 * @brief applyLayout Calculate the graph layout.
+		 * @return true if everything went fine, false otherwise.
 		 */
-		void applyLayout();
+		bool applyLayout();
 
 		/**
 		 * @brief saveImage Save the graph as image.

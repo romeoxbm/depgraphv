@@ -94,7 +94,7 @@ namespace depgraphV
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
 		if( !v )
 		{
-			qWarning() << tr( "Invalid vertex:" ) << label;
+			qWarning() << qPrintable( tr( "Invalid vertex:" ) ) << label;
 			return 0;
 		}
 
@@ -146,18 +146,23 @@ namespace depgraphV
 		f.close();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void Graph::applyLayout()
+	bool Graph::applyLayout()
 	{
 		Q_ASSERT( _context && _graph && !_svgItem );
 		if( gvLayout( _context, _graph, "dot" ) != 0 )
 		{
-			qCritical() << tr( "Layout render error" ) << agerrors() << QString::fromUtf8( aglasterr() );
-			return;
+			QMessageBox::critical(
+				this->parentWidget(),
+				tr( "Layout render error" ),
+				QString::fromUtf8( aglasterr() )
+			);
+
+			return false;
 		}
 
 		QString data;
 		if( !_renderDataAs( "svg", &data ) )
-			return;
+			return false;
 
 		QXmlStreamReader xmlReader( data );
 		QSvgRenderer* r = new QSvgRenderer( &xmlReader );
@@ -171,6 +176,7 @@ namespace depgraphV
 		QGraphicsScene* s = scene();
 		s->addItem( _svgItem );
 		s->setSceneRect( _svgItem->boundingRect().adjusted( -10, -10, 10, 10 ) );
+		return true;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
@@ -254,7 +260,7 @@ namespace depgraphV
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
 		if( !e )
 		{
-			qWarning() << tr( "Invalid egde:" ) << label;
+			qWarning() << qPrintable( tr( "Invalid egde:" ) ) << label;
 			return 0;
 		}
 
