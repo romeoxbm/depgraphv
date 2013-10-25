@@ -41,9 +41,6 @@ namespace depgraphV
 		_isValidDirSelected( false )
 	{
 		ui->setupUi( this );
-
-		//When no language file has been found, We need to set window title here
-		//because QEvent::LanguageChange will not be fired.
 		this->setWindowTitle( APP_NAME );
 
 		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
@@ -123,7 +120,6 @@ namespace depgraphV
 			{
 				ui->retranslateUi( this );
 				_aboutText.clear();
-				this->setWindowTitle( APP_NAME );
 			}
 
 			else if( event->type() == QEvent::LocaleChange )
@@ -162,16 +158,18 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_drawButton_clicked()
 	{
-		this->_setGraphAttributes();
 		//Disable related ui widgets
 		_setGroupBoxesEnabled( false );
 
 		ui->graph->prepare();
+		_setGraphAttributes();
 		_scanFolder( ui->selectedRootFolder->text() );
 
 		//Layout and draw graph
-		ui->graph->applyLayout();
-		_setButtonsAndActionsEnabled( true );
+		if( ui->graph->applyLayout() )
+			_setButtonsAndActionsEnabled( true );
+		else
+			_doClearGraph();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_clearButton_clicked()
@@ -184,9 +182,12 @@ namespace depgraphV
 					QMessageBox::No
 		);
 
-		if( answer == QMessageBox::No )
-			return;
-
+		if( answer != QMessageBox::No )
+			_doClearGraph();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::_doClearGraph() const
+	{
 		ui->graph->clear();
 		_setGroupBoxesEnabled( true );
 		_setButtonsAndActionsEnabled( false );

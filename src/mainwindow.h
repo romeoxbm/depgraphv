@@ -84,6 +84,7 @@ namespace depgraphV
 		QMap<QString, QAction*> _availableLanguages;
 		bool _isValidDirSelected;
 
+		void _doClearGraph() const;
 		void _setGraphAttributes() const;
 		void _setGroupBoxesEnabled( bool value ) const;
 		void _setButtonsAndActionsEnabled( bool value ) const;

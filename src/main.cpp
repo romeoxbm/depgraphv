@@ -29,11 +29,26 @@
 #include "buildsettings.h"
 #include <QApplication>
 
+#ifdef QT5
+	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
+#else
+	void noMessageOutput( QtMsgType, const char* ) {}
+#endif
+
 int main( int argc, char *argv[] )
 {
 	QApplication app( argc, argv );
 	app.setApplicationName( APP_NAME );
 	app.setApplicationVersion( APP_VER );
+
+	if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
+	{
+#ifdef QT5
+		qInstallMessageHandler( &noMessageOutput );
+#else
+		qInstallMsgHandler( &noMessageOutput );
+#endif
+	}
 
 	depgraphV::MainWindow w;
 	w.show();
