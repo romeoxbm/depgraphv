@@ -94,4 +94,4 @@ else()
 endif( QT_UPDATE_TRANSLATIONS )
 
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )
-set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY}" )
+set( libraries "${GraphViz_gvc_LIBRARY}" )

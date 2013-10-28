@@ -29,7 +29,7 @@ if( WIN32 )
 
 else()
 	set( GraphViz_INSTALL_DIRS "$ENV{GRAPHVIZ_DIR}" )
-	set( GRAPHVIZ_LIB_PATH_SUFFIX "lib/release/lib" )
+	set( GRAPHVIZ_LIB_PATH_SUFFIX "lib" )
 endif()
 
 # Look for the header file.
@@ -78,13 +78,29 @@ find_package_handle_standard_args(GraphViz DEFAULT_MSG GraphViz_LIBRARY GraphViz
 
 # Copy the results to the output variables.
 if(GRAPHVIZ_FOUND)
-  set(GraphViz_LIBRARIES ${GraphViz_LIBRARY})
-  set(GraphViz_INCLUDE_DIRS ${GraphViz_INCLUDE_DIR})
+	set(GraphViz_LIBRARIES ${GraphViz_LIBRARY})
+	set(GraphViz_INCLUDE_DIRS ${GraphViz_INCLUDE_DIR})
+	
+	#Getting GraphViz version
+	if( EXISTS "${GraphViz_INCLUDE_DIR}/graphviz_version.h" )
+		file( STRINGS "${GraphViz_INCLUDE_DIR}/graphviz_version.h" defineVer REGEX "#define VERSION" )
+		string( SUBSTRING ${defineVer} 17 4 ver )
+		if( ${ver} VERSION_GREATER "2.28" OR ${ver} VERSION_EQUAL "2.28" )
+			set(GraphViz_USE_CGRAPH ON )
+		else()
+			set(GraphViz_USE_CGRAPH 0 )
+		endif()
+	else()
+		#TODO Should we always use cgraph when graphviz_version.h does not exists?
+		set(GraphViz_USE_CGRAPH ON )
+	endif()
+  
 else(GRAPHVIZ_FOUND)
   set(GraphViz_LIBRARIES)
   set(GraphViz_INCLUDE_DIRS)
+  set(GraphViz_USE_CGRAPH 0 )
 endif(GRAPHVIZ_FOUND)
 
-mark_as_advanced(GraphViz_INCLUDE_DIRS GraphViz_LIBRARIES)
+mark_as_advanced(GraphViz_INCLUDE_DIRS GraphViz_LIBRARIES GraphViz_USE_CGRAPH)
 
 

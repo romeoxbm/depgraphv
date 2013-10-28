@@ -31,9 +31,16 @@
 #include <QGraphicsView>
 #include <QWheelEvent>
 #include <QGraphicsSvgItem>
+#include "buildsettings.h"
 
-#include <gvc.h>
-#include <cgraph.h>
+#ifndef Q_MOC_RUN
+#	include <gvc.h>
+#	ifdef Using_CGRAPH
+#		include <cgraph.h>
+#	else
+#		include <graph.h>
+#	endif // Using_CGRAPH
+#endif // Q_MOC_RUN
 
 namespace depgraphV
 {

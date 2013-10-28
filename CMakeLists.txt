@@ -72,8 +72,8 @@ set( Resources
 )
 
 set( FilesToTranslate
-    ${Sources_ui}
-    ${Sources}
+	${Sources_ui}
+	${Sources}
 )
 
 set( Translations
@@ -98,7 +98,9 @@ endforeach( t )
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
 option( QT_UPDATE_TRANSLATIONS false )
-option( BUILD_32 "Build 32bit executable (when false, 64bit will be selected)" TRUE )
+if( CMAKE_COMPILER_IS_GNUCXX )
+	option( BUILD_32 "Build 32bit executable (when false, 64bit will be selected)" TRUE )
+endif()
 
 #Looking for Graphviz
 message( STATUS "* Looking for Graphviz..." )
@@ -116,6 +118,13 @@ else()
 	include( buildQt4 )
 endif( QT_USE_QT5 )
 
+if( GraphViz_USE_CGRAPH )
+	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
+	set( definitions "${definitions} -DUsing_CGRAPH" )
+else()
+	list( APPEND libraries "${GraphViz_graph_LIBRARY}" )
+endif()
+
 # enable warnings and other required definitions
 if( QT_USE_OPENGL )
 	set( definitions "${definitions} -DUSE_OPENGL" )
@@ -132,13 +141,6 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 	
 elseif( MSVC_IDE )
 	set( definitions "${definitions} /W4 /MP" )
-	
-	#TODO
-	if( BUILD_32 )
-		#set( definitions "${definitions} -m32" )
-	else()
-		#set( definitions "${definitions} -m64" )
-	endif( BUILD_32 )
 endif()
 
 message( STATUS "* Using definitions: ${definitions}" )
@@ -146,7 +148,7 @@ add_definitions( ${definitions} )
 
 include_directories( ${includes} )
 
-add_executable( ${ProjectName}
+add_executable( ${ProjectName} WIN32
 	${Headers}
 	${Sources}
 	${MOCSrcs}
@@ -188,8 +190,15 @@ if( WIN32 )
 	if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" )
 		file( STRINGS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" deps )
 		message( STATUS "* Installing dependencies" )
-		install( FILES ${deps} DESTINATION ${INSTALL_PATH} COMPONENT runtime )	
+		install( FILES ${deps} DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 	endif()
+
+	#Generate config6 file by using dot.exe
+	install( CODE "execute_process( COMMAND \"${CMAKE_COMMAND}\" -E copy \"${GraphViz_INSTALL_DIRS}/bin/dot.exe\" \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" )" )
+	install( CODE "execute_process( COMMAND \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" -c )" )
+	install( CODE "file( REMOVE \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" )" )
+
+	install( FILES "${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/config6" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 else()	
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
@@ -210,6 +219,6 @@ configure_file(
 	IMMEDIATE @ONLY
 )
 
-add_custom_target( uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake )
+add_custom_target( uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" )
 
 include( packaging )

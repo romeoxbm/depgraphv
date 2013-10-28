@@ -29,8 +29,12 @@
 set( definitions "" )
 
 if( WIN32 )
-	#Default installation path of Qt4.8.5
-	set( CMAKE_PREFIX_PATH "C:/Qt/4.8.5/" )
+	if( MSVC10 )
+		set( CMAKE_PREFIX_PATH "C:/Qt/4.8.5_msvc2010/" )
+	else()
+		#Default installation path of Qt4.8.5
+		set( CMAKE_PREFIX_PATH "C:/Qt/4.8.5/" )
+	endif()
 endif( WIN32 )
 
 #Looking for Qt4
@@ -61,4 +65,4 @@ else()
 endif( QT_UPDATE_TRANSLATIONS )
 
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
-set( libraries "${GraphViz_gvc_LIBRARY};${GraphViz_cgraph_LIBRARY};${QT_LIBRARIES}" )
+set( libraries "${GraphViz_gvc_LIBRARY};${QT_LIBRARIES}" )

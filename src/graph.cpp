@@ -91,7 +91,11 @@ namespace depgraphV
 	Agnode_t* Graph::createVertex( const QString& label )
 	{
 		Q_ASSERT( _graph && !label.isEmpty() );
+#ifdef Using_CGRAPH
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
+#else
+		Agnode_t* v = agnode( _graph, G_STR( label ) );
+#endif
 		if( !v )
 		{
 			qWarning() << qPrintable( tr( "Invalid vertex:" ) ) << label;
@@ -207,22 +211,38 @@ namespace depgraphV
 	{
 		Q_ASSERT( !_context && !_graph );
 		_context = gvContext();
+#ifdef Using_CGRAPH
 		_graph = agopen( G_STR( QString( "" ) ), Agdirected, 0 );
+#else
+		_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH );
+#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
 	{
+#ifdef Using_CGRAPH
 		agattr( _graph, AGRAPH, G_STR( name ), G_STR( value ) );
+#else
+		agraphattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setVerticesAttribute( const QString& name, const QString& value ) const
 	{
+#ifdef Using_CGRAPH
 		agattr( _graph, AGNODE, G_STR( name ), G_STR( value ) );
+#else
+		agnodeattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setEdgesAttribute( const QString& name, const QString& value ) const
 	{
+#ifdef Using_CGRAPH
 		agattr( _graph, AGEDGE, G_STR( name ), G_STR( value ) );
+#else
+		agedgeattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::clear()
@@ -257,7 +277,11 @@ namespace depgraphV
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
 	{
 		Q_ASSERT( _graph && src && dest );
+#ifdef Using_CGRAPH
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
+#else
+		Agedge_t* e = agedge( _graph, src, dest );
+#endif
 		if( !e )
 		{
 			qWarning() << qPrintable( tr( "Invalid egde:" ) ) << label;
