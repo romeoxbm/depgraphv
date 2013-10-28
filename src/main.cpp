@@ -35,11 +35,23 @@
 	void noMessageOutput( QtMsgType, const char* ) {}
 #endif
 
-int main( int argc, char *argv[] )
+#ifdef WIN32
+#include <windows.h>
+
+INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
+{
+	QApplication app( __argc, __argv );
+#else
+int main( int argc, char* argv[] )
 {
 	QApplication app( argc, argv );
-	app.setApplicationName( APP_NAME );
-	app.setApplicationVersion( APP_VER );
+#endif
+
+	if( app.arguments().contains( "--help" ) || app.arguments().contains( "-h" ) )
+	{
+		//TODO Print help message and exit
+		return 0;
+	}
 
 	if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
 	{
@@ -49,6 +61,9 @@ int main( int argc, char *argv[] )
 		qInstallMsgHandler( &noMessageOutput );
 #endif
 	}
+
+	app.setApplicationName( APP_NAME );
+	app.setApplicationVersion( APP_VER );
 
 	depgraphV::MainWindow w;
 	w.show();
