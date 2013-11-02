@@ -175,26 +175,20 @@ if( WIN32 )
 		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
 	endif( MSVC_IDE )
 			
-	#Configure getDeps.cmake
+	#Configure installDeps.cmake
 	configure_file(
-		"${CMAKE_SCRIPTS_PATH}/getDeps.cmake.in"
-		"${CMAKE_CURRENT_BINARY_DIR}/getDeps.cmake"
+		"${CMAKE_SCRIPTS_PATH}/installDeps.cmake.in"
+		"${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake"
 		IMMEDIATE @ONLY
 	)
 
 	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
 		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
 
-	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/getDeps.cmake" )
+	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" )
 	
-	if( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" )
-		file( STRINGS "${CMAKE_CURRENT_BINARY_DIR}/dependencies.txt" deps )
-		message( STATUS "* Installing dependencies" )
-		install( FILES ${deps} DESTINATION ${INSTALL_PATH} COMPONENT runtime )
-	endif()
-
 	#Generate config6 file by using dot.exe
-	install( CODE "execute_process( COMMAND \"${CMAKE_COMMAND}\" -E copy \"${GraphViz_INSTALL_DIRS}/bin/dot.exe\" \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" )" )
+	install( CODE "file( COPY \"${GraphViz_INSTALL_DIRS}/bin/dot.exe\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}\" )" )
 	install( CODE "execute_process( COMMAND \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" -c )" )
 	install( CODE "file( REMOVE \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" )" )
 

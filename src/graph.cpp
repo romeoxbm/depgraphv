@@ -185,6 +185,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
+		Q_ASSERT( _context && _graph && !filename.isEmpty() && !format.isEmpty() );
 		return gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
