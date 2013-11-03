@@ -181,18 +181,20 @@ if( WIN32 )
 		"${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake"
 		IMMEDIATE @ONLY
 	)
+	
+	#Configure installConfig6.cmake
+	configure_file(
+		"${CMAKE_SCRIPTS_PATH}/installConfig6.cmake.in"
+		"${CMAKE_CURRENT_BINARY_DIR}/installConfig6.cmake"
+		IMMEDIATE @ONLY
+	)
 
 	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
 		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
 
-	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" )
-	
-	#Generate config6 file by using dot.exe
-	install( CODE "file( COPY \"${GraphViz_INSTALL_DIRS}/bin/dot.exe\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}\" )" )
-	install( CODE "execute_process( COMMAND \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" -c )" )
-	install( CODE "file( REMOVE \"${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/dot.exe\" )" )
+	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" COMPONENT runtime )
+	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installConfig6.cmake" COMPONENT runtime )
 
-	install( FILES "${CMAKE_INSTALL_PREFIX}/${INSTALL_PATH}/config6" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 else()	
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
