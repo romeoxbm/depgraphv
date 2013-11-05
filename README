@@ -11,13 +11,14 @@ highlightining cycles and "useless paths", and It means, in short, that you coul
 reduce build times, especially when working on large-scale projects.
 
 Main Features:
-* Localized user interface;
 * CMake based build, so it's easy to switch between different platforms/IDEs;
 * Build against Qt4 or Qt5 by simply changing QT_USE_QT5 variable value in CMake;
 * OpenGL rendering support;
 * Optional recursive folder scan;
 * Customizable file extension filters (for both header and source files);
 * Graphs can be saved as images (.png, .jpg and .svg) or in GraphViz dot format.
+* Localized user interface;
+* Persistent user settings;
 
 The distribution contains the following folders and files:
 
