@@ -28,12 +28,24 @@
 #ifndef BUILDSETTINGS_H
 #define BUILDSETTINGS_H
 
-#if defined( Using_CGRAPH ) && !defined( WITH_CGRAPH )
-#	define WITH_CGRAPH
-#endif
+#ifndef APP_NAME
+#	define APP_NAME "@ProjectName@"
+#endif //APP_NAME
 
-#define APP_NAME "@ProjectName@"
-#define APP_VER "@ProjectVersion@"
-#define LANG_PATH "@CMAKE_INSTALL_PREFIX@/@TRANSLATION_INSTALL_PATH@"
+#ifndef APP_VER
+#	define APP_VER "@ProjectVersion@"
+#endif //APP_VER
+
+#ifndef GraphViz_USE_CGRAPH
+	#cmakedefine GraphViz_USE_CGRAPH
+#endif //GraphViz_USE_CGRAPH
+
+#ifndef QT_USE_QT5
+	#cmakedefine QT_USE_QT5
+#endif //QT_USE_QT5
+
+#ifndef QT_USE_OPENGL
+	#cmakedefine QT_USE_OPENGL
+#endif //QT_USE_OPENGL
 
 #endif // BUILDSETTINGS_H

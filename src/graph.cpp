@@ -33,7 +33,7 @@
 #include <QDebug>
 #include <qmath.h>
 
-#ifdef USE_OPENGL
+#ifdef QT_USE_OPENGL
 #	include <QGLWidget>
 #endif
 
@@ -62,7 +62,7 @@ namespace depgraphV
 
 		if( _renderer == OpenGL )
 		{
-#ifdef USE_OPENGL
+#ifdef QT_USE_OPENGL
 			setViewport( new QGLWidget( QGLFormat( QGL::SampleBuffers ) ) );
 #endif
 		}
@@ -72,7 +72,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::highQualityAntialiasing() const
 	{
-#ifdef USE_OPENGL
+#ifdef QT_USE_OPENGL
 		return ( renderHints() & QPainter::HighQualityAntialiasing ) == QPainter::HighQualityAntialiasing;
 #else
 		return false;
@@ -81,7 +81,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setHighQualityAntialiasing( bool highQualityAntialiasing )
 	{
-#ifdef USE_OPENGL
+#ifdef QT_USE_OPENGL
 		setRenderHint( QPainter::HighQualityAntialiasing, highQualityAntialiasing );
 #else
 		Q_UNUSED( highQualityAntialiasing );
@@ -91,7 +91,7 @@ namespace depgraphV
 	Agnode_t* Graph::createVertex( const QString& label )
 	{
 		Q_ASSERT( _graph && !label.isEmpty() );
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
 #else
 		Agnode_t* v = agnode( _graph, G_STR( label ) );
@@ -212,7 +212,7 @@ namespace depgraphV
 	{
 		Q_ASSERT( !_context && !_graph );
 		_context = gvContext();
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		_graph = agopen( G_STR( QString( "" ) ), Agdirected, 0 );
 #else
 		_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH );
@@ -221,7 +221,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
 	{
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGRAPH, G_STR( name ), G_STR( value ) );
 #else
 		agraphattr( _graph, G_STR( name ), G_STR( value ) );
@@ -230,7 +230,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setVerticesAttribute( const QString& name, const QString& value ) const
 	{
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGNODE, G_STR( name ), G_STR( value ) );
 #else
 		agnodeattr( _graph, G_STR( name ), G_STR( value ) );
@@ -239,7 +239,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setEdgesAttribute( const QString& name, const QString& value ) const
 	{
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGEDGE, G_STR( name ), G_STR( value ) );
 #else
 		agedgeattr( _graph, G_STR( name ), G_STR( value ) );
@@ -278,7 +278,7 @@ namespace depgraphV
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
 	{
 		Q_ASSERT( _graph && src && dest );
-#ifdef Using_CGRAPH
+#ifdef GraphViz_USE_CGRAPH
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
 #else
 		Agedge_t* e = agedge( _graph, src, dest );

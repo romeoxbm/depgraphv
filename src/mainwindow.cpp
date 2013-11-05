@@ -53,7 +53,7 @@ namespace depgraphV
 		ui->actionNative->setData( Graph::Native );
 		ui->actionOpenGL->setData( Graph::OpenGL );
 
-#ifndef USE_OPENGL
+#ifndef QT_USE_OPENGL
 		ui->actionOpenGL->setEnabled( false );
 #endif
 
@@ -68,7 +68,18 @@ namespace depgraphV
 		_langGroup->addAction( ui->actionSystem_language );
 
 		_lookForTranslations( QApplication::applicationDirPath() );
-		_lookForTranslations( LANG_PATH );
+
+		//Read translations path from tPath and look for translation files
+		QFile f( QApplication::applicationDirPath() + "/tPath" );
+		if( f.open( QFile::ReadOnly | QFile::Text ) )
+		{
+			QTextStream in( &f );
+			in.setCodec( "UTF-8" );
+
+			//TODO Check if it's a valid path
+			_lookForTranslations( in.readLine() );
+			f.close();
+		}
 
 		//Connect signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );

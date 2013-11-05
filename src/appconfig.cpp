@@ -37,7 +37,7 @@ namespace depgraphV
 {
 	AppConfig::AppConfig( MainWindow* win , Graph* g )
 		: QObject( win ),
-		  _settings( "romeoxbm", APP_NAME ),
+		  _settings( "Guastella Francesco", APP_NAME ),
 		  _win( win ),
 		  _graph( g )
 	{

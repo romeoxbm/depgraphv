@@ -35,8 +35,11 @@
 
 #ifndef Q_MOC_RUN
 #	include <gvc.h>
-#	ifdef Using_CGRAPH
+#	ifdef GraphViz_USE_CGRAPH
 #		include <cgraph.h>
+#		ifndef WITH_CGRAPH
+#			define WITH_CGRAPH 1
+#		endif
 #	else
 #		include <graph.h>
 #	endif // Using_CGRAPH

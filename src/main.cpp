@@ -29,7 +29,7 @@
 #include "buildsettings.h"
 #include <QApplication>
 
-#ifdef QT5
+#ifdef QT_USE_QT5
 	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
 #else
 	void noMessageOutput( QtMsgType, const char* ) {}
@@ -55,7 +55,7 @@ int main( int argc, char* argv[] )
 
 	if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
 	{
-#ifdef QT5
+#ifdef QT_USE_QT5
 		qInstallMessageHandler( &noMessageOutput );
 #else
 		qInstallMsgHandler( &noMessageOutput );

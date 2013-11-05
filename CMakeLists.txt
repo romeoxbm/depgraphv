@@ -120,18 +120,12 @@ endif( QT_USE_QT5 )
 
 if( GraphViz_USE_CGRAPH )
 	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
-	set( definitions "${definitions} -DUsing_CGRAPH" )
 else()
 	list( APPEND libraries "${GraphViz_graph_LIBRARY}" )
 endif()
 
-# enable warnings and other required definitions
-if( QT_USE_OPENGL )
-	set( definitions "${definitions} -DUSE_OPENGL" )
-endif( QT_USE_OPENGL )
-
 if( CMAKE_COMPILER_IS_GNUCXX )
-	set( definitions "${definitions} -Wall" )
+	set( definitions "-Wall" )
 	
 	if( BUILD_32 )
 		set( definitions "${definitions} -m32" )
@@ -140,7 +134,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 	endif( BUILD_32 )
 	
 elseif( MSVC_IDE )
-	set( definitions "${definitions} /W4 /MP" )
+	set( definitions "/W4 /MP" )
 endif()
 
 message( STATUS "* Using definitions: ${definitions}" )
@@ -164,6 +158,10 @@ endif( QT_USE_QT5 )
 target_link_libraries( ${ProjectName} ${libraries} )
 
 install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT runtime )
+
+file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/tPath" "${CMAKE_INSTALL_PREFIX}/${TRANSLATION_INSTALL_PATH}" )
+install( FILES "${CMAKE_CURRENT_BINARY_DIR}/tPath" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
+
 install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT translations )
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 
@@ -194,7 +192,7 @@ if( WIN32 )
 
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" COMPONENT runtime )
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installConfig6.cmake" COMPONENT runtime )
-
+	
 else()	
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File

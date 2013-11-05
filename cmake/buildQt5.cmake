@@ -26,7 +26,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #####################################################################################
-set( definitions "-DQT5" )
 set( qt5Modules "Widgets;Svg" )
 
 if( WIN32 )

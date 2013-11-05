@@ -26,8 +26,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #####################################################################################
-set( definitions "" )
-
 if( WIN32 )
 	if( MSVC10 )
 		set( CMAKE_PREFIX_PATH "C:/Qt/4.8.5_msvc2010/" )
