@@ -199,6 +199,8 @@ else()
 	#install( PROGRAMS dep-graphV.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 endif( WIN32 )
 
+include( packaging )
+
 #Configure buildsettings file
 configure_file(
 	"${CMAKE_SCRIPTS_PATH}/buildsettings.h.in"
@@ -214,5 +216,3 @@ configure_file(
 )
 
 add_custom_target( uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" )
-
-include( packaging )

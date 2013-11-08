@@ -36,6 +36,10 @@
 #	define APP_VER "@ProjectVersion@"
 #endif //APP_VER
 
+#ifndef APP_VENDOR
+#	define APP_VENDOR "@CPACK_PACKAGE_VENDOR@"
+#endif //APP_VENDOR
+
 #ifndef GraphViz_USE_CGRAPH
 	#cmakedefine GraphViz_USE_CGRAPH
 #endif //GraphViz_USE_CGRAPH
