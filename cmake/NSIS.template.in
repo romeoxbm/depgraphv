@@ -312,11 +312,11 @@ Section "-Core installation"
 	;{
 		;Create shortcuts
 		CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$PROJECT_NAME.lnk" "$INSTDIR\$BIN_PATH\$PROJECT_NAME.exe"
+		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROJECT_NAME}.lnk" "$INSTDIR\${BIN_PATH}\${PROJECT_NAME}.exe"
 		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 			
 		${If} $INSTALL_DESKTOP == 1
-			CreateShortCut "$DESKTOP\$PROJECT_NAME.lnk" "$INSTDIR\$BIN_PATH\$PROJECT_NAME.exe"
+			CreateShortCut "$DESKTOP\${PROJECT_NAME}.lnk" "$INSTDIR\${BIN_PATH}\${PROJECT_NAME}.exe"
 		${EndIf}
 
 		@CPACK_NSIS_CREATE_ICONS@
@@ -460,10 +460,10 @@ Section "Uninstall"
 	!insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
 
 	Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
-	Delete "$SMPROGRAMS\$MUI_TEMP\$PROJECT_NAME.lnk"
+	Delete "$SMPROGRAMS\$MUI_TEMP\${PROJECT_NAME}.lnk"
 		
 	${If} $INSTALL_DESKTOP == 1
-		Delete "$DESKTOP\$PROJECT_NAME.lnk"
+		Delete "$DESKTOP\${PROJECT_NAME}.lnk"
 	${EndIf}
 	
 	@CPACK_NSIS_DELETE_ICONS@

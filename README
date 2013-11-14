@@ -1,4 +1,4 @@
-dep-graphV An useful tool to analize header dependendencies via graphs.
+dep-graphV - An useful tool to analize header dependendencies via graphs.
 
 Copyright (C) 2013, by Francesco Guastella (guastella.francesco@gmail.com)
 Report bugs and download new versions at http://sourceforge.net/projects/depgraph
@@ -20,7 +20,7 @@ Main Features:
 * Localized user interface;
 * Persistent user settings;
 
-The distribution contains the following folders and files:
+The src distribution contains the following folders and files:
 
 	cmake/	- CMake scripts
 	i18n/	- Translation files

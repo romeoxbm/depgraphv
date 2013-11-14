@@ -1,6 +1,7 @@
-*******************************************************************************************
-* Notice for dep-graphV - An useful tool to analize header dependencies via graphs:
-*******************************************************************************************
+***********************************************************************
+* Notice for dep-graphV - An useful tool to analize header dependencies
+* via graphs
+***********************************************************************
 This software is distributed under the MIT License:
 
 Copyright (c) 2013 Francesco Guastella aka romeoxbm
@@ -23,11 +24,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-*******************************************************************************************
+***********************************************************************
 * Notice for files:
 *	CleanDirectoryList.cmake;
 *	CreateLaunchers.cmake;
-*******************************************************************************************
+***********************************************************************
 	
 Original Author:
 2009-2010 Ryan Pavlik <rpavlik@iastate.edu> <abiryan@ryand.net>
@@ -61,12 +62,14 @@ FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.	
 
-*******************************************************************************************
+***********************************************************************
 * Notice for file FindGraphViz.cmake
-*******************************************************************************************
+***********************************************************************
 Copyright (C) 2007-2009 LuaDist.
 Created by Peter Kapec <kapecp@gmail.com>
-Redistribution and use of this file is allowed according to the terms of the MIT license.
+
+Redistribution and use of this file is allowed according
+to the terms of the MIT license.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
