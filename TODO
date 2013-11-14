@@ -18,3 +18,4 @@ features, and there's no particular order.
 * Folders exclude list; It should be possible to specify a list of folders ignored when recursively scanning a source folder.
   This feature should allow users to add, enable(default state after adding a folder), disable or remove a folder from this list.
 * Optionally add redundand include guards;
+* Navigate to source code function, that allow users to easily see/edit the code by double-clicking a vertex in the graph.

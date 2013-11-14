@@ -28,6 +28,24 @@
 #include "mainwindow.h"
 #include "buildsettings.h"
 #include <QApplication>
+#include <iostream>
+
+void printVersion()
+{
+	std::cout << APP_NAME << " version " << APP_VER << "\n";
+}
+
+void printHelp()
+{
+	printVersion();
+	std::cout <<
+				 "Usage" << "\n\n" <<
+				 "\t" << APP_NAME << " [options]\n\n" <<
+				 "Options\n" <<
+				 "\t-h (--help) \t\t= Print this help message and quit.\n" <<
+				 "\t-v (--version) \t\t= Print " << APP_NAME << " version and quit.\n" <<
+				 "\t-l (--with-log)\t\t= Enable log messages (disabled by default).\n";
+}
 
 #ifdef QT_USE_QT5
 	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
@@ -47,19 +65,42 @@ int main( int argc, char* argv[] )
 	QApplication app( argc, argv );
 #endif
 
-	if( app.arguments().contains( "--help" ) || app.arguments().contains( "-h" ) )
+	if( app.arguments().count() > 1 )
 	{
-		//TODO Print help message and exit
-		return 0;
-	}
+		//First of all, check for valid option..
+		QStringList validOptions;
+		validOptions << "-h" << "--help" << "-v" << "--version" << "-l" << "--with-log";
+		for( unsigned short i = 1; i < app.arguments().count(); ++i )
+		{
+			if( !validOptions.contains( app.arguments()[ i ] ) )
+			{
+				//Wrong option. Print help and quit
+				std::cout << "WRONG USAGE: Unknown option \"" << app.arguments()[ i ].toStdString() << "\"\n\n";
+				printHelp();
+				return 0;
+			}
+		}
 
-	if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
-	{
+		if( app.arguments().contains( "--version" ) || app.arguments().contains( "-v" ) )
+		{
+			printVersion();
+			return 0;
+		}
+
+		if( app.arguments().contains( "--help" ) || app.arguments().contains( "-h" ) )
+		{
+			printHelp();
+			return 0;
+		}
+
+		if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
+		{
 #ifdef QT_USE_QT5
-		qInstallMessageHandler( &noMessageOutput );
+			qInstallMessageHandler( &noMessageOutput );
 #else
-		qInstallMsgHandler( &noMessageOutput );
+			qInstallMsgHandler( &noMessageOutput );
 #endif
+		}
 	}
 
 	app.setApplicationName( APP_NAME );
