@@ -28,23 +28,29 @@
 #include "mainwindow.h"
 #include "buildsettings.h"
 #include <QApplication>
-#include <iostream>
+#include <stdio.h>
+
+#ifdef WIN32
+void toggleConsole( bool enabled, bool pause );
+#endif
 
 void printVersion()
 {
-	std::cout << APP_NAME << " version " << APP_VER << "\n";
+#ifdef WIN32
+	toggleConsole( true, true );
+#endif
+	printf( "%s version %s\n", APP_NAME, APP_VER );
 }
 
 void printHelp()
 {
 	printVersion();
-	std::cout <<
-				 "Usage" << "\n\n" <<
-				 "\t" << APP_NAME << " [options]\n\n" <<
-				 "Options\n" <<
-				 "\t-h (--help) \t\t= Print this help message and quit.\n" <<
-				 "\t-v (--version) \t\t= Print " << APP_NAME << " version and quit.\n" <<
-				 "\t-l (--with-log)\t\t= Enable log messages (disabled by default).\n";
+	printf( "Usage\n\n" );
+	printf( "\t%s [options]\n\n", APP_NAME );
+	printf( "Options\n" );
+	printf( "\t-h (--help) \t\t= Print this help message and quit.\n" );
+	printf( "\t-v (--version) \t\t= Print %s version and quit.\n", APP_NAME );
+	printf( "\t-l (--with-log)\t\t= Enable log messages (disabled by default).\n" );
 }
 
 #ifdef QT_USE_QT5
@@ -54,15 +60,55 @@ void printHelp()
 #endif
 
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+void toggleConsole( bool enabled, bool pause = false )
+{
+	bool initially = GetConsoleWindow() != NULL;
+	bool success = true;
+
+	if( enabled )
+	{
+		if( initially )
+			return;
+
+		if( AllocConsole() )
+		{
+			SetConsoleTitle( APP_NAME );
+			freopen( "CONOUT$", "w", stdout );
+			freopen( "CONOUT$", "w", stderr );
+		}
+		else
+			success = false;
+	}
+	else if( initially )
+	{
+		if( pause )
+			system( "pause" );
+
+		success = FreeConsole();
+	}
+
+	if( !success )
+		throw new std::exception();
+}
+
+void _atExitFnc()
+{
+	toggleConsole( false );
+}
 
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 {
+	atexit( _atExitFnc );
 	QApplication app( __argc, __argv );
 #else
+
 int main( int argc, char* argv[] )
 {
 	QApplication app( argc, argv );
+
 #endif
 
 	if( app.arguments().count() > 1 )
@@ -75,7 +121,7 @@ int main( int argc, char* argv[] )
 			if( !validOptions.contains( app.arguments()[ i ] ) )
 			{
 				//Wrong option. Print help and quit
-				std::cout << "WRONG USAGE: Unknown option \"" << app.arguments()[ i ].toStdString() << "\"\n\n";
+				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", app.arguments()[ i ].toStdString() );
 				printHelp();
 				return 0;
 			}
@@ -87,13 +133,13 @@ int main( int argc, char* argv[] )
 			return 0;
 		}
 
-		if( app.arguments().contains( "--help" ) || app.arguments().contains( "-h" ) )
+		else if( app.arguments().contains( "--help" ) || app.arguments().contains( "-h" ) )
 		{
 			printHelp();
 			return 0;
 		}
 
-		if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
+		else if( !app.arguments().contains( "--with-log" ) && !app.arguments().contains( "-l" ) )
 		{
 #ifdef QT_USE_QT5
 			qInstallMessageHandler( &noMessageOutput );
@@ -101,6 +147,10 @@ int main( int argc, char* argv[] )
 			qInstallMsgHandler( &noMessageOutput );
 #endif
 		}
+#ifdef WIN32
+		else
+			toggleConsole( true );
+#endif
 	}
 
 	app.setApplicationName( APP_NAME );
