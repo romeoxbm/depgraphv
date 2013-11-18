@@ -36,6 +36,7 @@ set( CMAKE_AUTOMOC ON )
 # to always look for includes there:
 set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
+set( CMAKE_TEMPLATES_PATH "${CMAKE_SCRIPTS_PATH}/templates" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
 set( INSTALL_PATH "bin" )
 
@@ -175,14 +176,14 @@ if( WIN32 )
 			
 	#Configure installDeps.cmake
 	configure_file(
-		"${CMAKE_SCRIPTS_PATH}/installDeps.cmake.in"
+		"${CMAKE_TEMPLATES_PATH}/installDeps.cmake.in"
 		"${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake"
 		IMMEDIATE @ONLY
 	)
 	
 	#Configure installConfig6.cmake
 	configure_file(
-		"${CMAKE_SCRIPTS_PATH}/installConfig6.cmake.in"
+		"${CMAKE_TEMPLATES_PATH}/installConfig6.cmake.in"
 		"${CMAKE_CURRENT_BINARY_DIR}/installConfig6.cmake"
 		IMMEDIATE @ONLY
 	)
@@ -203,14 +204,14 @@ include( packaging )
 
 #Configure buildsettings file
 configure_file(
-	"${CMAKE_SCRIPTS_PATH}/buildsettings.h.in"
+	"${CMAKE_TEMPLATES_PATH}/buildsettings.h.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h"
 	IMMEDIATE @ONLY
 )
 
 # uninstall target
 configure_file(
-	"${CMAKE_SCRIPTS_PATH}/cmake_uninstall.cmake.in"
+	"${CMAKE_TEMPLATES_PATH}/cmake_uninstall.cmake.in"
 	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
 	IMMEDIATE @ONLY
 )
