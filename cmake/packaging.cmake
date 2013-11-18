@@ -57,12 +57,12 @@ set( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README" )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING" )
 
 set( CPACK_COMPONENTS_ALL runtime translations sources )
-set( CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Binaries" ) #TODO
-set( CPACK_COMPONENT_RUNTIME_DESCRIPTION "dep-graphV binaries" ) #TODO
+set( CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Binaries" )
+set( CPACK_COMPONENT_RUNTIME_DESCRIPTION "Required binaries and libraries" )
 set( CPACK_COMPONENT_RUNTIME_REQUIRED ON )
 
-set( CPACK_COMPONENT_TRANSLATIONS_DISPLAY_NAME "Translations" ) #TODO
-set( CPACK_COMPONENT_TRANSLATIONS_DESCRIPTION "Translations description goes here" ) #TODO
+set( CPACK_COMPONENT_TRANSLATIONS_DISPLAY_NAME "Translations" )
+set( CPACK_COMPONENT_TRANSLATIONS_DESCRIPTION "Translation files for ${ProjectName}" )
 #TODO ?
 #set( CPACK_COMPONENT_TRANSLATIONS_REQUIRED ON )
 
@@ -70,12 +70,13 @@ set( CPACK_COMPONENT_TRANSLATIONS_DESCRIPTION "Translations description goes her
 set( CPACK_COMPONENT_TRANSLATIONS_DEPENDS runtime )
 
 if( WIN32 )
-	set( CPACK_MODULE_PATH ${CMAKE_TEMPLATES_PATH} )
+	set( CPACK_MODULE_PATH "${CMAKE_TEMPLATES_PATH}" )
 	set( CPACK_GENERATOR "NSIS" )
 	
-	set( CPACK_COMPONENT_SOURCES_DISPLAY_NAME "Sources" ) #TODO
-	set( CPACK_COMPONENT_SOURCES_DESCRIPTION "Sources description goes here" ) #TODO
-	
+	set( CPACK_COMPONENT_SOURCES_DISPLAY_NAME "Sources" )
+	set( CPACK_COMPONENT_SOURCES_DESCRIPTION "Include all ${ProjectName} sources" )
+
+	set( CPACK_NSIS_INCLUDE_PATH "${CMAKE_SCRIPTS_PATH}" )	
 	set( CPACK_NSIS_PROJECT_NAME ${ProjectName} )
 	set( CPACK_NSIS_BIN_PATH ${INSTALL_PATH} )
 	set( CPACK_NSIS_MODIFY_PATH ON )
@@ -123,8 +124,7 @@ if( WIN32 )
 			endif()
 		endif()
 
-		set( CPACK_NSIS_MSVC_REDIST_MSG "Microsoft Visual C++ ${MSC_VER} Redistributable package (${REDIS_ARCH}) is required.
-			Installer will now download and install it. If you already installed it, just skip the redistributable package installation." )
+		set( CPACK_NSIS_MSVC_REDIST_MSG "Microsoft Visual C++ ${MSC_VER} Redistributable package (${REDIS_ARCH}) is required. Installer will now download and install it. If you already installed it, just skip the redistributable package installation." )
 
 	endif( MSVC_IDE )
 	

@@ -23,7 +23,7 @@ Var IS_DEFAULT_INSTALLDIR
 
 !include "MUI.nsh"
 
-!addincludedir "@CPACK_MODULE_PATH@"
+!addincludedir "@CPACK_NSIS_INCLUDE_PATH@"
 !include "MUI_EXTRAPAGES.nsh"
 
 ;Default installation folder
@@ -332,23 +332,22 @@ Section "-Core installation"
 	;}
 	!insertmacro MUI_STARTMENU_WRITE_END
 	
-	!ifdef CPACK_USES_DOWNLOAD
-		;Donwload, if required, Microsoft Visual C++ redistributable package
-		StrCmp "@CPACK_NSIS_MSVC_REDIST@" "ON" 0 noMSVC_Redist
-		MessageBox MB_OK "@CPACK_NSIS_MSVC_REDIST_MSG@"
-		StrCpy $2 "$INSTDIR\vcredist.exe"
-		NSISdl::download "@CPACK_NSIS_MSVC_REDIST_LINK@" $2
-		Pop $R0 ; Get the return value
-		StrCmp $R0 "success" +3
-			MessageBox MB_OK "Download failed: $R0"
-			Quit
-		success:
-			ExecWait '"$2" /q:a'
-			Delete $2
-			
-		noMSVC_Redist:
-	!endif
-		@CPACK_NSIS_EXTRA_INSTALL_COMMANDS@
+	;Donwload, if required, Microsoft Visual C++ redistributable package
+	StrCmp "@CPACK_NSIS_MSVC_REDIST@" "ON" 0 noMSVC_Redist
+	MessageBox MB_OK "@CPACK_NSIS_MSVC_REDIST_MSG@"
+	StrCpy $2 "$INSTDIR\vcredist.exe"
+	NSISdl::download "@CPACK_NSIS_MSVC_REDIST_LINK@" $2
+	Pop $R0 ; Get the return value
+	StrCmp $R0 "success" +3
+		MessageBox MB_OK "Download failed: $R0"
+		Quit
+	success:
+		ExecWait '"$2" /q:a'
+		Delete $2
+		
+	noMSVC_Redist:
+		
+	@CPACK_NSIS_EXTRA_INSTALL_COMMANDS@
 
 SectionEnd
 
