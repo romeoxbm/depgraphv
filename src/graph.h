@@ -148,9 +148,9 @@ namespace depgraphV
 		void prepare();
 
 		/**
-		 * @brief pluginsListByKind
-		 * @param kind
-		 * @return
+		 * @brief Get plugins list by kind
+		 * @param kind The kind of plugin. Valid values are "render", "layout", "textlayout", "device" and "loadimage".
+		 * @return A QStringList* containing all the available plugins of type "kind", or 0 if something went wrong.
 		 */
 		QStringList* pluginsListByKind( const QString& kind ) const;
 

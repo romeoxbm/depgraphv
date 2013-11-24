@@ -333,7 +333,7 @@ namespace depgraphV
 		if( !_availablePlugins.empty() )
 			return;
 
-		qDebug() << qPrintable( tr( "Looking for available graphviz plugins..." ) );
+		qDebug() << qPrintable( tr( "Looking for available GraphViz plugins..." ) );
 
 		int size;
 		QString kinds[ 5 ] = { "render", "layout", "textlayout", "device", "loadimage" };
