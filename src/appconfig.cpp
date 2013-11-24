@@ -123,7 +123,7 @@ namespace depgraphV
 			_win->ui->sourcesFilter->setText( _settings.value( "sCustomFilters", "*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C").toString() );
 			_win->ui->customSourcesFilterRadio->setChecked( _settings.value( "sCustomFiltersEnabled", false).toBool() );
 			_win->ui->selectedRootFolder->setText( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
-			_win->translateUi( _settings.value( "locale", "en_US" ).toString() );
+			_win->translateUi( _settings.value( "locale", "en" ).toString() );
 		}
 		_settings.endGroup();
 

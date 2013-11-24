@@ -78,8 +78,7 @@ set( FilesToTranslate
 )
 
 set( Translations
-	i18n/${ProjectName}_en_US.ts
-	i18n/${ProjectName}_it_IT.ts
+	i18n/${ProjectName}_it.ts
 )
 
 set( DOCS
