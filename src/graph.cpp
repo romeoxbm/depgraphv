@@ -154,10 +154,13 @@ namespace depgraphV
 		f.close();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	bool Graph::applyLayout()
+	bool Graph::applyLayout( const QString& algorithm )
 	{
 		Q_ASSERT( _context && _graph && !_svgItem );
-		if( gvLayout( _context, _graph, "dot" ) != 0 )
+		if( !_isPluginAvailable( algorithm, "layout" ) || !_isPluginAvailable( "svg", "render" ) )
+			return false;
+
+		if( gvLayout( _context, _graph, algorithm.toStdString().c_str() ) != 0 )
 		{
 			QMessageBox::critical(
 				this->parentWidget(),
@@ -190,7 +193,11 @@ namespace depgraphV
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
 		Q_ASSERT( _context && _graph && !filename.isEmpty() && !format.isEmpty() );
-		return gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
+
+		if( _isPluginAvailable( format, "loadimage" ) )
+			return gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
+
+		return false;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::saveDot( const QString& filename ) const
@@ -201,7 +208,7 @@ namespace depgraphV
 			return retValue;
 
 		QString data;
-		if( _renderDataAs( "dot", &data ) )
+		if( _isPluginAvailable( "dot", "render" ) && _renderDataAs( "dot", &data ) )
 		{
 			QTextStream stream( &f );
 			stream << data;
@@ -337,5 +344,24 @@ namespace depgraphV
 
 			qDebug() << qPrintable( debugList + "\n" );
 		}
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	bool Graph::_isPluginAvailable( const QString& format, const QString& kind ) const
+	{
+		if( _availablePlugins.empty() )
+			return false;
+
+		if( kind.isEmpty() )
+		{
+			foreach( QStringList* l, _availablePlugins )
+			{
+				if( l->contains( format ) )
+					return true;
+			}
+
+			return false;
+		}
+		else
+			return _availablePlugins[ kind ]->contains( format );
 	}
 } // end of depgraphV namespace

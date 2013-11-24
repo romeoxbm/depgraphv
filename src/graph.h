@@ -121,9 +121,11 @@ namespace depgraphV
 
 		/**
 		 * @brief applyLayout Calculate the graph layout.
+		 * @param algorithm The layout algorithm used. Valid values are: dot, neato, fdp, sfdp, twopi, circo, patchwork, osage.
+		 *	Default is dot.
 		 * @return true if everything went fine, false otherwise.
 		 */
-		bool applyLayout();
+		bool applyLayout( const QString& algorithm = "dot" );
 
 		/**
 		 * @brief saveImage Save the graph as image.
@@ -200,6 +202,8 @@ namespace depgraphV
 		QMap<QString, Agnode_t*> _vertices;
 		QList<Agedge_t*> _edges;
 
+		QMap<QString, QStringList*> _availablePlugins;
+
 		/**
 		 * @brief _createEdge Create a new edge between two vertices.
 		 * @param src The source vertex.
@@ -218,8 +222,7 @@ namespace depgraphV
 		bool _renderDataAs( const QString& format, QString* outString ) const;
 
 		void _lookForAvailablePlugins();
-
-		QMap<QString, QStringList*> _availablePlugins;
+		bool _isPluginAvailable( const QString& format, const QString& kind = "" ) const;
 	};
 }
 

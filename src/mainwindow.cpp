@@ -176,19 +176,15 @@ namespace depgraphV
 		_setGraphAttributes();
 		uint filesFound = _scanFolder( ui->selectedRootFolder->text() );
 
-		if( filesFound > 0 )
+		if( filesFound > 0 && ui->graph->applyLayout() )
 		{
-			//Layout and draw graph
-			if( ui->graph->applyLayout() )
-				_setButtonsAndActionsEnabled( true );
-			else
-				_doClearGraph();
+			_setButtonsAndActionsEnabled( true );
+			return;
 		}
 		else
-		{
 			QMessageBox::information( this, tr( "Draw" ), tr( "No file has been found in selected folder; nothing to draw." ) );
-			_doClearGraph();
-		}
+
+		_doClearGraph();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_clearButton_clicked()
@@ -340,8 +336,8 @@ namespace depgraphV
 	{
 		ui->rootFolderGroupBox->setEnabled( value );
 		ui->parseGroupbox->setEnabled( value );
-		ui->headersFilterGroupBox->setEnabled( value );
-		ui->sourcesFilterGroupBox->setEnabled( value );
+		ui->headersFilterGroupBox->setEnabled( value && ui->parseHeadersCheckbox->isChecked() );
+		ui->sourcesFilterGroupBox->setEnabled( value && ui->parseSourcesCheckbox->isChecked() );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
