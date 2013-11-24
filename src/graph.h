@@ -216,6 +216,10 @@ namespace depgraphV
 		 * @return True if everything went fine, false otherwise.
 		 */
 		bool _renderDataAs( const QString& format, QString* outString ) const;
+
+		void _lookForAvailablePlugins();
+
+		QMap<QString, QStringList*> _availablePlugins;
 	};
 }
 

@@ -174,13 +174,21 @@ namespace depgraphV
 
 		ui->graph->prepare();
 		_setGraphAttributes();
-		_scanFolder( ui->selectedRootFolder->text() );
+		uint filesFound = _scanFolder( ui->selectedRootFolder->text() );
 
-		//Layout and draw graph
-		if( ui->graph->applyLayout() )
-			_setButtonsAndActionsEnabled( true );
+		if( filesFound > 0 )
+		{
+			//Layout and draw graph
+			if( ui->graph->applyLayout() )
+				_setButtonsAndActionsEnabled( true );
+			else
+				_doClearGraph();
+		}
 		else
+		{
+			QMessageBox::information( this, tr( "Draw" ), tr( "No file has been found in selected folder; nothing to draw." ) );
 			_doClearGraph();
+		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_clearButton_clicked()
@@ -344,15 +352,16 @@ namespace depgraphV
 		ui->actionSave_as_dot->setEnabled( value );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::_scanFolder( const QString& dirName ) const
+	uint MainWindow::_scanFolder( const QString& dirName ) const
 	{
 		QDir dir( dirName );
+		uint filesCount = 0;
 
 		//Iterating subfolders, if required
 		if( ui->recursiveCheckBox->isChecked() )
 		{
 			foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Dirs ) )
-				_scanFolder( entry.filePath() );
+				filesCount += _scanFolder( entry.filePath() );
 		}
 
 		//Iterating files
@@ -361,7 +370,10 @@ namespace depgraphV
 		{
 			ui->graph->createOrRetrieveVertex( entry.fileName() );
 			ui->graph->createEdges( entry.absolutePath(), entry.fileName() );
+			filesCount++;
 		}
+
+		return filesCount;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	QStringList MainWindow::_getNameFilters() const
@@ -407,7 +419,7 @@ namespace depgraphV
 			if( _availableLanguages.contains( locale ) )
 				continue;
 
-			qDebug() << qPrintable( "Found locale " + locale + " in " + path );
+			qDebug() << qPrintable( tr( "Found locale %1 in %2" ).arg( locale, path ) );
 
 			//Creating the action
 			QAction* newLang = new QAction( this );
@@ -438,11 +450,11 @@ namespace depgraphV
 		if( justRemoveTranslator )
 			return;
 
-		QString fName( QString( "%1/%2" ).arg( directory, fileName ) );
+		QString fName = QString( "%1/%2" ).arg( directory, fileName );
 		QFile file( fName );
 		if( !file.exists() )
 		{
-			qDebug() << qPrintable( tr( "Translation file " ) + "\"" + fName + "\"" + tr( " does not exists" ) );
+			qDebug() << qPrintable( tr( "Translation file \"%1\" does not exists" ).arg( fName ) );
 			return;
 		}
 
@@ -450,7 +462,7 @@ namespace depgraphV
 		if( t->load( fileName, directory ) )
 		{
 			QApplication::installTranslator( t );
-			qDebug() << qPrintable( tr( "Switched to translation file " ) + fileName + " in " + directory );
+			qDebug() << qPrintable( tr( "Switched to translation file %1 in %2" ).arg( fileName, directory ) );
 		}
 	}
 } // end of depgraphV namespace

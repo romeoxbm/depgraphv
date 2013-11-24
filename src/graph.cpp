@@ -54,6 +54,10 @@ namespace depgraphV
 	Graph::~Graph()
 	{
 		this->clear();
+		foreach( QStringList* l, _availablePlugins )
+			delete l;
+
+		_availablePlugins.clear();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setRenderer( RendererType type )
@@ -217,6 +221,7 @@ namespace depgraphV
 #else
 		_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH );
 #endif
+		_lookForAvailablePlugins();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
@@ -304,5 +309,33 @@ namespace depgraphV
 			*outString = QString::fromUtf8( rawData, length );
 
 		return retValue;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void Graph::_lookForAvailablePlugins()
+	{
+		if( !_availablePlugins.empty() )
+			return;
+
+		qDebug() << qPrintable( tr( "Looking for available graphviz plugins..." ) );
+
+		int size;
+		QString kinds[ 5 ] = { "render", "layout", "textlayout", "device", "loadimage" };
+		for( int k = 0; k < 5; ++k )
+		{
+			QString debugList;
+
+			qDebug() << qPrintable( tr( "Plugins for kind \"%1\":" ).arg( kinds[ k ] ) );
+			_availablePlugins.insert( kinds[ k ], new QStringList() );
+			char** list = gvPluginList( _context, const_cast<char*>( kinds[ k ].toStdString().c_str() ), &size, 0 );
+			for( int i = 0; i < size; ++i )
+			{
+				_availablePlugins[ kinds[ k ] ]->append( list[ i ] );
+
+				QString format = i < size - 1 ? "%1, " : "%1";
+				debugList += QString( format ).arg( list[ i ] );
+			}
+
+			qDebug() << qPrintable( debugList + "\n" );
+		}
 	}
 } // end of depgraphV namespace

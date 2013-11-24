@@ -88,7 +88,7 @@ namespace depgraphV
 		void _setGraphAttributes() const;
 		void _setGroupBoxesEnabled( bool value ) const;
 		void _setButtonsAndActionsEnabled( bool value ) const;
-		void _scanFolder( const QString& dirName ) const;
+		uint _scanFolder( const QString& dirName ) const;
 		QStringList _getNameFilters() const;
 
 		void _lookForTranslations( const QString& path );
