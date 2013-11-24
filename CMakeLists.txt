@@ -197,7 +197,16 @@ if( WIN32 )
 else()	
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
-	#install( PROGRAMS dep-graphV.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+	
+	#Configure .desktop file
+	configure_file(
+		"${CMAKE_TEMPLATES_PATH}/${ProjectName}.desktop.in"
+		"${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop"
+		IMMEDIATE @ONLY
+	)
+	
+	#install( PROGRAMS "${ProjectName}.desktop" DESTINATION ${XDG_APPS_INSTALL_DIR} )
+	install( PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop" DESTINATION "share/applications/kde4" )
 endif( WIN32 )
 
 include( packaging )

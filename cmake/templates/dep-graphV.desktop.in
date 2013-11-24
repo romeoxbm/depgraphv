@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=@ProjectName@
+Terminal=false
+Name=@ProjectName@
+GenericName=@ProjectName@ - Dependencies analizer
+Comment=An useful tool to analize header dependendencies via graphs
+Categories=Development;Building
