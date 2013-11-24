@@ -92,7 +92,7 @@ namespace depgraphV
 		QStringList _getNameFilters() const;
 
 		void _lookForTranslations( const QString& path );
-		void _switchTranslator( QTranslator* t, const QString& fileName, const QString& directory = "" );
+		void _switchTranslator( QTranslator* t, const QString& fileName, const QString& directory = "", bool justRemoveTranslator = false );
 	};
 }
 

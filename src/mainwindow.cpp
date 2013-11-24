@@ -64,7 +64,7 @@ namespace depgraphV
 
 		//Create language action group and setting up actionSystem_language
 		_langGroup = new QActionGroup( ui->menu_Language );
-		ui->actionSystem_language->setData( QLocale::system().name() );
+		ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
 		_langGroup->addAction( ui->actionSystem_language );
 
 		_lookForTranslations( QApplication::applicationDirPath() );
@@ -112,7 +112,7 @@ namespace depgraphV
 		QString l = locale;
 		if( !_availableLanguages.contains( locale ) )
 		{
-			_currentLocale = "en_US";
+			_currentLocale = "en";
 			QLocale::setDefault( QLocale( _currentLocale ) );
 			l = _currentLocale;
 		}
@@ -256,12 +256,12 @@ namespace depgraphV
 			return;
 
 		QString appFileName = QString( "%1_%2.qm" ).arg( QApplication::applicationName(), locale );
-		QString qtFileName = QString( "qt_%1.qm" ).arg( locale.mid( 0, 2 ) );
+		QString qtFileName = QString( "qt_%1.qm" ).arg( locale );
 
 		_currentLocale = locale;
 
 		//Changing translators
-		_switchTranslator( &_appTranslator, appFileName, action->objectName() );
+		_switchTranslator( &_appTranslator, appFileName, action->objectName(), locale == "en" );
 		_switchTranslator( &_qtTranslator, qtFileName, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
 
 		//Changing locale
@@ -403,7 +403,7 @@ namespace depgraphV
 		foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files ) )
 		{
 			int startPos = QApplication::applicationName().length() + 1;
-			QString locale( entry.fileName().mid( startPos, 5 ) );
+			QString locale( entry.fileName().mid( startPos, 2 ) );
 			if( _availableLanguages.contains( locale ) )
 				continue;
 
@@ -421,7 +421,7 @@ namespace depgraphV
 			_availableLanguages.insert( locale, newLang );
 
 			//Also update system language QAction..
-			if( locale == QLocale::system().name() )
+			if( locale == QLocale::system().name().mid( 0, 2 ) )
 			{
 				ui->actionSystem_language->setObjectName( path );
 				ui->actionSystem_language->setIcon( QIcon( ":/flags/" + locale ) );
@@ -430,8 +430,14 @@ namespace depgraphV
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory )
+	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory, bool justRemoveTranslator )
 	{
+		//remove the old one
+		QApplication::removeTranslator( t );
+
+		if( justRemoveTranslator )
+			return;
+
 		QString fName( QString( "%1/%2" ).arg( directory, fileName ) );
 		QFile file( fName );
 		if( !file.exists() )
@@ -439,9 +445,6 @@ namespace depgraphV
 			qDebug() << qPrintable( tr( "Translation file " ) + "\"" + fName + "\"" + tr( " does not exists" ) );
 			return;
 		}
-
-		//remove the old one
-		QApplication::removeTranslator( t );
 
 		//and then..load the new one
 		if( t->load( fileName, directory ) )
