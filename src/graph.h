@@ -147,6 +147,13 @@ namespace depgraphV
 		 */
 		void prepare();
 
+		/**
+		 * @brief pluginsListByKind
+		 * @param kind
+		 * @return
+		 */
+		QStringList* pluginsListByKind( const QString& kind ) const;
+
 	signals:
 
 	public slots:

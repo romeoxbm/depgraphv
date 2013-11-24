@@ -281,10 +281,27 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::saveAsImage() const
 	{
+		QStringList* list = ui->graph->pluginsListByKind( "loadimage" );
+		if( !list )
+		{
+			QMessageBox::critical( const_cast<MainWindow*>( this ),
+								   tr( "Cannot save image" ), tr( "Unable to save graph as image. (Plugin issue)" ) );
+			return;
+		}
+
+		QString filter;
+		for( int i = 0; i < list->count(); ++i )
+		{
+			QString p = list->at( i );
+			filter += QString( "%1(*.%2)" ).arg( p.toUpper(), p );
+			if( i < list->count() - 1 )
+				filter += ";;";
+		}
+
 		QString path = QFileDialog::getSaveFileName(
 					const_cast<MainWindow*>( this ),
 					tr( "Select path and name of the image file" ),
-					QDir::currentPath(), "PNG(*.png);;SVG(*.svg);;JPEG(*.jpg)" );
+					QDir::currentPath(), filter );
 
 		if( path.isEmpty() )
 			return;

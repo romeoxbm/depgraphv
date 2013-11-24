@@ -231,6 +231,16 @@ namespace depgraphV
 		_lookForAvailablePlugins();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
+	QStringList* Graph::pluginsListByKind( const QString& kind ) const
+	{
+		Q_ASSERT( !kind.isEmpty() );
+
+		if( _availablePlugins.contains( kind ) )
+			return _availablePlugins[ kind ];
+
+		return 0;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
 	{
 #ifdef GraphViz_USE_CGRAPH
@@ -336,10 +346,14 @@ namespace depgraphV
 			char** list = gvPluginList( _context, const_cast<char*>( kinds[ k ].toStdString().c_str() ), &size, 0 );
 			for( int i = 0; i < size; ++i )
 			{
-				_availablePlugins[ kinds[ k ] ]->append( list[ i ] );
+				QString currentPlugin( list[ i ] );
+				if( currentPlugin.contains( QRegExp( "[^a-zA-Z0-9]" ) ) )
+					continue;
+
+				_availablePlugins[ kinds[ k ] ]->append( currentPlugin );
 
 				QString format = i < size - 1 ? "%1, " : "%1";
-				debugList += QString( format ).arg( list[ i ] );
+				debugList += QString( format ).arg( currentPlugin );
 			}
 
 			qDebug() << qPrintable( debugList + "\n" );
@@ -361,7 +375,9 @@ namespace depgraphV
 
 			return false;
 		}
-		else
+		else if( _availablePlugins.contains( kind ) )
 			return _availablePlugins[ kind ]->contains( format );
+
+		return false;
 	}
 } // end of depgraphV namespace
