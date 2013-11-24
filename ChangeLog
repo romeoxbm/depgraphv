@@ -2,6 +2,7 @@
 	- User interface has been localized; It's now possible to change the main window language at run-time.
 	- Image render mode has been removed;
 	- Persistent user settings;
+	- Available GraphViz plugins are now detected;
 	- Minor fixes and changes;
 
 * Version 0.1

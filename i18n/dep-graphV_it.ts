@@ -32,27 +32,27 @@
 <context>
     <name>depgraphV::Graph</name>
     <message>
-        <location filename="../src/graph.cpp" line="101"/>
+        <location filename="../src/graph.cpp" line="105"/>
         <source>Invalid vertex:</source>
         <translation>Vertice non valido:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="160"/>
+        <location filename="../src/graph.cpp" line="167"/>
         <source>Layout render error</source>
         <translation>Errore nel render del layout</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="289"/>
+        <location filename="../src/graph.cpp" line="310"/>
         <source>Invalid egde:</source>
         <translation>Arco non valido:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="315"/>
+        <location filename="../src/graph.cpp" line="336"/>
         <source>Looking for available graphviz plugins...</source>
         <translation>Sto cercando i plugin di GraphViz disponibili...</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="323"/>
+        <location filename="../src/graph.cpp" line="344"/>
         <source>Plugins for kind &quot;%1&quot;:</source>
         <translation>Plugin per tipo &quot;%1&quot;:</translation>
     </message>
@@ -70,80 +70,90 @@
         <translation>Seleziona la cartella radice</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="189"/>
+        <location filename="../src/mainwindow.cpp" line="185"/>
         <source>No file has been found in selected folder; nothing to draw.</source>
         <translation>Nessun file è stato trovato nella cartella selezionata; niente da disegnare.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="198"/>
+        <location filename="../src/mainwindow.cpp" line="194"/>
         <source>Clear graph</source>
         <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="199"/>
-        <location filename="../src/mainwindow.cpp" line="240"/>
+        <location filename="../src/mainwindow.cpp" line="195"/>
+        <location filename="../src/mainwindow.cpp" line="236"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="222"/>
+        <location filename="../src/mainwindow.cpp" line="218"/>
         <source>Cannot read about informations.</source>
         <translation>Non riesco a leggere le informazioni di about.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="232"/>
+        <location filename="../src/mainwindow.cpp" line="228"/>
         <source>About...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="255"/>
+        <location filename="../src/mainwindow.cpp" line="251"/>
         <source>Renderer method changed</source>
         <translation>Modalità di render modificata</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="290"/>
+        <location filename="../src/mainwindow.cpp" line="288"/>
+        <source>Cannot save image</source>
+        <translation>Impossibile salvare l&apos;immagine</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="288"/>
+        <source>Unable to save graph as image. (Plugin issue)</source>
+        <translation>Non posso salvare il grafo come immagine. (Si è verificato un problema di plugin)</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="303"/>
         <source>Select path and name of the image file</source>
         <translation>Seleziona percorso e nome del file immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="299"/>
-        <location filename="../src/mainwindow.cpp" line="315"/>
+        <location filename="../src/mainwindow.cpp" line="312"/>
+        <location filename="../src/mainwindow.cpp" line="328"/>
         <source>File successfully saved.</source>
         <translation>File salvato con successo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="301"/>
+        <location filename="../src/mainwindow.cpp" line="314"/>
         <source>Save as image</source>
         <translation>Salva come immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="301"/>
-        <location filename="../src/mainwindow.cpp" line="317"/>
+        <location filename="../src/mainwindow.cpp" line="314"/>
+        <location filename="../src/mainwindow.cpp" line="330"/>
         <source>Unable to save file</source>
         <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="308"/>
+        <location filename="../src/mainwindow.cpp" line="321"/>
         <source>Select path and name of the dot file</source>
         <translation>Seleziona percorso e nome del file dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="317"/>
+        <location filename="../src/mainwindow.cpp" line="330"/>
         <source>Save as dot</source>
         <translation>Salva come dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="422"/>
+        <location filename="../src/mainwindow.cpp" line="435"/>
         <source>Found locale %1 in %2</source>
         <translation>Trovata localizzazione %1 in %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="457"/>
+        <location filename="../src/mainwindow.cpp" line="470"/>
         <source>Translation file &quot;%1&quot; does not exists</source>
         <translation>File di traduzione &quot;%1&quot; non esistente</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="465"/>
+        <location filename="../src/mainwindow.cpp" line="478"/>
         <source>Switched to translation file %1 in %2</source>
         <translation>Selezionato file di tradizione %1 in %2</translation>
     </message>
@@ -211,7 +221,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="342"/>
-        <location filename="../src/mainwindow.cpp" line="189"/>
+        <location filename="../src/mainwindow.cpp" line="185"/>
         <source>Draw</source>
         <translation>Disegna</translation>
     </message>
@@ -307,7 +317,7 @@
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="523"/>
-        <location filename="../src/mainwindow.cpp" line="239"/>
+        <location filename="../src/mainwindow.cpp" line="235"/>
         <source>Restore default settings</source>
         <translation>Ripristina impostazioni di default</translation>
     </message>
