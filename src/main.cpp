@@ -121,7 +121,7 @@ int main( int argc, char* argv[] )
 			if( !validOptions.contains( app.arguments()[ i ] ) )
 			{
 				//Wrong option. Print help and quit
-				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", app.arguments()[ i ].toStdString() );
+				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", app.arguments()[ i ].toStdString().c_str() );
 				printHelp();
 				return 0;
 			}

@@ -310,10 +310,14 @@ Section "-Core installation"
 	!insertmacro MUI_INSTALLOPTIONS_READ $INSTALL_DESKTOP "NSIS.InstallOptions.ini" "Field 1" "State"
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 	;{
+		;Create project website link
+		WriteIniStr "$INSTDIR\${PROJECT_NAME}.url" "InternetShortcut" "URL" "@CPACK_NSIS_URL_INFO_ABOUT@"
+	
 		;Create shortcuts
 		CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
 		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\${PROJECT_NAME}.lnk" "$INSTDIR\${BIN_PATH}\${PROJECT_NAME}.exe"
 		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+		CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\ProjectPage.lnk" "${PROJECT_NAME}.url"
 			
 		${If} $INSTALL_DESKTOP == 1
 			CreateShortCut "$DESKTOP\${PROJECT_NAME}.lnk" "$INSTDIR\${BIN_PATH}\${PROJECT_NAME}.exe"
@@ -460,6 +464,7 @@ Section "Uninstall"
 
 	Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
 	Delete "$SMPROGRAMS\$MUI_TEMP\${PROJECT_NAME}.lnk"
+	Delete "$SMPROGRAMS\$MUI_TEMP\${PROJECT_NAME}.url"
 		
 	${If} $INSTALL_DESKTOP == 1
 		Delete "$DESKTOP\${PROJECT_NAME}.lnk"
