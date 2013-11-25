@@ -66,6 +66,7 @@ namespace depgraphV
 		_langGroup = new QActionGroup( ui->menu_Language );
 		ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
 		_langGroup->addAction( ui->actionSystem_language );
+		_createLanguageAction( "en", "" );
 
 		_lookForTranslations( QApplication::applicationDirPath() );
 
@@ -429,21 +430,10 @@ namespace depgraphV
 		{
 			int startPos = QApplication::applicationName().length() + 1;
 			QString locale( entry.fileName().mid( startPos, 2 ) );
-			if( _availableLanguages.contains( locale ) )
+			if( !_createLanguageAction( locale, path ) )
 				continue;
 
 			qDebug() << qPrintable( tr( "Found locale %1 in %2" ).arg( locale, path ) );
-
-			//Creating the action
-			QAction* newLang = new QAction( this );
-			newLang->setObjectName( path );
-			newLang->setText( QLocale::languageToString( QLocale( locale ).language() ) );
-			newLang->setData( locale );
-			newLang->setCheckable( true );
-			newLang->setIcon( QIcon( ":/flags/" + locale ) );
-			ui->menu_Language->addAction( newLang );
-			_langGroup->addAction( newLang );
-			_availableLanguages.insert( locale, newLang );
 
 			//Also update system language QAction..
 			if( locale == QLocale::system().name().mid( 0, 2 ) )
@@ -453,6 +443,24 @@ namespace depgraphV
 				ui->actionSystem_language->setEnabled( true );
 			}
 		}
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	bool MainWindow::_createLanguageAction( const QString& locale, const QString& path )
+	{
+		if( _availableLanguages.contains( locale ) )
+			return false;
+
+		QAction* newLang = new QAction( this );
+		newLang->setObjectName( path );
+		newLang->setText( QLocale::languageToString( QLocale( locale ).language() ) );
+		newLang->setData( locale );
+		newLang->setCheckable( true );
+		newLang->setIcon( QIcon( ":/flags/" + locale ) );
+		ui->menu_Language->addAction( newLang );
+		_langGroup->addAction( newLang );
+		_availableLanguages.insert( locale, newLang );
+
+		return true;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory, bool justRemoveTranslator )

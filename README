@@ -16,8 +16,7 @@ Main Features:
 * OpenGL rendering support;
 * Optional recursive folder scan;
 * Customizable file extension filters (for both header and source files);
-* Graphs can be saved as images (.bmp, .eps, .gd, .gd2, .gif, .jpe, .jpeg, .jpg, .png, .ps, .svg or any other format made available by
-								 GraphViz plugins) or in GraphViz dot format.
+* Graphs can be saved as images (.bmp, .eps, .gd, .gd2, .gif, .jpe, .jpeg, .jpg, .png, .ps, .svg or any other format made available by GraphViz plugins) or in GraphViz dot format;
 * Localized user interface;
 * Persistent user settings;
 
