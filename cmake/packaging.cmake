@@ -85,6 +85,7 @@ if( WIN32 )
 	set( CPACK_NSIS_CONTACT "guastella.francesco@gmail.com" )
 	set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph\\\\support" )
 	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph" )
+	set( CPACK_NSIS_URL_LINK_NAME "${CPACK_NSIS_PROJECT_NAME}'s project page at SourceForge.net" )
 	
 	if( MSVC_IDE )
 		set( CPACK_NSIS_MSVC_REDIST ON )
