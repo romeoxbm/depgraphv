@@ -29,8 +29,8 @@
 #Generate config6 file by using dot.exe
 
 set( dest "${CMAKE_INSTALL_PREFIX}/@INSTALL_PATH@" )
-file( COPY "@GraphViz_INSTALL_DIRS@/bin/dot.exe" DESTINATION ${dest} )
+file( COPY "@GraphViz_INSTALL_DIRS@/bin/dot.exe" DESTINATION "${dest}" )
 execute_process( COMMAND "${dest}/dot.exe" -c )
 file( REMOVE "${dest}/dot.exe" )
 
-file( INSTALL DESTINATION ${dest} TYPE FILE FILES "${dest}/config6" )
+file( INSTALL DESTINATION "${dest}" TYPE FILE FILES "${dest}/config6" )

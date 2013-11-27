@@ -3,21 +3,26 @@ if( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 endif( NOT EXISTS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" )
 
 file( STRINGS "@CMAKE_CURRENT_BINARY_DIR@/install_manifest.txt" files )
-
 list( REVERSE files )
+
 foreach( file ${files} )
-	message( STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"" )
-	if( EXISTS "$ENV{DESTDIR}${file}" )
+	message( STATUS "Uninstalling \"${file}\"" )
+	if( EXISTS "${file}" )
 		execute_process(
-			COMMAND "@CMAKE_COMMAND@" -E remove "$ENV{DESTDIR}${file}"
+			COMMAND "@CMAKE_COMMAND@" -E remove "${file}"
 			OUTPUT_VARIABLE rm_out
 			RESULT_VARIABLE rm_retval
 		)
 		if( NOT ${rm_retval} EQUAL 0 )
-			message( FATAL_ERROR "Problem when removing \"$ENV{DESTDIR}${file}\"" )
+			message( FATAL_ERROR "Problem when removing \"${file}\"" )
 		endif( NOT ${rm_retval} EQUAL 0 )
 	
-	else( EXISTS "$ENV{DESTDIR}${file}" )
-		message( STATUS "File \"$ENV{DESTDIR}${file}\" does not exist." )
-	endif( EXISTS "$ENV{DESTDIR}${file}" )
+	else( EXISTS "${file}" )
+		message( STATUS "File \"${file}\" does not exist." )
+	endif()
 endforeach( file )
+
+#Remove all folders and any file left
+message( STATUS "Removing \"@CMAKE_INSTALL_PREFIX@\" folder and all of its subfolders.." )
+file( REMOVE_RECURSE "@CMAKE_INSTALL_PREFIX@" )
+message( STATUS "Uninstall completed" )
