@@ -145,7 +145,6 @@ include_directories( ${includes} )
 add_executable( ${ProjectName} WIN32
 	${Headers}
 	${Sources}
-	${MOCSrcs}
 	${UISrcs}
 	${RCCSrcs}
 	${i18nSrcs}
@@ -171,6 +170,10 @@ if( WIN32 )
 	if( MSVC_IDE )
 		include( CreateLaunchers )
 		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
+
+		source_group( "Qrc Resources" FILES ${Resources} ${RCCSrcs} )
+		source_group( "Ui" FILES ${Sources_ui} ${UISrcs} )
+		source_group( "Compiled Translations" FILES ${Translations_rel} )
 	endif( MSVC_IDE )
 			
 	#Configure installDeps.cmake
