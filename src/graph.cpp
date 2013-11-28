@@ -335,6 +335,7 @@ namespace depgraphV
 
 		qDebug() << qPrintable( tr( "Looking for available GraphViz plugins..." ) );
 
+#ifdef GraphViz_USE_CGRAPH
 		int size;
 		QString kinds[ 5 ] = { "render", "layout", "textlayout", "device", "loadimage" };
 		for( int k = 0; k < 5; ++k )
@@ -356,8 +357,13 @@ namespace depgraphV
 				debugList += QString( format ).arg( currentPlugin );
 			}
 
+			qDebug() << qPrintable( tr( "Plugins found:" ) );
 			qDebug() << qPrintable( debugList + "\n" );
 		}
+#else
+		//TODO
+		//Older versions of GraphViz (2.26 for instance) doesn't have gvPluginList..
+#endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::_isPluginAvailable( const QString& format, const QString& kind ) const

@@ -56,25 +56,9 @@ set( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README" ) #TODO
 set( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README" )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING" )
 
-set( CPACK_COMPONENTS_ALL runtime translations sources )
-set( CPACK_COMPONENT_RUNTIME_DISPLAY_NAME "Binaries" )
-set( CPACK_COMPONENT_RUNTIME_DESCRIPTION "Required binaries and libraries" )
-set( CPACK_COMPONENT_RUNTIME_REQUIRED ON )
-
-set( CPACK_COMPONENT_TRANSLATIONS_DISPLAY_NAME "Translations" )
-set( CPACK_COMPONENT_TRANSLATIONS_DESCRIPTION "Translation files for ${ProjectName}" )
-#TODO ?
-#set( CPACK_COMPONENT_TRANSLATIONS_REQUIRED ON )
-
-#Dependencies
-set( CPACK_COMPONENT_TRANSLATIONS_DEPENDS runtime )
-
 if( WIN32 )
 	set( CPACK_MODULE_PATH "${CMAKE_TEMPLATES_PATH}" )
 	set( CPACK_GENERATOR "NSIS" )
-	
-	set( CPACK_COMPONENT_SOURCES_DISPLAY_NAME "Sources" )
-	set( CPACK_COMPONENT_SOURCES_DESCRIPTION "Include all ${ProjectName} sources" )
 
 	set( CPACK_NSIS_INCLUDE_PATH "${CMAKE_SCRIPTS_PATH}" )	
 	set( CPACK_NSIS_PROJECT_NAME ${ProjectName} )
@@ -163,3 +147,15 @@ else()
 endif( WIN32 )
 
 include( CPack )
+
+#Components
+cpack_add_component( runtime DISPLAY_NAME "Binaries" DESCRIPTION "Required binaries and libraries" REQUIRED INSTALL_TYPES "Full" "Minimal" )
+#cpack_add_component( comp_i18n_en DISPLAY_NAME "English" GROUP "Translations" REQUIRED ) #The ui is already in english...
+foreach( t ${AvailableLanguages} )
+	cpack_add_component( comp_i18n_${t} DISPLAY_NAME "${t}" GROUP "Translations" INSTALL_TYPES "Full" )
+endforeach()
+cpack_add_component( docs DISPLAY_NAME "Documentation" DESCRIPTION "Readme, Todo and other information files." REQUIRED INSTALL_TYPES "Full" )
+
+if( WIN32 )
+	cpack_add_component( sources DISPLAY_NAME "Sources" DESCRIPTION "Include all ${ProjectName} sources" INSTALL_TYPES "Full" )
+endif()

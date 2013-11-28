@@ -32,6 +32,7 @@
 #include <QActionGroup>
 #include <QTranslator>
 #include "graph.h"
+#include "aboutdialog.h"
 
 namespace depgraphV
 {
@@ -74,13 +75,13 @@ namespace depgraphV
 	private:
 		friend class AppConfig;
 
-		Ui::MainWindow* ui;
+		Ui::MainWindow* _ui;
+		AboutDialog* _aboutDlg;
 		QActionGroup* _langGroup;
 		AppConfig* _config;
 		QTranslator _qtTranslator;
 		QTranslator _appTranslator;
 		QString _currentLocale;
-		QString _aboutText;
 		QMap<QString, QAction*> _availableLanguages;
 		bool _isValidDirSelected;
 
@@ -92,7 +93,7 @@ namespace depgraphV
 		QStringList _getNameFilters() const;
 
 		void _lookForTranslations( const QString& path );
-		bool _createLanguageAction( const QString& locale , const QString& path );
+		bool _createLanguageAction( const QString& locale , const QString& langFilePath );
 		void _switchTranslator( QTranslator* t, const QString& fileName, const QString& directory = "", bool justRemoveTranslator = false );
 	};
 }

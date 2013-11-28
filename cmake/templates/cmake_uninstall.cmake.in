@@ -22,7 +22,9 @@ foreach( file ${files} )
 	endif()
 endforeach( file )
 
-#Remove all folders and any file left
-message( STATUS "Removing \"@CMAKE_INSTALL_PREFIX@\" folder and all of its subfolders.." )
-file( REMOVE_RECURSE "@CMAKE_INSTALL_PREFIX@" )
-message( STATUS "Uninstall completed" )
+if( WIN32 )
+    #Remove all folders and any file left
+    message( STATUS "Removing \"@CMAKE_INSTALL_PREFIX@\" folder and all of its subfolders.." )
+    file( REMOVE_RECURSE "@CMAKE_INSTALL_PREFIX@" )
+    message( STATUS "Uninstall completed" )
+endif()

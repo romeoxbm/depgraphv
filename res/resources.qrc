@@ -1,12 +1,20 @@
 <RCC>
-    <qresource lang="en" prefix="/text">
-        <file alias="about.html">about_en.html</file>
+    <qresource prefix="/text">
+        <file alias="AUTHORS">../AUTHORS</file>
     </qresource>
-    <qresource lang="it" prefix="/text">
-        <file alias="about.html">about_it.html</file>
+    <qresource prefix="/text">
+        <file alias="TODO">../TODO</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file alias="Changelog">../ChangeLog</file>
+    </qresource>
+    <qresource prefix="/text">
+        <file alias="COPYING">../COPYING</file>
     </qresource>
     <qresource prefix="/flags">
         <file>en.png</file>
+    </qresource>
+    <qresource prefix="/flags">
         <file>it.png</file>
     </qresource>
 </RCC>

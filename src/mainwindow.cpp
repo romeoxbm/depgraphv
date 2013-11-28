@@ -37,21 +37,22 @@ namespace depgraphV
 {
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
-		ui( new Ui::MainWindow ),
+		_ui( new Ui::MainWindow ),
+		_aboutDlg( 0 ),
 		_isValidDirSelected( false )
 	{
-		ui->setupUi( this );
+		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
 
-		ui->actionHigh_Quality_Antialiasing->setChecked( ui->graph->highQualityAntialiasing() );
+		_ui->actionHigh_Quality_Antialiasing->setChecked( _ui->graph->highQualityAntialiasing() );
 
 		//Renderer action group
-		QActionGroup* rendererGroup = new QActionGroup( ui->menuRenderer );
-		rendererGroup->addAction( ui->actionNative );
-		rendererGroup->addAction( ui->actionOpenGL );
+		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
+		rendererGroup->addAction( _ui->actionNative );
+		rendererGroup->addAction( _ui->actionOpenGL );
 
-		ui->actionNative->setData( Graph::Native );
-		ui->actionOpenGL->setData( Graph::OpenGL );
+		_ui->actionNative->setData( Graph::Native );
+		_ui->actionOpenGL->setData( Graph::OpenGL );
 
 #ifndef QT_USE_OPENGL
 		ui->actionOpenGL->setEnabled( false );
@@ -59,13 +60,13 @@ namespace depgraphV
 
 		QRegExp rx( "(\\s*\\*\\.\\w+\\s*;?)+" );
 		QValidator* validator = new QRegExpValidator( rx );
-		ui->headersFilter->setValidator( validator );
-		ui->sourcesFilter->setValidator( validator );
+		_ui->headersFilter->setValidator( validator );
+		_ui->sourcesFilter->setValidator( validator );
 
 		//Create language action group and setting up actionSystem_language
-		_langGroup = new QActionGroup( ui->menu_Language );
-		ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
-		_langGroup->addAction( ui->actionSystem_language );
+		_langGroup = new QActionGroup( _ui->menu_Language );
+		_ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
+		_langGroup->addAction( _ui->actionSystem_language );
 		_createLanguageAction( "en", "" );
 
 		_lookForTranslations( QApplication::applicationDirPath() );
@@ -84,10 +85,10 @@ namespace depgraphV
 
 		//Connect signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
-		connect( ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
+		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 
-		_config = new AppConfig( this, ui->graph );
+		_config = new AppConfig( this, _ui->graph );
 
 		//Save default settings, if this is the first time we launch this application
 		_config->saveDefault();
@@ -95,17 +96,20 @@ namespace depgraphV
 		//Restore last settings
 		_config->restore();
 
-		ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
+		_ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	MainWindow::~MainWindow()
 	{
-		delete ui;
+		delete _ui;
+
+		if( _aboutDlg )
+			delete _aboutDlg;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	QString MainWindow::rootPath() const
 	{
-		return _isValidDirSelected ? ui->selectedRootFolder->text() : QDir::currentPath();
+		return _isValidDirSelected ? _ui->selectedRootFolder->text() : QDir::currentPath();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::translateUi( const QString& locale )
@@ -129,10 +133,7 @@ namespace depgraphV
 		if( event )
 		{
 			if( event->type() == QEvent::LanguageChange )
-			{
-				ui->retranslateUi( this );
-				_aboutText.clear();
-			}
+				_ui->retranslateUi( this );
 
 			else if( event->type() == QEvent::LocaleChange )
 			{}
@@ -156,8 +157,8 @@ namespace depgraphV
 			_isValidDirSelected = info.isDir();
 		}
 
-		ui->drawButton->setEnabled( _isValidDirSelected &&
-									( ui->parseHeadersCheckbox->isChecked() || ui->parseSourcesCheckbox->isChecked() )
+		_ui->drawButton->setEnabled( _isValidDirSelected &&
+									( _ui->parseHeadersCheckbox->isChecked() || _ui->parseSourcesCheckbox->isChecked() )
 		);
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -165,7 +166,7 @@ namespace depgraphV
 	{
 		QString path = QFileDialog::getExistingDirectory( this, tr( "Select root folder" ), rootPath() );
 		if( !path.isNull() )
-			ui->selectedRootFolder->setText( path );
+			_ui->selectedRootFolder->setText( path );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_drawButton_clicked()
@@ -173,14 +174,19 @@ namespace depgraphV
 		//Disable related ui widgets
 		_setGroupBoxesEnabled( false );
 
-		ui->graph->prepare();
+		_ui->graph->prepare();
 		_setGraphAttributes();
-		uint filesFound = _scanFolder( ui->selectedRootFolder->text() );
+		uint filesFound = _scanFolder( _ui->selectedRootFolder->text() );
 
-		if( filesFound > 0 && ui->graph->applyLayout() )
+		if( filesFound > 0 )
 		{
-			_setButtonsAndActionsEnabled( true );
-			return;
+			if( _ui->graph->applyLayout() )
+			{
+				_setButtonsAndActionsEnabled( true );
+				return;
+			}
+			else
+				QMessageBox::information( this, tr( "Draw" ), tr( "Unable to render; Plugin not found." ) );
 		}
 		else
 			QMessageBox::information( this, tr( "Draw" ), tr( "No file has been found in selected folder; nothing to draw." ) );
@@ -204,29 +210,17 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
 	{
-		ui->graph->clear();
+		_ui->graph->clear();
 		_setGroupBoxesEnabled( true );
 		_setButtonsAndActionsEnabled( false );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::about()
 	{
-		if( _aboutText.isEmpty() )
-		{
-			QFile f( ":/text/about.html" );
-			if( !f.open( QFile::ReadOnly | QFile::Text ) )
-			{
-				qWarning() << qPrintable( tr( "Cannot read about informations." ) );
-				return;
-			}
+		if( !_aboutDlg )
+			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
 
-			QTextStream in( &f );
-			in.setCodec( "UTF-8" );
-			_aboutText = in.readAll();
-			f.close();
-		}
-
-		QMessageBox::about( this, tr( "About..." ), _aboutText.arg( APP_NAME, APP_VER ) );
+		_aboutDlg->show();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::restoreDefaultSettings()
@@ -248,8 +242,8 @@ namespace depgraphV
 	void MainWindow::rendererTypeChanged( QAction* action )
 	{
 		Q_ASSERT( action );
-		ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
-		ui->statusBar->showMessage( tr( "Renderer method changed" ) );
+		_ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
+		_ui->statusBar->showMessage( tr( "Renderer method changed" ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::languageChanged( QAction* action )
@@ -275,18 +269,18 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::parseOptionsChanged()
 	{
-		ui->drawButton->setEnabled( _isValidDirSelected &&
-				( ui->parseHeadersCheckbox->isChecked() || ui->parseSourcesCheckbox->isChecked() )
+		_ui->drawButton->setEnabled( _isValidDirSelected &&
+				( _ui->parseHeadersCheckbox->isChecked() || _ui->parseSourcesCheckbox->isChecked() )
 		);
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::saveAsImage() const
 	{
-		QStringList* list = ui->graph->pluginsListByKind( "loadimage" );
+		QStringList* list = _ui->graph->pluginsListByKind( "loadimage" );
 		if( !list )
 		{
 			QMessageBox::critical( const_cast<MainWindow*>( this ),
-								   tr( "Cannot save image" ), tr( "Unable to save graph as image. (Plugin issue)" ) );
+								   tr( "Cannot save image" ), tr( "Unable to save graph as image; Plugin not found." ) );
 			return;
 		}
 
@@ -309,8 +303,8 @@ namespace depgraphV
 
 		QStringList split = path.split( "." );
 		QString format = split[ split.size() - 1 ];
-		if( ui->graph->saveImage( path, format ) )
-			ui->statusBar->showMessage( tr( "File successfully saved." ) );
+		if( _ui->graph->saveImage( path, format ) )
+			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
 			QMessageBox::critical( 0, tr( "Save as image" ), tr( "Unable to save file" ) );
 	}
@@ -325,8 +319,8 @@ namespace depgraphV
 		if( path.isEmpty() )
 			return;
 
-		if( ui->graph->saveDot( path ) )
-			ui->statusBar->showMessage( tr( "File successfully saved." ) );
+		if( _ui->graph->saveDot( path ) )
+			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
 			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
@@ -341,29 +335,29 @@ namespace depgraphV
 	{
 		//Configuring graph attributes
 		//http://www.graphviz.org/doc/info/attrs.html
-		ui->graph->setGraphAttribute( "splines", "spline" );
-		ui->graph->setGraphAttribute( "nodesep", "0.4" );
+		_ui->graph->setGraphAttribute( "splines", "spline" );
+		_ui->graph->setGraphAttribute( "nodesep", "0.4" );
 
-		ui->graph->setVerticesAttribute( "shape", "box" );
-		ui->graph->setVerticesAttribute( "style", "rounded" );
+		_ui->graph->setVerticesAttribute( "shape", "box" );
+		_ui->graph->setVerticesAttribute( "style", "rounded" );
 
-		ui->graph->setEdgesAttribute( "minlen", "3" );
+		_ui->graph->setEdgesAttribute( "minlen", "3" );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_setGroupBoxesEnabled( bool value ) const
 	{
-		ui->rootFolderGroupBox->setEnabled( value );
-		ui->parseGroupbox->setEnabled( value );
-		ui->headersFilterGroupBox->setEnabled( value && ui->parseHeadersCheckbox->isChecked() );
-		ui->sourcesFilterGroupBox->setEnabled( value && ui->parseSourcesCheckbox->isChecked() );
+		_ui->rootFolderGroupBox->setEnabled( value );
+		_ui->parseGroupbox->setEnabled( value );
+		_ui->headersFilterGroupBox->setEnabled( value && _ui->parseHeadersCheckbox->isChecked() );
+		_ui->sourcesFilterGroupBox->setEnabled( value && _ui->parseSourcesCheckbox->isChecked() );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
 	{
-		ui->drawButton->setEnabled( !value );
-		ui->clearButton->setEnabled( value );
-		ui->actionSave_as_Image->setEnabled( value );
-		ui->actionSave_as_dot->setEnabled( value );
+		_ui->drawButton->setEnabled( !value );
+		_ui->clearButton->setEnabled( value );
+		_ui->actionSave_as_Image->setEnabled( value );
+		_ui->actionSave_as_dot->setEnabled( value );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	uint MainWindow::_scanFolder( const QString& dirName ) const
@@ -372,7 +366,7 @@ namespace depgraphV
 		uint filesCount = 0;
 
 		//Iterating subfolders, if required
-		if( ui->recursiveCheckBox->isChecked() )
+		if( _ui->recursiveCheckBox->isChecked() )
 		{
 			foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Dirs ) )
 				filesCount += _scanFolder( entry.filePath() );
@@ -382,8 +376,8 @@ namespace depgraphV
 		dir.setNameFilters( _getNameFilters() );
 		foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files ) )
 		{
-			ui->graph->createOrRetrieveVertex( entry.fileName() );
-			ui->graph->createEdges( entry.absolutePath(), entry.fileName() );
+			_ui->graph->createOrRetrieveVertex( entry.fileName() );
+			_ui->graph->createEdges( entry.absolutePath(), entry.fileName() );
 			filesCount++;
 		}
 
@@ -395,25 +389,25 @@ namespace depgraphV
 		QStringList nameFilters;
 
 		//Headers
-		if( ui->parseHeadersCheckbox->isChecked() )
+		if( _ui->parseHeadersCheckbox->isChecked() )
 		{
-			if( ui->standardHeaderFilterRadio->isChecked() )
-				nameFilters << ui->headersFilterComboBox->currentText();
+			if( _ui->standardHeaderFilterRadio->isChecked() )
+				nameFilters << _ui->headersFilterComboBox->currentText();
 			else
 			{
-				QString filters = ui->headersFilter->text().replace( ' ', "" );
+				QString filters = _ui->headersFilter->text().replace( ' ', "" );
 				nameFilters = filters.split( ";" );
 			}
 		}
 
 		//Sources
-		if( ui->parseSourcesCheckbox->isChecked() )
+		if( _ui->parseSourcesCheckbox->isChecked() )
 		{
-			if( ui->standardSourcesFilterRadio->isChecked() )
-				nameFilters << ui->sourcesFilterComboBox->currentText();
+			if( _ui->standardSourcesFilterRadio->isChecked() )
+				nameFilters << _ui->sourcesFilterComboBox->currentText();
 			else
 			{
-				QString filters = ui->sourcesFilter->text().replace( ' ', "" );
+				QString filters = _ui->sourcesFilter->text().replace( ' ', "" );
 				foreach( QString f, filters.split( ";" ) )
 					nameFilters << f;
 			}
@@ -438,25 +432,25 @@ namespace depgraphV
 			//Also update system language QAction..
 			if( locale == QLocale::system().name().mid( 0, 2 ) )
 			{
-				ui->actionSystem_language->setObjectName( path );
-				ui->actionSystem_language->setIcon( QIcon( ":/flags/" + locale ) );
-				ui->actionSystem_language->setEnabled( true );
+				_ui->actionSystem_language->setObjectName( path );
+				_ui->actionSystem_language->setIcon( QIcon( ":/flags/" + locale ) );
+				_ui->actionSystem_language->setEnabled( true );
 			}
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	bool MainWindow::_createLanguageAction( const QString& locale, const QString& path )
+	bool MainWindow::_createLanguageAction( const QString& locale, const QString& langFilePath )
 	{
 		if( _availableLanguages.contains( locale ) )
 			return false;
 
 		QAction* newLang = new QAction( this );
-		newLang->setObjectName( path );
+		newLang->setObjectName( langFilePath );
 		newLang->setText( QLocale::languageToString( QLocale( locale ).language() ) );
 		newLang->setData( locale );
 		newLang->setCheckable( true );
 		newLang->setIcon( QIcon( ":/flags/" + locale ) );
-		ui->menu_Language->addAction( newLang );
+		_ui->menu_Language->addAction( newLang );
 		_langGroup->addAction( newLang );
 		_availableLanguages.insert( locale, newLang );
 

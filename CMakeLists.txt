@@ -52,12 +52,14 @@ endif()
 project( ${ProjectName} )
 
 set( Headers
+	src/aboutdialog.h
 	src/appconfig.h
 	src/graph.h
 	src/mainwindow.h
 )
 
 set( Sources
+	src/aboutdialog.cpp
 	src/appconfig.cpp
 	src/graph.cpp
 	src/main.cpp
@@ -65,6 +67,7 @@ set( Sources
 )
 
 set( Sources_ui
+	src/aboutdialog.ui
 	src/mainwindow.ui
 )
 
@@ -77,9 +80,11 @@ set( FilesToTranslate
 	${Sources}
 )
 
-set( Translations
-	i18n/${ProjectName}_it.ts
+set( AvailableLanguages
+	"Italiano"
 )
+
+set( i18n_Italiano "i18n/${ProjectName}_it.ts" )
 
 set( DOCS
 	AUTHORS
@@ -89,11 +94,11 @@ set( DOCS
 	TODO
 )
 
-foreach( t ${Translations} )
-	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${t} )
+foreach( t ${AvailableLanguages} )
+	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )
 	string( REPLACE ".ts" ".qm" newT ${newT} )
 	list( APPEND Translations_rel ${newT} )
-endforeach( t )
+endforeach()
 
 option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
@@ -161,7 +166,13 @@ install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT ru
 file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/tPath" "${CMAKE_INSTALL_PREFIX}/${TRANSLATION_INSTALL_PATH}" )
 install( FILES "${CMAKE_CURRENT_BINARY_DIR}/tPath" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 
-install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT translations )
+foreach( t ${AvailableLanguages} )
+	#install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT comp_i18n_ita )
+
+	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )
+	string( REPLACE ".ts" ".qm" newT ${newT} )
+	install( FILES ${newT} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT comp_i18n_${t} )
+endforeach()
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 
 if( WIN32 )

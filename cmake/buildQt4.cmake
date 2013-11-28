@@ -56,11 +56,13 @@ qt4_wrap_ui( UISrcs ${Sources_ui} )
 # generate rules for building source files from the resources
 qt4_add_resources( RCCSrcs ${Resources} )
 
-if( QT_UPDATE_TRANSLATIONS )
-	qt4_create_translation( i18nSrcs ${FilesToTranslate} ${Translations} )
-else()
-	qt4_add_translation( i18nSrcs ${Translations} )
-endif( QT_UPDATE_TRANSLATIONS )
+foreach( t ${AvailableLanguages} )
+    if( QT_UPDATE_TRANSLATIONS )
+	    qt4_create_translation( i18nSrcs ${FilesToTranslate} ${i18n_${t}} )
+    else()
+	    qt4_add_translation( i18nSrcs ${i18n_${t}} )
+    endif( QT_UPDATE_TRANSLATIONS )
+endforeach()
 
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )
 set( libraries "${GraphViz_gvc_LIBRARY};${QT_LIBRARIES}" )
