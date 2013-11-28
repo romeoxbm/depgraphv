@@ -221,6 +221,7 @@ namespace depgraphV
 			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
 
 		_aboutDlg->show();
+		_aboutDlg->move( geometry().center() - _aboutDlg->rect().center() );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::restoreDefaultSettings()

@@ -34,7 +34,7 @@
 namespace depgraphV
 {
 	AboutDialog::AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent )
-		: QDialog( parent ),
+		: QDialog( parent, Qt::WindowTitleHint ),
 		  _ui( new Ui::AboutDialog )
 	{
 		_ui->setupUi( this );
@@ -50,7 +50,7 @@ namespace depgraphV
 
 		GVC_t* context = gvContext();
 		_ui->graphvizVersion->setText( gvcVersion( context ) );
-		delete context;
+		gvFreeContext( context );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	AboutDialog::~AboutDialog()
