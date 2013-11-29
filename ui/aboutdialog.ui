@@ -25,8 +25,8 @@
   <property name="windowTitle">
    <string notr="true">About...</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_7">
+   <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string notr="true"/>
@@ -64,7 +64,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -99,6 +99,9 @@
          <property name="readOnly">
           <bool>true</bool>
          </property>
+         <property name="plainText">
+          <string notr="true"/>
+         </property>
         </widget>
        </item>
       </layout>
@@ -113,6 +116,9 @@
          <property name="readOnly">
           <bool>true</bool>
          </property>
+         <property name="plainText">
+          <string notr="true"/>
+         </property>
         </widget>
        </item>
       </layout>
@@ -126,6 +132,9 @@
         <widget class="QPlainTextEdit" name="changelogText">
          <property name="readOnly">
           <bool>true</bool>
+         </property>
+         <property name="plainText">
+          <string notr="true"/>
          </property>
         </widget>
        </item>
@@ -153,7 +162,7 @@
        <item row="1" column="1">
         <widget class="QLabel" name="graphvizVersion">
          <property name="text">
-          <string/>
+          <string notr="true"/>
          </property>
         </widget>
        </item>
@@ -167,7 +176,7 @@
        <item row="0" column="1">
         <widget class="QLabel" name="qtVersion">
          <property name="text">
-          <string/>
+          <string notr="true"/>
          </property>
         </widget>
        </item>
@@ -195,13 +204,23 @@
      </widget>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item row="2" column="0">
+    <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>441</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="closeButton">
+     <property name="text">
+      <string>Close</string>
      </property>
     </widget>
    </item>
@@ -210,18 +229,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
    <receiver>depgraphV::AboutDialog</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>239</x>
-     <y>407</y>
+     <x>496</x>
+     <y>397</y>
     </hint>
     <hint type="destinationlabel">
-     <x>239</x>
-     <y>213</y>
+     <x>271</x>
+     <y>208</y>
     </hint>
    </hints>
   </connection>
