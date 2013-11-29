@@ -67,8 +67,8 @@ set( Sources
 )
 
 set( Sources_ui
-	src/aboutdialog.ui
-	src/mainwindow.ui
+	ui/aboutdialog.ui
+	ui/mainwindow.ui
 )
 
 set( Resources
@@ -167,8 +167,6 @@ file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/tPath" "${CMAKE_INSTALL_PREFIX}/${TRANS
 install( FILES "${CMAKE_CURRENT_BINARY_DIR}/tPath" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
 
 foreach( t ${AvailableLanguages} )
-	#install( FILES ${Translations_rel} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT comp_i18n_ita )
-
 	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )
 	string( REPLACE ".ts" ".qm" newT ${newT} )
 	install( FILES ${newT} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT comp_i18n_${t} )
