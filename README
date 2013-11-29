@@ -17,15 +17,16 @@ Main Features:
 * Optional recursive folder scan;
 * Customizable file extension filters (for both header and source files);
 * Graphs can be saved as images (.bmp, .eps, .gd, .gd2, .gif, .jpe, .jpeg, .jpg, .png, .ps, .svg or any other format made available by GraphViz plugins) or in GraphViz dot format;
-* Localized user interface;
+* Localized user interface (currently only english and italian are available);
 * Persistent user settings;
 
-The src distribution contains the following folders and files:
+The sources distribution contains the following folders and files:
 
 	cmake/	- CMake scripts
 	i18n/	- Translation files
 	res/	- Resources
 	src/	- Header and source files
+	ui/		- Forms and dialogs in Qt Designer UI format
 
 	AUTHORS
 	ChangeLog
@@ -33,5 +34,20 @@ The src distribution contains the following folders and files:
 	COPYING
 	README - this file.
 	TODO
+	
+When installing dep-graphV on Windows, the installer will create the following folders structure:
+
+	bin/					- Program executable, required libraries and configuration files
+	docs/
+			AUTHORS
+			ChangeLog
+			COPYING
+			README
+			TODO
+	
+	src/(optional)			- Headers, sources translation files (.ts), ui files and the resource file (.qrc)
+	translations/(optional) - Translation files used by dep-graphV (.qm)
+	
+	Uninstall.exe			- The uninstaller
 
  

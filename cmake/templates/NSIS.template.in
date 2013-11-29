@@ -348,7 +348,7 @@ Section "-Core installation"
 		Quit
 	success:
 		ExecWait '"$2" /q:a'
-		Delete $2
+		Delete "$2"
 		
 	noMSVC_Redist:
 		
