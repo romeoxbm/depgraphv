@@ -140,6 +140,8 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 	
 elseif( MSVC_IDE )
 	set( definitions "/W4 /MP" )
+	list( APPEND RCCSrcs "res/${ProjectName}.rc" )
+	list( APPEND RCCSrcs "res/resource.h" )
 endif()
 
 message( STATUS "* Using definitions: ${definitions}" )
@@ -180,7 +182,7 @@ if( WIN32 )
 		include( CreateLaunchers )
 		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
 
-		source_group( "Qrc Resources" FILES ${Resources} ${RCCSrcs} )
+		source_group( "Resources" FILES ${Resources} ${RCCSrcs} )
 		source_group( "Ui" FILES ${Sources_ui} ${UISrcs} )
 		source_group( "Compiled Translations" FILES ${Translations_rel} )
 	endif( MSVC_IDE )

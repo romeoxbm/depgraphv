@@ -1,20 +1,23 @@
 <RCC>
-    <qresource prefix="/text">
-        <file alias="AUTHORS">../AUTHORS</file>
-    </qresource>
-    <qresource prefix="/text">
-        <file alias="TODO">../TODO</file>
-    </qresource>
-    <qresource prefix="/text">
-        <file alias="Changelog">../ChangeLog</file>
-    </qresource>
-    <qresource prefix="/text">
-        <file alias="COPYING">../COPYING</file>
-    </qresource>
-    <qresource prefix="/flags">
-        <file>en.png</file>
-    </qresource>
-    <qresource prefix="/flags">
-        <file>it.png</file>
-    </qresource>
+  <qresource prefix="/text">
+    <file alias="AUTHORS">../AUTHORS</file>
+  </qresource>
+  <qresource prefix="icons">
+    <file>dep-graphV.ico</file>
+  </qresource>
+  <qresource prefix="/text">
+    <file alias="TODO">../TODO</file>
+  </qresource>
+  <qresource prefix="/text">
+    <file alias="Changelog">../ChangeLog</file>
+  </qresource>
+  <qresource prefix="/text">
+    <file alias="COPYING">../COPYING</file>
+  </qresource>
+  <qresource prefix="/flags">
+    <file>en.png</file>
+  </qresource>
+  <qresource prefix="/flags">
+    <file>it.png</file>
+  </qresource>
 </RCC>

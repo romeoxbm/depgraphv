@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string notr="true">windowTile</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res/resources.qrc">
+    <normaloff>:/icons/dep-graphV.ico</normaloff>:/icons/dep-graphV.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
@@ -554,7 +558,9 @@
   <tabstop>drawButton</tabstop>
   <tabstop>graph</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../res/resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>standardHeaderFilterRadio</sender>
