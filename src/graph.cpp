@@ -193,11 +193,23 @@ namespace depgraphV
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
 		Q_ASSERT( _context && _graph && !filename.isEmpty() && !format.isEmpty() );
+		bool result = false;
 
 		if( _isPluginAvailable( format, "loadimage" ) )
-			return gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
+		{
+			result = gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
 
-		return false;
+			if( !result )
+			{
+				QMessageBox::critical(
+					this->parentWidget(),
+					tr( "Save as image" ),
+					tr( "Unable to save file;\n" ) + QString::fromUtf8( aglasterr() )
+				);
+			}
+		}
+
+		return result;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::saveDot( const QString& filename ) const
@@ -362,7 +374,21 @@ namespace depgraphV
 		}
 #else
 		//TODO
-		//Older versions of GraphViz (2.26 for instance) doesn't have gvPluginList..
+		//Older versions of GraphViz (2.26 for instance) doesn't have gvPluginList function.
+		//Following code is just a workaround, until I get a better and cleaner solution..
+		_availablePlugins.insert( "render", new QStringList );
+		_availablePlugins[ "render" ]->append( "dot" );
+		_availablePlugins[ "render" ]->append( "svg" );
+
+		_availablePlugins.insert( "layout", new QStringList );
+		_availablePlugins[ "layout" ]->append( "dot" );
+
+		_availablePlugins.insert( "loadimage", new QStringList );
+		_availablePlugins[ "loadimage" ]->append( "svg" );
+		_availablePlugins[ "loadimage" ]->append( "png" );
+		_availablePlugins[ "loadimage" ]->append( "jpeg" );
+		_availablePlugins[ "loadimage" ]->append( "bmp" );
+
 #endif
 	}
 	//--------------------------------------------------------------------------------------------------------------------------

@@ -39,7 +39,8 @@ namespace depgraphV
 		: QMainWindow( parent ),
 		_ui( new Ui::MainWindow ),
 		_aboutDlg( 0 ),
-		_isValidDirSelected( false )
+		_isValidDirSelected( false ),
+		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
@@ -220,8 +221,8 @@ namespace depgraphV
 		if( !_aboutDlg )
 			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
 
-		_aboutDlg->show();
 		_aboutDlg->move( geometry().center() - _aboutDlg->rect().center() );
+		_aboutDlg->exec();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::restoreDefaultSettings()
@@ -275,39 +276,51 @@ namespace depgraphV
 		);
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::saveAsImage() const
+	void MainWindow::saveAsImage()
 	{
-		QStringList* list = _ui->graph->pluginsListByKind( "loadimage" );
-		if( !list )
+		if( !_imageFiltersUpdated )
 		{
-			QMessageBox::critical( const_cast<MainWindow*>( this ),
-								   tr( "Cannot save image" ), tr( "Unable to save graph as image; Plugin not found." ) );
-			return;
+			QStringList* list = _ui->graph->pluginsListByKind( "loadimage" );
+			if( !list )
+			{
+				QMessageBox::critical( const_cast<MainWindow*>( this ),
+									   tr( "Cannot save image" ), tr( "Unable to save graph as image; Plugin not found." ) );
+				return;
+			}
+
+			for( int i = 0; i < list->count(); ++i )
+			{
+				QString f = list->at( i );
+				QString currentFilter = QString( "%1 (*.%2)" ).arg( f.toUpper(), f );
+				_imageFiltersByExt[ currentFilter ] = f;
+				_imageFilters += currentFilter;
+				if( i < list->count() - 1 )
+					_imageFilters += ";;";
+			}
+
+			_imageFiltersUpdated = true;
 		}
 
-		QString filter;
-		for( int i = 0; i < list->count(); ++i )
-		{
-			QString p = list->at( i );
-			filter += QString( "%1(*.%2)" ).arg( p.toUpper(), p );
-			if( i < list->count() - 1 )
-				filter += ";;";
-		}
-
+		QString selectedFilter;
 		QString path = QFileDialog::getSaveFileName(
 					const_cast<MainWindow*>( this ),
 					tr( "Select path and name of the image file" ),
-					QDir::currentPath(), filter );
+					QDir::currentPath(), _imageFilters, &selectedFilter );
 
 		if( path.isEmpty() )
 			return;
 
-		QStringList split = path.split( "." );
-		QString format = split[ split.size() - 1 ];
+		QFileInfo info( path );
+		QString format = info.suffix();
+
+		if( format.isEmpty() )
+		{
+			format = _imageFiltersByExt[ selectedFilter ];
+			path += "." + format;
+		}
+
 		if( _ui->graph->saveImage( path, format ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
-		else
-			QMessageBox::critical( 0, tr( "Save as image" ), tr( "Unable to save file" ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::saveAsDot() const
@@ -315,7 +328,7 @@ namespace depgraphV
 		QString path = QFileDialog::getSaveFileName(
 					const_cast<MainWindow*>( this ),
 					tr( "Select path and name of the dot file" ),
-					QDir::currentPath(), "DOT(*.dot)" );
+					QDir::currentPath(), "DOT (*.dot)" );
 
 		if( path.isEmpty() )
 			return;

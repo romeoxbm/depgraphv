@@ -68,7 +68,7 @@ namespace depgraphV
 		void rendererTypeChanged( QAction* );
 		void languageChanged( QAction* );
 		void parseOptionsChanged();
-		void saveAsImage() const;
+		void saveAsImage();
 		void saveAsDot() const;
 		void exitApp();
 
@@ -84,6 +84,10 @@ namespace depgraphV
 		QString _currentLocale;
 		QMap<QString, QAction*> _availableLanguages;
 		bool _isValidDirSelected;
+
+		bool _imageFiltersUpdated;
+		QString _imageFilters;
+		QMap<QString, QString> _imageFiltersByExt;
 
 		void _doClearGraph() const;
 		void _setGraphAttributes() const;
