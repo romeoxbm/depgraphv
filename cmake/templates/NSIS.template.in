@@ -23,9 +23,6 @@ Var IS_DEFAULT_INSTALLDIR
 
 !include "MUI.nsh"
 
-!addincludedir "@CPACK_NSIS_INCLUDE_PATH@"
-!include "MUI_EXTRAPAGES.nsh"
-
 ;Default installation folder
 InstallDir "@CPACK_NSIS_INSTALL_ROOT@\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
 
@@ -201,10 +198,11 @@ FunctionEnd
 @CPACK_NSIS_INSTALLER_MUI_COMPONENTS_DESC@
 @CPACK_NSIS_INSTALLER_MUI_FINISHPAGE_RUN_CODE@
 
+!define MUI_FINISHPAGE_SHOWREADME "@CPACK_RESOURCE_FILE_README@"
+
 ;--------------------------------
 ;Pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_README "@CPACK_RESOURCE_FILE_README@"
 !insertmacro MUI_PAGE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@"
 Page custom InstallOptionsPage
 !insertmacro MUI_PAGE_DIRECTORY
@@ -228,19 +226,7 @@ Page custom InstallOptionsPage
 ;Languages
 
 !insertmacro MUI_LANGUAGE "English"
-${ReadmeLanguage} "${LANG_ENGLISH}" \
-	  "Read Me" \
-	  "Please review the following information." \
-	  "About $(^name):" \
-	  "$\n  Click on scrollbar arrows or press Page Down to review the entire text."
-
 !insertmacro MUI_LANGUAGE "Italian"
-${ReadmeLanguage} "${LANG_ITALIAN}" \
-	  "Leggimi" \
-	  "Per favore, leggi le seguenti informazioni." \
-	  "Riguardo $(^name):" \
-	  "$\n  Usa la barra di scorrimento o premi Page Down per scorrere il testo."
-
 
 ;--------------------------------
 ;Reserve Files

@@ -26,7 +26,7 @@ The sources distribution contains the following folders and files:
 	i18n/	- Translation files
 	res/	- Resources
 	src/	- Header and source files
-	ui/		- Forms and dialogs in Qt Designer UI format
+	ui/	- Forms and dialogs in Qt Designer UI format
 
 	AUTHORS
 	ChangeLog
@@ -37,17 +37,17 @@ The sources distribution contains the following folders and files:
 	
 When installing dep-graphV on Windows, the installer will create the following folders structure:
 
-	bin/					- Program executable, required libraries and configuration files
+	bin/			- Program executable, required libraries and configuration files
 	docs/
-			AUTHORS
-			ChangeLog
-			COPYING
-			README
-			TODO
+		AUTHORS
+		ChangeLog
+		COPYING
+		README
+		TODO
 	
-	src/(optional)			- Headers, sources translation files (.ts), ui files and the resource file (.qrc)
+	src/(optional)		- Headers, sources translation files (.ts), ui files and the resource file (.qrc)
 	translations/(optional) - Translation files used by dep-graphV (.qm)
 	
-	Uninstall.exe			- The uninstaller
+	Uninstall.exe		- The uninstaller
 
  
