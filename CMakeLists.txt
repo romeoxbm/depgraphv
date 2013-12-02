@@ -218,6 +218,21 @@ else()
 		IMMEDIATE @ONLY
 	)
 	
+	set( icoResolutions
+		"512x512"
+		"256x256"
+		"128x128"
+		"64x64"
+		"48x48"
+		"32x32"
+		"24x24"
+		"16x16"
+	)
+	
+	foreach( r ${icoResolutions} )
+		install( FILES "res/png/${ProjectName}-${r}.png" DESTINATION "share/icons/hicolor/${r}/apps" RENAME "${ProjectName}.png" )
+	endforeach()
+	
 	#install( PROGRAMS "${ProjectName}.desktop" DESTINATION ${XDG_APPS_INSTALL_DIR} )
 	install( PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop" DESTINATION "share/applications/kde4" )
 endif( WIN32 )
