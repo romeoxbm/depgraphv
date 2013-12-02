@@ -29,6 +29,7 @@
 #CPack settings
 
 set( CPACK_PACKAGE_VENDOR "Guastella Francesco" )
+set( VENDOR_EMAIL "guastella.francesco@gmail.com" )
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "dep-graphV is an useful tool to analize header dependendencies via graphs. This is the runtime package of the tool, built against" )
 set( CPACK_PACKAGE_VERSION ${ProjectVersion} )
 set( CPACK_PACKAGE_INSTALL_DIRECTORY ${ProjectName} )
@@ -52,8 +53,9 @@ else()
 endif( QT_USE_OPENGL )
 
 #Resources
-set( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README" ) #TODO Not tested
-set( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README" )
+set( INSTALLED_README_PATH "${CMAKE_INSTALL_PREFIX}/${DOCS_INSTALL_PATH}/README" )
+set( CPACK_PACKAGE_DESCRIPTION_FILE ${INSTALLED_README_PATH} ) #TODO Not tested
+set( CPACK_RESOURCE_FILE_README ${INSTALLED_README_PATH} )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING" )
 
 if( WIN32 )
@@ -65,7 +67,7 @@ if( WIN32 )
 	set( CPACK_NSIS_MODIFY_PATH ON )
 	set( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON )
 	set( CPACK_NSIS_MUI_FINISHPAGE_RUN "${ProjectName}.exe" )
-	set( CPACK_NSIS_CONTACT "guastella.francesco@gmail.com" )
+	set( CPACK_NSIS_CONTACT ${VENDOR_EMAIL} )
 	set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph\\\\support" )
 	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph" )
 	set( CPACK_NSIS_URL_LINK_NAME "${CPACK_NSIS_PROJECT_NAME}'s project page at SourceForge.net" )
@@ -140,7 +142,7 @@ else()
 	endif( QT_USE_QT5 )
 	
 	#deb settings
-	set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <guastella.francesco@gmail.com>" )
+	set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <${VENDOR_EMAIL}>" )
 	set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://sourceforge.net/projects/depgraph/" )
 	set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON ) # dpkg-shlibdeps must be installed on build system (package: dpkg-dev)
 endif( WIN32 )
