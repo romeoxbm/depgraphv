@@ -51,8 +51,25 @@ namespace depgraphV
 		explicit MainWindow( QWidget* parent = 0 );
 		~MainWindow();
 
-		QString rootPath() const;
 		void translateUi( const QString& locale );
+
+		QString rootPath() const;
+		void setRootPath( const QString& value );
+
+		bool isRecursiveScanEnabled() const;
+		void setRecursiveScanEnabled( bool value );
+
+		const QVariant& selectedLocaleData() const;
+
+		void setRendererActionCheckedByType( Graph::RendererType type, bool checked );
+
+		void setHighQualityAAChecked( bool value );
+
+		void headersInfo( bool* parseHdr, bool* hCustomFiltersEnabled, int* selectedHdrFilter, QString* customHdrFilter ) const;
+		void sourcesInfo( bool* parseSrc, bool* sCustomFiltersEnabled, int* selectedSrcFilter, QString* customSrcFilter ) const;
+
+		void setHeadersInfo( bool parseHdr, bool hCustomFiltersEnabled, int selectedHdrFilter, const QString& customHdrFilter );
+		void setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter );
 
 	protected:
 		virtual void changeEvent( QEvent* );
@@ -73,8 +90,6 @@ namespace depgraphV
 		void exitApp();
 
 	private:
-		friend class AppConfig;
-
 		Ui::MainWindow* _ui;
 		AboutDialog* _aboutDlg;
 		QActionGroup* _langGroup;

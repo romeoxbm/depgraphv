@@ -108,11 +108,6 @@ namespace depgraphV
 			delete _aboutDlg;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	QString MainWindow::rootPath() const
-	{
-		return _isValidDirSelected ? _ui->selectedRootFolder->text() : QDir::currentPath();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::translateUi( const QString& locale )
 	{
 		QString l = locale;
@@ -127,6 +122,74 @@ namespace depgraphV
 
 		if( _availableLanguages.contains( l ) )
 			_availableLanguages[ l ]->setChecked( true );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	QString MainWindow::rootPath() const
+	{
+		return _isValidDirSelected ? _ui->selectedRootFolder->text() : QDir::currentPath();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setRootPath( const QString& value )
+	{
+		_ui->selectedRootFolder->setText( value.isEmpty() ? QDir::currentPath() : value );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	bool MainWindow::isRecursiveScanEnabled() const
+	{
+		return _ui->recursiveCheckBox->isChecked();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setRecursiveScanEnabled( bool value )
+	{
+		_ui->recursiveCheckBox->setChecked( value );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	const QVariant& MainWindow::selectedLocaleData() const
+	{
+		return _langGroup->checkedAction()->data();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setRendererActionCheckedByType( Graph::RendererType type, bool checked )
+	{
+		QAction* a = type == Graph::Native ? _ui->actionNative : _ui->actionOpenGL;
+		a->setChecked( checked );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setHighQualityAAChecked( bool value )
+	{
+		_ui->actionHigh_Quality_Antialiasing->setChecked( value );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::headersInfo( bool* parseHdr, bool* hCustomFiltersEnabled, int* selectedHdrFilter, QString* customHdrFilter ) const
+	{
+		*parseHdr				= _ui->parseHeadersCheckbox->isChecked();
+		*hCustomFiltersEnabled	= _ui->customHeadersFilterRadio->isChecked();
+		*selectedHdrFilter		= _ui->headersFilterComboBox->currentIndex();
+		*customHdrFilter		= _ui->headersFilter->text();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::sourcesInfo( bool* parseSrc, bool* sCustomFiltersEnabled, int* selectedSrcFilter, QString* customSrcFilter ) const
+	{
+		*parseSrc				= _ui->parseSourcesCheckbox->isChecked();
+		*sCustomFiltersEnabled	= _ui->customSourcesFilterRadio->isChecked();
+		*selectedSrcFilter		= _ui->sourcesFilterComboBox->currentIndex();
+		*customSrcFilter		= _ui->sourcesFilter->text();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setHeadersInfo( bool parseHdr, bool hCustomFiltersEnabled, int selectedHdrFilter, const QString& customHdrFilter )
+	{
+		_ui->parseHeadersCheckbox->setChecked( parseHdr );
+		_ui->customHeadersFilterRadio->setChecked( hCustomFiltersEnabled );
+		_ui->headersFilterComboBox->setCurrentIndex( selectedHdrFilter );
+		_ui->headersFilter->setText( customHdrFilter );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter )
+	{
+		_ui->parseSourcesCheckbox->setChecked( parseSrc );
+		_ui->customSourcesFilterRadio->setChecked( sCustomFiltersEnabled );
+		_ui->sourcesFilterComboBox->setCurrentIndex( selectedSrcFilter );
+		_ui->sourcesFilter->setText( customSrcFilter );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )

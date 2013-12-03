@@ -79,17 +79,28 @@ namespace depgraphV
 			_settings.setValue( "size", _win->size() );
 			_settings.setValue( "pos", _win->pos() );
 			_settings.setValue( "maximized", _win->isMaximized() );
-			_settings.setValue( "recur", _win->_ui->recursiveCheckBox->isChecked() );
-			_settings.setValue( "pHdr", _win->_ui->parseHeadersCheckbox->isChecked() );
-			_settings.setValue( "hIndex", _win->_ui->headersFilterComboBox->currentIndex() );
-			_settings.setValue( "hCustomFilters", _win->_ui->headersFilter->text() );
-			_settings.setValue( "hCustomFiltersEnabled", _win->_ui->customHeadersFilterRadio->isChecked() );
-			_settings.setValue( "pSrc", _win->_ui->parseSourcesCheckbox->isChecked() );
-			_settings.setValue( "sIndex", _win->_ui->sourcesFilterComboBox->currentIndex() );
-			_settings.setValue( "sCustomFilters", _win->_ui->sourcesFilter->text() );
-			_settings.setValue( "sCustomFiltersEnabled", _win->_ui->customSourcesFilterRadio->isChecked() );
+			_settings.setValue( "recur", _win->isRecursiveScanEnabled() );
+			
+			bool parseHdr, hCustomFiltersEnabled;
+			int selectedHdrFilter;
+			QString customHdrFilter;
+			_win->headersInfo( &parseHdr, &hCustomFiltersEnabled, &selectedHdrFilter, &customHdrFilter );
+			_settings.setValue( "pHdr", parseHdr );
+			_settings.setValue( "hCustomFiltersEnabled", hCustomFiltersEnabled );
+			_settings.setValue( "hIndex", selectedHdrFilter );
+			_settings.setValue( "hCustomFilters", customHdrFilter );
+
+			bool parseSrc, sCustomFiltersEnabled;
+			int selectedSrcFilter;
+			QString customSrcFilter;
+			_win->sourcesInfo( &parseSrc, &sCustomFiltersEnabled, &selectedSrcFilter, &customSrcFilter ); 
+			_settings.setValue( "pSrc", parseSrc );
+			_settings.setValue( "sCustomFiltersEnabled", sCustomFiltersEnabled );
+			_settings.setValue( "sIndex", selectedSrcFilter );
+			_settings.setValue( "sCustomFilters", customSrcFilter );
+			
 			_settings.setValue( "lastRootPath", _win->rootPath() );
-			_settings.setValue( "locale", _win->_langGroup->checkedAction()->data() );
+			_settings.setValue( "locale", _win->selectedLocaleData() );
 		}
 		_settings.endGroup();
 
@@ -107,22 +118,29 @@ namespace depgraphV
 		qDebug() << qPrintable( def ? tr( "Restoring default settings..." ) : tr( "Restoring settings..." ) );
 		_settings.beginGroup( group + "MainWindow" );
 		{
-			QPoint p( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
+			QPoint defaultPos( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
 			_win->resize( _settings.value( "size", _win->rect().size() ).toSize() );
-			_win->move( _settings.value( "pos", p ).toPoint() );
+			_win->move( _settings.value( "pos", defaultPos ).toPoint() );
 			if( _settings.value( "maximized", false ).toBool() )
 				_win->showMaximized();
 
-			_win->_ui->recursiveCheckBox->setChecked( _settings.value( "recur", false ).toBool() );
-			_win->_ui->parseHeadersCheckbox->setChecked( _settings.value( "pHdr", true ).toBool() );
-			_win->_ui->headersFilterComboBox->setCurrentIndex( _settings.value( "hIndex", 0 ).toInt() );
-			_win->_ui->headersFilter->setText( _settings.value( "hCustomFilters", "*.h; *.hh; *.hxx; *.hpp; *.hp").toString() );
-			_win->_ui->customHeadersFilterRadio->setChecked( _settings.value( "hCustomFiltersEnabled", false).toBool() );
-			_win->_ui->parseSourcesCheckbox->setChecked( _settings.value( "pSrc", false ).toBool() );
-			_win->_ui->sourcesFilterComboBox->setCurrentIndex( _settings.value( "sIndex", 0 ).toInt() );
-			_win->_ui->sourcesFilter->setText( _settings.value( "sCustomFilters", "*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C").toString() );
-			_win->_ui->customSourcesFilterRadio->setChecked( _settings.value( "sCustomFiltersEnabled", false).toBool() );
-			_win->_ui->selectedRootFolder->setText( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
+			_win->setRecursiveScanEnabled( _settings.value( "recur", false ).toBool() );
+
+			_win->setHeadersInfo(
+				_settings.value( "pHdr", true ).toBool(),
+				_settings.value( "hCustomFiltersEnabled", false ).toBool(),
+				_settings.value( "hIndex", 0 ).toInt(),
+				_settings.value( "hCustomFilters", "*.h; *.hh; *.hxx; *.hpp; *.hp" ).toString()
+				);
+
+			_win->setSourcesInfo(
+				_settings.value( "pSrc", false ).toBool(),
+				_settings.value( "sCustomFiltersEnabled", false ).toBool(),
+				_settings.value( "sIndex", 0 ).toInt(),
+				_settings.value( "sCustomFilters", "*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C" ).toString()
+			);
+
+			_win->setRootPath( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
 			_win->translateUi( _settings.value( "locale", "en" ).toString() );
 		}
 		_settings.endGroup();
@@ -132,13 +150,12 @@ namespace depgraphV
 			//renderer
 			Graph::RendererType r = (Graph::RendererType)_settings.value( "renderer", Graph::Native ).toInt();
 			_graph->setRenderer( r );
-			QAction* a = r == Graph::Native ? _win->_ui->actionNative : _win->_ui->actionOpenGL;
-			a->setChecked( true );
+			_win->setRendererActionCheckedByType( r, true );
 
 			//antialiasing
 			bool aa = _settings.value( "antialiasing", false ).toBool();
 			_graph->setHighQualityAntialiasing( aa );
-			_win->_ui->actionHigh_Quality_Antialiasing->setChecked( aa );
+			_win->setHighQualityAAChecked( aa );
 		}
 		_settings.endGroup();
 	}
