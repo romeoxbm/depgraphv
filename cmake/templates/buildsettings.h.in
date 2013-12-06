@@ -40,6 +40,14 @@
 #	define APP_VENDOR "@CPACK_PACKAGE_VENDOR@"
 #endif //APP_VENDOR
 
+#if !defined( WIN32 ) && !defined( APP_BIN_PATH )
+#	define APP_BIN_PATH "@BIN_INSTALL_PATH@"
+#endif //WIN32
+
+#ifndef APP_TR_PATH
+#	define APP_TR_PATH "@TRANSLATION_INSTALL_PATH@"
+#endif //APP_TR_PATH
+
 #ifndef GraphViz_USE_CGRAPH
 	#cmakedefine GraphViz_USE_CGRAPH
 #endif //GraphViz_USE_CGRAPH

@@ -70,6 +70,36 @@ namespace depgraphV
 		_doRestore( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
+	const QString& AppConfig::installPrefix()
+	{
+		if( _instPrefix.isEmpty() )
+		{
+#ifdef WIN32
+			QString regKey = QString( "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\%1" ).arg( APP_NAME );
+			QSettings s( regKey, QSettings::NativeFormat );
+			QFileInfo info( s.value( "UninstallString" ).toString() );
+			_instPrefix = info.absolutePath();
+#else
+#	ifndef NDEBUG
+			_instPrefix = ".";
+#	else
+			_instPrefix = QFileInfo( QApplication::applicationDirPath() ).absolutePath();
+			_instPrefix.replace( APP_BIN_PATH, "" );
+#	endif //NDEBUG
+#endif
+		}
+
+		return _instPrefix;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	const QString& AppConfig::translationsPath()
+	{
+		if( _trPath.isEmpty() )
+			_trPath = QString( "%1/%2" ).arg( installPrefix(), APP_TR_PATH );
+
+		return _trPath;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::_doSave( bool def )
 	{
 		QString group = def ? "default/" : "current/";

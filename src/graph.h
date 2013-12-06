@@ -67,8 +67,8 @@ namespace depgraphV
 		};
 
 		/**
-		 * @brief Graph Contructor
-		 * @param parent The parent widget (default null)
+		 * @brief Graph contructor
+		 * @param parent The parent widget (default NULL)
 		 */
 		Graph( QWidget* parent = 0 );
 
@@ -78,57 +78,56 @@ namespace depgraphV
 		~Graph();
 
 		/**
-		 * @brief renderer Get the RendererType in use.
+		 * @brief Get the RendererType in use.
 		 * @return The renderer method used by this class.
 		 */
 		RendererType renderer() const { return _renderer; }
 
 		/**
-		 * @brief highQualityAntialiasing
 		 * @return True if high quality antialiasing is enabled, false otherwise.
 		 */
 		bool highQualityAntialiasing() const;
 
 		/**
-		 * @brief createVertex Create a new graph vertex.
+		 * @brief Create a new graph vertex.
 		 * @param label The label of the brand new vertex.
-		 * @return A vertex pointer if everything went fine, 0 otherwise.
+		 * @return A vertex pointer if everything went fine, NULL otherwise.
 		 */
 		Agnode_t* createVertex( const QString& label );
 
 		/**
-		 * @brief createOrRetrieveVertex Create a new vertex with specified label only if that
+		 * @brief Create a new vertex with specified label only if that
 		 *        vertex wasn't previously created.
 		 * @param label The vertex label.
 		 */
 		Agnode_t* createOrRetrieveVertex( const QString& label );
 
 		/**
-		 * @brief vertex Get a previously created graph vertex by label.
+		 * @brief Get a previously created graph vertex by label.
 		 * @param label The label of the vertex.
-		 * @return The graph vertex with specified label, or 0 if not found.
+		 * @return The graph vertex with specified label, NULL otherwise.
 		 */
 		Agnode_t* vertex( const QString& label );
 
 		//TODO Should I need getter methods for edges?
 
 		/**
-		 * @brief createEdges Create all the outgoing edges of the graph vertex with label vertexLabel.
+		 * @brief Create all the outgoing edges of the graph vertex with label vertexLabel.
 		 * @param absPath The absolute path to the file( required to parse includes ).
 		 * @param vertexLabel The graph vertex label.
 		 */
 		void createEdges( const QString& absPath, const QString& vertexLabel );
 
 		/**
-		 * @brief applyLayout Calculate the graph layout.
-		 * @param algorithm The layout algorithm used. Valid values are: dot, neato, fdp, sfdp, twopi, circo, patchwork, osage.
+		 * @brief Calculate the graph layout.
+		 * @param algorithm The layout algorithm used. Valid values are: "dot", "neato", "fdp", "sfdp", "twopi", "circo", "patchwork", "osage".
 		 *	Default is dot.
 		 * @return true if everything went fine, false otherwise.
 		 */
 		bool applyLayout( const QString& algorithm = "dot" );
 
 		/**
-		 * @brief saveImage Save the graph as image.
+		 * @brief Save the graph as image.
 		 * @param filename The filename where to save.
 		 * @param format The image format name ("png" or "svg" for instance).
 		 * @return True if the file has been saved successfully, false otherwise
@@ -136,21 +135,21 @@ namespace depgraphV
 		bool saveImage( const QString& filename, const QString& format ) const;
 
 		/**
-		 * @brief saveDot Save the graph as GraphViz dot file.
+		 * @brief Save the graph as GraphViz dot file.
 		 * @param filename The filename where to save.
 		 * @return True if the file has been saved successfully, false otherwise.
 		 */
 		bool saveDot( const QString& filename ) const;
 
 		/**
-		 * @brief prepare Prepare every logic structure to be popoluated before creating the graph.
+		 * @brief Prepare every logic structure to be popoluated before creating the graph.
 		 */
 		void prepare();
 
 		/**
 		 * @brief Get plugins list by kind
 		 * @param kind The kind of plugin. Valid values are "render", "layout", "textlayout", "device" and "loadimage".
-		 * @return A QStringList* containing all the available plugins of type "kind", or 0 if something went wrong.
+		 * @return A QStringList* containing all the available plugins of type "kind", NULL otherwise.
 		 */
 		QStringList* pluginsListByKind( const QString& kind ) const;
 
@@ -158,41 +157,41 @@ namespace depgraphV
 
 	public slots:
 		/**
-		 * @brief setRenderer Change the render method used by this class.
+		 * @brief Change the render method used by this class.
 		 * @param type The chosen render type.
 		 * @see RendererType
 		 */
 		void setRenderer( RendererType type );
 
 		/**
-		 * @brief setHighQualityAntialiasing
-		 * @param highQualityAntialiasing
+		 * @brief Enable (or disable) high quality antialiasing.
+		 * @param highQualityAntialiasing the new value of antialiasing property.
 		 */
 		void setHighQualityAntialiasing( bool highQualityAntialiasing );
 
 		/**
-		 * @brief setGraphAttribute
+		 * @brief Change value of a graph attribute by name.
 		 * @param name Attribute name.
-		 * @param value Attribute value.
+		 * @param value Attribute (new) value.
 		 */
 		void setGraphAttribute( const QString& name, const QString& value ) const;
 
 		/**
-		 * @brief setVerticesAttribute
+		 * @brief Change value of vertices attributes by name.
 		 * @param name Attribute name.
 		 * @param value Attribute value.
 		 */
 		void setVerticesAttribute( const QString& name, const QString& value ) const;
 
 		/**
-		 * @brief setEdgesAttribute
+		 * @brief Change value of edges attributes by name.
 		 * @param name Attribute name.
 		 * @param value Attribute value.
 		 */
 		void setEdgesAttribute( const QString& name, const QString& value ) const;
 
 		/**
-		 * @brief clear Clear this graph.
+		 * @brief Clear this graph.
 		 */
 		void clear();
 
@@ -212,16 +211,16 @@ namespace depgraphV
 		QMap<QString, QStringList*> _availablePlugins;
 
 		/**
-		 * @brief _createEdge Create a new edge between two vertices.
+		 * @brief Create a new edge between two vertices.
 		 * @param src The source vertex.
 		 * @param dest The destination vertex.
 		 * @param label Optional label of the new edge.
-		 * @return An edge pointer if everything went fine, or 0 if an error occurred.
+		 * @return An edge pointer if everything went fine, or NULL if an error occurred.
 		 */
 		Agedge_t* _createEdge( Agnode_t* src, Agnode_t* dest, const QString& label = "" );
 
 		/**
-		 * @brief _renderDataAs Helper method used to "translate" the graph into different formats.
+		 * @brief Helper method used to "translate" the graph into different formats.
 		 * @param format The selected format.
 		 * @param outString A string containing the graph representation in the selected format.
 		 * @return True if everything went fine, false otherwise.

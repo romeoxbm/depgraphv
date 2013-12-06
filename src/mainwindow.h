@@ -48,27 +48,96 @@ namespace depgraphV
 		Q_OBJECT
 		
 	public:
+		/**
+		 * @brief MainWindow constructor.
+		 * @param parent
+		 */
 		explicit MainWindow( QWidget* parent = 0 );
 		~MainWindow();
 
+		/**
+		 * @brief translateUi
+		 * @param locale
+		 */
 		void translateUi( const QString& locale );
 
+		/**
+		 * @brief rootPath
+		 * @return
+		 */
 		QString rootPath() const;
+
+		/**
+		 * @brief setRootPath
+		 * @param value
+		 */
 		void setRootPath( const QString& value );
 
+		/**
+		 * @brief isRecursiveScanEnabled
+		 * @return
+		 */
 		bool isRecursiveScanEnabled() const;
+
+		/**
+		 * @brief setRecursiveScanEnabled
+		 * @param value
+		 */
 		void setRecursiveScanEnabled( bool value );
 
-		const QVariant& selectedLocaleData() const;
+		/**
+		 * @brief selectedLocaleData
+		 * @return
+		 */
+		QVariant selectedLocaleData() const;
 
+		/**
+		 * @brief setRendererActionCheckedByType
+		 * @param type
+		 * @param checked
+		 */
 		void setRendererActionCheckedByType( Graph::RendererType type, bool checked );
 
+		/**
+		 * @brief setHighQualityAAChecked
+		 * @param value
+		 */
 		void setHighQualityAAChecked( bool value );
 
+		/**
+		 * @brief headersInfo
+		 * @param parseHdr
+		 * @param hCustomFiltersEnabled
+		 * @param selectedHdrFilter
+		 * @param customHdrFilter
+		 */
 		void headersInfo( bool* parseHdr, bool* hCustomFiltersEnabled, int* selectedHdrFilter, QString* customHdrFilter ) const;
+
+		/**
+		 * @brief sourcesInfo
+		 * @param parseSrc
+		 * @param sCustomFiltersEnabled
+		 * @param selectedSrcFilter
+		 * @param customSrcFilter
+		 */
 		void sourcesInfo( bool* parseSrc, bool* sCustomFiltersEnabled, int* selectedSrcFilter, QString* customSrcFilter ) const;
 
+		/**
+		 * @brief setHeadersInfo
+		 * @param parseHdr
+		 * @param hCustomFiltersEnabled
+		 * @param selectedHdrFilter
+		 * @param customHdrFilter
+		 */
 		void setHeadersInfo( bool parseHdr, bool hCustomFiltersEnabled, int selectedHdrFilter, const QString& customHdrFilter );
+
+		/**
+		 * @brief setSourcesInfo
+		 * @param parseSrc
+		 * @param sCustomFiltersEnabled
+		 * @param selectedSrcFilter
+		 * @param customSrcFilter
+		 */
 		void setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter );
 
 	protected:

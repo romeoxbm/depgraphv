@@ -38,7 +38,7 @@ set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 set( CMAKE_TEMPLATES_PATH "${CMAKE_SCRIPTS_PATH}/templates" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
-set( INSTALL_PATH "bin" )
+set( BIN_INSTALL_PATH "bin" )
 
 if( WIN32 )
 	set( TRANSLATION_INSTALL_PATH "translations" )
@@ -163,10 +163,7 @@ endif( QT_USE_QT5 )
 
 target_link_libraries( ${ProjectName} ${libraries} )
 
-install( TARGETS ${ProjectName} RUNTIME DESTINATION ${INSTALL_PATH} COMPONENT runtime )
-
-file( WRITE "${CMAKE_CURRENT_BINARY_DIR}/tPath" "${CMAKE_INSTALL_PREFIX}/${TRANSLATION_INSTALL_PATH}" )
-install( FILES "${CMAKE_CURRENT_BINARY_DIR}/tPath" DESTINATION ${INSTALL_PATH} COMPONENT runtime )
+install( TARGETS ${ProjectName} RUNTIME DESTINATION ${BIN_INSTALL_PATH} COMPONENT runtime )
 
 foreach( t ${AvailableLanguages} )
 	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )

@@ -70,26 +70,14 @@ namespace depgraphV
 		_langGroup->addAction( _ui->actionSystem_language );
 		_createLanguageAction( "en", "" );
 
+		_config = new AppConfig( this, _ui->graph );
 		_lookForTranslations( QApplication::applicationDirPath() );
-
-		//Read translations path from tPath and look for translation files
-		QFile f( QApplication::applicationDirPath() + "/tPath" );
-		if( f.open( QFile::ReadOnly | QFile::Text ) )
-		{
-			QTextStream in( &f );
-			in.setCodec( "UTF-8" );
-
-			//TODO Check if it's a valid path
-			_lookForTranslations( in.readLine() );
-			f.close();
-		}
+		_lookForTranslations( _config->translationsPath() );
 
 		//Connect signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
 		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
-
-		_config = new AppConfig( this, _ui->graph );
 
 		//Save default settings, if this is the first time we launch this application
 		_config->saveDefault();
@@ -144,7 +132,7 @@ namespace depgraphV
 		_ui->recursiveCheckBox->setChecked( value );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	const QVariant& MainWindow::selectedLocaleData() const
+	QVariant MainWindow::selectedLocaleData() const
 	{
 		return _langGroup->checkedAction()->data();
 	}

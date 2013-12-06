@@ -42,28 +42,44 @@ namespace depgraphV
 		Q_OBJECT
 
 	public:
+		/**
+		 * @brief AppConfig constructor.
+		 * @param win Pointer to the MainWindow.
+		 * @param g Pointer to the Graph object.
+		 */
 		AppConfig( MainWindow* win, Graph* g );
 
 		/**
-		 * @brief save Save currently in use settings.
+		 * @brief Save currently in use settings.
 		 */
 		void save();
 
 		/**
-		 * @brief restore Restore previously saved settings.
+		 * @brief Restore previously saved settings.
 		 */
 		void restore();
 
 		/**
-		 * @brief saveDefault Save default settings, only the first time this application run, so when there's
+		 * @brief Save default settings, only the first time this application run, so when there's
 		 *					  still no default settings saved.
 		 */
 		void saveDefault();
 
 		/**
-		 * @brief restoreDefault Restore default settings.
+		 * @brief Restore default settings.
 		 */
 		void restoreDefault();
+
+		/**
+		 * @brief Return the installation prefix.
+		 * @return On Linux, when building with Debug symbols, it returns ".", otherwise the installation prefix.
+		 */
+		const QString& installPrefix();
+
+		/**
+		 * @brief Return the path where translation files are.
+		 */
+		const QString& translationsPath();
 
 	private:
 		QSettings _settings;
@@ -71,16 +87,19 @@ namespace depgraphV
 		Graph* _graph;
 
 		/**
-		 * @brief _doSave It does the save job.
+		 * @brief It does the save job.
 		 * @param def True if saving default settings, false if saving current settings.
 		 */
 		void _doSave( bool def = false );
 
 		/**
-		 * @brief _doRestore It does the restore job.
+		 * @brief It does the restore job.
 		 * @param def True if saving default settings, false if saving current settings.
 		 */
 		void _doRestore( bool def = false );
+
+		QString _instPrefix;
+		QString _trPath;
 	};
 }
 
