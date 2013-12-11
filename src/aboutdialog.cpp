@@ -77,6 +77,11 @@ namespace depgraphV
 		return QDialog::exec();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
+	void AboutDialog::translateUi()
+	{
+		_ui->retranslateUi( this );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
 	void AboutDialog::on_donateButton_clicked()
 	{
 		QString itemName = tr( "Donation+to+dep-graphV" );

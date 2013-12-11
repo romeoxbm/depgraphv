@@ -61,6 +61,8 @@ namespace depgraphV
 		 */
 		int exec( bool showDonationsTab );
 
+		void translateUi();
+
 	signals:
 
 	public slots:

@@ -186,7 +186,11 @@ namespace depgraphV
 		if( event )
 		{
 			if( event->type() == QEvent::LanguageChange )
+			{
 				_ui->retranslateUi( this );
+				if( _aboutDlg )
+					_aboutDlg->translateUi();
+			}
 
 			else if( event->type() == QEvent::LocaleChange )
 			{}
@@ -197,8 +201,8 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
-		_config->save();
 		_showAboutDialog( true );
+		_config->save();
 		event->accept();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
