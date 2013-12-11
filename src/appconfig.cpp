@@ -110,6 +110,7 @@ namespace depgraphV
 			_settings.setValue( "pos", _win->pos() );
 			_settings.setValue( "maximized", _win->isMaximized() );
 			_settings.setValue( "recur", _win->isRecursiveScanEnabled() );
+			_settings.setValue( "showDonate", _win->showDonateOnExit() );
 			
 			bool parseHdr, hCustomFiltersEnabled;
 			int selectedHdrFilter;
@@ -155,6 +156,7 @@ namespace depgraphV
 				_win->showMaximized();
 
 			_win->setRecursiveScanEnabled( _settings.value( "recur", false ).toBool() );
+			_win->setShowDonateOnExit( _settings.value( "showDonate", true ).toBool() );
 
 			_win->setHeadersInfo(
 				_settings.value( "pHdr", true ).toBool(),

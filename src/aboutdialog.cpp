@@ -27,7 +27,9 @@
  */
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
+#include "mainwindow.h"
 #include <QDebug>
+#include <QDesktopServices>
 #include <qglobal.h>
 #include <gvc.h>
 
@@ -38,6 +40,10 @@ namespace depgraphV
 		  _ui( new Ui::AboutDialog )
 	{
 		_ui->setupUi( this );
+
+		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
+		_ui->donateCheckBox->setChecked( !wnd->showDonateOnExit() );
+
 		_ui->projectNameLabel->setText( appName );
 		_ui->projectVersionLabel->setText( "v" + appVersion );
 
@@ -56,6 +62,32 @@ namespace depgraphV
 	AboutDialog::~AboutDialog()
 	{
 		delete _ui;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	int AboutDialog::exec( bool showDonationsTab )
+	{
+		if( showDonationsTab )
+			_ui->tabWidget->setCurrentIndex( _ui->tabWidget->indexOf( _ui->tab_7 ) );
+
+		//Update the donate button icon
+		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
+		QPixmap p( QString( ":/donateBtns/donate_%1.gif" ).arg( wnd->currentLocale() ) );
+		_ui->donateButton->setIcon( QIcon( p ) );
+
+		return QDialog::exec();
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AboutDialog::on_donateButton_clicked()
+	{
+		QString itemName = tr( "Donation+to+dep-graphV" );
+		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=romeo_bm@libero.it&item_name=" + itemName );
+		QDesktopServices::openUrl( url );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void AboutDialog::on_donateCheckBox_clicked()
+	{
+		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
+		wnd->setShowDonateOnExit( !_ui->donateCheckBox->isChecked() );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	QString AboutDialog::_loadTextFromResources( const QString& filename )

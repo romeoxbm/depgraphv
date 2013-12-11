@@ -71,6 +71,22 @@ namespace depgraphV
 		QString rootPath() const;
 
 		/**
+		 * @return Return a string containing the locale currently in use (for instance, "en").
+		 */
+		const QString& currentLocale() const { return _currentLocale; }
+
+		/**
+		 * @return True if the donation tab page will be shown when closing this application, false otherwise.
+		 */
+		bool showDonateOnExit() const { return _showDonateOnExit; }
+
+		/**
+		 * @brief This method change the on-closing policy concerning donation tab page visibility.
+		 * @param value The new "visibility" value used by _showDonateOnExit field.
+		 */
+		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
+
+		/**
 		 * @brief Set root path.
 		 * @param value The new root path to use. If value is empty, QDir::currentPath() value will be used instead.
 		 */
@@ -168,6 +184,7 @@ namespace depgraphV
 		QString _currentLocale;
 		QMap<QString, QAction*> _availableLanguages;
 		bool _isValidDirSelected;
+		bool _showDonateOnExit;
 
 		bool _imageFiltersUpdated;
 		QString _imageFilters;
@@ -179,6 +196,8 @@ namespace depgraphV
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		uint _scanFolder( const QString& dirName ) const;
 		QStringList _getNameFilters() const;
+
+		void _showAboutDialog( bool showDonations );
 
 		void _lookForTranslations( const QString& path );
 		bool _createLanguageAction( const QString& locale , const QString& langFilePath );

@@ -42,12 +42,32 @@ namespace depgraphV
 		Q_OBJECT
 
 	public:
+		/**
+		 * @brief AboutDialog constructor.
+		 * @param appName This application name.
+		 * @param appVersion This application version string.
+		 * @param parent The parent widget (default NULL)
+		 */
 		AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent = 0 );
+
+		/**
+		 * AboutDialog destructor.
+		 */
 		~AboutDialog();
+
+		/**
+		 * @brief Show this dialog as a modal dialog.
+		 * @param showDonationsTab If true, the donation tab page will be set as the first active page.
+		 */
+		int exec( bool showDonationsTab );
 
 	signals:
 
 	public slots:
+
+	private slots:
+		void on_donateButton_clicked();
+		void on_donateCheckBox_clicked();
 
 	private:
 		Ui::AboutDialog* _ui;

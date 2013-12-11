@@ -40,6 +40,7 @@ namespace depgraphV
 		_ui( new Ui::MainWindow ),
 		_aboutDlg( 0 ),
 		_isValidDirSelected( false ),
+		_showDonateOnExit( true ),
 		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
@@ -197,6 +198,7 @@ namespace depgraphV
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
 		_config->save();
+		_showAboutDialog( true );
 		event->accept();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -269,11 +271,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::about()
 	{
-		if( !_aboutDlg )
-			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
-
-		_aboutDlg->move( geometry().center() - _aboutDlg->rect().center() );
-		_aboutDlg->exec();
+		_showAboutDialog( false );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::restoreDefaultSettings()
@@ -479,6 +477,18 @@ namespace depgraphV
 		}
 
 		return nameFilters;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void MainWindow::_showAboutDialog( bool showDonations )
+	{
+		if( !_showDonateOnExit && showDonations )
+			return;
+
+		if( !_aboutDlg )
+			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
+
+		_aboutDlg->move( geometry().center() - _aboutDlg->rect().center() );
+		_aboutDlg->exec( showDonations );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_lookForTranslations( const QString& path )
