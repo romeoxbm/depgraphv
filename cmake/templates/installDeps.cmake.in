@@ -51,4 +51,4 @@ foreach( key ${keys} )
 	endif()
 endforeach()
 
-file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@INSTALL_PATH@" TYPE FILE FILES ${deps} )
+file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@" TYPE FILE FILES ${deps} )
