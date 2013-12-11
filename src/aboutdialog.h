@@ -61,6 +61,9 @@ namespace depgraphV
 		 */
 		int exec( bool showDonationsTab );
 
+		/**
+		 * @brief Translate this dialog.
+		 */
 		void translateUi();
 
 	signals:

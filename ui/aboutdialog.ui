@@ -78,7 +78,7 @@
          </font>
         </property>
         <property name="text">
-         <string notr="true">dep-graphV</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -91,7 +91,7 @@
          </size>
         </property>
         <property name="text">
-         <string notr="true">v0.2</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -311,36 +311,6 @@
        <string>Donations</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="0" colspan="3">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV is a free software, and it's absolutely free of charge, but developing and testing free software isn't free of costs too.&lt;br&gt;So, If this application helped you, and if you can afford to, please consider a donation.&lt;br&gt;Any size donation is appreciated.&lt;/p&gt;&lt;br&gt;Thanks&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QCheckBox" name="donateCheckBox">
-         <property name="text">
-          <string>Do not annoy me anymore on close.</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>270</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="1" column="2">
         <widget class="QPushButton" name="donateButton">
          <property name="minimumSize">
@@ -366,6 +336,39 @@
          </property>
          <property name="shortcut">
           <string notr="true"/>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="donateCheckBox">
+         <property name="text">
+          <string>Do not annoy me anymore on close.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>270</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV is a free software, and it's absolutely free of charge, but developing and testing free software isn't free of costs too.&lt;br&gt;So, If this application helped you, and if you can afford to, please consider a donation.&lt;br&gt;Any size donation is appreciated.&lt;/p&gt;&lt;br&gt;Thanks&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
         </widget>
        </item>
