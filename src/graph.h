@@ -54,7 +54,7 @@ namespace depgraphV
 	{
 		Q_OBJECT
 		Q_PROPERTY( RendererType RendererType READ renderer WRITE setRenderer )
-		Q_PROPERTY( bool highQualityAntialiasing READ highQualityAntialiasing WRITE setHighQualityAntialiasing )
+		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
 
 	public:
 		/**
@@ -73,7 +73,7 @@ namespace depgraphV
 		Graph( QWidget* parent = 0 );
 
 		/**
-		 * @brief ~Graph Destructor
+		 * @brief Graph Destructor.
 		 */
 		~Graph();
 
@@ -86,7 +86,7 @@ namespace depgraphV
 		/**
 		 * @return True if high quality antialiasing is enabled, false otherwise.
 		 */
-		bool highQualityAntialiasing() const;
+		bool highQualityAA() const;
 
 		/**
 		 * @brief Create a new graph vertex.
@@ -167,7 +167,7 @@ namespace depgraphV
 		 * @brief Enable (or disable) high quality antialiasing.
 		 * @param highQualityAntialiasing the new value of antialiasing property.
 		 */
-		void setHighQualityAntialiasing( bool highQualityAntialiasing );
+		void setHighQualityAntialiasing( bool highQualityAA );
 
 		/**
 		 * @brief Change value of a graph attribute by name.

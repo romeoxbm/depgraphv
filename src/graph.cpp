@@ -74,7 +74,7 @@ namespace depgraphV
 			setViewport( new QWidget );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	bool Graph::highQualityAntialiasing() const
+	bool Graph::highQualityAA() const
 	{
 #ifdef QT_USE_OPENGL
 		return ( renderHints() & QPainter::HighQualityAntialiasing ) == QPainter::HighQualityAntialiasing;

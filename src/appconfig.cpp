@@ -137,7 +137,7 @@ namespace depgraphV
 		_settings.beginGroup( group + "Graph" );
 		{
 			_settings.setValue( "renderer", _graph->renderer() );
-			_settings.setValue( "antialiasing", _graph->highQualityAntialiasing() );
+			_settings.setValue( "antialiasing", _graph->highQualityAA() );
 		}
 		_settings.endGroup();
 	}
@@ -185,7 +185,7 @@ namespace depgraphV
 			//antialiasing
 			bool aa = _settings.value( "antialiasing", false ).toBool();
 			_graph->setHighQualityAntialiasing( aa );
-			_win->setHighQualityAAChecked( aa );
+			_win->setHighQualityAA( aa );
 		}
 		_settings.endGroup();
 	}
