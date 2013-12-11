@@ -50,93 +50,93 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief MainWindow constructor.
-		 * @param parent
+		 * @param parent The parent widget (default NULL)
 		 */
 		explicit MainWindow( QWidget* parent = 0 );
+
+		/**
+		 * @brief MainWindow destructor.
+		 */
 		~MainWindow();
 
 		/**
-		 * @brief translateUi
-		 * @param locale
+		 * @brief Translate user interface by using specified locale.
+		 * @param locale The locale we want to use for the ui.
 		 */
 		void translateUi( const QString& locale );
 
 		/**
-		 * @brief rootPath
-		 * @return
+		 * @return The root path currently in use.
 		 */
 		QString rootPath() const;
 
 		/**
-		 * @brief setRootPath
-		 * @param value
+		 * @brief Set root path.
+		 * @param value The new root path to use. If value is empty, QDir::currentPath() value will be used instead.
 		 */
 		void setRootPath( const QString& value );
 
 		/**
-		 * @brief isRecursiveScanEnabled
-		 * @return
+		 * @return True if recursive scan checkbox is being checked, false otherwise.
 		 */
 		bool isRecursiveScanEnabled() const;
 
 		/**
-		 * @brief setRecursiveScanEnabled
-		 * @param value
+		 * @param Set recursive scan option checked state to "value".
 		 */
 		void setRecursiveScanEnabled( bool value );
 
 		/**
-		 * @brief selectedLocaleData
-		 * @return
+		 * @return Return a QVariant containing data from the currently-selected locale.
 		 */
 		QVariant selectedLocaleData() const;
 
 		/**
-		 * @brief setRendererActionCheckedByType
-		 * @param type
-		 * @param checked
+		 * @brief Set checked value to the renderer QAction specified by "type".
+		 * @param type The renderer type.
+		 * @param checked The new checked value.
 		 */
 		void setRendererActionCheckedByType( Graph::RendererType type, bool checked );
 
 		/**
-		 * @brief setHighQualityAAChecked
-		 * @param value
+		 * @brief Change the high quality antialiasing setting.
+		 * @param value The new value for high quality antialiasing.
 		 */
-		void setHighQualityAAChecked( bool value );
+		void setHighQualityAA( bool value );
 
 		/**
-		 * @brief headersInfo
-		 * @param parseHdr
-		 * @param hCustomFiltersEnabled
-		 * @param selectedHdrFilter
-		 * @param customHdrFilter
+		 * @brief Get all the headers-related informations.
+		 * @param parseHdr Parse headers checked value.
+		 * @param hCustomFiltersEnabled Return true if custom filters are enabled.
+		 * @param selectedHdrFilter The index of the current selected filter.
+		 * @param customHdrFilter Custom filters specified by the user.
 		 */
 		void headersInfo( bool* parseHdr, bool* hCustomFiltersEnabled, int* selectedHdrFilter, QString* customHdrFilter ) const;
 
 		/**
-		 * @brief sourcesInfo
-		 * @param parseSrc
-		 * @param sCustomFiltersEnabled
-		 * @param selectedSrcFilter
-		 * @param customSrcFilter
+		 * @brief sourcesInfo Get all the sources-related informations.
+		 * @param parseSrc Parse sources checked value.
+		 * @param sCustomFiltersEnabled Return true if custom filters are enabled.
+		 * @param selectedSrcFilter The index of the current selected filter.
+		 * @param customSrcFilter Custom filters specified by the user.
 		 */
 		void sourcesInfo( bool* parseSrc, bool* sCustomFiltersEnabled, int* selectedSrcFilter, QString* customSrcFilter ) const;
 
 		/**
-		 * @brief setHeadersInfo
-		 * @param parseHdr
-		 * @param hCustomFiltersEnabled
-		 * @param selectedHdrFilter
-		 * @param customHdrFilter
+		 * @brief setHeadersInfo Set all headers-related informations.
+		 * @param parseHdr Checked value for "Parse headers" checkbox.
+		 * @param hCustomFiltersEnabled Enable or disable custom header filters.
+		 * @param selectedHdrFilter Set the current selected filter.
+		 * @param customHdrFilter Set custom filters string.
 		 */
 		void setHeadersInfo( bool parseHdr, bool hCustomFiltersEnabled, int selectedHdrFilter, const QString& customHdrFilter );
 
 		/**
-		 * @brief setSourcesInfo
-		 * @param parseSrc
-		 * @param sCustomFiltersEnabled
-		 * @param selectedSrcFilter
-		 * @param customSrcFilter
+		 * @brief setSourcesInfo Set all sources-related informations.
+		 * @param parseSrc Checked value for "Parse sources" checkbox.
+		 * @param sCustomFiltersEnabled Enable or disable custom sources filters.
+		 * @param selectedSrcFilter Set the current selected filter.
+		 * @param customSrcFilter Set custom filters string.
 		 */
 		void setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter );
 

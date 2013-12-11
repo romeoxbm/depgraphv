@@ -45,7 +45,7 @@ namespace depgraphV
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
 
-		_ui->actionHigh_Quality_Antialiasing->setChecked( _ui->graph->highQualityAntialiasing() );
+		_ui->actionHigh_Quality_Antialiasing->setChecked( _ui->graph->highQualityAA() );
 
 		//Renderer action group
 		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
@@ -143,7 +143,7 @@ namespace depgraphV
 		a->setChecked( checked );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setHighQualityAAChecked( bool value )
+	void MainWindow::setHighQualityAA( bool value )
 	{
 		_ui->actionHigh_Quality_Antialiasing->setChecked( value );
 	}
