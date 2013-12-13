@@ -151,9 +151,17 @@ Var AR_RegFlags
 ;--- End of Add/Remove macros ---
 
 ;--------------------------------
-;Interface Settings
+;Interface Settings / Header
 
 !define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "@CPACK_NSIS_MUI_HEADER@"
+!define MUI_HEADERIMAGE_UNBITMAP "@CPACK_NSIS_MUI_UNIHEADER@"
+
+;--------------------------------
+;Interface Settings / Wizard
+!define MUI_WELCOMEFINISHPAGE_BITMAP "@CPACK_NSIS_MUI_WIZARD@"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "@CPACK_NSIS_MUI_UNIWIZARD@"
+
 !define MUI_ABORTWARNING
 
 ;--------------------------------

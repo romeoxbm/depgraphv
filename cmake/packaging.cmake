@@ -67,6 +67,13 @@ if( WIN32 )
 	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph" )
 	set( CPACK_NSIS_URL_LINK_NAME "${CPACK_NSIS_PROJECT_NAME}'s project page at SourceForge.net" )
 	
+	set( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-install.ico" )
+	set( CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall.ico" )
+	set( CPACK_NSIS_MUI_HEADER "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange_header.bmp" )
+	set( CPACK_NSIS_MUI_UNIHEADER "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall_header.bmp" )
+	set( CPACK_NSIS_MUI_WIZARD "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange_wizard.bmp" )
+	set( CPACK_NSIS_MUI_UNIWIZARD "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall_wizard.bmp" )
+	
 	if( MSVC_IDE )
 		set( CPACK_NSIS_MSVC_REDIST ON )
 
