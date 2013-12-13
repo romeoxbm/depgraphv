@@ -30,6 +30,7 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QDesktopServices>
+#include <QUrl>
 #include <qglobal.h>
 #include <gvc.h>
 
@@ -40,6 +41,10 @@ namespace depgraphV
 		  _ui( new Ui::AboutDialog )
 	{
 		_ui->setupUi( this );
+
+#ifndef QT_USE_OPENGL
+		_ui->glSupportValue->setText( "NO" );
+#endif
 
 		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
 		_ui->donateCheckBox->setChecked( !wnd->showDonateOnExit() );

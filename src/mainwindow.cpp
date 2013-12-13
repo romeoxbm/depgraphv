@@ -57,7 +57,7 @@ namespace depgraphV
 		_ui->actionOpenGL->setData( Graph::OpenGL );
 
 #ifndef QT_USE_OPENGL
-		ui->actionOpenGL->setEnabled( false );
+		_ui->actionOpenGL->setEnabled( false );
 #endif
 
 		QRegExp rx( "(\\s*\\*\\.\\w+\\s*;?)+" );

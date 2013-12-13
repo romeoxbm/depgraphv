@@ -30,87 +30,6 @@
     <normaloff>:/icons/dep-graphV.ico</normaloff>:/icons/dep-graphV.ico</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_7">
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string notr="true"/>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_1">
-      <item row="0" column="0" rowspan="3">
-       <widget class="QLabel" name="logo">
-        <property name="minimumSize">
-         <size>
-          <width>128</width>
-          <height>128</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>128</width>
-          <height>128</height>
-         </size>
-        </property>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-        <property name="pixmap">
-         <pixmap resource="../res/resources.qrc">:/icons/dep-graphV.ico</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="projectNameLabel">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>35</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>20</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="projectVersionLabel">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>10</height>
-         </size>
-        </property>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="projectCopyRightsLabel">
-        <property name="text">
-         <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copyrights © 2013 by Francesco Guastella &amp;lt;&lt;a href=&quot;mailto:guastella.francesco@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;guastella.francesco@gmail.com&lt;/span&gt;&lt;/a&gt;&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="1" column="0" colspan="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="minimumSize">
@@ -226,6 +145,12 @@
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
            <widget class="QLabel" name="label">
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string notr="true">Qt:</string>
             </property>
@@ -240,6 +165,12 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
+            <property name="maximumSize">
+             <size>
+              <width>60</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
              <string notr="true">GraphViz:</string>
             </property>
@@ -365,10 +296,13 @@
        <item row="0" column="0" colspan="3">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV is a free software, and it's absolutely free of charge, but developing and testing free software isn't free of costs too.&lt;br&gt;So, If this application helped you, and if you can afford to, please consider a donation.&lt;br&gt;Any size donation is appreciated.&lt;/p&gt;&lt;br&gt;Thanks&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV is a free software, and it's absolutely free of charge, but developing and testing free software isn't free of costs too.&lt;br&gt;So, If this application helped you, and if you can afford to, please consider a donation.&lt;br&gt;Any size donation is appreciated.&lt;/p&gt;Thanks&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -394,6 +328,123 @@
      <property name="text">
       <string>Close</string>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>170</height>
+      </size>
+     </property>
+     <property name="title">
+      <string notr="true"/>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_9">
+      <item row="0" column="0" rowspan="4">
+       <widget class="QLabel" name="logo">
+        <property name="minimumSize">
+         <size>
+          <width>128</width>
+          <height>128</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>128</height>
+         </size>
+        </property>
+        <property name="text">
+         <string notr="true"/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../res/resources.qrc">:/icons/dep-graphV.ico</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="projectNameLabel">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>35</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>20</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="projectVersionLabel">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>10</height>
+         </size>
+        </property>
+        <property name="text">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="glSupportLabel">
+          <property name="maximumSize">
+           <size>
+            <width>105</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>OpenGL Support:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="glSupportValue">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>YES</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="projectCopyRightsLabel">
+        <property name="text">
+         <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copyrights © 2013 by Francesco Guastella &amp;lt;&lt;a href=&quot;mailto:guastella.francesco@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;guastella.francesco@gmail.com&lt;/span&gt;&lt;/a&gt;&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
