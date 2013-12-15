@@ -76,6 +76,8 @@ namespace depgraphV
 
 	private:
 		Ui::AboutDialog* _ui;
+		bool _donateBtnIcoDirty;
+
 		QString _loadTextFromResources( const QString& filename );
 
 	};

@@ -38,7 +38,8 @@ namespace depgraphV
 {
 	AboutDialog::AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent )
 		: QDialog( parent, Qt::WindowTitleHint ),
-		  _ui( new Ui::AboutDialog )
+		  _ui( new Ui::AboutDialog ),
+		  _donateBtnIcoDirty( true )
 	{
 		_ui->setupUi( this );
 
@@ -74,10 +75,14 @@ namespace depgraphV
 		if( showDonationsTab )
 			_ui->tabWidget->setCurrentIndex( _ui->tabWidget->indexOf( _ui->tab_7 ) );
 
-		//Update the donate button icon
-		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-		QPixmap p( QString( ":/donateBtns/donate_%1.gif" ).arg( wnd->currentLocale() ) );
-		_ui->donateButton->setIcon( QIcon( p ) );
+		//Update donate button icon
+		if( _ui->donateButton->icon().isNull() || _donateBtnIcoDirty )
+		{
+			MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
+			QPixmap p( QString( ":/donateBtns/donate_%1.gif" ).arg( wnd->currentLocale() ) );
+			_ui->donateButton->setIcon( QIcon( p ) );
+			_donateBtnIcoDirty = false;
+		}
 
 		return QDialog::exec();
 	}
@@ -85,6 +90,7 @@ namespace depgraphV
 	void AboutDialog::translateUi()
 	{
 		_ui->retranslateUi( this );
+		_donateBtnIcoDirty = true;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AboutDialog::on_donateButton_clicked()
