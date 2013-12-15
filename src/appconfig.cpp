@@ -55,8 +55,12 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::saveDefault()
 	{
-		if( !_settings.childGroups().contains( "default" ) )
-			_doSave( true );
+		if( _settings.childGroups().contains( "default" ) )
+			return;
+
+		//Move the main window to its default position (center of the screen) before saving default settings
+		_win->move( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
+		_doSave( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void AppConfig::restoreDefault()
