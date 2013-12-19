@@ -41,9 +41,8 @@ namespace depgraphV
 	/**
 	 * @brief toggleConsole function allocate/free a log console. Only available on Windows.
 	 * @param enabled True when a console allocation is required, false when a the console should be freed.
-	 * @param pause If true, a "pause" command will be executed before freeing the console.
 	 */
-	void toggleConsole( bool enabled, bool pause );
+	void toggleConsole( bool enabled );
 #endif
 
 	/**
@@ -52,7 +51,7 @@ namespace depgraphV
 	void printVersion()
 	{
 #ifdef WIN32
-		toggleConsole( true, true );
+		toggleConsole( true );
 #endif
 		printf( "%s version %s\n", APP_NAME, APP_VER );
 	}
@@ -82,7 +81,7 @@ namespace depgraphV
 #endif
 
 #ifdef WIN32
-	void toggleConsole( bool enabled, bool pause = false )
+	void toggleConsole( bool enabled )
 	{
 		bool initially = GetConsoleWindow() != NULL;
 		bool success = true;
@@ -103,9 +102,7 @@ namespace depgraphV
 		}
 		else if( initially )
 		{
-			if( pause )
-				system( "pause" );
-
+			system( "pause" );
 			success = FreeConsole();
 		}
 
