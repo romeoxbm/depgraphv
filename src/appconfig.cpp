@@ -60,6 +60,10 @@ namespace depgraphV
 
 		//Move the main window to its default position (center of the screen) before saving default settings
 		_win->move( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
+
+		//Translate the ui by using english
+		_win->translateUi( "en" );
+
 		_doSave( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
