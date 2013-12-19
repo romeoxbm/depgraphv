@@ -391,6 +391,12 @@ namespace depgraphV
 		if( path.isEmpty() )
 			return;
 
+		QFileInfo info( path );
+		QString format = info.suffix();
+
+		if( format.isEmpty() )
+			path += ".dot";
+
 		if( _ui->graph->saveDot( path ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
