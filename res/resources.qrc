@@ -13,7 +13,7 @@
         <file>it.png</file>
     </qresource>
     <qresource prefix="/donateBtns">
-        <file>donate_en.gif</file>
-        <file>donate_it.gif</file>
+        <file>donate_en.png</file>
+        <file>donate_it.png</file>
     </qresource>
 </RCC>

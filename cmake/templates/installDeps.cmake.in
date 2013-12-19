@@ -56,4 +56,10 @@ file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@" TYPE FILE
 if( QT5 )
 	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/platforms" TYPE FILE 
 			FILES "@CMAKE_PREFIX_PATH@plugins/platforms/qwindows.dll" )
+			
+	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/imageformats" TYPE FILE 
+			FILES "@CMAKE_PREFIX_PATH@plugins/imageformats/qico.dll" )
+else()
+	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/imageformats" TYPE FILE 
+			FILES "@CMAKE_PREFIX_PATH@plugins/imageformats/qico4.dll" )
 endif()

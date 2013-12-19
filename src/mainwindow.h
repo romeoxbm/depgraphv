@@ -196,6 +196,7 @@ namespace depgraphV
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		uint _scanFolder( const QString& dirName ) const;
 		QStringList _getNameFilters() const;
+		bool _lookForRequiredImageFormats();
 
 		void _showAboutDialog( bool showDonations );
 

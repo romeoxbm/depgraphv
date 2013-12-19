@@ -79,7 +79,7 @@ namespace depgraphV
 		if( _ui->donateButton->icon().isNull() || _donateBtnIcoDirty )
 		{
 			MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-			QPixmap p( QString( ":/donateBtns/donate_%1.gif" ).arg( wnd->currentLocale() ) );
+			QPixmap p( QString( ":/donateBtns/donate_%1.png" ).arg( wnd->currentLocale() ) );
 			_ui->donateButton->setIcon( QIcon( p ) );
 			_donateBtnIcoDirty = false;
 		}

@@ -70,12 +70,12 @@
         <translation>Chiudi</translation>
     </message>
     <message>
-        <location filename="../src/aboutdialog.cpp" line="91"/>
+        <location filename="../src/aboutdialog.cpp" line="98"/>
         <source>Donation+to+dep-graphV</source>
         <translation>Donazione+per+dep-graphV</translation>
     </message>
     <message>
-        <location filename="../src/aboutdialog.cpp" line="107"/>
+        <location filename="../src/aboutdialog.cpp" line="114"/>
         <source>Cannot read </source>
         <translation>Non riesco a leggere </translation>
     </message>
@@ -83,27 +83,27 @@
 <context>
     <name>depgraphV::AppConfig</name>
     <message>
-        <location filename="../src/appconfig.cpp" line="66"/>
+        <location filename="../src/appconfig.cpp" line="74"/>
         <source>Missing default settings</source>
         <translation>Impostazioni di default mancanti</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="106"/>
+        <location filename="../src/appconfig.cpp" line="114"/>
         <source>Saving settings...</source>
         <translation>Sto salvando le impostazioni...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="106"/>
+        <location filename="../src/appconfig.cpp" line="114"/>
         <source>Saving default settings...</source>
         <translation>Sto salvando le impostazioni di default...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="149"/>
+        <location filename="../src/appconfig.cpp" line="157"/>
         <source>Restoring settings...</source>
         <translation>Sto ripristinando le impostazioni...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="149"/>
+        <location filename="../src/appconfig.cpp" line="157"/>
         <source>Restoring default settings...</source>
         <translation>Sto ripristinando le impostazioni di default...</translation>
     </message>
@@ -155,89 +155,94 @@
 <context>
     <name>depgraphV::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="89"/>
+        <location filename="../src/mainwindow.cpp" line="94"/>
         <source>ready</source>
         <translation>pronto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="225"/>
+        <location filename="../src/mainwindow.cpp" line="230"/>
         <source>Select root folder</source>
         <translation>Seleziona la cartella radice</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="247"/>
+        <location filename="../src/mainwindow.cpp" line="252"/>
         <source>Unable to render; Plugin not found.</source>
         <translation>Impossibile fare il rendering; Plugin non trovato.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="250"/>
+        <location filename="../src/mainwindow.cpp" line="255"/>
         <source>No file has been found in selected folder; nothing to draw.</source>
         <translation>Nessun file è stato trovato nella cartella selezionata; niente da disegnare.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="259"/>
+        <location filename="../src/mainwindow.cpp" line="264"/>
         <source>Clear graph</source>
         <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="260"/>
-        <location filename="../src/mainwindow.cpp" line="286"/>
+        <location filename="../src/mainwindow.cpp" line="265"/>
+        <location filename="../src/mainwindow.cpp" line="291"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="301"/>
+        <location filename="../src/mainwindow.cpp" line="306"/>
         <source>Renderer method changed</source>
         <translation>Modalità di render modificata</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="345"/>
         <source>Cannot save image</source>
         <translation>Impossibile salvare l&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="345"/>
         <source>Unable to save graph as image; Plugin not found.</source>
         <translation>Impossibile salvare il grafo come immagine; Plugin non trovato.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="360"/>
+        <location filename="../src/mainwindow.cpp" line="365"/>
         <source>Select path and name of the image file</source>
         <translation>Seleziona percorso e nome del file immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="376"/>
-        <location filename="../src/mainwindow.cpp" line="390"/>
+        <location filename="../src/mainwindow.cpp" line="381"/>
+        <location filename="../src/mainwindow.cpp" line="395"/>
         <source>File successfully saved.</source>
         <translation>File salvato con successo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="392"/>
+        <location filename="../src/mainwindow.cpp" line="397"/>
         <source>Unable to save file</source>
         <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="383"/>
+        <location filename="../src/mainwindow.cpp" line="388"/>
         <source>Select path and name of the dot file</source>
         <translation>Seleziona percorso e nome del file dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="392"/>
+        <location filename="../src/mainwindow.cpp" line="92"/>
+        <source>Missing one or more required image formats; you could meet unespected issues.</source>
+        <translation>Uno o più formati di immagine richiesti mancanti; potresti riscontrare problemi inaspettati.</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="397"/>
         <source>Save as dot</source>
         <translation>Salva come dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="509"/>
+        <location filename="../src/mainwindow.cpp" line="528"/>
         <source>Found locale %1 in %2</source>
         <translation>Trovata localizzazione %1 in %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="551"/>
+        <location filename="../src/mainwindow.cpp" line="570"/>
         <source>Translation file &quot;%1&quot; does not exists</source>
         <translation>File di traduzione &quot;%1&quot; non esistente</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="559"/>
+        <location filename="../src/mainwindow.cpp" line="578"/>
         <source>Switched to translation file %1 in %2</source>
         <translation>Selezionato file di tradizione %1 in %2</translation>
     </message>
@@ -305,8 +310,8 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="346"/>
-        <location filename="../src/mainwindow.cpp" line="247"/>
-        <location filename="../src/mainwindow.cpp" line="250"/>
+        <location filename="../src/mainwindow.cpp" line="252"/>
+        <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Draw</source>
         <translation>Disegna</translation>
     </message>
@@ -402,7 +407,7 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="527"/>
-        <location filename="../src/mainwindow.cpp" line="285"/>
+        <location filename="../src/mainwindow.cpp" line="290"/>
         <source>Restore default settings</source>
         <translation>Ripristina impostazioni di default</translation>
     </message>

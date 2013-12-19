@@ -32,6 +32,7 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QLibraryInfo>
+#include <QImageReader>
 
 namespace depgraphV
 {
@@ -85,6 +86,10 @@ namespace depgraphV
 
 		//Restore last settings
 		_config->restore();
+
+		//Check for available image formats
+		if( !_lookForRequiredImageFormats() )
+			qWarning() << qPrintable( tr( "Missing one or more required image formats; you could meet unespected issues." ) );
 
 		_ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
@@ -481,6 +486,20 @@ namespace depgraphV
 		}
 
 		return nameFilters;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	bool MainWindow::_lookForRequiredImageFormats()
+	{
+		QList<QByteArray> formats;
+		formats << "ico" << "png";
+
+		foreach( QByteArray f, formats )
+		{
+			if( !QImageReader::supportedImageFormats().contains( f ) )
+				return false;
+		}
+
+		return true;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::_showAboutDialog( bool showDonations )
