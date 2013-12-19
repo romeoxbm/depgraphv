@@ -33,9 +33,9 @@ get_bundle_keys( "@CMAKE_CURRENT_BINARY_DIR@/Release/@ProjectName@.exe" "" "@RUN
 
 set( deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_core.dll" )
 list( APPEND deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_dot_layout.dll" )
+list( APPEND deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_gdiplus.dll" )
 
 #gvplugin_gd.dll
-#gvplugin_gdiplus.dll
 #gvplugin_neato_layout.dll
 #gvplugin_pango.dll
 
