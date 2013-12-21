@@ -339,7 +339,7 @@ Section "-Core installation"
 	Pop $R0 ; Get the return value
 	StrCmp $R0 "success" +3
 		MessageBox MB_OK "Download failed: $R0"
-		Quit
+		Goto noMSVC_Redist
 	success:
 		ExecWait '"$2" /q:a'
 		Delete "$2"
