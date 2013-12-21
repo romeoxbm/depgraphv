@@ -40,7 +40,7 @@ namespace depgraphV
 #ifdef WIN32
 	/**
 	 * @brief toggleConsole function allocate/free a log console. Only available on Windows.
-	 * @param enabled True when a console allocation is required, false when a the console should be freed.
+	 * @param enabled True when a console allocation is required, false when the already allocated console should be freed.
 	 */
 	void toggleConsole( bool enabled );
 #endif
