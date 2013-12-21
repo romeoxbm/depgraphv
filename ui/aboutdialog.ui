@@ -405,9 +405,15 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="glSupportLabel">
+          <property name="minimumSize">
+           <size>
+            <width>115</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>105</width>
+            <width>115</width>
             <height>16777215</height>
            </size>
           </property>
