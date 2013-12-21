@@ -1,3 +1,5 @@
+* Version 0.3
+
 * Version 0.2
 	- User interface has been localized; It's now possible to change the main window language at run-time.
 	- Image render mode has been removed;

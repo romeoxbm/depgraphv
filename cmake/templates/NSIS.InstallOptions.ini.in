@@ -1,5 +1,5 @@
 [Settings]
-NumFields=2
+NumFields=1
 
 [Field 1]
 Type=CheckBox

@@ -6,7 +6,7 @@
 #
 # This software is distributed under the MIT License:
 #
-# Copyright (c) 2013 Francesco Guastella aka romeoxbm
+# Copyright (c) 2013 - 2014 Francesco Guastella aka romeoxbm
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@
 cmake_minimum_required( VERSION 2.8.11 )
 
 set( ProjectName "dep-graphV" )
-set( ProjectVersion "0.2" )
+set( ProjectVersion "0.3" )
 set( CMAKE_AUTOMOC ON )
 
 # As moc files are generated in the binary dir, tell CMake
