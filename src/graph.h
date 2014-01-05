@@ -154,6 +154,10 @@ namespace depgraphV
 		QStringList* pluginsListByKind( const QString& kind ) const;
 
 	signals:
+		void vertexCreated();
+		void edgeCreated();
+
+		void layoutApplied();
 
 	public slots:
 		/**

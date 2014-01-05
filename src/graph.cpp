@@ -107,6 +107,7 @@ namespace depgraphV
 		}
 
 		_vertices.insert( label, v );
+		emit vertexCreated();
 		return v;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -170,6 +171,8 @@ namespace depgraphV
 
 			return false;
 		}
+
+		emit layoutApplied();
 
 		QString data;
 		if( !_renderDataAs( "svg", &data ) )
@@ -324,6 +327,7 @@ namespace depgraphV
 		}
 
 		_edges << e;
+		emit edgeCreated();
 		return e;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
