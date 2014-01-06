@@ -50,12 +50,12 @@
         <translation>&lt;html&gt;&lt;head&gt;&lt;body&gt;&lt;p&gt;dep-graphV è un software libero, ed è assolutamente gratuito, ma sviluppare e testare un software libero non è privo di costi.&lt;br&gt;Quindi, se questa applicazione ti ha aiutato, e se puoi farlo, per favore considera di fare una donazione.&lt;br&gt;Qualsiasi donazione, anche la più piccola, è molto apprezzata.&lt;/p&gt;Grazie&lt;/body&gt;&lt;/htm&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="415"/>
+        <location filename="../ui/aboutdialog.ui" line="421"/>
         <source>OpenGL Support:</source>
         <translation>Supporto OpenGL:</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialog.ui" line="428"/>
+        <location filename="../ui/aboutdialog.ui" line="434"/>
         <source>YES</source>
         <translation>SI</translation>
     </message>
@@ -109,6 +109,24 @@
     </message>
 </context>
 <context>
+    <name>depgraphV::BackgroundWorker</name>
+    <message>
+        <location filename="../src/backgroundworker.cpp" line="60"/>
+        <source>Unable to render; Plugin not found.</source>
+        <translation>Impossibile fare il rendering; Plugin non trovato.</translation>
+    </message>
+    <message>
+        <location filename="../src/backgroundworker.cpp" line="63"/>
+        <source>No file has been found in selected folder; nothing to draw.</source>
+        <translation>Nessun file è stato trovato nella cartella selezionata; niente da disegnare.</translation>
+    </message>
+    <message>
+        <location filename="../src/backgroundworker.cpp" line="126"/>
+        <source>Aborted.</source>
+        <translation>Annullato.</translation>
+    </message>
+</context>
+<context>
     <name>depgraphV::Graph</name>
     <message>
         <location filename="../src/graph.cpp" line="105"/>
@@ -116,38 +134,38 @@
         <translation>Vertice non valido:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="167"/>
+        <location filename="../src/graph.cpp" line="168"/>
         <source>Layout render error</source>
         <translation>Errore nel render del layout</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="206"/>
+        <location filename="../src/graph.cpp" line="209"/>
         <source>Save as image</source>
         <translation>Salva come immagine</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="207"/>
+        <location filename="../src/graph.cpp" line="210"/>
         <source>Unable to save file;
 </source>
         <translation>Impossibile salvare il file;</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="322"/>
+        <location filename="../src/graph.cpp" line="325"/>
         <source>Invalid egde:</source>
         <translation>Arco non valido:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="348"/>
+        <location filename="../src/graph.cpp" line="352"/>
         <source>Looking for available GraphViz plugins...</source>
         <translation>Sto cercando plugin di GraphViz disponibili...</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="372"/>
+        <location filename="../src/graph.cpp" line="376"/>
         <source>Plugins found:</source>
         <translation>Plugin trovati:</translation>
     </message>
     <message>
-        <location filename="../src/graph.cpp" line="357"/>
+        <location filename="../src/graph.cpp" line="361"/>
         <source>Plugins for kind &quot;%1&quot;:</source>
         <translation>Plugin per tipo &quot;%1&quot;:</translation>
     </message>
@@ -155,94 +173,84 @@
 <context>
     <name>depgraphV::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="94"/>
+        <location filename="../src/mainwindow.cpp" line="95"/>
         <source>ready</source>
         <translation>pronto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="230"/>
+        <location filename="../src/mainwindow.cpp" line="231"/>
         <source>Select root folder</source>
         <translation>Seleziona la cartella radice</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="252"/>
-        <source>Unable to render; Plugin not found.</source>
-        <translation>Impossibile fare il rendering; Plugin non trovato.</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.cpp" line="255"/>
-        <source>No file has been found in selected folder; nothing to draw.</source>
-        <translation>Nessun file è stato trovato nella cartella selezionata; niente da disegnare.</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.cpp" line="264"/>
         <source>Clear graph</source>
         <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="265"/>
-        <location filename="../src/mainwindow.cpp" line="291"/>
+        <location filename="../src/mainwindow.cpp" line="256"/>
+        <location filename="../src/mainwindow.cpp" line="282"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="306"/>
+        <location filename="../src/mainwindow.cpp" line="297"/>
         <source>Renderer method changed</source>
         <translation>Modalità di render modificata</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="345"/>
+        <location filename="../src/mainwindow.cpp" line="336"/>
         <source>Cannot save image</source>
         <translation>Impossibile salvare l&apos;immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="345"/>
+        <location filename="../src/mainwindow.cpp" line="336"/>
         <source>Unable to save graph as image; Plugin not found.</source>
         <translation>Impossibile salvare il grafo come immagine; Plugin non trovato.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="365"/>
+        <location filename="../src/mainwindow.cpp" line="356"/>
         <source>Select path and name of the image file</source>
         <translation>Seleziona percorso e nome del file immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="381"/>
-        <location filename="../src/mainwindow.cpp" line="395"/>
+        <location filename="../src/mainwindow.cpp" line="372"/>
+        <location filename="../src/mainwindow.cpp" line="392"/>
         <source>File successfully saved.</source>
         <translation>File salvato con successo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="397"/>
+        <location filename="../src/mainwindow.cpp" line="394"/>
         <source>Unable to save file</source>
         <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="388"/>
+        <location filename="../src/mainwindow.cpp" line="379"/>
         <source>Select path and name of the dot file</source>
         <translation>Seleziona percorso e nome del file dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="92"/>
+        <location filename="../src/mainwindow.cpp" line="93"/>
         <source>Missing one or more required image formats; you could meet unespected issues.</source>
         <translation>Uno o più formati di immagine richiesti mancanti; potresti riscontrare problemi inaspettati.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="397"/>
+        <location filename="../src/mainwindow.cpp" line="394"/>
         <source>Save as dot</source>
         <translation>Salva come dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="528"/>
+        <location filename="../src/mainwindow.cpp" line="507"/>
         <source>Found locale %1 in %2</source>
         <translation>Trovata localizzazione %1 in %2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="570"/>
+        <location filename="../src/mainwindow.cpp" line="549"/>
         <source>Translation file &quot;%1&quot; does not exists</source>
         <translation>File di traduzione &quot;%1&quot; non esistente</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="578"/>
+        <location filename="../src/mainwindow.cpp" line="557"/>
         <source>Switched to translation file %1 in %2</source>
         <translation>Selezionato file di tradizione %1 in %2</translation>
     </message>
@@ -310,8 +318,6 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="346"/>
-        <location filename="../src/mainwindow.cpp" line="252"/>
-        <location filename="../src/mainwindow.cpp" line="255"/>
         <source>Draw</source>
         <translation>Disegna</translation>
     </message>
@@ -407,9 +413,80 @@
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="527"/>
-        <location filename="../src/mainwindow.cpp" line="290"/>
+        <location filename="../src/mainwindow.cpp" line="281"/>
         <source>Restore default settings</source>
         <translation>Ripristina impostazioni di default</translation>
+    </message>
+</context>
+<context>
+    <name>depgraphV::ScanDialog</name>
+    <message>
+        <location filename="../ui/scandialog.ui" line="48"/>
+        <source>Scanning folder...</source>
+        <translation>Analizzo la cartella...</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="77"/>
+        <location filename="../src/scandialog.cpp" line="164"/>
+        <source>Details</source>
+        <translation>Dettagli</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="83"/>
+        <source>Folders found:</source>
+        <translation>Cartelle trovate:</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="97"/>
+        <source>Files Found:</source>
+        <translation>File trovati:</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="111"/>
+        <source>Analized files:</source>
+        <translation>File analizzati:</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="125"/>
+        <source>Elapsed time:</source>
+        <translation>Tempo trascorso:</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="144"/>
+        <source>Details &gt;&gt;&gt;</source>
+        <translation>Dettagli &gt;&gt;&gt;</translation>
+    </message>
+    <message>
+        <location filename="../ui/scandialog.ui" line="164"/>
+        <source>Cancel</source>
+        <translation>Annulla</translation>
+    </message>
+    <message>
+        <location filename="../src/scandialog.cpp" line="88"/>
+        <source>Creating graph...</source>
+        <translation>Creo il grafo...</translation>
+    </message>
+    <message>
+        <location filename="../src/scandialog.cpp" line="93"/>
+        <source>Layouting...</source>
+        <translation>Applico il layout...</translation>
+    </message>
+    <message>
+        <location filename="../src/scandialog.cpp" line="113"/>
+        <source>Done</source>
+        <translation>Fatto</translation>
+    </message>
+    <message>
+        <location filename="../src/scandialog.cpp" line="115"/>
+        <location filename="../src/scandialog.cpp" line="125"/>
+        <location filename="../src/scandialog.cpp" line="169"/>
+        <source>Close</source>
+        <translation>Chiudi</translation>
+    </message>
+    <message>
+        <location filename="../src/scandialog.cpp" line="124"/>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
 </context>
 </TS>

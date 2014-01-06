@@ -156,6 +156,10 @@ namespace depgraphV
 		 */
 		void setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter );
 
+		QStringList nameFilters() const;
+
+		Graph* graph() const;
+
 	protected:
 		virtual void changeEvent( QEvent* );
 		virtual void closeEvent( QCloseEvent* );
@@ -194,8 +198,6 @@ namespace depgraphV
 		void _setGraphAttributes() const;
 		void _setGroupBoxesEnabled( bool value ) const;
 		void _setButtonsAndActionsEnabled( bool value ) const;
-		uint _scanFolder( const QString& dirName ) const;
-		QStringList _getNameFilters() const;
 		bool _lookForRequiredImageFormats();
 
 		void _showAboutDialog( bool showDonations );

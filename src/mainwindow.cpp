@@ -28,6 +28,7 @@
 #include "appconfig.h"
 #include "ui_mainwindow.h"
 #include "buildsettings.h"
+#include "scandialog.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
@@ -239,22 +240,12 @@ namespace depgraphV
 
 		_ui->graph->prepare();
 		_setGraphAttributes();
-		uint filesFound = _scanFolder( _ui->selectedRootFolder->text() );
 
-		if( filesFound > 0 )
-		{
-			if( _ui->graph->applyLayout() )
-			{
-				_setButtonsAndActionsEnabled( true );
-				return;
-			}
-			else
-				QMessageBox::information( this, tr( "Draw" ), tr( "Unable to render; Plugin not found." ) );
-		}
+		ScanDialog s( this );
+		if( s.exec() == QDialog::Accepted )
+			_setButtonsAndActionsEnabled( true );
 		else
-			QMessageBox::information( this, tr( "Draw" ), tr( "No file has been found in selected folder; nothing to draw." ) );
-
-		_doClearGraph();
+			_doClearGraph();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void MainWindow::on_clearButton_clicked()
@@ -438,31 +429,7 @@ namespace depgraphV
 		_ui->actionSave_as_dot->setEnabled( value );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	uint MainWindow::_scanFolder( const QString& dirName ) const
-	{
-		QDir dir( dirName );
-		uint filesCount = 0;
-
-		//Iterating subfolders, if required
-		if( _ui->recursiveCheckBox->isChecked() )
-		{
-			foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Dirs ) )
-				filesCount += _scanFolder( entry.filePath() );
-		}
-
-		//Iterating files
-		dir.setNameFilters( _getNameFilters() );
-		foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files ) )
-		{
-			_ui->graph->createOrRetrieveVertex( entry.fileName() );
-			_ui->graph->createEdges( entry.absolutePath(), entry.fileName() );
-			filesCount++;
-		}
-
-		return filesCount;
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	QStringList MainWindow::_getNameFilters() const
+	QStringList MainWindow::nameFilters() const
 	{
 		QStringList nameFilters;
 
@@ -492,6 +459,12 @@ namespace depgraphV
 		}
 
 		return nameFilters;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	Graph* MainWindow::graph() const
+	{
+		assert( _ui->graph );
+		return _ui->graph;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool MainWindow::_lookForRequiredImageFormats()

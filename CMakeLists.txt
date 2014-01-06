@@ -54,21 +54,26 @@ project( ${ProjectName} )
 set( Headers
 	src/aboutdialog.h
 	src/appconfig.h
+	src/backgroundworker.h
 	src/graph.h
 	src/mainwindow.h
+	src/scandialog.h
 )
 
 set( Sources
 	src/aboutdialog.cpp
 	src/appconfig.cpp
+	src/backgroundworker.cpp
 	src/graph.cpp
 	src/main.cpp
 	src/mainwindow.cpp
+	src/scandialog.cpp
 )
 
 set( Sources_ui
 	ui/aboutdialog.ui
 	ui/mainwindow.ui
+	ui/scandialog.ui
 )
 
 set( Resources
