@@ -1,7 +1,8 @@
 * Version 0.3
+	- Folder scan has been moved from ui thread to a separate thread;
 
 * Version 0.2
-	- User interface has been localized; It's now possible to change the main window language at run-time.
+	- User interface has been localized, so it's now possible to change the main window language at run-time;
 	- Image render mode has been removed;
 	- Persistent user settings;
 	- Available GraphViz plugins are now detected;

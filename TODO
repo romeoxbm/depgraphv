@@ -10,7 +10,6 @@ features, and there's no particular order.
 * Selecting font family used by vertices labels;
 * Per-folder and/or per-src subgraphs;
 * Highlightning of vertex and of its connected edges;
-* Multi-threaded folders scan;
 * Detecting graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);
 * Running as stand-alone or as Qt Creator plugin (or any other "compatible" IDE);
 * Watch over file system changes and automatically update the graph;
