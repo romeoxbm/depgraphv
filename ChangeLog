@@ -1,5 +1,6 @@
 * Version 0.3
 	- Folder scan has been moved from ui thread to a separate thread;
+	- C/C++ style comments ignored when parsing files;
 
 * Version 0.2
 	- User interface has been localized, so it's now possible to change the main window language at run-time;
