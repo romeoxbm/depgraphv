@@ -48,18 +48,18 @@ namespace depgraphV
 		_ui->setupUi( this );
 
 		//Connect signals/slots
-		connect( _timer, SIGNAL( timeout() ), this, SLOT( on_timeout() ) );
-		connect( _worker, SIGNAL( directoryFound() ), this, SLOT( on_directoryFound() ) );
-		connect( _worker, SIGNAL( fileFound( QString ) ), this, SLOT( on_fileFound( QString ) ) );
-		connect( _worker, SIGNAL( scanFinished() ), this, SLOT( on_scanFinished() ) );
-		connect( _worker, SIGNAL( graphCreated() ), this, SLOT( on_graphCreated() ) );
-		connect( _worker, SIGNAL( fileAnalized( QString ) ), this, SLOT( on_fileAnalized( QString ) ) );
-		connect( _worker, SIGNAL( fail( QString ) ), this, SLOT( on_fail( QString ) ) );
-		connect( win->graph(), SIGNAL( layoutApplied() ), this, SLOT( on_layoutFinished() ) );
+		connect( _timer, SIGNAL( timeout() ), this, SLOT( onTimeout() ) );
+		connect( _worker, SIGNAL( directoryFound() ), this, SLOT( onDirectoryFound() ) );
+		connect( _worker, SIGNAL( fileFound( QString ) ), this, SLOT( onFileFound( QString ) ) );
+		connect( _worker, SIGNAL( scanFinished() ), this, SLOT( onScanFinished() ) );
+		connect( _worker, SIGNAL( graphCreated() ), this, SLOT( onGraphCreated() ) );
+		connect( _worker, SIGNAL( fileAnalized( QString ) ), this, SLOT( onFileAnalized( QString ) ) );
+		connect( _worker, SIGNAL( fail( QString ) ), this, SLOT( onFail( QString ) ) );
+		connect( win->graph(), SIGNAL( layoutApplied() ), this, SLOT( onLayoutFinished() ) );
 		connect( _ui->cancelButton, SIGNAL( clicked() ), _worker, SLOT( on_abort() ) );
-		connect( _ui->cancelButton, SIGNAL( clicked() ), this, SLOT( on_abort_clicked() ) );
+		connect( _ui->cancelButton, SIGNAL( clicked() ), this, SLOT( onAbortClicked() ) );
 
-		on_toggleDetails();
+		onToggleDetails();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	ScanDialog::~ScanDialog()
@@ -70,25 +70,25 @@ namespace depgraphV
 		delete _ui;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_directoryFound()
+	void ScanDialog::onDirectoryFound()
 	{
 		_foldersCount++;
 		_ui->foldersCount->setText( QString::number( _foldersCount ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_fileFound( QString file )
+	void ScanDialog::onFileFound( QString file )
 	{
 		_filesCount++;
 		_ui->filesCount->setText( QString::number( _filesCount ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_scanFinished()
+	void ScanDialog::onScanFinished()
 	{
 		_ui->progressBar->setMaximum( _filesCount );
 		_ui->currentOperation->setText( tr( "Creating graph..." ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_graphCreated()
+	void ScanDialog::onGraphCreated()
 	{
 		_ui->currentOperation->setText( tr( "Layouting..." ) );
 		_ui->progressBar->setValue( 0 );
@@ -98,14 +98,14 @@ namespace depgraphV
 		_ui->cancelButton->setEnabled( false );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_fileAnalized( QString file )
+	void ScanDialog::onFileAnalized( QString file )
 	{
 		_analizedFilesCount++;
 		_ui->progressBar->setValue( _analizedFilesCount ); 
 		_ui->analizedFilesCount->setText( QString::number( _analizedFilesCount ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_layoutFinished()
+	void ScanDialog::onLayoutFinished()
 	{
 		_freeWorker();
 		_ui->progressBar->setMaximum( 1 );
@@ -116,7 +116,7 @@ namespace depgraphV
 		_ui->cancelButton->setEnabled( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_fail( QString message )
+	void ScanDialog::onFail( QString message )
 	{
 		_freeWorker();
 		_failed = true;
@@ -126,7 +126,7 @@ namespace depgraphV
 		_ui->cancelButton->setEnabled( true );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_timeout()
+	void ScanDialog::onTimeout()
 	{
 		_elapsedSeconds++;
 
@@ -143,7 +143,7 @@ namespace depgraphV
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_toggleDetails()
+	void ScanDialog::onToggleDetails()
 	{
 		_detailsShown = !_detailsShown;
 		QString suffix = " <<<";
@@ -154,7 +154,7 @@ namespace depgraphV
 			this->resize( 0, this->maximumHeight() );
 
 			//Update time elapsed label, then start timer
-			this->on_timeout();
+			this->onTimeout();
 		}
 		else
 		{
@@ -166,7 +166,7 @@ namespace depgraphV
 		_ui->detailsButton->setText( tr( "Details" ) + suffix );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::on_abort_clicked()
+	void ScanDialog::onAbortClicked()
 	{
 		if( _ui->cancelButton->text() != tr( "Close" ) )
 			return;

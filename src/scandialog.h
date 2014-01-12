@@ -30,7 +30,6 @@
 
 #include <QDialog>
 #include <QTimer>
-#include <QTime>
 
 namespace depgraphV
 {
@@ -63,19 +62,19 @@ namespace depgraphV
 	public slots:
 
 	private slots:
-		void on_directoryFound();
-		void on_fileFound( QString file );
-		void on_scanFinished();
-		void on_graphCreated();
-		void on_fileAnalized( QString file );
+		void onDirectoryFound();
+		void onFileFound( QString file );
+		void onScanFinished();
+		void onGraphCreated();
+		void onFileAnalized( QString file );
 
-		void on_layoutFinished();
-		void on_fail( QString message );
+		void onLayoutFinished();
+		void onFail( QString message );
 
-		void on_timeout();
-		void on_toggleDetails();
+		void onTimeout();
+		void onToggleDetails();
 
-		void on_abort_clicked();
+		void onAbortClicked();
 
 	private:
 		Ui::ScanDialog* _ui;

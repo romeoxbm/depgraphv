@@ -177,7 +177,7 @@
    <sender>detailsButton</sender>
    <signal>clicked()</signal>
    <receiver>depgraphV::ScanDialog</receiver>
-   <slot>on_toggleDetails()</slot>
+   <slot>onToggleDetails()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>47</x>
@@ -191,6 +191,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>on_toggleDetails()</slot>
+  <slot>onToggleDetails()</slot>
  </slots>
 </ui>
