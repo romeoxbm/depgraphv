@@ -139,6 +139,11 @@ namespace depgraphV
 
 		QTextStream stream( &f );
 		QString fileContent = stream.readAll();
+		f.close();
+
+		//Before parsing includes, we remove every comment;
+		//By this way, commented include statements will not match anymore.
+		fileContent.remove( QRegExp( "(//[^\\r\\n]*)|(/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)" ) );
 
 		QRegExp rExp( "#\\s*include\\s*((<[^>]+>)|(\"[^\"]+\"))" );
 		int pos = 0;
@@ -151,8 +156,6 @@ namespace depgraphV
 			_createEdge( src, createOrRetrieveVertex( currentInclude ) );
 			pos += rExp.matchedLength();
 		}
-
-		f.close();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	bool Graph::applyLayout( const QString& algorithm )

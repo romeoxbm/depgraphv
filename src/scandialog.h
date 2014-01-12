@@ -88,7 +88,7 @@ namespace depgraphV
 		uint _analizedFilesCount;
 
 		QTimer* _timer;
-		QTime _elapsedTime;
+		uint _elapsedSeconds;
 
 		virtual void showEvent( QShowEvent* evt );
 		void _freeWorker();

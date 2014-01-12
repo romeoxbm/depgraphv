@@ -102,7 +102,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void BackgroundWorker::_createGraph()
 	{
-		for( uint i = 0; i < _filesFound.count(); ++i )
+		for( int i = 0; i < _filesFound.count(); ++i )
 		{
 			if( _abortQueued )
 				return;
