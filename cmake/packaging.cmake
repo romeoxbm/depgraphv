@@ -30,7 +30,8 @@
 
 set( CPACK_PACKAGE_VENDOR "Guastella Francesco" )
 set( VENDOR_EMAIL "guastella.francesco@gmail.com" )
-set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "dep-graphV is an useful tool to analize header dependendencies via graphs. This is the runtime package of the tool, built against" )
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${ProjectName} - Header dependencies analizer\n" )
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY} ${ProjectName} is an useful tool to analize header dependendencies via graphs. This is the runtime package of the tool, built against" )
 set( CPACK_PACKAGE_VERSION ${ProjectVersion} )
 set( CPACK_PACKAGE_INSTALL_DIRECTORY ${ProjectName} )
 
