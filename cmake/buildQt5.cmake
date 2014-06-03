@@ -26,7 +26,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #####################################################################################
-set( qt5Modules "Widgets;Svg" )
+set( qt5Modules "Widgets;Svg;LinguistTools" )
+
+if( QT_USE_OPENGL )
+	set( qt5Modules "${qt5Modules};OpenGL" )
+endif( QT_USE_OPENGL )
 
 if( WIN32 )
 	#Default installation path of Qt5.1.1
@@ -43,43 +47,16 @@ if( WIN32 )
 	endif( MSVC11 )
 endif( WIN32 )
 
-#Looking for Qt5 Widgets
-message( STATUS "* Looking for Qt5 Widgets..." )
-find_package( Qt5Widgets REQUIRED )
-if( NOT Qt5Widgets_FOUND )
-	message( SEND_ERROR "* Failed to find Qt5 Widgets." )
-else()
-	message( STATUS "* Found" )
-endif()
-
-#Looking for Qt5 Svg
-message( STATUS "* Looking for Qt5 Svg..." )
-find_package( Qt5Svg REQUIRED )
-if( NOT Qt5Svg_FOUND )
-	message( SEND_ERROR "* Failed to find Qt5 Svg." )
-else()
-	message( STATUS "* Found" )
-endif()
-
-#Looking for Qt5 Opengl
-if( QT_USE_OPENGL )
-	message( STATUS "* Looking for Qt5 OpenGL..." )
-	find_package( Qt5OpenGL REQUIRED )
-	if( NOT Qt5OpenGL_FOUND )
-		message( STATUS "* Failed to find Qt5 OpenGL." )
+#Looking for Qt5 modules
+foreach( mod ${qt5Modules} )
+	message( STATUS "* Looking for Qt5 ${mod}..." )
+	find_package( Qt5${mod} REQUIRED )
+	if( NOT ${Qt5${mod}_FOUND} )
+		message( SEND_ERROR "* Failed to find Qt5 ${mod}." )
 	else()
-		set( qt5Modules "${qt5Modules};OpenGL" )
 		message( STATUS "* Found" )
 	endif()
-endif( QT_USE_OPENGL )
-
-message( STATUS "* Looking for Qt5 Linguist tools..." )
-find_package( Qt5LinguistTools REQUIRED )
-if( NOT Qt5LinguistTools_FOUND )
-	message( SEND_ERROR "* Failed to find Qt5 Linguist tools." )
-else()
-	message( STATUS "* Found" )
-endif()
+endforeach()
 
 qt5_wrap_ui( UISrcs ${Sources_ui} )
 
