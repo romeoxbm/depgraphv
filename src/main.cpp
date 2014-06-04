@@ -39,15 +39,15 @@ namespace depgraphV
 {
 #ifdef WIN32
 	/**
-	 * @brief toggleConsole function allocate/free a log console. Only available on Windows.
-	 * @param enabled True when a console allocation is required, false when the already allocated console should be freed.
-	 */
+	* @brief toggleConsole function allocate/free a log console. Only available on Windows.
+	* @param enabled True when a console allocation is required, false when the already allocated console should be freed.
+	*/
 	void toggleConsole( bool enabled );
 #endif
 
 	/**
-	 * @brief Print the application version and quit.
-	 */
+	* @brief Print the application version and quit.
+	*/
 	void printVersion()
 	{
 #ifdef WIN32
@@ -57,8 +57,8 @@ namespace depgraphV
 	}
 
 	/**
-	 * @brief This function prints out an help message showing all the command line arguments available and their usage.
-	 */
+	* @brief This function prints out an help message showing all the command line arguments available and their usage.
+	*/
 	void printHelp()
 	{
 		printVersion();
@@ -71,9 +71,9 @@ namespace depgraphV
 	}
 
 	/**
-	 * @brief This function is being used when it is necessary to disable log messages sent by this application
-	 *		  via qDebug(), qWarning(), etc.
-	 */
+	* @brief This function is being used when it is necessary to disable log messages sent by this application
+	*		  via qDebug(), qWarning(), etc.
+	*/
 #ifdef QT_USE_QT5
 	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
 #else
@@ -111,8 +111,8 @@ namespace depgraphV
 	}
 
 	/**
-	 * @brief Function called when quitting this application.
-	 */
+	* @brief Function called when quitting this application.
+	*/
 	void _atExitFnc()
 	{
 		toggleConsole( false );

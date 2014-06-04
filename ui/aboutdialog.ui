@@ -276,7 +276,7 @@
        <item row="1" column="0">
         <widget class="QCheckBox" name="donateCheckBox">
          <property name="text">
-          <string>Do not annoy me anymore on close.</string>
+          <string>Do not annoy me on close anymore.</string>
          </property>
         </widget>
        </item>
@@ -372,6 +372,12 @@
       </item>
       <item row="0" column="1">
        <widget class="QLabel" name="projectNameLabel">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>35</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -440,13 +446,20 @@
       <item row="3" column="1">
        <widget class="QLabel" name="projectCopyRightsLabel">
         <property name="text">
-         <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copyrights © 2013 - 2014 by Francesco Guastella &amp;lt;&lt;a href=&quot;mailto:guastella.francesco@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;guastella.francesco@gmail.com&lt;/span&gt;&lt;/a&gt;&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copyrights © 2013 - 2014&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="copyrightsByLabel">
+        <property name="text">
+         <string notr="true">&lt;html&gt;&lt;body&gt;&lt;p&gt;by Francesco Guastella &amp;lt;&lt;a href=&quot;mailto:guastella.francesco@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;guastella.francesco@gmail.com&lt;/span&gt;&lt;/a&gt;&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>

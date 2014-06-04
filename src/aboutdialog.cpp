@@ -38,8 +38,8 @@ namespace depgraphV
 {
 	AboutDialog::AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent )
 		: QDialog( parent, Qt::WindowTitleHint ),
-		  _ui( new Ui::AboutDialog ),
-		  _donateBtnIcoDirty( true )
+		_ui( new Ui::AboutDialog ),
+		_donateBtnIcoDirty( true )
 	{
 		_ui->setupUi( this );
 
