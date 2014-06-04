@@ -83,7 +83,7 @@ namespace depgraphV
 				if( _abortQueued )
 					return;
 
-				emit directoryFound();
+                emit folderFound( entry.fileName() );
 				_scanFolder( entry.filePath() );
 			}
 		}

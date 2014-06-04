@@ -45,7 +45,7 @@ namespace depgraphV
 		void on_abort();
 
 	signals:
-		void directoryFound();
+        void folderFound( QString folder );
 		void fileFound( QString file );
 		void scanFinished();
 		void graphCreated();

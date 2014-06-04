@@ -71,7 +71,7 @@ namespace depgraphV
 		delete _ui;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::onFolderFound( QString )
+    void ScanDialog::onFolderFound( QString )
 	{
 		_foldersCount++;
 		_ui->foldersCount->setText( QString::number( _foldersCount ) );

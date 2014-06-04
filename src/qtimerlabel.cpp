@@ -72,11 +72,11 @@ namespace depgraphV
 
 		int mins = ( _elapsedSeconds / 60 ) % 60;
 		int hours = ( _elapsedSeconds / 3600 );
-		_elapsedSeconds = _elapsedSeconds % 60;
+        int seconds = _elapsedSeconds % 60;
 		this->setText( QString( "%1:%2:%3" )
 			.arg( hours, 2, 10, QLatin1Char( '0' ) )
 			.arg( mins, 2, 10, QLatin1Char( '0' ) )
-			.arg( _elapsedSeconds, 2, 10, QLatin1Char( '0' ) )
+            .arg( seconds, 2, 10, QLatin1Char( '0' ) )
 		);
 	}
 }
