@@ -57,6 +57,7 @@ set( Headers
 	src/backgroundworker.h
 	src/graph.h
 	src/mainwindow.h
+	src/qtimerlabel.h
 	src/scandialog.h
 )
 
@@ -67,6 +68,7 @@ set( Sources
 	src/graph.cpp
 	src/main.cpp
 	src/mainwindow.cpp
+	src/qtimerlabel.cpp
 	src/scandialog.cpp
 )
 

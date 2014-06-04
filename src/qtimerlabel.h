@@ -1,5 +1,5 @@
 /**
- * scandialog.h
+ * qtimerlabel.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,68 +25,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef SCANDIALOG_H
-#define SCANDIALOG_H
+#ifndef QTIMERLABEL_H
+#define QTIMERLABEL_H
 
-#include <QDialog>
+#include <QLabel>
+#include <QTimer>
 
 namespace depgraphV
 {
-	namespace Ui
-	{
-		class ScanDialog;
-	}
-
-	class MainWindow;
-	class BackgroundWorker;
-
-	class ScanDialog : public QDialog
+	class QTimerLabel : public QLabel
 	{
 		Q_OBJECT
 
 	public:
-		/**
-		 * @brief ScanDialog constructor.
-		 * @param parent The parent widget (default NULL)
-		 */
-		ScanDialog( MainWindow* win );
-
-		/**
-		 * @brief ScanDialog destructor.
-		 */
-		~ScanDialog();
-
-	signals:
+		explicit QTimerLabel( QWidget* parent = 0 );
+		~QTimerLabel();
 
 	public slots:
+		void startTimer();
+		void stopTimer();
+		void resetTimer();
 
 	private slots:
-		void onFolderFound( QString folder );
-		void onFileFound( QString file );
-		void onScanFinished();
-		void onGraphCreated();
-		void onFileAnalized( QString file );
-
-		void onLayoutFinished();
-		void onFail( QString message );
-
-		void onToggleDetails();
-
-		void onAbortClicked();
+		void onTimeout();
 
 	private:
-		Ui::ScanDialog* _ui;
-		BackgroundWorker* _worker;
-		bool _detailsShown;
-		bool _failed;
-
-		uint _foldersCount;
-		uint _filesCount;
-		uint _analizedFilesCount;
-
-		virtual void showEvent( QShowEvent* evt );
-		void _freeWorker();
+		QTimer* _timer;
+		uint _elapsedSeconds;
 	};
 }
-
-#endif // SCANDIALOG_H
+#endif // QTIMERLABEL_H

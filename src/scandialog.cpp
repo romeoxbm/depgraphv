@@ -35,29 +35,32 @@ namespace depgraphV
 {
 	ScanDialog::ScanDialog( MainWindow* win )
 		: QDialog( static_cast<QWidget*>( win ), Qt::FramelessWindowHint ),
-		  _ui( new Ui::ScanDialog ),
-		  _worker( new BackgroundWorker( win ) ),
-		  _detailsShown( true ),
-		  _failed( false ),
-		  _foldersCount( 0 ),
-		  _filesCount( 0 ),
-		  _analizedFilesCount( 0 ),
-		  _timer( new QTimer( this ) ),
-		  _elapsedSeconds( 0 )
+		_ui( new Ui::ScanDialog ),
+		_worker( new BackgroundWorker( win, this ) ),
+		_detailsShown( true ),
+		_failed( false ),
+		_foldersCount( 0 ),
+		_filesCount( 0 ),
+		_analizedFilesCount( 0 )
 	{
 		_ui->setupUi( this );
 
 		//Connect signals/slots
-		connect( _timer, SIGNAL( timeout() ), this, SLOT( onTimeout() ) );
-		connect( _worker, SIGNAL( directoryFound() ), this, SLOT( onDirectoryFound() ) );
+		connect( _worker, SIGNAL( folderFound( QString ) ), this, SLOT( onFolderFound( QString ) ) );
 		connect( _worker, SIGNAL( fileFound( QString ) ), this, SLOT( onFileFound( QString ) ) );
 		connect( _worker, SIGNAL( scanFinished() ), this, SLOT( onScanFinished() ) );
 		connect( _worker, SIGNAL( graphCreated() ), this, SLOT( onGraphCreated() ) );
 		connect( _worker, SIGNAL( fileAnalized( QString ) ), this, SLOT( onFileAnalized( QString ) ) );
 		connect( _worker, SIGNAL( fail( QString ) ), this, SLOT( onFail( QString ) ) );
-		connect( win->graph(), SIGNAL( layoutApplied() ), this, SLOT( onLayoutFinished() ) );
+		connect( _worker, SIGNAL( fail( QString ) ), _ui->elapsedTime, SLOT( stopTimer() ) );
 		connect( _ui->cancelButton, SIGNAL( clicked() ), _worker, SLOT( on_abort() ) );
 		connect( _ui->cancelButton, SIGNAL( clicked() ), this, SLOT( onAbortClicked() ) );
+
+		if( win )
+		{
+			connect( win->graph(), SIGNAL( layoutApplied() ), this, SLOT( onLayoutFinished() ) );
+			connect( win->graph(), SIGNAL( layoutApplied() ), _ui->elapsedTime, SLOT( stopTimer() ) );
+		}
 
 		onToggleDetails();
 	}
@@ -65,18 +68,16 @@ namespace depgraphV
 	ScanDialog::~ScanDialog()
 	{
 		_freeWorker();
-
-		delete _timer;
 		delete _ui;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::onDirectoryFound()
+	void ScanDialog::onFolderFound( QString )
 	{
 		_foldersCount++;
 		_ui->foldersCount->setText( QString::number( _foldersCount ) );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::onFileFound( QString file )
+	void ScanDialog::onFileFound( QString )
 	{
 		_filesCount++;
 		_ui->filesCount->setText( QString::number( _filesCount ) );
@@ -111,7 +112,6 @@ namespace depgraphV
 		_ui->progressBar->setMaximum( 1 );
 		_ui->progressBar->setValue( 1 );
 		_ui->currentOperation->setText( tr( "Done" ) );
-		_timer->stop();
 		_ui->cancelButton->setText( tr( "Close" ) );
 		_ui->cancelButton->setEnabled( true );
 	}
@@ -120,27 +120,9 @@ namespace depgraphV
 	{
 		_freeWorker();
 		_failed = true;
-		_timer->stop();
 		QMessageBox::critical( this, tr( "Error" ), message );
 		_ui->cancelButton->setText( tr( "Close" ) );
 		_ui->cancelButton->setEnabled( true );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void ScanDialog::onTimeout()
-	{
-		_elapsedSeconds++;
-
-		if( _detailsShown && _timer->isActive() )
-		{
-			int mins = ( _elapsedSeconds / 60 ) % 60;
-			int hours = ( _elapsedSeconds / 3600 );
-			_elapsedSeconds = _elapsedSeconds % 60;
-			_ui->elapsedTime->setText( QString( "%1:%2:%3" )
-				.arg( hours, 2, 10, QLatin1Char( '0' ) )
-				.arg( mins, 2, 10, QLatin1Char( '0' ) )
-				.arg( _elapsedSeconds, 2, 10, QLatin1Char( '0' ) )
-			);
-		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void ScanDialog::onToggleDetails()
@@ -152,9 +134,6 @@ namespace depgraphV
 		{
 			_ui->detailsGroupBox->show();
 			this->resize( 0, this->maximumHeight() );
-
-			//Update time elapsed label, then start timer
-			this->onTimeout();
 		}
 		else
 		{
@@ -180,7 +159,7 @@ namespace depgraphV
 	void ScanDialog::showEvent( QShowEvent* evt )
 	{
 		QDialog::showEvent( evt );
-		_timer->start( 1000 );
+		_ui->elapsedTime->startTimer();
 		_worker->start();
 	}
 	//--------------------------------------------------------------------------------------------------------------------------

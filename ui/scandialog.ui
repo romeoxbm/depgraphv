@@ -127,7 +127,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLabel" name="elapsedTime">
+       <widget class="depgraphV::QTimerLabel" name="elapsedTime">
         <property name="text">
          <string notr="true">00:00:00</string>
         </property>
@@ -169,6 +169,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>depgraphV::QTimerLabel</class>
+   <extends>QLabel</extends>
+   <header>qtimerlabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../res/resources.qrc"/>
  </resources>
