@@ -51,7 +51,12 @@ namespace depgraphV
 
 	private:
 		QTimer* _timer;
-		uint _elapsedSeconds;
+
+		uint _seconds;
+		uint _minutes;
+		uint _hours;
+
+		void _updateText( bool reset );
 	};
 }
 #endif // QTIMERLABEL_H

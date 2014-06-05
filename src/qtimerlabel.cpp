@@ -31,10 +31,9 @@ namespace depgraphV
 {
 	QTimerLabel::QTimerLabel( QWidget* parent )
 		: QLabel( parent ),
-		_timer( new QTimer( this ) ),
-		_elapsedSeconds( 0 )
+		_timer( new QTimer( this ) )
 	{
-		this->setText( "00:00:00" );
+		_updateText( true );
 
 		//Connect signals/slots
 		connect( _timer, SIGNAL( timeout() ), this, SLOT( onTimeout() ) );
@@ -47,8 +46,7 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void QTimerLabel::startTimer()
 	{
-		_elapsedSeconds = 0;
-		this->setText( "00:00:00" );
+		_updateText( true );
 		_timer->start( 1000 );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
@@ -65,18 +63,39 @@ namespace depgraphV
 	//--------------------------------------------------------------------------------------------------------------------------
 	void QTimerLabel::onTimeout()
 	{
-		_elapsedSeconds++;
-
 		if( !_timer->isActive() )
 			return;
 
-		int mins = ( _elapsedSeconds / 60 ) % 60;
-		int hours = ( _elapsedSeconds / 3600 );
-        int seconds = _elapsedSeconds % 60;
+		_seconds++;
+
+		if( _seconds >= 60 )
+		{
+			_seconds = 0;
+			_minutes++;
+		}
+
+		if( _minutes >= 60 )
+		{
+			_minutes = 0;
+			_hours++;
+		}
+
+		_updateText( false );
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	void QTimerLabel::_updateText( bool reset )
+	{
+		if( reset )
+		{
+			_seconds = 0;
+			_minutes = 0;
+			_hours = 0;
+		}
+
 		this->setText( QString( "%1:%2:%3" )
-			.arg( hours, 2, 10, QLatin1Char( '0' ) )
-			.arg( mins, 2, 10, QLatin1Char( '0' ) )
-            .arg( seconds, 2, 10, QLatin1Char( '0' ) )
+			.arg( _hours, 2, 10, QLatin1Char( '0' ) )
+			.arg( _minutes, 2, 10, QLatin1Char( '0' ) )
+			.arg( _seconds, 2, 10, QLatin1Char( '0' ) )
 		);
 	}
 }
