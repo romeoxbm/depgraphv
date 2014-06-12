@@ -47,6 +47,11 @@ if( WIN32 )
 else()
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
+	
+	#Force CMAKE_BUILD_TYPE to DEBUG macro on Linux when is not defined
+	if( NOT CMAKE_BUILD_TYPE )
+		set( CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE )
+	endif()
 endif()
 
 project( ${ProjectName} )
@@ -125,6 +130,11 @@ endif()
 
 #Include right file depending on selected Qt version.
 if( QT_USE_QT5 )
+	set( qt5Modules "Widgets;Svg;LinguistTools" )
+
+	if( QT_USE_OPENGL )
+		set( qt5Modules "${qt5Modules};OpenGL" )
+	endif( QT_USE_OPENGL )
 	include( buildQt5 )
 else()
 	include( buildQt4 )

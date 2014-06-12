@@ -26,11 +26,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #####################################################################################
-set( qt5Modules "Widgets;Svg;LinguistTools" )
-
-if( QT_USE_OPENGL )
-	set( qt5Modules "${qt5Modules};OpenGL" )
-endif( QT_USE_OPENGL )
+if( NOT DEFINED qt5Modules )
+    set( qt5Modules "Widgets" )
+endif()
 
 if( WIN32 )
 	#Default installation path of Qt5.1.1
@@ -58,10 +56,14 @@ foreach( mod ${qt5Modules} )
 	endif()
 endforeach()
 
-qt5_wrap_ui( UISrcs ${Sources_ui} )
+if( DEFINED Sources_ui )
+    qt5_wrap_ui( UISrcs ${Sources_ui} )
+endif()
 
 # generate rules for building source files from the resources
-qt5_add_resources( RCCSrcs ${Resources} )
+if( DEFINED Resources )
+    qt5_add_resources( RCCSrcs ${Resources} )
+endif()
 
 foreach( t ${AvailableLanguages} )
     if( QT_UPDATE_TRANSLATIONS )
