@@ -63,8 +63,8 @@ if( WIN32 )
 	set( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON )
 	set( CPACK_NSIS_MUI_FINISHPAGE_RUN "${ProjectName}.exe" )
 	set( CPACK_NSIS_CONTACT ${VENDOR_EMAIL} )
-	set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph\\\\support" )
-	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraph" )
+	set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraphv\\\\support" )
+	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraphv" )
 	set( CPACK_NSIS_URL_LINK_NAME "${CPACK_NSIS_PROJECT_NAME}'s project page at SourceForge.net" )
 	
 	set( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-install.ico" )
@@ -145,8 +145,14 @@ else()
 	
 	#deb settings
 	set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <${VENDOR_EMAIL}>" )
-	set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://sourceforge.net/projects/depgraph/" )
-	set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON ) # dpkg-shlibdeps must be installed on build system (package: dpkg-dev)
+	set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://sourceforge.net/projects/depgraphv/" )
+	
+	find_program( DPKG_SHLIBDEPS_FOUND NAMES dpkg-shlibdeps DOC "path to the dpkg-shlibdeps script." )
+	if( DPKG_SHLIBDEPS_FOUND )
+		set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
+	else()
+		message( SEND_ERROR "dpkg-shlibdeps must be installed on build system! (package: dpkg-dev)" )
+	endif()
 endif( WIN32 )
 
 #Resources
