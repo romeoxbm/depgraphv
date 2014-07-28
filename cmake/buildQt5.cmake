@@ -27,12 +27,14 @@
 # THE SOFTWARE.
 #####################################################################################
 if( NOT DEFINED qt5Modules )
-    set( qt5Modules "Widgets" )
+	set( qt5Modules "Widgets" )
 endif()
 
 if( WIN32 )
 	#Default installation path of Qt5.1.1
-	if( MSVC11 )
+	if( MSVC12 )
+		set( CMAKE_PREFIX_PATH "C:/Qt/5.3.3/msvc2013_opengl/" )
+	elseif( MSVC11 )
 		if( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
 			set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/msvc2012_64/" )
 		else()
@@ -42,7 +44,7 @@ if( WIN32 )
 		set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/msvc2010/" )
 	else()
 		set( CMAKE_PREFIX_PATH "C:/Qt/5.1.1/mingw48_32/" )
-	endif( MSVC11 )
+	endif( MSVC12 )
 endif( WIN32 )
 
 #Looking for Qt5 modules
