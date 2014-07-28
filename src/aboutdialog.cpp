@@ -31,7 +31,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 #include <QUrl>
-#include <qglobal.h>
+//#include <qglobal.h>
 #include <gvc.h>
 
 namespace depgraphV
@@ -46,10 +46,6 @@ namespace depgraphV
 #ifndef QT_USE_OPENGL
 		_ui->glSupportValue->setText( "NO" );
 #endif
-
-		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-		_ui->donateCheckBox->setChecked( !wnd->showDonateOnExit() );
-
 		_ui->projectNameLabel->setText( appName );
 		_ui->projectVersionLabel->setText( "v" + appVersion );
 
@@ -64,12 +60,12 @@ namespace depgraphV
 		_ui->graphvizVersion->setText( gvcVersion( context ) );
 		gvFreeContext( context );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	AboutDialog::~AboutDialog()
 	{
 		delete _ui;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	int AboutDialog::exec( bool showDonationsTab )
 	{
 		if( showDonationsTab )
@@ -86,26 +82,44 @@ namespace depgraphV
 
 		return QDialog::exec();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void AboutDialog::translateUi()
+	//-------------------------------------------------------------------------
+	void AboutDialog::changeEvent( QEvent* event )
 	{
-		_ui->retranslateUi( this );
-		_donateBtnIcoDirty = true;
+		if( event && event->type() == QEvent::LanguageChange )
+		{
+			_ui->retranslateUi( this );
+			_donateBtnIcoDirty = true;
+		}
+
+		QDialog::changeEvent( event );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AboutDialog::on_donateButton_clicked()
 	{
 		QString itemName = tr( "Donation+to+dep-graphV" );
-		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=romeo_bm@libero.it&item_name=" + itemName );
+		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&"
+				  "business=romeo_bm@libero.it&item_name=" + itemName );
 		QDesktopServices::openUrl( url );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AboutDialog::on_donateCheckBox_clicked()
 	{
 		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
 		wnd->setShowDonateOnExit( !_ui->donateCheckBox->isChecked() );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	void AboutDialog::showEvent( QShowEvent* evt )
+	{
+		QDialog::showEvent( evt );
+		static bool checkboxUpdated = false;
+		if( !checkboxUpdated )
+		{
+			MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
+			_ui->donateCheckBox->setChecked( !wnd->showDonateOnExit() );
+			checkboxUpdated = true;
+		}
+	}
+	//-------------------------------------------------------------------------
 	QString AboutDialog::_loadTextFromResources( const QString& filename )
 	{
 		QFile f( ":/text/" + filename );

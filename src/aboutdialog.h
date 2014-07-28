@@ -61,10 +61,8 @@ namespace depgraphV
 		 */
 		int exec( bool showDonationsTab );
 
-		/**
-		 * @brief Translate this dialog.
-		 */
-		void translateUi();
+	protected:
+		virtual void changeEvent( QEvent* );
 
 	signals:
 
@@ -78,8 +76,9 @@ namespace depgraphV
 		Ui::AboutDialog* _ui;
 		bool _donateBtnIcoDirty;
 
-		QString _loadTextFromResources( const QString& filename );
+		virtual void showEvent( QShowEvent* evt );
 
+		QString _loadTextFromResources( const QString& filename );
 	};
 }
 
