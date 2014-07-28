@@ -28,6 +28,8 @@
 #include "removerootdialog.h"
 #include "ui_removerootdialog.h"
 
+#include <QPushButton>
+
 namespace depgraphV
 {
 	RemoveRootDialog::RemoveRootDialog( QWidget* parent )
@@ -35,6 +37,10 @@ namespace depgraphV
 		_ui( new Ui::RemoveRootDialog )
 	{
 		_ui->setupUi( this );
+
+		_ui->rootFolders->addAction( _ui->actionSelect_All );
+		_ui->rootFolders->addAction( _ui->actionSelect_None );
+		_ui->rootFolders->addAction( _ui->actionInvert_Selection );
 	}
 	//-------------------------------------------------------------------------
 	RemoveRootDialog::~RemoveRootDialog()
@@ -47,7 +53,9 @@ namespace depgraphV
 		QStringList res;
 		_ui->rootFolders->clear();
 		_ui->rootFolders->addItems( folders );
+		_foldersCount = folders.count();
 		QDialog::DialogCode code;
+		_updateEnabledFlags();
 		code = static_cast<QDialog::DialogCode>( QDialog::exec() );
 		if( code == QDialog::Accepted )
 		{
@@ -64,5 +72,35 @@ namespace depgraphV
 			_ui->retranslateUi( this );
 
 		QDialog::changeEvent( event );
+	}
+	//-------------------------------------------------------------------------
+	void RemoveRootDialog::_invertSelection()
+	{
+		_ui->rootFolders->blockSignals( true );
+		for( int i = 0; i < _foldersCount; i++ )
+		{
+			QListWidgetItem* item = _ui->rootFolders->item( i );
+			item->setSelected( !item->isSelected() );
+		}
+		_ui->rootFolders->blockSignals( false );
+	}
+	//-------------------------------------------------------------------------
+	void RemoveRootDialog::_updateEnabledFlags()
+	{
+		_ui->actionSelect_None->setEnabled(
+					!_ui->rootFolders->selectedItems().isEmpty() &&
+					_foldersCount > 0
+		);
+
+		_ui->actionSelect_All->setEnabled(
+					_ui->rootFolders->selectedItems().count() != _foldersCount &&
+					_foldersCount > 0
+		);
+
+		_ui->actionInvert_Selection->setEnabled( _foldersCount > 0 );
+
+		_ui->buttonBox->button( QDialogButtonBox::Ok )->setEnabled(
+					!_ui->rootFolders->selectedItems().isEmpty()
+		);
 	}
 }

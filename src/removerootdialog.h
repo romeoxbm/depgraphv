@@ -63,9 +63,12 @@ namespace depgraphV
 	public slots:
 
 	private slots:
+		void _invertSelection();
+		void _updateEnabledFlags();
 
 	private:
 		Ui::RemoveRootDialog* _ui;
+		int _foldersCount;
 	};
 }
 

@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QListWidget" name="rootFolders">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::MultiSelection</enum>
      </property>
@@ -32,6 +35,30 @@
     </widget>
    </item>
   </layout>
+  <action name="actionSelect_All">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select All</string>
+   </property>
+  </action>
+  <action name="actionSelect_None">
+   <property name="text">
+    <string>Select None</string>
+   </property>
+   <property name="toolTip">
+    <string>Select None</string>
+   </property>
+  </action>
+  <action name="actionInvert_Selection">
+   <property name="text">
+    <string>Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert Selection</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -67,5 +94,121 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSelect_All</sender>
+   <signal>triggered()</signal>
+   <receiver>rootFolders</receiver>
+   <slot>selectAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSelect_None</sender>
+   <signal>triggered()</signal>
+   <receiver>rootFolders</receiver>
+   <slot>clearSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>133</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSelect_All</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::RemoveRootDialog</receiver>
+   <slot>_updateEnabledFlags()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionSelect_None</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::RemoveRootDialog</receiver>
+   <slot>_updateEnabledFlags()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rootFolders</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>depgraphV::RemoveRootDialog</receiver>
+   <slot>_updateEnabledFlags()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionInvert_Selection</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::RemoveRootDialog</receiver>
+   <slot>_invertSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionInvert_Selection</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::RemoveRootDialog</receiver>
+   <slot>_updateEnabledFlags()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>_updateEnabledFlags()</slot>
+  <slot>_invertSelection()</slot>
+ </slots>
 </ui>
