@@ -131,6 +131,11 @@ int main( int argc, char* argv[] )
 {
 	QApplication app( argc, argv );
 
+#ifndef QT_USE_QT5
+	//Required to show menu icons with Qt4
+	app.setAttribute( Qt::AA_DontShowIconsInMenus, false );
+#endif
+
 #endif
 
 	bool logEnabled = false;
