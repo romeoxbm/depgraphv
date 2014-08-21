@@ -1,5 +1,5 @@
 /**
- * settingsdialog.h
+ * filterpage.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,52 +25,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
+#ifndef FILTERPAGE_H
+#define FILTERPAGE_H
 
 #include "settingspage.h"
-#include <QDialog>
-#include <QListWidgetItem>
 
 namespace depgraphV
 {
 	namespace Ui
 	{
-		class SettingsDialog;
+		class FilterPage;
 	}
 
-	class SettingsDialog : public QDialog
+	class FilterPage : public SettingsPage
 	{
 		Q_OBJECT
 
 	public:
 		/**
-		 * @brief SettingsDialog constructor.
+		 * @brief FilterPage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit SettingsDialog( QWidget* parent = 0 );
+		explicit FilterPage( QWidget* parent = 0, bool worksWithHeaders = true );
 
 		/**
-		 * @brief SettingsDialog destructor.
+		 * @brief FilterPage destructor.
 		 */
-		~SettingsDialog();
+		~FilterPage();
 
-		void addPage( const QString& buttonText, SettingsPage* page );
+		virtual QString iconPath() const;
 
 	protected:
 		virtual void changeEvent( QEvent* );
 
-	signals:
-		void pageChanged( QListWidgetItem* newPage );
-
-	public slots:
-		void changePage( QListWidgetItem* current, QListWidgetItem* previous );
-
 	private slots:
+		void onConfigRestored();
 
 	private:
-		Ui::SettingsDialog* _ui;
+		Ui::FilterPage* _ui;
+		bool _worksWithHeaders;
 	};
 }
 
-#endif // SETTINGSDIALOG_H
+#endif // FILTERPAGE_H

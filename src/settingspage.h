@@ -1,5 +1,5 @@
 /**
- * settingsdialog.h
+ * settingspage.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,52 +25,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef SETTINGSDIALOG_H
-#define SETTINGSDIALOG_H
+#ifndef SETTINGSPAGE_H
+#define SETTINGSPAGE_H
 
-#include "settingspage.h"
-#include <QDialog>
-#include <QListWidgetItem>
+#include <QWidget>
 
 namespace depgraphV
 {
-	namespace Ui
-	{
-		class SettingsDialog;
-	}
-
-	class SettingsDialog : public QDialog
+	class SettingsPage : public QWidget
 	{
 		Q_OBJECT
 
 	public:
-		/**
-		 * @brief SettingsDialog constructor.
-		 * @param parent The parent widget (default NULL)
-		 */
-		explicit SettingsDialog( QWidget* parent = 0 );
-
-		/**
-		 * @brief SettingsDialog destructor.
-		 */
-		~SettingsDialog();
-
-		void addPage( const QString& buttonText, SettingsPage* page );
+		virtual ~SettingsPage() = 0;
+		virtual QString iconPath() const = 0;
 
 	protected:
-		virtual void changeEvent( QEvent* );
-
-	signals:
-		void pageChanged( QListWidgetItem* newPage );
-
-	public slots:
-		void changePage( QListWidgetItem* current, QListWidgetItem* previous );
-
-	private slots:
-
-	private:
-		Ui::SettingsDialog* _ui;
+		explicit SettingsPage( QWidget* parent = 0 );
 	};
 }
-
-#endif // SETTINGSDIALOG_H
+#endif // SETTINGSPAGE_H

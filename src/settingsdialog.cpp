@@ -31,31 +31,31 @@
 
 namespace depgraphV
 {
-	SettingsDialog::SettingsDialog( MainWindow* win )
-		: QDialog( static_cast<QWidget*>( win ) ),
+	SettingsDialog::SettingsDialog( QWidget* parent )
+		: QDialog( parent ),
 		_ui( new Ui::SettingsDialog )
 	{
 		_ui->setupUi( this );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	SettingsDialog::~SettingsDialog()
 	{
 		delete _ui;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void SettingsDialog::addPage( const QString& iconPath, const QString& buttonText, QWidget* page )
+	//-------------------------------------------------------------------------
+	void SettingsDialog::addPage( const QString& buttonText, SettingsPage* page )
 	{
-		Q_ASSERT( !iconPath.isEmpty() && !buttonText.isEmpty() && page );
+		Q_ASSERT( !buttonText.isEmpty() && page );
 		
 		QListWidgetItem* button = new QListWidgetItem( _ui->listWidget );
-		button->setIcon( QIcon( iconPath ) );
+		button->setIcon( QIcon( page->iconPath() ) );
 		button->setText( buttonText );
 		button->setTextAlignment( Qt::AlignHCenter );
 		button->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
 		_ui->stackedWidget->addWidget( page );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void SettingsDialog::changeEvent( QEvent* event )
 	{
 		if( event && event->type() == QEvent::LanguageChange )
@@ -63,8 +63,9 @@ namespace depgraphV
 
 		QDialog::changeEvent( event );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void SettingsDialog::changePage( QListWidgetItem* current, QListWidgetItem* previous )
+	//-------------------------------------------------------------------------
+	void SettingsDialog::changePage( QListWidgetItem* current,
+									 QListWidgetItem* previous )
 	{
 		if( !current )
 			current = previous;
