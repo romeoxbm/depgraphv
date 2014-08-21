@@ -25,9 +25,6 @@
         <file>settings_48x48.png</file>
         <file>clear_48x48.png</file>
         <file>draw_48x48.png</file>
-    </qresource>
-    <qresource prefix="/others">
-        <file>folder_32x32.png</file>
-        <file>ufolder_32x32.png</file>
+        <file>exit_48x48.png</file>
     </qresource>
 </RCC>
