@@ -137,7 +137,7 @@ namespace depgraphV
 		const QString& hdr_currentStandardFilter() const	{ return _hdrCurrentStandardFilter; }
 		const QString& hdr_customFilters() const			{ return _hdrCustomFilters; }
 
-		QStringList headerNameFilters() const;
+		const QStringList& headerNameFilters();
 
 		//Source Filters
 		bool src_parseEnabled() const						{ return _srcParseEnabled; }
@@ -145,7 +145,7 @@ namespace depgraphV
 		const QString& src_currentStandardFilter() const	{ return _srcCurrentStandardFilter; }
 		const QString& src_customFilters() const			{ return _srcCustomFilters; }
 
-		QStringList sourceNameFilters() const;
+		const QStringList& sourceNameFilters();
 
 	public slots:
 		void setLanguage( const QString& value );
@@ -172,16 +172,16 @@ namespace depgraphV
 		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
 
 		//Header Filters
-		void hdr_setParseEnabled( bool value )						{ _hdrParseEnabled = value; }
-		void hdr_setStandardFiltersEnabled( bool value )			{ _hdrStandardFiltersEnabled = value; }
-		void hdr_setCurrentStandardFilter( const QString& value )	{ _hdrCurrentStandardFilter = value; }
-		void hdr_setCustomFilters( const QString& value )			{ _hdrCustomFilters = value; }
+		void hdr_setParseEnabled( bool value );
+		void hdr_setStandardFiltersEnabled( bool value );
+		void hdr_setCurrentStandardFilter( const QString& value );
+		void hdr_setCustomFilters( const QString& value );
 
 		//Source Filters
-		void src_setParseEnabled( bool value )						{ _srcParseEnabled = value; }
-		void src_setStandardFiltersEnabled( bool value )			{ _srcStandardFiltersEnabled = value; }
-		void src_setCurrentStandardFilter( const QString& value )	{ _srcCurrentStandardFilter = value; }
-		void src_setCustomFilters( const QString& value )			{ _srcCustomFilters = value; }
+		void src_setParseEnabled( bool value );
+		void src_setStandardFiltersEnabled( bool value );
+		void src_setCurrentStandardFilter( const QString& value );
+		void src_setCustomFilters( const QString& value );
 
 	signals:
 		void configSaved();
@@ -231,6 +231,13 @@ namespace depgraphV
 		bool _srcStandardFiltersEnabled;
 		QString _srcCurrentStandardFilter;
 		QString _srcCustomFilters;
+
+		//Name filters
+		QStringList _hdrNameFilters;
+		bool _hdrNameFiltersDirty;
+
+		QStringList _srcNameFilters;
+		bool _srcNameFiltersDirty;
 	};
 }
 

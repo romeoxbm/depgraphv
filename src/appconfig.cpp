@@ -43,7 +43,9 @@ namespace depgraphV
 		  _settings( APP_VENDOR, APP_NAME ),
 		  _language( "en" ),
 		  _selectedFolders( new Memento<QStringList>() ),
-		  _showDonateOnExit( true )
+		  _showDonateOnExit( true ),
+		  _hdrNameFiltersDirty( true ),
+		  _srcNameFiltersDirty( true )
 	{
 		registerSerializable( this );
 		_availableTranslations.insert( "en", "" );
@@ -155,40 +157,42 @@ namespace depgraphV
 		return props;
 	}
 	//-------------------------------------------------------------------------
-	QStringList AppConfig::headerNameFilters() const
+	const QStringList& AppConfig::headerNameFilters()
 	{
-		QStringList nameFilters;
-
-		if( _hdrParseEnabled )
+		if( _hdrNameFiltersDirty )
 		{
-			if( _hdrStandardFiltersEnabled )
-				nameFilters << hdr_currentStandardFilter();
-			else
+			_hdrNameFilters.clear();
+			_hdrNameFiltersDirty = false;
+
+			if( _hdrParseEnabled )
 			{
-				QString filters = hdr_customFilters();
-				nameFilters = filters.replace( ' ', "" ).split( ";" );
+				if( _hdrStandardFiltersEnabled )
+					_hdrNameFilters << hdr_currentStandardFilter();
+				else
+					_hdrNameFilters = _hdrCustomFilters.replace( ' ', "" ).split( ";" );
 			}
 		}
 
-		return nameFilters;
+		return _hdrNameFilters;
 	}
 	//-------------------------------------------------------------------------
-	QStringList AppConfig::sourceNameFilters() const
+	const QStringList& AppConfig::sourceNameFilters()
 	{
-		QStringList nameFilters;
-
-		if( _srcParseEnabled )
+		if( _srcNameFiltersDirty )
 		{
-			if( _srcStandardFiltersEnabled )
-				nameFilters << src_currentStandardFilter();
-			else
+			_srcNameFilters.clear();
+			_srcNameFiltersDirty = false;
+
+			if( _srcParseEnabled )
 			{
-				QString filters = src_customFilters();
-				nameFilters = filters.replace( ' ', "" ).split( ";" );
+				if( _srcStandardFiltersEnabled )
+					_srcNameFilters << src_currentStandardFilter();
+				else
+					_srcNameFilters = _srcCustomFilters.replace( ' ', "" ).split( ";" );
 			}
 		}
 
-		return nameFilters;
+		return _srcNameFilters;
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::setLanguage( const QString& value )
@@ -223,6 +227,54 @@ namespace depgraphV
 	{
 		_selectedFolders->setState( folders );
 		_selectedFolders->commit();
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::hdr_setParseEnabled( bool value )
+	{
+		_hdrParseEnabled = value;
+		_hdrNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::hdr_setStandardFiltersEnabled( bool value )
+	{
+		_hdrStandardFiltersEnabled = value;
+		_hdrNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
+	{
+		_hdrCurrentStandardFilter = value;
+		_hdrNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::hdr_setCustomFilters( const QString& value )
+	{
+		_hdrCustomFilters = value;
+		_hdrNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::src_setParseEnabled( bool value )
+	{
+		_srcParseEnabled = value;
+		_srcNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::src_setStandardFiltersEnabled( bool value )
+	{
+		_srcStandardFiltersEnabled = value;
+		_srcNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::src_setCurrentStandardFilter( const QString& value )
+	{
+		_srcCurrentStandardFilter = value;
+		_srcNameFiltersDirty = true;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::src_setCustomFilters( const QString& value )
+	{
+		_srcCustomFilters = value;
+		_srcNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::_doSaveRestore( bool save, bool def )
