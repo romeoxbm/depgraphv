@@ -104,7 +104,7 @@ namespace depgraphV
 	{
 		QString itemName = tr( "Donation+to+dep-graphV" );
 		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&"
-				  "business=romeoxbm@outlook.it&item_name=" + itemName );
+				  "business=guastella.francesco@gmail.com&item_name=" + itemName );
 		QDesktopServices::openUrl( url );
 	}
 	//-------------------------------------------------------------------------

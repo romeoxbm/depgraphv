@@ -31,8 +31,12 @@
 #include "iserializableobject.h"
 #include "singleton.h"
 #include "memento.h"
+#include "buildsettings.h"
 #include <QSettings>
 #include <QTranslator>
+#ifndef QT_USE_QT5
+#	include <QStringList>
+#endif // QT_USE_QT5
 
 namespace depgraphV
 {
@@ -52,13 +56,13 @@ namespace depgraphV
 		//Header Filters
 		Q_PROPERTY( bool hdr_parseEnabled READ hdr_parseEnabled WRITE hdr_setParseEnabled )
 		Q_PROPERTY( bool hdr_standardFiltersEnabled READ hdr_standardFiltersEnabled WRITE hdr_setStandardFiltersEnabled )
-		Q_PROPERTY( QString hdr_currentStandardFilter READ hdr_currentStandardFilter WRITE hdr_setCurrentStandardFilter )
+		Q_PROPERTY( int hdr_currentStandardFilterIndex READ hdr_currentStandardFilterIndex WRITE hdr_setCurrentStandardFilterIndex )
 		Q_PROPERTY( QString hdr_customFilters READ hdr_customFilters WRITE hdr_setCustomFilters )
 
 		//Source Filters
 		Q_PROPERTY( bool src_parseEnabled READ src_parseEnabled WRITE src_setParseEnabled )
 		Q_PROPERTY( bool src_standardFiltersEnabled READ src_standardFiltersEnabled WRITE src_setStandardFiltersEnabled )
-		Q_PROPERTY( QString src_currentStandardFilter READ src_currentStandardFilter WRITE src_setCurrentStandardFilter )
+		Q_PROPERTY( int src_currentStandardFilterIndex READ src_currentStandardFilterIndex WRITE src_setCurrentStandardFilterIndex )
 		Q_PROPERTY( QString src_customFilters READ src_customFilters WRITE src_setCustomFilters )
 
 	public:
@@ -66,6 +70,11 @@ namespace depgraphV
 		 * @brief AppConfig constructor.
 		 */
 		explicit AppConfig( QWidget* parent = 0 );
+
+		/**
+		 * @brief AppConfig destructor.
+		 */
+		~AppConfig();
 
 		/**
 		 * @brief Save currently in use settings.
@@ -135,6 +144,7 @@ namespace depgraphV
 		bool hdr_parseEnabled() const						{ return _hdrParseEnabled; }
 		bool hdr_standardFiltersEnabled() const				{ return _hdrStandardFiltersEnabled; }
 		const QString& hdr_currentStandardFilter() const	{ return _hdrCurrentStandardFilter; }
+		int hdr_currentStandardFilterIndex() const			{ return _hdrCurrentStandardFilterIndex; }
 		const QString& hdr_customFilters() const			{ return _hdrCustomFilters; }
 
 		const QStringList& headerNameFilters();
@@ -143,6 +153,7 @@ namespace depgraphV
 		bool src_parseEnabled() const						{ return _srcParseEnabled; }
 		bool src_standardFiltersEnabled() const				{ return _srcStandardFiltersEnabled; }
 		const QString& src_currentStandardFilter() const	{ return _srcCurrentStandardFilter; }
+		int src_currentStandardFilterIndex() const			{ return _srcCurrentStandardFilterIndex; }
 		const QString& src_customFilters() const			{ return _srcCustomFilters; }
 
 		const QStringList& sourceNameFilters();
@@ -174,13 +185,15 @@ namespace depgraphV
 		//Header Filters
 		void hdr_setParseEnabled( bool value );
 		void hdr_setStandardFiltersEnabled( bool value );
-		void hdr_setCurrentStandardFilter( const QString& value );
+		void hdr_setCurrentStandardFilter( const QString& value ) { _hdrCurrentStandardFilter = value; }
+		void hdr_setCurrentStandardFilterIndex( int value );
 		void hdr_setCustomFilters( const QString& value );
 
 		//Source Filters
 		void src_setParseEnabled( bool value );
 		void src_setStandardFiltersEnabled( bool value );
-		void src_setCurrentStandardFilter( const QString& value );
+		void src_setCurrentStandardFilter( const QString& value ) { _srcCurrentStandardFilter = value; }
+		void src_setCurrentStandardFilterIndex( int value );
 		void src_setCustomFilters( const QString& value );
 
 	signals:
@@ -224,11 +237,13 @@ namespace depgraphV
 		bool _hdrParseEnabled;
 		bool _hdrStandardFiltersEnabled;
 		QString _hdrCurrentStandardFilter;
+		int _hdrCurrentStandardFilterIndex;
 		QString _hdrCustomFilters;
 
 		//Source Filters
 		bool _srcParseEnabled;
 		bool _srcStandardFiltersEnabled;
+		int _srcCurrentStandardFilterIndex;
 		QString _srcCurrentStandardFilter;
 		QString _srcCustomFilters;
 

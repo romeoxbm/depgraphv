@@ -26,7 +26,6 @@
  * THE SOFTWARE.
  */
 #include "appconfig.h"
-#include "buildsettings.h"
 #include <QDebug>
 #include <QMetaProperty>
 #include <QLibraryInfo>
@@ -42,13 +41,24 @@ namespace depgraphV
 		  Singleton<AppConfig>(),
 		  _settings( APP_VENDOR, APP_NAME ),
 		  _language( "en" ),
+		  _scanByFolders( true ),
 		  _selectedFolders( new Memento<QStringList>() ),
+		  _recursiveScan( true ),
 		  _showDonateOnExit( true ),
+		  _hdrParseEnabled( true ),
+		  _hdrStandardFiltersEnabled( true ),
+		  _srcParseEnabled( true ),
+		  _srcStandardFiltersEnabled( true ),
 		  _hdrNameFiltersDirty( true ),
 		  _srcNameFiltersDirty( true )
 	{
 		registerSerializable( this );
 		_availableTranslations.insert( "en", "" );
+	}
+	//-------------------------------------------------------------------------
+	AppConfig::~AppConfig()
+	{
+		delete _selectedFolders;
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::save()
@@ -146,12 +156,12 @@ namespace depgraphV
 
 				 << "hdr_parseEnabled"
 				 << "hdr_standardFiltersEnabled"
-				 << "hdr_currentStandardFilter"
+				 << "hdr_currentStandardFilterIndex"
 				 << "hdr_customFilters"
 
 				 << "src_parseEnabled"
 				 << "src_standardFiltersEnabled"
-				 << "src_currentStandardFilter"
+				 << "src_currentStandardFilterIndex"
 				 << "src_customFilters";
 
 		return props;
@@ -167,7 +177,7 @@ namespace depgraphV
 			if( _hdrParseEnabled )
 			{
 				if( _hdrStandardFiltersEnabled )
-					_hdrNameFilters << hdr_currentStandardFilter();
+					_hdrNameFilters << _hdrCurrentStandardFilter;
 				else
 					_hdrNameFilters = _hdrCustomFilters.replace( ' ', "" ).split( ";" );
 			}
@@ -186,7 +196,7 @@ namespace depgraphV
 			if( _srcParseEnabled )
 			{
 				if( _srcStandardFiltersEnabled )
-					_srcNameFilters << src_currentStandardFilter();
+					_srcNameFilters << _srcCurrentStandardFilter;
 				else
 					_srcNameFilters = _srcCustomFilters.replace( ' ', "" ).split( ";" );
 			}
@@ -241,9 +251,9 @@ namespace depgraphV
 		_hdrNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
+	void AppConfig::hdr_setCurrentStandardFilterIndex( int value )
 	{
-		_hdrCurrentStandardFilter = value;
+		_hdrCurrentStandardFilterIndex = value;
 		_hdrNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
@@ -265,9 +275,9 @@ namespace depgraphV
 		_srcNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
-	void AppConfig::src_setCurrentStandardFilter( const QString& value )
+	void AppConfig::src_setCurrentStandardFilterIndex( int value )
 	{
-		_srcCurrentStandardFilter = value;
+		_srcCurrentStandardFilterIndex = value;
 		_srcNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------

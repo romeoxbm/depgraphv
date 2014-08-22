@@ -84,9 +84,6 @@
       </item>
       <item>
        <widget class="QComboBox" name="standardFilters">
-        <property name="currentText">
-         <string notr="true"/>
-        </property>
        </widget>
       </item>
       <item>

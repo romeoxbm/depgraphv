@@ -58,10 +58,13 @@ namespace depgraphV
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
 					 c, SLOT( hdr_setStandardFiltersEnabled( bool ) ) );
 
+			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( int ) ),
+					 c, SLOT( hdr_setCurrentStandardFilterIndex( int ) ) );
+
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( hdr_setCurrentStandardFilter( QString ) ) );
 
-			connect( _ui->customFilters, SIGNAL( textEdited( QString ) ),
+			connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
 					 c, SLOT( hdr_setCustomFilters( QString ) ) );
 		}
 		else
@@ -76,10 +79,13 @@ namespace depgraphV
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
 					 c, SLOT( src_setStandardFiltersEnabled( bool ) ) );
 
+			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( int ) ),
+					 c, SLOT( src_setCurrentStandardFilterIndex( int ) ) );
+
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( src_setCurrentStandardFilter( QString ) ) );
 
-			connect( _ui->customFilters, SIGNAL( textEdited( QString ) ),
+			connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
 					 c, SLOT( src_setCustomFilters( QString ) ) );
 		}
 
@@ -130,7 +136,7 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-			_ui->standardFilters->setCurrentText( c->hdr_currentStandardFilter() );
+			_ui->standardFilters->setCurrentIndex( c->hdr_currentStandardFilterIndex() );
 			_ui->customFilters->setText( c->hdr_customFilters() );
 		}
 		else
@@ -141,7 +147,7 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-			_ui->standardFilters->setCurrentText( c->src_currentStandardFilter() );
+			_ui->standardFilters->setCurrentIndex( c->src_currentStandardFilterIndex() );
 			_ui->customFilters->setText( c->src_customFilters() );
 		}
 	}
