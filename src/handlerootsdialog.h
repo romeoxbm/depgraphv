@@ -1,5 +1,5 @@
 /**
- * removerootdialog.h
+ * handlerootsdialog.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,38 +25,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef REMOVEROOTDIALOG_H
-#define REMOVEROOTDIALOG_H
+#ifndef HANDLEROOTSDIALOG_H
+#define HANDLEROOTSDIALOG_H
 
 #include <QDialog>
+#include "appconfig.h"
 
 namespace depgraphV
 {
 	namespace Ui
 	{
-		class RemoveRootDialog;
+		class HandleRootsDialog;
 	}
 
-	class RemoveRootDialog : public QDialog
+	class HandleRootsDialog : public QDialog, public Singleton<HandleRootsDialog>
 	{
 		Q_OBJECT
 
 	public:
 		/**
-		 * @brief RemoveRootDialog constructor.
+		 * @brief HandleRootsDialog constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		RemoveRootDialog( QWidget* parent = 0 );
+		HandleRootsDialog( QWidget* parent = 0 );
 
 		/**
-		 * @brief RemoveRootDialog destructor.
+		 * @brief HandleRootsDialog destructor.
 		 */
-		~RemoveRootDialog();
-
-		QStringList exec( const QStringList& folders );
+		~HandleRootsDialog();
 
 	protected:
-		virtual void changeEvent( QEvent* );
+		virtual bool event( QEvent* evt );
+		virtual bool eventFilter( QObject* obj, QEvent* evt );
 
 	signals:
 
@@ -65,11 +65,15 @@ namespace depgraphV
 	private slots:
 		void _invertSelection();
 		void _updateEnabledFlags();
+		void on_actionAdd_triggered();
+		void on_actionRemove_Selection_triggered();
+		void onClose( int );
+		void onConfigRestored();
 
 	private:
-		Ui::RemoveRootDialog* _ui;
-		int _foldersCount;
+		Ui::HandleRootsDialog* _ui;
+		QStringList* _selectedFolders;
 	};
 }
 
-#endif // REMOVEROOTDIALOG_H
+#endif // HANDLEROOTSDIALOG_H

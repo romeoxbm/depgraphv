@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>depgraphV::RemoveRootDialog</class>
- <widget class="QDialog" name="depgraphV::RemoveRootDialog">
+ <class>depgraphV::HandleRootsDialog</class>
+ <widget class="QDialog" name="depgraphV::HandleRootsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Remove Root Folder...</string>
+   <string>Handle Root Folders...</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -59,41 +59,25 @@
     <string>Invert Selection</string>
    </property>
   </action>
+  <action name="actionAdd">
+   <property name="text">
+    <string>Add..</string>
+   </property>
+   <property name="toolTip">
+    <string>Add..</string>
+   </property>
+  </action>
+  <action name="actionRemove_Selection">
+   <property name="text">
+    <string>Remove Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove Selection</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionSelect_All</sender>
    <signal>triggered()</signal>
@@ -127,14 +111,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionSelect_All</sender>
-   <signal>triggered()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>_updateEnabledFlags()</slot>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>199</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -143,14 +127,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionSelect_None</sender>
-   <signal>triggered()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>_updateEnabledFlags()</slot>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>199</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -159,46 +143,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>rootFolders</sender>
-   <signal>itemSelectionChanged()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>_updateEnabledFlags()</slot>
+   <sender>depgraphV::HandleRootsDialog</sender>
+   <signal>finished(int)</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>onClose(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
-     <y>133</y>
-    </hint>
-    <hint type="destinationlabel">
      <x>199</x>
      <y>149</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionInvert_Selection</sender>
-   <signal>triggered()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>_invertSelection()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>199</x>
-     <y>149</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionInvert_Selection</sender>
-   <signal>triggered()</signal>
-   <receiver>depgraphV::RemoveRootDialog</receiver>
-   <slot>_updateEnabledFlags()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>199</x>
@@ -210,5 +162,6 @@
  <slots>
   <slot>_updateEnabledFlags()</slot>
   <slot>_invertSelection()</slot>
+  <slot>onClose(int)</slot>
  </slots>
 </ui>
