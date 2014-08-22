@@ -26,47 +26,53 @@
  * THE SOFTWARE.
  */
 #include "appconfig.h"
-#include "ui_mainwindow.h"
 #include "buildsettings.h"
+#include <QDebug>
+#include <QMetaProperty>
+#include <QLibraryInfo>
+#include <QDir>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QDebug>
-#include <QDir>
+#include <QMainWindow>
 
 namespace depgraphV
 {
-	AppConfig::AppConfig( MainWindow* win , Graph* g )
-		: QObject( win ),
+	AppConfig::AppConfig( QWidget* parent )
+		: QObject( parent ),
+		  Singleton<AppConfig>(),
 		  _settings( APP_VENDOR, APP_NAME ),
-		  _win( win ),
-		  _graph( g )
+		  _language( "en" ),
+		  _selectedFolders( new Memento<QStringList>() ),
+		  _showDonateOnExit( true )
 	{
+		registerSerializable( this );
+		_availableTranslations.insert( "en", "" );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AppConfig::save()
 	{
-		_doSave();
+		_doSaveRestore( true, false );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AppConfig::restore()
 	{
-		_doRestore();
+		_doSaveRestore( false, false );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AppConfig::saveDefault()
 	{
 		if( _settings.childGroups().contains( "default" ) )
 			return;
 
-		//Move the main window to its default position (center of the screen) before saving default settings
-		_win->move( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
+		//Move the main window to its default position (center of the screen)
+		//before saving default settings
+		QMainWindow* w = static_cast<QMainWindow*>( this->parent() );
+		QPoint desktopCenter( QApplication::desktop()->screenGeometry().center() );
+		w->move( desktopCenter - w->rect().center() );
 
-		//Translate the ui by using english
-		_win->translateUi( "en" );
-
-		_doSave( true );
+		_doSaveRestore( true, true );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void AppConfig::restoreDefault()
 	{
 		if( !_settings.childGroups().contains( "default" ) )
@@ -75,15 +81,18 @@ namespace depgraphV
 			return;
 		}
 
-		_doRestore( true );
+		_doSaveRestore( false, true );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	const QString& AppConfig::installPrefix()
 	{
 		if( _instPrefix.isEmpty() )
 		{
 #ifdef WIN32
-			QString regKey = QString( "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\%1" ).arg( APP_NAME );
+			QString regKey = QString(
+								 "HKEY_LOCAL_MACHINE\\Software\\Microsoft"
+								 "\\Windows\\CurrentVersion\\Uninstall\\%1"
+			).arg( APP_NAME );
 			QSettings s( regKey, QSettings::NativeFormat );
 			QFileInfo info( s.value( "UninstallString" ).toString() );
 			_instPrefix = info.absolutePath();
@@ -91,7 +100,8 @@ namespace depgraphV
 #	ifndef NDEBUG
 			_instPrefix = ".";
 #	else
-			_instPrefix = QFileInfo( QApplication::applicationDirPath() ).absolutePath();
+			QFileInfo f( QApplication::applicationDirPath() );
+			_instPrefix = f.absolutePath();
 			_instPrefix.replace( APP_BIN_PATH, "" );
 #	endif //NDEBUG
 #endif
@@ -99,7 +109,7 @@ namespace depgraphV
 
 		return _instPrefix;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	const QString& AppConfig::translationsPath()
 	{
 		if( _trPath.isEmpty() )
@@ -107,96 +117,229 @@ namespace depgraphV
 
 		return _trPath;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void AppConfig::_doSave( bool def )
+	//-------------------------------------------------------------------------
+	void AppConfig::lookForTranslations()
 	{
-		QString group = def ? "default/" : "current/";
-		qDebug() << qPrintable( def ? tr( "Saving default settings..." ) : tr( "Saving settings..." ) );
-		_settings.beginGroup( group + "MainWindow" );
-		{
-			_settings.setValue( "size", _win->size() );
-			_settings.setValue( "pos", _win->pos() );
-			_settings.setValue( "maximized", _win->isMaximized() );
-			_settings.setValue( "recur", _win->isRecursiveScanEnabled() );
-			_settings.setValue( "showDonate", _win->showDonateOnExit() );
-			
-			bool parseHdr, hCustomFiltersEnabled;
-			int selectedHdrFilter;
-			QString customHdrFilter;
-			_win->headersInfo( &parseHdr, &hCustomFiltersEnabled, &selectedHdrFilter, &customHdrFilter );
-			_settings.setValue( "pHdr", parseHdr );
-			_settings.setValue( "hCustomFiltersEnabled", hCustomFiltersEnabled );
-			_settings.setValue( "hIndex", selectedHdrFilter );
-			_settings.setValue( "hCustomFilters", customHdrFilter );
-
-			bool parseSrc, sCustomFiltersEnabled;
-			int selectedSrcFilter;
-			QString customSrcFilter;
-			_win->sourcesInfo( &parseSrc, &sCustomFiltersEnabled, &selectedSrcFilter, &customSrcFilter ); 
-			_settings.setValue( "pSrc", parseSrc );
-			_settings.setValue( "sCustomFiltersEnabled", sCustomFiltersEnabled );
-			_settings.setValue( "sIndex", selectedSrcFilter );
-			_settings.setValue( "sCustomFilters", customSrcFilter );
-			
-			_settings.setValue( "lastRootPath", _win->rootPath() );
-			_settings.setValue( "locale", _win->selectedLocaleData() );
-		}
-		_settings.endGroup();
-
-		_settings.beginGroup( group + "Graph" );
-		{
-			_settings.setValue( "renderer", _graph->renderer() );
-			_settings.setValue( "antialiasing", _graph->highQualityAA() );
-		}
-		_settings.endGroup();
+		_lookForTranslationsByPath( QApplication::applicationDirPath() );
+		_lookForTranslationsByPath( this->translationsPath() );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void AppConfig::_doRestore( bool def )
+	//-------------------------------------------------------------------------
+	void AppConfig::registerSerializable( ISerializableObject* obj )
 	{
-		QString group = def ? "default/" : "current/";
-		qDebug() << qPrintable( def ? tr( "Restoring default settings..." ) : tr( "Restoring settings..." ) );
-		_settings.beginGroup( group + "MainWindow" );
+		if( !_serializableObjects.contains( obj ) )
+			_serializableObjects << obj;
+		else
+			qWarning() << qPrintable( tr( "Object already registered." ) );
+	}
+	//-------------------------------------------------------------------------
+	QList<const char*> AppConfig::propList() const
+	{
+		QList<const char*> props;
+		props 	 << "language"
+				 << "scanByFolders"
+				 << "isRecursiveScanEnabled"
+				 << "hiddenFoldersIncluded"
+				 << "selectedFolders"
+				 << "showDonateOnExit"
+
+				 << "hdr_parseEnabled"
+				 << "hdr_standardFiltersEnabled"
+				 << "hdr_currentStandardFilter"
+				 << "hdr_customFilters"
+
+				 << "src_parseEnabled"
+				 << "src_standardFiltersEnabled"
+				 << "src_currentStandardFilter"
+				 << "src_customFilters";
+
+		return props;
+	}
+	//-------------------------------------------------------------------------
+	QStringList AppConfig::headerNameFilters() const
+	{
+		QStringList nameFilters;
+
+		if( _hdrParseEnabled )
 		{
-			QPoint defaultPos( QApplication::desktop()->screenGeometry().center() - _win->rect().center() );
-			_win->resize( _settings.value( "size", _win->rect().size() ).toSize() );
-			_win->move( _settings.value( "pos", defaultPos ).toPoint() );
-			if( _settings.value( "maximized", false ).toBool() )
-				_win->showMaximized();
+			if( _hdrStandardFiltersEnabled )
+				nameFilters << hdr_currentStandardFilter();
+			else
+			{
+				QString filters = hdr_customFilters();
+				nameFilters = filters.replace( ' ', "" ).split( ";" );
+			}
+		}
 
-			_win->setRecursiveScanEnabled( _settings.value( "recur", false ).toBool() );
-			_win->setShowDonateOnExit( _settings.value( "showDonate", true ).toBool() );
+		return nameFilters;
+	}
+	//-------------------------------------------------------------------------
+	QStringList AppConfig::sourceNameFilters() const
+	{
+		QStringList nameFilters;
 
-			_win->setHeadersInfo(
-				_settings.value( "pHdr", true ).toBool(),
-				_settings.value( "hCustomFiltersEnabled", false ).toBool(),
-				_settings.value( "hIndex", 0 ).toInt(),
-				_settings.value( "hCustomFilters", "*.h; *.hh; *.hxx; *.hpp; *.hp" ).toString()
-				);
+		if( _srcParseEnabled )
+		{
+			if( _srcStandardFiltersEnabled )
+				nameFilters << src_currentStandardFilter();
+			else
+			{
+				QString filters = src_customFilters();
+				nameFilters = filters.replace( ' ', "" ).split( ";" );
+			}
+		}
 
-			_win->setSourcesInfo(
-				_settings.value( "pSrc", false ).toBool(),
-				_settings.value( "sCustomFiltersEnabled", false ).toBool(),
-				_settings.value( "sIndex", 0 ).toInt(),
-				_settings.value( "sCustomFilters", "*.cpp; *.cc; *.cp; *.cxx; *.c++; *.C" ).toString()
+		return nameFilters;
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::setLanguage( const QString& value )
+	{
+		if( _language == value || !_availableTranslations.contains( value ) )
+			return;
+
+		_language = value;
+
+		QString appFileName = QString( "%1_%2.qm" ).arg( APP_NAME, _language );
+		QString qtFileName = QString( "qt_%1.qm" ).arg( _language );
+
+		//Changing translators
+		_switchTranslator(
+					&_appTranslator,
+					appFileName,
+					_availableTranslations[ _language ],
+					_language == "en"
+		);
+
+		_switchTranslator(
+					&_qtTranslator,
+					qtFileName,
+					QLibraryInfo::location( QLibraryInfo::TranslationsPath )
+		);
+
+		//Changing locale
+		QLocale::setDefault( QLocale( _language ) );
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::setSelectedFolders( const QStringList& folders )
+	{
+		_selectedFolders->setState( folders );
+		_selectedFolders->commit();
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::_doSaveRestore( bool save, bool def )
+	{
+		QString group;
+		QString message;
+		if( def )
+		{
+			group = "default/";
+			if( save )
+				message = tr( "Saving default settings..." );
+			else
+				message = tr( "Restoring default settings..." );
+		}
+		else
+		{
+			group = "current/";
+			if( save )
+				message = tr( "Saving settings..." );
+			else
+				message = tr( "Restoring settings..." );
+		}
+		qDebug() << qPrintable( message );
+
+		foreach( ISerializableObject* sObj, _serializableObjects )
+		{
+			QObject* obj = dynamic_cast<QObject*>( sObj );
+			if( !obj )
+				continue;
+
+			const QMetaObject* metaObj = obj->metaObject();
+			QString className = metaObj->className();
+
+			_settings.beginGroup( group + className );
+			foreach( const char* propName, sObj->propList() )
+			{
+				int propIdx = metaObj->indexOfProperty( propName );
+				if( propIdx == -1 )
+				{
+					qDebug() << qPrintable(
+						tr( "Unable to find property \"" ) + propName +
+						tr( "\". Please review propList implementation for \"" )
+						+ className + "\""
+					);
+					continue;
+				}
+
+				QMetaProperty p = metaObj->property( propIdx );
+				QString key = QString( "%1_%2" ).arg( obj->objectName(), p.name() );
+				if( save )
+					_settings.setValue( key, p.read( obj ) );
+				else
+				{
+					if( p.isWritable() )
+						p.write( obj, _settings.value( key ) );
+					else
+						qDebug() << qPrintable(
+							tr( "Property \"" ) + className + "::" + p.name() +
+							tr( "\" doesn't use the WRITE keyword. "
+								"Please check its Q_PROPERTY declaration." )
+						);
+				}
+			}
+			_settings.endGroup();
+		} //foreach ISerializableObject*
+
+		if( save )
+			emit configSaved();
+		else
+			emit configRestored();
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::_lookForTranslationsByPath( const QString& path )
+	{
+		QDir dir( path );
+		QString appName( QApplication::applicationName() );
+		dir.setNameFilters( QStringList( appName + "*.qm" ) );
+		foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files ) )
+		{
+			int startPos = appName.length() + 1;
+			QString translation( entry.fileName().mid( startPos, 2 ) );
+
+			if( _availableTranslations.contains( translation ) )
+				continue;
+
+			_availableTranslations.insert( translation, path );
+			qDebug() << qPrintable(
+							tr( "Found translation \"%1\" in %2" ).arg( translation, path )
 			);
-
-			_win->setRootPath( _settings.value( "lastRootPath", QDir::currentPath() ).toString() );
-			_win->translateUi( _settings.value( "locale", "en" ).toString() );
+			emit translationFound( translation, path );
 		}
-		_settings.endGroup();
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::_switchTranslator( QTranslator* t, const QString& fileName,
+										const QString& directory, bool justRemoveTranslator )
+	{
+		//remove the old one
+		QApplication::removeTranslator( t );
 
-		_settings.beginGroup( group + "Graph" );
+		if( justRemoveTranslator )
+			return;
+
+		QString fName = QString( "%1/%2" ).arg( directory, fileName );
+		QFile file( fName );
+		if( !file.exists() )
 		{
-			//renderer
-			Graph::RendererType r = (Graph::RendererType)_settings.value( "renderer", Graph::Native ).toInt();
-			_graph->setRenderer( r );
-			_win->setRendererActionCheckedByType( r, true );
-
-			//antialiasing
-			bool aa = _settings.value( "antialiasing", false ).toBool();
-			_graph->setHighQualityAntialiasing( aa );
-			_win->setHighQualityAA( aa );
+			qDebug() << qPrintable( tr( "Translation \"%1\" does not exists" ).arg( fName ) );
+			return;
 		}
-		_settings.endGroup();
+
+		//and then..load the new one
+		if( t->load( fileName, directory ) )
+		{
+			QApplication::installTranslator( t );
+			qDebug() << qPrintable(
+							tr( "Now using translation \"%1\" (%2)" ).arg( fileName, directory )
+			);
+		}
 	}
 } // end of depgraphV namespace

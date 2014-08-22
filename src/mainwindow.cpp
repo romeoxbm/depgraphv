@@ -25,14 +25,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "appconfig.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "appconfig.h"
 #include "buildsettings.h"
-#include "scandialog.h"
+#include "scanmodepage.h"
+#include "filterpage.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
-#include <QLibraryInfo>
 #include <QImageReader>
 
 namespace depgraphV
@@ -40,13 +41,19 @@ namespace depgraphV
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
 		_ui( new Ui::MainWindow ),
-		_aboutDlg( 0 ),
-		_isValidDirSelected( false ),
-		_showDonateOnExit( true ),
+		_config( new AppConfig( this ) ),
+		_aboutDlg( new AboutDialog( this ) ),
+		_settingsDlg( new SettingsDialog( this ) ),
+		_rootsDlg( new HandleRootsDialog( this ) ),
+		_filesDlg( new SelectFilesDialog( this ) ),
 		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
+
+		//TODO Is _ui->graph still needed in ScanDialog?
+		//ScanDialog ctor does use _ui->graph, so it must me created after calling setupUi
+		_scanDlg = new ScanDialog( this );
 
 		_ui->actionHigh_Quality_Antialiasing->setChecked( _ui->graph->highQualityAA() );
 
@@ -62,23 +69,35 @@ namespace depgraphV
 		_ui->actionOpenGL->setEnabled( false );
 #endif
 
-		QRegExp rx( "(\\s*\\*\\.\\w+\\s*;?)+" );
-		QValidator* validator = new QRegExpValidator( rx );
-		_ui->headersFilter->setValidator( validator );
-		_ui->sourcesFilter->setValidator( validator );
+		//Check for available image formats
+		if( !_lookForRequiredImageFormats() )
+		{
+			qWarning() << qPrintable( tr( "Missing one or more required image formats; "
+										  "you could meet unespected issues." ) );
+		}
 
 		//Create language action group and setting up actionSystem_language
 		_langGroup = new QActionGroup( _ui->menu_Language );
 		_ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
 		_langGroup->addAction( _ui->actionSystem_language );
-		_createLanguageAction( "en", "" );
+		onTranslationFound( "en", "" );
 
-		_config = new AppConfig( this, _ui->graph );
-		_lookForTranslations( QApplication::applicationDirPath() );
-		_lookForTranslations( _config->translationsPath() );
+		connect( _config, SIGNAL( translationFound( QString, QString ) ),
+				 this, SLOT( onTranslationFound( QString, QString ) ) );
 
-		//Connect signals and slots
-		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( languageChanged( QAction* )  ) );
+		_config->lookForTranslations();
+
+		//Settings dialog pages
+		_settingsDlg->addPage( tr( "Scan Mode" ), new ScanModePage( _settingsDlg ) );
+		_settingsDlg->addPage( tr( "Header Filters" ), new FilterPage( _settingsDlg ) );
+		_settingsDlg->addPage( tr( "Source Filters" ), new FilterPage( _settingsDlg, false ) );
+
+		//Register serializable objects
+		_config->registerSerializable( this );
+		_config->registerSerializable( _ui->graph );
+
+		//Connect other signals and slots
+		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( onLanguageActionTriggered( QAction* ) ) );
 		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
 
@@ -88,115 +107,32 @@ namespace depgraphV
 		//Restore last settings
 		_config->restore();
 
-		//Check for available image formats
-		if( !_lookForRequiredImageFormats() )
-			qWarning() << qPrintable( tr( "Missing one or more required image formats; you could meet unespected issues." ) );
-
 		_ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	MainWindow::~MainWindow()
 	{
 		delete _ui;
-
-		if( _aboutDlg )
-			delete _aboutDlg;
+		delete _settingsDlg;
+		delete _aboutDlg;
+		delete _scanDlg;
+		delete _rootsDlg;
+		delete _filesDlg;
+		delete _config;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::translateUi( const QString& locale )
-	{
-		QString l = locale;
-		if( !_availableLanguages.contains( locale ) )
-		{
-			_currentLocale = "en";
-			QLocale::setDefault( QLocale( _currentLocale ) );
-			l = _currentLocale;
-		}
-		else
-			languageChanged( _availableLanguages[ locale ] );
-
-		if( _availableLanguages.contains( l ) )
-			_availableLanguages[ l ]->setChecked( true );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	QString MainWindow::rootPath() const
-	{
-		return _isValidDirSelected ? _ui->selectedRootFolder->text() : QDir::currentPath();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setRootPath( const QString& value )
-	{
-		_ui->selectedRootFolder->setText( value.isEmpty() ? QDir::currentPath() : value );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	bool MainWindow::isRecursiveScanEnabled() const
-	{
-		return _ui->recursiveCheckBox->isChecked();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setRecursiveScanEnabled( bool value )
-	{
-		_ui->recursiveCheckBox->setChecked( value );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	QVariant MainWindow::selectedLocaleData() const
-	{
-		return _langGroup->checkedAction()->data();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::setRendererActionCheckedByType( Graph::RendererType type, bool checked )
 	{
 		QAction* a = type == Graph::Native ? _ui->actionNative : _ui->actionOpenGL;
 		a->setChecked( checked );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setHighQualityAA( bool value )
-	{
-		_ui->actionHigh_Quality_Antialiasing->setChecked( value );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::headersInfo( bool* parseHdr, bool* hCustomFiltersEnabled, int* selectedHdrFilter, QString* customHdrFilter ) const
-	{
-		*parseHdr				= _ui->parseHeadersCheckbox->isChecked();
-		*hCustomFiltersEnabled	= _ui->customHeadersFilterRadio->isChecked();
-		*selectedHdrFilter		= _ui->headersFilterComboBox->currentIndex();
-		*customHdrFilter		= _ui->headersFilter->text();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::sourcesInfo( bool* parseSrc, bool* sCustomFiltersEnabled, int* selectedSrcFilter, QString* customSrcFilter ) const
-	{
-		*parseSrc				= _ui->parseSourcesCheckbox->isChecked();
-		*sCustomFiltersEnabled	= _ui->customSourcesFilterRadio->isChecked();
-		*selectedSrcFilter		= _ui->sourcesFilterComboBox->currentIndex();
-		*customSrcFilter		= _ui->sourcesFilter->text();
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setHeadersInfo( bool parseHdr, bool hCustomFiltersEnabled, int selectedHdrFilter, const QString& customHdrFilter )
-	{
-		_ui->parseHeadersCheckbox->setChecked( parseHdr );
-		_ui->customHeadersFilterRadio->setChecked( hCustomFiltersEnabled );
-		_ui->headersFilterComboBox->setCurrentIndex( selectedHdrFilter );
-		_ui->headersFilter->setText( customHdrFilter );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::setSourcesInfo( bool parseSrc, bool sCustomFiltersEnabled, int selectedSrcFilter, const QString& customSrcFilter )
-	{
-		_ui->parseSourcesCheckbox->setChecked( parseSrc );
-		_ui->customSourcesFilterRadio->setChecked( sCustomFiltersEnabled );
-		_ui->sourcesFilterComboBox->setCurrentIndex( selectedSrcFilter );
-		_ui->sourcesFilter->setText( customSrcFilter );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
 	{
 		if( event )
 		{
 			if( event->type() == QEvent::LanguageChange )
-			{
 				_ui->retranslateUi( this );
-				if( _aboutDlg )
-					_aboutDlg->translateUi();
-			}
 
 			else if( event->type() == QEvent::LocaleChange )
 			{}
@@ -204,36 +140,15 @@ namespace depgraphV
 
 		QMainWindow::changeEvent( event );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
 		_showAboutDialog( true );
 		_config->save();
 		event->accept();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::on_selectedRootFolder_textChanged( const QString& value )
-	{
-		_isValidDirSelected = false;
-		if( !value.isEmpty() )
-		{
-			QFileInfo info( value );
-			_isValidDirSelected = info.isDir();
-		}
-
-		_ui->drawButton->setEnabled( _isValidDirSelected &&
-									( _ui->parseHeadersCheckbox->isChecked() || _ui->parseSourcesCheckbox->isChecked() )
-		);
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::selectRootFolder()
-	{
-		QString path = QFileDialog::getExistingDirectory( this, tr( "Select root folder" ), rootPath() );
-		if( !path.isNull() )
-			_ui->selectedRootFolder->setText( path );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::on_drawButton_clicked()
+	//-------------------------------------------------------------------------
+	void MainWindow::onDraw()
 	{
 		//Disable related ui widgets
 		_setGroupBoxesEnabled( false );
@@ -241,47 +156,55 @@ namespace depgraphV
 		_ui->graph->prepare();
 		_setGraphAttributes();
 
-		ScanDialog s( this );
-		if( s.exec() == QDialog::Accepted )
+		_scanDlg->scanFiles( _filesDlg->selectedFiles() );
+
+		//TODO scandialog exec?
+		/*if( _scanDlg->exec() == QDialog::Accepted )
 			_setButtonsAndActionsEnabled( true );
 		else
-			_doClearGraph();
+			_doClearGraph();*/
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::on_clearButton_clicked()
+	//-------------------------------------------------------------------------
+	void MainWindow::onClear()
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
-					this,
-					tr( "Clear graph" ),
-					tr( "Are you sure?" ),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::No
+			this,
+			tr( "Clear graph" ),
+			tr( "Are you sure?" ),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No
 		);
 
 		if( answer != QMessageBox::No )
 			_doClearGraph();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
 	{
 		_ui->graph->clear();
 		_setGroupBoxesEnabled( true );
 		_setButtonsAndActionsEnabled( false );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::about()
 	{
 		_showAboutDialog( false );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	void MainWindow::settings()
+	{
+		_settingsDlg->move( geometry().center() - _settingsDlg->rect().center() );
+		_settingsDlg->exec();
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::restoreDefaultSettings()
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
-					0,
-					tr( "Restore default settings" ),
-					tr( "Are you sure?" ),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::No
+			0,
+			tr( "Restore default settings" ),
+			tr( "Are you sure?" ),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No
 		);
 
 		if( answer == QMessageBox::No )
@@ -289,42 +212,21 @@ namespace depgraphV
 
 		_config->restoreDefault();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )
 	{
 		Q_ASSERT( action );
 		_ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
 		_ui->statusBar->showMessage( tr( "Renderer method changed" ) );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::languageChanged( QAction* action )
-	{
-		Q_ASSERT( action );
-		QString locale = action->data().toString();
-
-		if( _currentLocale == locale )
-			return;
-
-		QString appFileName = QString( "%1_%2.qm" ).arg( QApplication::applicationName(), locale );
-		QString qtFileName = QString( "qt_%1.qm" ).arg( locale );
-
-		_currentLocale = locale;
-
-		//Changing translators
-		_switchTranslator( &_appTranslator, appFileName, action->objectName(), locale == "en" );
-		_switchTranslator( &_qtTranslator, qtFileName, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
-
-		//Changing locale
-		QLocale::setDefault( QLocale( locale ) );
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::parseOptionsChanged()
 	{
-		_ui->drawButton->setEnabled( _isValidDirSelected &&
-				( _ui->parseHeadersCheckbox->isChecked() || _ui->parseSourcesCheckbox->isChecked() )
-		);
+		/*_ui->actionDraw->setEnabled( _ui->folderWidget->validDirSelected() &&
+			( _ui->headerFilter->parseEnabled() || _ui->parseSourcesCheckbox->isChecked() )
+		);*/
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::saveAsImage()
 	{
 		if( !_imageFiltersUpdated )
@@ -332,8 +234,11 @@ namespace depgraphV
 			QStringList* list = _ui->graph->pluginsListByKind( "loadimage" );
 			if( !list )
 			{
-				QMessageBox::critical( const_cast<MainWindow*>( this ),
-									   tr( "Cannot save image" ), tr( "Unable to save graph as image; Plugin not found." ) );
+				QMessageBox::critical(
+							const_cast<MainWindow*>( this ),
+							tr( "Cannot save image" ),
+							tr( "Unable to save graph as image; Plugin not found." )
+				);
 				return;
 			}
 
@@ -352,9 +257,9 @@ namespace depgraphV
 
 		QString selectedFilter;
 		QString path = QFileDialog::getSaveFileName(
-					const_cast<MainWindow*>( this ),
-					tr( "Select path and name of the image file" ),
-					QDir::currentPath(), _imageFilters, &selectedFilter );
+			const_cast<MainWindow*>( this ),
+			tr( "Select path and name of the image file" ),
+			QDir::currentPath(), _imageFilters, &selectedFilter );
 
 		if( path.isEmpty() )
 			return;
@@ -371,13 +276,15 @@ namespace depgraphV
 		if( _ui->graph->saveImage( path, format ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::saveAsDot() const
 	{
 		QString path = QFileDialog::getSaveFileName(
-					const_cast<MainWindow*>( this ),
-					tr( "Select path and name of the dot file" ),
-					QDir::currentPath(), "DOT (*.dot)" );
+						   const_cast<MainWindow*>( this ),
+						   tr( "Select path and name of the dot file" ),
+						   QDir::currentPath(),
+						   "DOT (*.dot)"
+		);
 
 		if( path.isEmpty() )
 			return;
@@ -393,13 +300,13 @@ namespace depgraphV
 		else
 			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::exitApp()
 	{
 		this->close();
 		qApp->quit();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::_setGraphAttributes() const
 	{
 		//Configuring graph attributes
@@ -412,61 +319,54 @@ namespace depgraphV
 
 		_ui->graph->setEdgesAttribute( "minlen", "3" );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::_setGroupBoxesEnabled( bool value ) const
 	{
-		_ui->rootFolderGroupBox->setEnabled( value );
-		_ui->parseGroupbox->setEnabled( value );
-		_ui->headersFilterGroupBox->setEnabled( value && _ui->parseHeadersCheckbox->isChecked() );
-		_ui->sourcesFilterGroupBox->setEnabled( value && _ui->parseSourcesCheckbox->isChecked() );
+		//TODO
+		//_ui->rootFolderGroupBox->setEnabled( value );
+		//_ui->parseGroupbox->setEnabled( value );
+		//TODO
+		//_ui->headersFilterGroupBox->setEnabled( value && _ui->parseHeadersCheckbox->isChecked() );
+		//_ui->sourcesFilterGroupBox->setEnabled( value && _ui->parseSourcesCheckbox->isChecked() );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
 	{
-		_ui->drawButton->setEnabled( !value );
-		_ui->clearButton->setEnabled( value );
+		_ui->actionDraw->setEnabled( !value );
+		_ui->actionClear->setEnabled( value );
 		_ui->actionSave_as_Image->setEnabled( value );
 		_ui->actionSave_as_dot->setEnabled( value );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	QStringList MainWindow::nameFilters() const
-	{
-		QStringList nameFilters;
-
-		//Headers
-		if( _ui->parseHeadersCheckbox->isChecked() )
-		{
-			if( _ui->standardHeaderFilterRadio->isChecked() )
-				nameFilters << _ui->headersFilterComboBox->currentText();
-			else
-			{
-				QString filters = _ui->headersFilter->text().replace( ' ', "" );
-				nameFilters = filters.split( ";" );
-			}
-		}
-
-		//Sources
-		if( _ui->parseSourcesCheckbox->isChecked() )
-		{
-			if( _ui->standardSourcesFilterRadio->isChecked() )
-				nameFilters << _ui->sourcesFilterComboBox->currentText();
-			else
-			{
-				QString filters = _ui->sourcesFilter->text().replace( ' ', "" );
-				foreach( QString f, filters.split( ";" ) )
-					nameFilters << f;
-			}
-		}
-
-		return nameFilters;
-	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Graph* MainWindow::graph() const
 	{
 		assert( _ui->graph );
 		return _ui->graph;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	QList<const char*> MainWindow::propList() const
+	{
+		QList<const char*> props;
+		props << "pos"
+			  << "size"
+			  << "maximized" //TODO maximized property doesn't have WRITE keyword
+			  << "toolbarArea";
+
+		return props;
+	}
+	//-------------------------------------------------------------------------
+	Qt::ToolBarArea MainWindow::toolbarArea() const
+	{
+		return this->toolBarArea( _ui->toolBar );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::setToolbarArea( Qt::ToolBarArea value )
+	{
+		//TODO Doesn't restore last area
+		this->removeToolBar( _ui->toolBar );
+		this->addToolBar( value, _ui->toolBar );
+	}
+	//-------------------------------------------------------------------------
 	bool MainWindow::_lookForRequiredImageFormats()
 	{
 		QList<QByteArray> formats;
@@ -480,81 +380,64 @@ namespace depgraphV
 
 		return true;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void MainWindow::_showAboutDialog( bool showDonations )
 	{
-		if( !_showDonateOnExit && showDonations )
+		if( !_config->showDonateOnExit() && showDonations )
 			return;
-
-		if( !_aboutDlg )
-			_aboutDlg = new AboutDialog( APP_NAME, APP_VER, this );
 
 		_aboutDlg->move( geometry().center() - _aboutDlg->rect().center() );
 		_aboutDlg->exec( showDonations );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::_lookForTranslations( const QString& path )
+	//-------------------------------------------------------------------------
+	void MainWindow::on_actionSelect_Files_triggered()
 	{
-		QDir dir( path );
-		dir.setNameFilters( QStringList( QApplication::applicationName() + "*.qm" ) );
-		foreach( QFileInfo entry, dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files ) )
-		{
-			int startPos = QApplication::applicationName().length() + 1;
-			QString locale( entry.fileName().mid( startPos, 2 ) );
-			if( !_createLanguageAction( locale, path ) )
-				continue;
-
-			qDebug() << qPrintable( tr( "Found locale %1 in %2" ).arg( locale, path ) );
-
-			//Also update system language QAction..
-			if( locale == QLocale::system().name().mid( 0, 2 ) )
-			{
-				_ui->actionSystem_language->setObjectName( path );
-				_ui->actionSystem_language->setIcon( QIcon( ":/flags/" + locale ) );
-				_ui->actionSystem_language->setEnabled( true );
-			}
-		}
+		if( _config->scanByFolders() )
+			_rootsDlg->exec();
+		else
+			_filesDlg->exec();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	bool MainWindow::_createLanguageAction( const QString& locale, const QString& langFilePath )
+	//-------------------------------------------------------------------------
+	void MainWindow::onLanguageActionTriggered( QAction* action )
 	{
-		if( _availableLanguages.contains( locale ) )
-			return false;
-
+		_config->setLanguage( action->data().toString() );
+		action->setChecked( true );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onTranslationFound( QString lang, QString path )
+	{
+		//Create a new QAction for lang
 		QAction* newLang = new QAction( this );
-		newLang->setObjectName( langFilePath );
-		newLang->setText( QLocale::languageToString( QLocale( locale ).language() ) );
-		newLang->setData( locale );
+		newLang->setObjectName( path );
+		newLang->setText( _ucFirst( QLocale( lang ).nativeLanguageName() ) );
+		newLang->setData( lang );
 		newLang->setCheckable( true );
-		newLang->setIcon( QIcon( ":/flags/" + locale ) );
+		newLang->setIcon( QIcon( ":/flags/" + lang ) );
 		_ui->menu_Language->addAction( newLang );
 		_langGroup->addAction( newLang );
-		_availableLanguages.insert( locale, newLang );
 
-		return true;
+		if( lang == "en" )
+			newLang->setChecked( true );
+
+		//Also update system language QAction..
+		if( lang == QLocale::system().name().mid( 0, 2 ) )
+		{
+			_ui->actionSystem_language->setObjectName( path );
+			_ui->actionSystem_language->setIcon( QIcon( ":/flags/" + lang ) );
+			_ui->actionSystem_language->setEnabled( true );
+			qDebug() << qPrintable( tr( "\"%1\" is the system language." ).arg( lang ) );
+		}
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
-	void MainWindow::_switchTranslator( QTranslator* t, const QString& fileName, const QString& directory, bool justRemoveTranslator )
+	//-------------------------------------------------------------------------
+	QString MainWindow::_ucFirst( const QString& value ) const
 	{
-		//remove the old one
-		QApplication::removeTranslator( t );
-
-		if( justRemoveTranslator )
-			return;
-
-		QString fName = QString( "%1/%2" ).arg( directory, fileName );
-		QFile file( fName );
-		if( !file.exists() )
+		QStringList split = value.split( " " );
+		for( int i = 0; i < split.count(); ++i )
 		{
-			qDebug() << qPrintable( tr( "Translation file \"%1\" does not exists" ).arg( fName ) );
-			return;
+			QString& s = split[ i ];
+			s[ 0 ] = s[ 0 ].toUpper();
 		}
 
-		//and then..load the new one
-		if( t->load( fileName, directory ) )
-		{
-			QApplication::installTranslator( t );
-			qDebug() << qPrintable( tr( "Switched to translation file %1 in %2" ).arg( fileName, directory ) );
-		}
+		return split.join( " " );
 	}
 } // end of depgraphV namespace
