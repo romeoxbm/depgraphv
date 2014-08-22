@@ -43,12 +43,15 @@ namespace depgraphV
 {
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
-		  _svgItem( 0 ),
-		  _context( 0 ),
-		  _graph( 0 )
+		_svgItem( 0 ),
+		_context( 0 ),
+		_graph( 0 )
 	{
 		setScene( new QGraphicsScene( this ) );
 		this->setRenderer( Native );
+
+		//TODO Following code line needs to be tested
+		this->setResizeAnchor( QGraphicsView::AnchorUnderMouse );
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	Graph::~Graph()
@@ -211,7 +214,7 @@ namespace depgraphV
 					this->parentWidget(),
 					tr( "Save as image" ),
 					tr( "Unable to save file;\n" ) + QString::fromUtf8( aglasterr() )
-				);
+					);
 			}
 		}
 
@@ -257,6 +260,15 @@ namespace depgraphV
 			return _availablePlugins[ kind ];
 
 		return 0;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------
+	QList<const char*> Graph::propList() const
+	{
+		QList<const char*> props;
+		props << "rendererType"
+			  << "highQualityAA";
+
+		return props;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const

@@ -31,7 +31,9 @@
 #include <QGraphicsView>
 #include <QWheelEvent>
 #include <QGraphicsSvgItem>
+
 #include "buildsettings.h"
+#include "iserializableobject.h"
 
 #ifndef Q_MOC_RUN
 #	include <gvc.h>
@@ -50,10 +52,11 @@ namespace depgraphV
 	/**
 	 * @brief The Graph class
 	 */
-	class Graph : public QGraphicsView
+	class Graph : public QGraphicsView, public ISerializableObject
 	{
 		Q_OBJECT
-		Q_PROPERTY( RendererType RendererType READ renderer WRITE setRenderer )
+		Q_ENUMS( RendererType )
+		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
 		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
 
 	public:
@@ -152,6 +155,8 @@ namespace depgraphV
 		 * @return A QStringList* containing all the available plugins of type "kind", NULL otherwise.
 		 */
 		QStringList* pluginsListByKind( const QString& kind ) const;
+
+		virtual QList<const char*> propList() const;
 
 	signals:
 		void vertexCreated();
