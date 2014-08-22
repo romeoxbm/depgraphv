@@ -27,16 +27,15 @@
  */
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
-#include "mainwindow.h"
+#include "appconfig.h"
 #include <QDebug>
 #include <QDesktopServices>
 #include <QUrl>
-//#include <qglobal.h>
 #include <gvc.h>
 
 namespace depgraphV
 {
-	AboutDialog::AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent )
+	AboutDialog::AboutDialog( QWidget* parent )
 		: QDialog( parent, Qt::WindowTitleHint ),
 		_ui( new Ui::AboutDialog ),
 		_donateBtnIcoDirty( true )
@@ -46,8 +45,8 @@ namespace depgraphV
 #ifndef QT_USE_OPENGL
 		_ui->glSupportValue->setText( "NO" );
 #endif
-		_ui->projectNameLabel->setText( appName );
-		_ui->projectVersionLabel->setText( "v" + appVersion );
+		_ui->projectNameLabel->setText( QApplication::applicationName() );
+		_ui->projectVersionLabel->setText( "v" + QApplication::applicationVersion() );
 
 		_ui->authorsText->setPlainText( _loadTextFromResources( "AUTHORS" ) );
 		_ui->todoText->setPlainText( _loadTextFromResources( "TODO" ) );
@@ -59,6 +58,10 @@ namespace depgraphV
 		GVC_t* context = gvContext();
 		_ui->graphvizVersion->setText( gvcVersion( context ) );
 		gvFreeContext( context );
+
+		connect( Singleton<AppConfig>::instancePtr(), SIGNAL( configRestored() ),
+				 this, SLOT( onConfigRestored() )
+		);
 	}
 	//-------------------------------------------------------------------------
 	AboutDialog::~AboutDialog()
@@ -69,13 +72,16 @@ namespace depgraphV
 	int AboutDialog::exec( bool showDonationsTab )
 	{
 		if( showDonationsTab )
-			_ui->tabWidget->setCurrentIndex( _ui->tabWidget->indexOf( _ui->tab_7 ) );
+		{
+			int idx = _ui->tabWidget->indexOf( _ui->donationsTab );
+			_ui->tabWidget->setCurrentIndex( idx );
+		}
 
-		//Update donate button icon
+		//Update donate button icon (if necessary)
 		if( _ui->donateButton->icon().isNull() || _donateBtnIcoDirty )
 		{
-			MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-			QPixmap p( QString( ":/donateBtns/donate_%1.png" ).arg( wnd->currentLocale() ) );
+			AppConfig* c = Singleton<AppConfig>::instancePtr();
+			QPixmap p( QString( ":/donateBtns/donate_%1.png" ).arg( c->language() ) );
 			_ui->donateButton->setIcon( QIcon( p ) );
 			_donateBtnIcoDirty = false;
 		}
@@ -83,41 +89,35 @@ namespace depgraphV
 		return QDialog::exec();
 	}
 	//-------------------------------------------------------------------------
-	void AboutDialog::changeEvent( QEvent* event )
+	bool AboutDialog::event( QEvent* evt )
 	{
-		if( event && event->type() == QEvent::LanguageChange )
+		if( evt && evt->type() == QEvent::LanguageChange )
 		{
 			_ui->retranslateUi( this );
 			_donateBtnIcoDirty = true;
 		}
 
-		QDialog::changeEvent( event );
+		return QDialog::event( evt );
 	}
 	//-------------------------------------------------------------------------
 	void AboutDialog::on_donateButton_clicked()
 	{
 		QString itemName = tr( "Donation+to+dep-graphV" );
 		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&"
-				  "business=romeo_bm@libero.it&item_name=" + itemName );
+				  "business=romeoxbm@outlook.it&item_name=" + itemName );
 		QDesktopServices::openUrl( url );
 	}
 	//-------------------------------------------------------------------------
 	void AboutDialog::on_donateCheckBox_clicked()
 	{
-		MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-		wnd->setShowDonateOnExit( !_ui->donateCheckBox->isChecked() );
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		c->setShowDonateOnExit( !_ui->donateCheckBox->isChecked() );
 	}
 	//-------------------------------------------------------------------------
-	void AboutDialog::showEvent( QShowEvent* evt )
+	void AboutDialog::onConfigRestored()
 	{
-		QDialog::showEvent( evt );
-		static bool checkboxUpdated = false;
-		if( !checkboxUpdated )
-		{
-			MainWindow* wnd = static_cast<MainWindow*>( this->parentWidget() );
-			_ui->donateCheckBox->setChecked( !wnd->showDonateOnExit() );
-			checkboxUpdated = true;
-		}
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		_ui->donateCheckBox->setChecked( !c->showDonateOnExit() );
 	}
 	//-------------------------------------------------------------------------
 	QString AboutDialog::_loadTextFromResources( const QString& filename )

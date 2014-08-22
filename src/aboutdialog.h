@@ -44,11 +44,9 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief AboutDialog constructor.
-		 * @param appName This application name.
-		 * @param appVersion This application version string.
 		 * @param parent The parent widget (default NULL)
 		 */
-		AboutDialog( const QString& appName, const QString& appVersion, QWidget* parent = 0 );
+		explicit AboutDialog( QWidget* parent = 0 );
 
 		/**
 		 * AboutDialog destructor.
@@ -62,7 +60,7 @@ namespace depgraphV
 		int exec( bool showDonationsTab );
 
 	protected:
-		virtual void changeEvent( QEvent* );
+		bool event( QEvent* evt );
 
 	signals:
 
@@ -71,12 +69,11 @@ namespace depgraphV
 	private slots:
 		void on_donateButton_clicked();
 		void on_donateCheckBox_clicked();
+		void onConfigRestored();
 
 	private:
 		Ui::AboutDialog* _ui;
 		bool _donateBtnIcoDirty;
-
-		virtual void showEvent( QShowEvent* evt );
 
 		QString _loadTextFromResources( const QString& filename );
 	};

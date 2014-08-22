@@ -41,7 +41,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="aboutTab">
       <attribute name="title">
        <string notr="true">About</string>
       </attribute>
@@ -67,7 +67,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="authorsTab">
       <attribute name="title">
        <string>Authors</string>
       </attribute>
@@ -84,7 +84,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_3">
+     <widget class="QWidget" name="todoTab">
       <attribute name="title">
        <string>Todo</string>
       </attribute>
@@ -101,7 +101,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_4">
+     <widget class="QWidget" name="changelogTab">
       <attribute name="title">
        <string>Changelog</string>
       </attribute>
@@ -118,7 +118,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_5">
+     <widget class="QWidget" name="licenseTab">
       <attribute name="title">
        <string>License Agreement</string>
       </attribute>
@@ -132,7 +132,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_6">
+     <widget class="QWidget" name="versionsTab">
       <attribute name="title">
        <string>Versions</string>
       </attribute>
@@ -258,7 +258,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_7">
+     <widget class="QWidget" name="donationsTab">
       <attribute name="title">
        <string>Donations</string>
       </attribute>
