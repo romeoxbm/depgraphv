@@ -50,7 +50,8 @@ namespace depgraphV
 	class MainWindow : public QMainWindow, public ISerializableObject
 	{
 		Q_OBJECT
-		Q_PROPERTY( Qt::ToolBarArea toolbarArea READ toolbarArea WRITE setToolbarArea )
+		Q_PROPERTY( QByteArray windowState READ windowState WRITE setWindowState )
+		Q_PROPERTY( QByteArray geometryState READ geometryState WRITE setGeometryState )
 
 	public:
 		/**
@@ -64,22 +65,16 @@ namespace depgraphV
 		 */
 		~MainWindow();
 
-		/**
-		 * @brief Set checked value to the renderer QAction specified by "type".
-		 * @param type The renderer type.
-		 * @param checked The new checked value.
-		 */
-		void setRendererActionCheckedByType( Graph::RendererType type, bool checked );
-
 		Graph* graph() const;
 
 		virtual QList<const char*> propList() const;
 
-		Qt::ToolBarArea toolbarArea() const;
+		QByteArray windowState() const;
+		QByteArray geometryState() const;
 
 	public slots:
-		//TODO Still doesn't work properly
-		void setToolbarArea( Qt::ToolBarArea value );
+		void setWindowState( const QByteArray& value );
+		void setGeometryState( const QByteArray& value );
 
 	protected:
 		virtual void changeEvent( QEvent* );
@@ -88,6 +83,8 @@ namespace depgraphV
 	private slots:
 		void onDraw();
 		void onClear();
+		void onConfigRestored();
+		void changeToolbarOrientation();
 		void about();
 		void settings();
 		void restoreDefaultSettings();

@@ -51,11 +51,8 @@ namespace depgraphV
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
 
-		//TODO Is _ui->graph still needed in ScanDialog?
 		//ScanDialog ctor does use _ui->graph, so it must me created after calling setupUi
 		_scanDlg = new ScanDialog( this );
-
-		_ui->actionHigh_Quality_Antialiasing->setChecked( _ui->graph->highQualityAA() );
 
 		//Renderer action group
 		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
@@ -67,6 +64,7 @@ namespace depgraphV
 
 #ifndef QT_USE_OPENGL
 		_ui->actionOpenGL->setEnabled( false );
+		_ui->actionHigh_Quality_Antialiasing->setEnabled( false );
 #endif
 
 		//Check for available image formats
@@ -100,6 +98,7 @@ namespace depgraphV
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( onLanguageActionTriggered( QAction* ) ) );
 		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
+		connect( _config, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
 
 		//Save default settings, if this is the first time we launch this application
 		_config->saveDefault();
@@ -119,12 +118,6 @@ namespace depgraphV
 		delete _rootsDlg;
 		delete _filesDlg;
 		delete _config;
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::setRendererActionCheckedByType( Graph::RendererType type, bool checked )
-	{
-		QAction* a = type == Graph::Native ? _ui->actionNative : _ui->actionOpenGL;
-		a->setChecked( checked );
 	}
 	//------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -177,6 +170,29 @@ namespace depgraphV
 
 		if( answer != QMessageBox::No )
 			_doClearGraph();
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onConfigRestored()
+	{
+		_ui->actionHigh_Quality_Antialiasing->setChecked(
+					_ui->graph->highQualityAA()
+		);
+
+		QAction* a = _ui->graph->renderer() == Graph::Native ?
+						 _ui->actionNative : _ui->actionOpenGL;
+
+		a->setChecked( true );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::changeToolbarOrientation()
+	{
+		Qt::Orientation o = _ui->toolBar->orientation();
+		o = static_cast<Qt::Orientation>( ( o % 2 ) + 1 );
+		_ui->toolBar->setOrientation( o );
+
+		//TODO There are still two task to achieve:
+		//1) Handle orientation only when the toolbar is floating
+		//2) Resize toolbar when changing orientation
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
@@ -347,24 +363,40 @@ namespace depgraphV
 	QList<const char*> MainWindow::propList() const
 	{
 		QList<const char*> props;
-		props << "pos"
-			  << "size"
-			  << "maximized" //TODO maximized property doesn't have WRITE keyword
-			  << "toolbarArea";
+		props << "windowState"
+			  << "geometryState";
 
 		return props;
 	}
 	//-------------------------------------------------------------------------
-	Qt::ToolBarArea MainWindow::toolbarArea() const
+	QByteArray MainWindow::windowState() const
 	{
-		return this->toolBarArea( _ui->toolBar );
+		return this->saveState();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::setToolbarArea( Qt::ToolBarArea value )
+	QByteArray MainWindow::geometryState() const
 	{
-		//TODO Doesn't restore last area
-		this->removeToolBar( _ui->toolBar );
-		this->addToolBar( value, _ui->toolBar );
+		return this->saveGeometry();
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::setWindowState( const QByteArray& value )
+	{
+		if( !this->restoreState( value ) )
+		{
+			qCritical() << qPrintable(
+							   tr( "Unable to restore window state!" )
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::setGeometryState( const QByteArray& value )
+	{
+		if( !this->restoreGeometry( value ) )
+		{
+			qCritical() << qPrintable(
+							   tr( "Unable to restore geometry state!" )
+			);
+		}
 	}
 	//-------------------------------------------------------------------------
 	bool MainWindow::_lookForRequiredImageFormats()
