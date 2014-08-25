@@ -55,9 +55,9 @@ namespace depgraphV
 	class Graph : public QGraphicsView, public ISerializableObject
 	{
 		Q_OBJECT
-		Q_ENUMS( RendererType )
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
 		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
+		Q_ENUMS( RendererType )
 
 	public:
 		/**
@@ -123,7 +123,8 @@ namespace depgraphV
 
 		/**
 		 * @brief Calculate the graph layout.
-		 * @param algorithm The layout algorithm used. Valid values are: "dot", "neato", "fdp", "sfdp", "twopi", "circo", "patchwork", "osage".
+		 * @param algorithm The layout algorithm used. Valid values are: "dot",
+		 *	"neato", "fdp", "sfdp", "twopi", "circo", "patchwork", "osage".
 		 *	Default is dot.
 		 * @return true if everything went fine, false otherwise.
 		 */
@@ -151,8 +152,10 @@ namespace depgraphV
 
 		/**
 		 * @brief Get plugins list by kind
-		 * @param kind The kind of plugin. Valid values are "render", "layout", "textlayout", "device" and "loadimage".
-		 * @return A QStringList* containing all the available plugins of type "kind", NULL otherwise.
+		 * @param kind The kind of plugin. Valid values are "render", "layout",
+		 *	"textlayout", "device" and "loadimage".
+		 * @return A QStringList* containing all the available plugins of type
+		 *	"kind", NULL otherwise.
 		 */
 		QStringList* pluginsListByKind( const QString& kind ) const;
 
