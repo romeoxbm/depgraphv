@@ -43,6 +43,7 @@
 #			define WITH_CGRAPH 1
 #		endif
 #	else
+		//TODO Following GraphViz include has the same name of this class..
 #		include <graph.h>
 #	endif // Using_CGRAPH
 #endif // Q_MOC_RUN
@@ -239,6 +240,7 @@ namespace depgraphV
 		 */
 		bool _renderDataAs( const QString& format, QString* outString ) const;
 
+		void _setGraphAttributes() const;
 		void _lookForAvailablePlugins();
 		bool _isPluginAvailable( const QString& format, const QString& kind = "" ) const;
 	};

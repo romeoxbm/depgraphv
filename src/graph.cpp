@@ -53,7 +53,7 @@ namespace depgraphV
 		//TODO Following code line needs to be tested
 		this->setResizeAnchor( QGraphicsView::AnchorUnderMouse );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Graph::~Graph()
 	{
 		this->clear();
@@ -62,7 +62,7 @@ namespace depgraphV
 
 		_availablePlugins.clear();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::setRenderer( RendererType type )
 	{
 		_renderer = type;
@@ -76,16 +76,17 @@ namespace depgraphV
 		else
 			setViewport( new QWidget );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::highQualityAA() const
 	{
 #ifdef QT_USE_OPENGL
-		return ( renderHints() & QPainter::HighQualityAntialiasing ) == QPainter::HighQualityAntialiasing;
+		return ( renderHints() & QPainter::HighQualityAntialiasing ) ==
+				QPainter::HighQualityAntialiasing;
 #else
 		return false;
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::setHighQualityAntialiasing( bool highQualityAntialiasing )
 	{
 #ifdef QT_USE_OPENGL
@@ -94,7 +95,7 @@ namespace depgraphV
 		Q_UNUSED( highQualityAntialiasing );
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createVertex( const QString& label )
 	{
 		Q_ASSERT( _graph && !label.isEmpty() );
@@ -113,7 +114,7 @@ namespace depgraphV
 		emit vertexCreated();
 		return v;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createOrRetrieveVertex( const QString& label )
 	{
 		if( !_vertices.contains( label ) )
@@ -121,7 +122,7 @@ namespace depgraphV
 
 		return vertex( label );
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Agnode_t* Graph::vertex( const QString& label )
 	{
 		Q_ASSERT( !label.isEmpty() );
@@ -130,7 +131,7 @@ namespace depgraphV
 
 		return 0;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::createEdges( const QString& absPath, const QString& vertexLabel )
 	{
 		Q_ASSERT( !absPath.isEmpty() );
@@ -146,7 +147,10 @@ namespace depgraphV
 
 		//Before parsing includes, we remove every comment;
 		//By this way, commented include statements will not match anymore.
-		fileContent.remove( QRegExp( "(//[^\\r\\n]*)|(/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)" ) );
+		QString includeReg( "(//[^\\r\\n]*)|(/\\*([^*]"
+					 "|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)"
+		);
+		fileContent.remove( QRegExp( includeReg ) );
 
 		QRegExp rExp( "#\\s*include\\s*((<[^>]+>)|(\"[^\"]+\"))" );
 		int pos = 0;
@@ -160,12 +164,15 @@ namespace depgraphV
 			pos += rExp.matchedLength();
 		}
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::applyLayout( const QString& algorithm )
 	{
 		Q_ASSERT( _context && _graph && !_svgItem );
-		if( !_isPluginAvailable( algorithm, "layout" ) || !_isPluginAvailable( "svg", "render" ) )
+		if( !_isPluginAvailable( algorithm, "layout" ) ||
+				!_isPluginAvailable( "svg", "render" ) )
+		{
 			return false;
+		}
 
 		if( gvLayout( _context, _graph, algorithm.toStdString().c_str() ) != 0 )
 		{
@@ -198,7 +205,7 @@ namespace depgraphV
 		s->setSceneRect( _svgItem->boundingRect().adjusted( -10, -10, 10, 10 ) );
 		return true;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
 		Q_ASSERT( _context && _graph && !filename.isEmpty() && !format.isEmpty() );
@@ -206,7 +213,12 @@ namespace depgraphV
 
 		if( _isPluginAvailable( format, "loadimage" ) )
 		{
-			result = gvRenderFilename( _context, _graph, G_STR( format ), G_STR( filename ) ) == 0;
+			result = gvRenderFilename(
+						 _context,
+						 _graph,
+						 G_STR( format ),
+						 G_STR( filename )
+			) == 0;
 
 			if( !result )
 			{
@@ -214,13 +226,13 @@ namespace depgraphV
 					this->parentWidget(),
 					tr( "Save as image" ),
 					tr( "Unable to save file;\n" ) + QString::fromUtf8( aglasterr() )
-					);
+				);
 			}
 		}
 
 		return result;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::saveDot( const QString& filename ) const
 	{
 		bool retValue = false;
@@ -239,7 +251,7 @@ namespace depgraphV
 		f.close();
 		return retValue;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::prepare()
 	{
 		Q_ASSERT( !_context && !_graph );
@@ -250,8 +262,9 @@ namespace depgraphV
 		_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH );
 #endif
 		_lookForAvailablePlugins();
+		_setGraphAttributes();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	QStringList* Graph::pluginsListByKind( const QString& kind ) const
 	{
 		Q_ASSERT( !kind.isEmpty() );
@@ -261,7 +274,7 @@ namespace depgraphV
 
 		return 0;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	QList<const char*> Graph::propList() const
 	{
 		QList<const char*> props;
@@ -270,7 +283,7 @@ namespace depgraphV
 
 		return props;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
 	{
 #ifdef GraphViz_USE_CGRAPH
@@ -279,7 +292,7 @@ namespace depgraphV
 		agraphattr( _graph, G_STR( name ), G_STR( value ) );
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::setVerticesAttribute( const QString& name, const QString& value ) const
 	{
 #ifdef GraphViz_USE_CGRAPH
@@ -288,7 +301,7 @@ namespace depgraphV
 		agnodeattr( _graph, G_STR( name ), G_STR( value ) );
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::setEdgesAttribute( const QString& name, const QString& value ) const
 	{
 #ifdef GraphViz_USE_CGRAPH
@@ -297,7 +310,7 @@ namespace depgraphV
 		agedgeattr( _graph, G_STR( name ), G_STR( value ) );
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::clear()
 	{
 		if( _svgItem )
@@ -319,14 +332,14 @@ namespace depgraphV
 			_context = 0;
 		}
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	void Graph::wheelEvent( QWheelEvent* event )
 	{
 		qreal factor = qPow( 1.2, event->delta() / 240.0 );
 		scale( factor, factor );
 		event->accept();
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
 	{
 		Q_ASSERT( _graph && src && dest );
@@ -345,12 +358,18 @@ namespace depgraphV
 		emit edgeCreated();
 		return e;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::_renderDataAs( const QString& format, QString* outString ) const
 	{
 		unsigned int length;
 		char* rawData = 0;
-		bool retValue = gvRenderData( _context, _graph, G_STR( format ), &rawData, &length ) == 0;
+		bool retValue = gvRenderData(
+							_context,
+							_graph,
+							G_STR( format ),
+							&rawData,
+							&length
+		) == 0;
 		retValue = retValue && rawData;
 
 		if( retValue )
@@ -358,7 +377,20 @@ namespace depgraphV
 
 		return retValue;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	void Graph::_setGraphAttributes() const
+	{
+		//Configuring graph attributes
+		//http://www.graphviz.org/doc/info/attrs.html
+		this->setGraphAttribute( "splines", "spline" );
+		this->setGraphAttribute( "nodesep", "0.4" );
+
+		this->setVerticesAttribute( "shape", "box" );
+		this->setVerticesAttribute( "style", "rounded" );
+
+		this->setEdgesAttribute( "minlen", "3" );
+	}
+	//-------------------------------------------------------------------------
 	void Graph::_lookForAvailablePlugins()
 	{
 		if( !_availablePlugins.empty() )
@@ -375,7 +407,12 @@ namespace depgraphV
 
 			qDebug() << qPrintable( tr( "Plugins for kind \"%1\":" ).arg( kinds[ k ] ) );
 			_availablePlugins.insert( kinds[ k ], new QStringList() );
-			char** list = gvPluginList( _context, const_cast<char*>( kinds[ k ].toStdString().c_str() ), &size, 0 );
+			char** list = gvPluginList(
+							  _context,
+							  const_cast<char*>( kinds[ k ].toStdString().c_str() ),
+							  &size,
+							  0
+			);
 			for( int i = 0; i < size; ++i )
 			{
 				QString currentPlugin( list[ i ] );
@@ -410,7 +447,7 @@ namespace depgraphV
 
 #endif
 	}
-	//--------------------------------------------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	bool Graph::_isPluginAvailable( const QString& format, const QString& kind ) const
 	{
 		if( _availablePlugins.empty() )

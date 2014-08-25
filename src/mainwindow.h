@@ -116,8 +116,6 @@ namespace depgraphV
 		QMap<QString, QString> _imageFiltersByExt;
 
 		void _doClearGraph() const;
-		void _setGraphAttributes() const;
-		void _setGroupBoxesEnabled( bool value ) const;
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		bool _lookForRequiredImageFormats();
 

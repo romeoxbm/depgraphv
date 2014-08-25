@@ -143,13 +143,12 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onDraw()
 	{
-		//Disable related ui widgets
-		_setGroupBoxesEnabled( false );
-
 		_ui->graph->prepare();
-		_setGraphAttributes();
 
-		_scanDlg->scanFiles( _filesDlg->selectedFiles() );
+		if( _config->scanByFolders() )
+			_scanDlg->scanFolders();
+		else
+			_scanDlg->scanFiles( _filesDlg->selectedFiles() );
 
 		//TODO scandialog exec?
 		/*if( _scanDlg->exec() == QDialog::Accepted )
@@ -199,7 +198,6 @@ namespace depgraphV
 	void MainWindow::_doClearGraph() const
 	{
 		_ui->graph->clear();
-		_setGroupBoxesEnabled( true );
 		_setButtonsAndActionsEnabled( false );
 	}
 	//-------------------------------------------------------------------------
@@ -322,29 +320,6 @@ namespace depgraphV
 	{
 		this->close();
 		qApp->quit();
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::_setGraphAttributes() const
-	{
-		//Configuring graph attributes
-		//http://www.graphviz.org/doc/info/attrs.html
-		_ui->graph->setGraphAttribute( "splines", "spline" );
-		_ui->graph->setGraphAttribute( "nodesep", "0.4" );
-
-		_ui->graph->setVerticesAttribute( "shape", "box" );
-		_ui->graph->setVerticesAttribute( "style", "rounded" );
-
-		_ui->graph->setEdgesAttribute( "minlen", "3" );
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::_setGroupBoxesEnabled( bool value ) const
-	{
-		//TODO
-		//_ui->rootFolderGroupBox->setEnabled( value );
-		//_ui->parseGroupbox->setEnabled( value );
-		//TODO
-		//_ui->headersFilterGroupBox->setEnabled( value && _ui->parseHeadersCheckbox->isChecked() );
-		//_ui->sourcesFilterGroupBox->setEnabled( value && _ui->parseSourcesCheckbox->isChecked() );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
