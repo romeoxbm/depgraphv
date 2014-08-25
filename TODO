@@ -13,8 +13,6 @@ features, and there's no particular order.
 * Detecting graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);
 * Running as stand-alone or as Qt Creator plugin (or any other "compatible" IDE);
 * Watch over file system changes and automatically update the graph;
-* Folders exclude list; It should be possible to specify a list of folders ignored when recursively scanning a source folder.
-  This feature should allow users to add, enable(default state after adding a folder), disable or remove a folder from this list.
 * Optionally add redundand include guards;
 * Navigate to source code function, that allow users to easily see/edit the code by double-clicking a vertex in the graph.
 * Generate either "include" or "included-by" graphs.

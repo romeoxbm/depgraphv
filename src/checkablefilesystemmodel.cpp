@@ -199,22 +199,22 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool CheckableFileSystemModel::_skipChild( const QModelIndex& child, FilesGroup v )
 	{
-		if( v == All )
-			return false;
+		if( v != All )
+		{
+			QFileInfo fi = fileInfo( child );
+			//TODO toLower could create issues with case sensitive extensions
+			QString filter = "*." + fi.completeSuffix().toLower();
+			AppConfig* c = Singleton<AppConfig>::instancePtr();
+			QStringList filters;
+			if( v == Hdr )
+				filters = c->headerNameFilters();
 
-		QFileInfo fi = fileInfo( child );
-		//TODO toLower could create issues with case sensitive extensions
-		QString filter = "*." + fi.completeSuffix().toLower();
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		QStringList filters;
-		if( v == Hdr )
-			filters = c->headerNameFilters();
+			else if( v == Src )
+				filters = c->sourceNameFilters();
 
-		else if( v == Src )
-			filters = c->sourceNameFilters();
-
-		if( !filters.contains( filter ) )
-			return true;
+			if( !filters.contains( filter ) )
+				return true;
+		}
 
 		return false;
 	}
