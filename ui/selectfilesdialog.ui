@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>depgraphV::SelectFilesDialog</class>
+ <widget class="QDialog" name="depgraphV::SelectFilesDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>742</width>
+    <height>604</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Select Files...</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QTreeView" name="treeView">
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+     </widget>
+     <widget class="QListView" name="listView"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>depgraphV::SelectFilesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>702</x>
+     <y>573</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>741</x>
+     <y>573</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>depgraphV::SelectFilesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>606</x>
+     <y>582</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>739</x>
+     <y>548</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depgraphV::SelectFilesDialog</sender>
+   <signal>finished(int)</signal>
+   <receiver>depgraphV::SelectFilesDialog</receiver>
+   <slot>onClose(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>301</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>370</x>
+     <y>301</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onClose(int)</slot>
+ </slots>
+</ui>
