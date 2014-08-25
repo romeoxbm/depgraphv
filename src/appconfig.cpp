@@ -339,7 +339,10 @@ namespace depgraphV
 				else
 				{
 					if( p.isWritable() )
-						p.write( obj, _settings.value( key ) );
+					{
+						QVariant qv = _settings.value( key );
+						p.write( obj, p.isEnumType() ? qv.toInt() : qv );
+					}
 					else
 						qDebug() << qPrintable(
 							tr( "Property \"" ) + className + "::" + p.name() +
