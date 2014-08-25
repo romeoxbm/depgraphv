@@ -182,6 +182,7 @@ namespace depgraphV
 						 _ui->actionNative : _ui->actionOpenGL;
 
 		a->setChecked( true );
+		_langActions[ _config->language() ]->setChecked( true );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::changeToolbarOrientation()
@@ -438,6 +439,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onTranslationFound( QString lang, QString path )
 	{
+		//Double tab check
+		if( _langActions.contains( lang ) )
+			return;
+
 		//Create a new QAction for lang
 		QAction* newLang = new QAction( this );
 		newLang->setObjectName( path );
@@ -459,6 +464,8 @@ namespace depgraphV
 			_ui->actionSystem_language->setEnabled( true );
 			qDebug() << qPrintable( tr( "\"%1\" is the system language." ).arg( lang ) );
 		}
+
+		_langActions.insert( lang, newLang );
 	}
 	//-------------------------------------------------------------------------
 	QString MainWindow::_ucFirst( const QString& value ) const

@@ -112,6 +112,7 @@ namespace depgraphV
 
 		bool _imageFiltersUpdated;
 		QString _imageFilters;
+		QMap<QString, QAction*> _langActions;
 		QMap<QString, QString> _imageFiltersByExt;
 
 		void _doClearGraph() const;
