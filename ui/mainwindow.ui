@@ -103,6 +103,10 @@
      <property name="title">
       <string>&amp;Language</string>
      </property>
+     <property name="icon">
+      <iconset resource="../res/resources.qrc">
+       <normaloff>:/toolBarIcons/language_48x48.png</normaloff>:/toolBarIcons/language_48x48.png</iconset>
+     </property>
      <addaction name="actionSystem_language"/>
      <addaction name="separator"/>
     </widget>
@@ -145,6 +149,10 @@
    <addaction name="actionToolbarOrientation"/>
   </widget>
   <action name="actionAbout_Qt">
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/QtIco_48x48.png</normaloff>:/toolBarIcons/QtIco_48x48.png</iconset>
+   </property>
    <property name="text">
     <string>About &amp;Qt</string>
    </property>
@@ -292,6 +300,10 @@
   <action name="action_Check_for_updates">
    <property name="enabled">
     <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/checkForUpdates_48x48.png</normaloff>:/toolBarIcons/checkForUpdates_48x48.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Check for updates...</string>
