@@ -40,10 +40,6 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		QFileSystemModel* model = new QFileSystemModel( this );
-		model->setFilter( QDir::NoDotAndDotDot | QDir::AllDirs );
-		model->setRootPath( QDir::currentPath() );
-
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
 
