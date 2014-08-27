@@ -54,6 +54,7 @@ namespace depgraphV
 
 	private slots:
 		void onActionTriggered( QAction* );
+		void onShowAllTriggered();
 
 	private:
 		class PackedParameters

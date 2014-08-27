@@ -28,8 +28,6 @@
 #include "filesmodel.h"
 #include <QActionGroup>
 
-#include <QDebug>
-
 namespace depgraphV
 {
 	FilesModel::FilesModel( QObject* parent )
@@ -78,10 +76,7 @@ namespace depgraphV
 		PackedParameters* p = PackedParameters::getPtr( a->data() );
 		Q_ASSERT( p );
 
-		if( p->checkState() == -1 && p->filesGroup() == -1 )
-			this->setNameFilterDisables( _showAllFiles->isChecked() );
-
-		else if( p->checkState() == -1 )
+		if( p->checkState() == -1 )
 			this->invertSelection( _listView->rootIndex(), p->filesGroup() );
 
 		else
@@ -94,6 +89,11 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
+	void FilesModel::onShowAllTriggered()
+	{
+		this->setNameFilterDisables( _showAllFiles->isChecked() );
+	}
+	//-------------------------------------------------------------------------
 	void FilesModel::_createContextMenu()
 	{
 		_listView->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -103,15 +103,10 @@ namespace depgraphV
 								this, SLOT( onActionTriggered( QAction* ) ) );
 
 		//Actions
-		_showAllFiles = new QAction( tr( "Show All Files" ), group );
+		_showAllFiles = new QAction( tr( "Show All Files" ), _listView );
 		_showAllFiles->setCheckable( true );
-		_showAllFiles->setData(
-					PackedParameters::toQVariant(
-						static_cast<Qt::CheckState>( -1 ),
-						static_cast<CheckableFileSystemModel::FilesGroup>( -1 )
-					)
-		);
-		group->addAction( _showAllFiles );
+		connect( _showAllFiles, SIGNAL( triggered() ),
+				 this, SLOT( onShowAllTriggered() ) );
 
 		QAction* sep = new QAction( group );
 		sep->setSeparator( true );
@@ -177,6 +172,7 @@ namespace depgraphV
 		);
 		group->addAction( _src_invertSelection );
 
+		_listView->addAction( _showAllFiles );
 		_listView->addActions( group->actions() );
 
 		//Tooltips
