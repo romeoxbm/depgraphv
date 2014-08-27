@@ -156,12 +156,12 @@ namespace depgraphV
 
 				 << "hdr_parseEnabled"
 				 << "hdr_standardFiltersEnabled"
-				 << "hdr_currentStandardFilterIndex"
+				 << "hdr_currentStandardFilter"
 				 << "hdr_customFilters"
 
 				 << "src_parseEnabled"
 				 << "src_standardFiltersEnabled"
-				 << "src_currentStandardFilterIndex"
+				 << "src_currentStandardFilter"
 				 << "src_customFilters";
 
 		return props;
@@ -251,9 +251,9 @@ namespace depgraphV
 		_hdrNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setCurrentStandardFilterIndex( int value )
+	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
 	{
-		_hdrCurrentStandardFilterIndex = value;
+		_hdrCurrentStandardFilter = value;
 		_hdrNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
@@ -275,9 +275,9 @@ namespace depgraphV
 		_srcNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------
-	void AppConfig::src_setCurrentStandardFilterIndex( int value )
+	void AppConfig::src_setCurrentStandardFilter( const QString& value )
 	{
-		_srcCurrentStandardFilterIndex = value;
+		_srcCurrentStandardFilter = value;
 		_srcNameFiltersDirty = true;
 	}
 	//-------------------------------------------------------------------------

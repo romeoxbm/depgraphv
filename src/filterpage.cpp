@@ -28,6 +28,7 @@
 #include "filterpage.h"
 #include "ui_filterpage.h"
 #include "appconfig.h"
+#include "buildsettings.h"
 
 namespace depgraphV
 {
@@ -58,9 +59,6 @@ namespace depgraphV
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
 					 c, SLOT( hdr_setStandardFiltersEnabled( bool ) ) );
 
-			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( int ) ),
-					 c, SLOT( hdr_setCurrentStandardFilterIndex( int ) ) );
-
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( hdr_setCurrentStandardFilter( QString ) ) );
 
@@ -78,9 +76,6 @@ namespace depgraphV
 
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
 					 c, SLOT( src_setStandardFiltersEnabled( bool ) ) );
-
-			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( int ) ),
-					 c, SLOT( src_setCurrentStandardFilterIndex( int ) ) );
 
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( src_setCurrentStandardFilter( QString ) ) );
@@ -136,7 +131,13 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-			_ui->standardFilters->setCurrentIndex( c->hdr_currentStandardFilterIndex() );
+#ifdef QT_USE_QT5
+			_ui->standardFilters->setCurrentText( c->hdr_currentStandardFilter() );
+#else
+			int idx = _ui->standardFilters->findText( c->hdr_currentStandardFilter() );
+			if( idx != -1 )
+				_ui->standardFilters->setCurrentIndex( idx );
+#endif
 			_ui->customFilters->setText( c->hdr_customFilters() );
 		}
 		else
@@ -147,7 +148,13 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-			_ui->standardFilters->setCurrentIndex( c->src_currentStandardFilterIndex() );
+#ifdef QT_USE_QT5
+			_ui->standardFilters->setCurrentText( c->src_currentStandardFilter() );
+#else
+			int idx = _ui->standardFilters->findText( c->src_currentStandardFilter() );
+			if( idx != -1 )
+				_ui->standardFilters->setCurrentIndex( idx );
+#endif
 			_ui->customFilters->setText( c->src_customFilters() );
 		}
 	}
