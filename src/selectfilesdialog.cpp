@@ -78,5 +78,6 @@ namespace depgraphV
 		_folderModel->setFileNameFilters(
 					c->headerNameFilters() + c->sourceNameFilters()
 		);*/
+		//_selectedFiles = _folderModel->checkedFiles();
 	}
 }
