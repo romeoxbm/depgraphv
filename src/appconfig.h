@@ -32,6 +32,7 @@
 #include "singleton.h"
 #include "memento.h"
 #include "buildsettings.h"
+#include "graph.h"
 #include <QSettings>
 #include <QTranslator>
 #ifndef QT_USE_QT5
@@ -69,7 +70,7 @@ namespace depgraphV
 		/**
 		 * @brief AppConfig constructor.
 		 */
-		explicit AppConfig( QWidget* parent = 0 );
+		explicit AppConfig( Graph* graph, QWidget* parent = 0 );
 
 		/**
 		 * @brief AppConfig destructor.
@@ -100,6 +101,8 @@ namespace depgraphV
 		void registerSerializable( ISerializableObject* obj );
 
 		virtual QList<const char*> propList() const;
+
+		Graph* graph() const { return _graph; }
 
 		/**
 		 * @brief Return the installation prefix.
@@ -200,6 +203,7 @@ namespace depgraphV
 
 	private:
 		QSettings _settings;
+		Graph* _graph;
 		QList<ISerializableObject*> _serializableObjects;
 
 		/**

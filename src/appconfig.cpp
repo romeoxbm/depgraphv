@@ -36,10 +36,11 @@
 
 namespace depgraphV
 {
-	AppConfig::AppConfig( QWidget* parent )
+	AppConfig::AppConfig( Graph* graph, QWidget* parent )
 		: QObject( parent ),
 		  Singleton<AppConfig>(),
 		  _settings( APP_VENDOR, APP_NAME ),
+		  _graph( graph ),
 		  _language( "en" ),
 		  _scanByFolders( true ),
 		  _selectedFolders( new Memento<QStringList>() ),

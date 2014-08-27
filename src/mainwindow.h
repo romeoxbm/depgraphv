@@ -65,8 +65,6 @@ namespace depgraphV
 		 */
 		~MainWindow();
 
-		Graph* graph() const;
-
 		virtual QList<const char*> propList() const;
 
 		QByteArray windowState() const;

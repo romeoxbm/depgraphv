@@ -29,8 +29,12 @@
 #include "ui_mainwindow.h"
 #include "appconfig.h"
 #include "buildsettings.h"
+
+//Settings Dialog pages
 #include "scanmodepage.h"
 #include "filterpage.h"
+#include "graphpage.h"
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
@@ -41,18 +45,18 @@ namespace depgraphV
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
 		_ui( new Ui::MainWindow ),
-		_config( new AppConfig( this ) ),
-		_aboutDlg( new AboutDialog( this ) ),
-		_settingsDlg( new SettingsDialog( this ) ),
-		_rootsDlg( new HandleRootsDialog( this ) ),
-		_filesDlg( new SelectFilesDialog( this ) ),
 		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
 
-		//ScanDialog ctor does use _ui->graph, so it must me created after calling setupUi
-		_scanDlg = new ScanDialog( this );
+		//Dialogs
+		_config			= new AppConfig( _ui->graph, this );
+		_aboutDlg		= new AboutDialog( this );
+		_settingsDlg	= new SettingsDialog( this );
+		_rootsDlg		= new HandleRootsDialog( this );
+		_filesDlg		= new SelectFilesDialog( this );
+		_scanDlg		= new ScanDialog( this );
 
 		//Renderer action group
 		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
@@ -74,6 +78,16 @@ namespace depgraphV
 										  "you could meet unespected issues." ) );
 		}
 
+		//Getting available plugins for "Save As Image..."
+		QStringList* iPlugins = _ui->graph->pluginsListByKind( "loadimage" );
+		if( iPlugins )
+		{
+			foreach( QString plugin, *iPlugins )
+			{
+				//TODO
+			}
+		}
+
 		//Create language action group and setting up actionSystem_language
 		_langGroup = new QActionGroup( _ui->menu_Language );
 		_ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
@@ -89,6 +103,7 @@ namespace depgraphV
 		_settingsDlg->addPage( tr( "Scan Mode" ), new ScanModePage( _settingsDlg ) );
 		_settingsDlg->addPage( tr( "Header Filters" ), new FilterPage( _settingsDlg ) );
 		_settingsDlg->addPage( tr( "Source Filters" ), new FilterPage( _settingsDlg, false ) );
+		_settingsDlg->addPage( tr( "Graph Settings" ), new GraphPage( _settingsDlg ) );
 
 		//Register serializable objects
 		_config->registerSerializable( this );
@@ -145,6 +160,7 @@ namespace depgraphV
 	{
 		_ui->graph->prepare();
 
+		//TODO Warn when no file/folder has been selected
 		if( _config->scanByFolders() )
 			_scanDlg->scanFolders();
 		else
@@ -328,12 +344,6 @@ namespace depgraphV
 		_ui->actionClear->setEnabled( value );
 		_ui->actionSave_as_Image->setEnabled( value );
 		_ui->actionSave_as_dot->setEnabled( value );
-	}
-	//-------------------------------------------------------------------------
-	Graph* MainWindow::graph() const
-	{
-		assert( _ui->graph );
-		return _ui->graph;
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const
