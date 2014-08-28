@@ -28,7 +28,7 @@
 #include "filterpage.h"
 #include "ui_filterpage.h"
 #include "appconfig.h"
-#include "buildsettings.h"
+#include "helpers.h"
 
 namespace depgraphV
 {
@@ -131,13 +131,7 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-#ifdef QT_USE_QT5
-			_ui->standardFilters->setCurrentText( c->hdr_currentStandardFilter() );
-#else
-			int idx = _ui->standardFilters->findText( c->hdr_currentStandardFilter() );
-			if( idx != -1 )
-				_ui->standardFilters->setCurrentIndex( idx );
-#endif
+			Helpers::setCurrentText( _ui->standardFilters, c->hdr_currentStandardFilter() );
 			_ui->customFilters->setText( c->hdr_customFilters() );
 		}
 		else
@@ -148,13 +142,7 @@ namespace depgraphV
 									  _ui->customFilterRadio;
 			radio->setChecked( true );
 
-#ifdef QT_USE_QT5
-			_ui->standardFilters->setCurrentText( c->src_currentStandardFilter() );
-#else
-			int idx = _ui->standardFilters->findText( c->src_currentStandardFilter() );
-			if( idx != -1 )
-				_ui->standardFilters->setCurrentIndex( idx );
-#endif
+			Helpers::setCurrentText( _ui->standardFilters, c->src_currentStandardFilter() );
 			_ui->customFilters->setText( c->src_customFilters() );
 		}
 	}
