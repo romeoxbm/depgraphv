@@ -30,5 +30,6 @@
         <file>checkForUpdates_48x48.png</file>
         <file>QtIco_48x48.png</file>
         <file>language_48x48.png</file>
+        <file>select_48x48.png</file>
     </qresource>
 </RCC>

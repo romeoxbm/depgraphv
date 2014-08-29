@@ -91,7 +91,7 @@ namespace depgraphV
 		void saveAsImage();
 		void saveAsDot() const;
 		void exitApp();
-		void on_actionSelect_Files_triggered();
+		void onSelectFilesOrFolders();
 		void onLanguageActionTriggered( QAction* action );
 		void onTranslationFound( QString lang, QString path );
 

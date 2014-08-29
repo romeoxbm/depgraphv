@@ -396,7 +396,7 @@ namespace depgraphV
 		_aboutDlg->exec( showDonations );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::on_actionSelect_Files_triggered()
+	void MainWindow::onSelectFilesOrFolders()
 	{
 		if( _config->scanByFolders() )
 			_rootsDlg->exec();

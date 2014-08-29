@@ -143,7 +143,7 @@
    <addaction name="actionDraw"/>
    <addaction name="actionClear"/>
    <addaction name="separator"/>
-   <addaction name="actionSelect_Files"/>
+   <addaction name="actionSelect_FilesFolders"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
    <addaction name="actionToolbarOrientation"/>
@@ -289,12 +289,16 @@
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionSelect_Files">
+  <action name="actionSelect_FilesFolders">
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/select_48x48.png</normaloff>:/toolBarIcons/select_48x48.png</iconset>
+   </property>
    <property name="text">
-    <string>Select Files...</string>
+    <string>Select</string>
    </property>
    <property name="toolTip">
-    <string>Select Files...</string>
+    <string>Select...</string>
    </property>
   </action>
   <action name="action_Check_for_updates">
@@ -493,6 +497,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSelect_FilesFolders</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::MainWindow</receiver>
+   <slot>onSelectFilesOrFolders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>parseOptionsChanged()</slot>
@@ -505,5 +525,6 @@
   <slot>onDraw()</slot>
   <slot>onClear()</slot>
   <slot>changeToolbarOrientation()</slot>
+  <slot>onSelectFilesOrFolders()</slot>
  </slots>
 </ui>
