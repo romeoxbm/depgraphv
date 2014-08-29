@@ -93,6 +93,12 @@
          </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="splines">
+           <property name="toolTip">
+            <string>Controls how, and if, edges are represented.
+If spline, edges are drawn as splines routed around nodes;
+if line, edges are drawn as line segments.
+If set to none, no edges are drawn at all. </string>
+           </property>
            <item>
             <property name="text">
              <string notr="true">none</string>
@@ -134,6 +140,10 @@
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="nodesep">
+           <property name="toolTip">
+            <string>In dot, this specifies the minimum space between two adjacent nodes in the same rank, in inches.
+For other layouts, this affects the spacing between loops on a single node, or multiedges between a pair of nodes. </string>
+           </property>
            <property name="locale">
             <locale language="C" country="AnyCountry"/>
            </property>
@@ -160,6 +170,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QComboBox" name="shape">
+           <property name="toolTip">
+            <string>Set the shape of a node.</string>
+           </property>
            <item>
             <property name="text">
              <string notr="true">box</string>
@@ -326,6 +339,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="vert_style">
+           <property name="toolTip">
+            <string>Set style information for components of the graph.</string>
+           </property>
            <item>
             <property name="text">
              <string notr="true">solid</string>
@@ -381,6 +397,9 @@
          </item>
          <item row="1" column="3">
           <widget class="QComboBox" name="edge_style">
+           <property name="toolTip">
+            <string>Set style information for components of the graph.</string>
+           </property>
            <item>
             <property name="text">
              <string notr="true">solid</string>
@@ -411,7 +430,11 @@
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QSpinBox" name="minlen"/>
+          <widget class="QSpinBox" name="minlen">
+           <property name="toolTip">
+            <string>Minimum edge length (rank difference between head and tail). </string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
