@@ -43,15 +43,34 @@ namespace depgraphV
 {
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
+		  _layoutAlgorithm( "dot" ),
 		_svgItem( 0 ),
-		_context( 0 ),
-		_graph( 0 )
+		_context( gvContext() ),
+#ifdef GraphViz_USE_CGRAPH
+		_graph( agopen( G_STR( QString( "" ) ), Agdirected, 0 ) )
+#else
+		_graph( agopen( G_STR( QString( "" ) ), AGDIGRAPH ) )
+#endif
 	{
+		qRegisterMetaType<NameValuePair>( "NameValuePair" );
+		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );
+
 		setScene( new QGraphicsScene( this ) );
 		this->setRenderer( Native );
 
 		//TODO Following code line needs to be tested
 		this->setResizeAnchor( QGraphicsView::AnchorUnderMouse );
+
+		//Setting default graph attributes
+		setGraphAttribute( "splines", "spline" );
+		setGraphAttribute( "nodesep", "0.4" );
+
+		setVerticesAttribute( "shape", "box" );
+		setVerticesAttribute( "style", "rounded" );
+
+		setEdgesAttribute( "minlen", "3" );
+
+		_lookForAvailablePlugins();
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
@@ -61,6 +80,15 @@ namespace depgraphV
 			delete l;
 
 		_availablePlugins.clear();
+		_graphAttributes.clear();
+		_verticesAttributes.clear();
+		_edgesAttributes.clear();
+
+		gvFreeContext( _context );
+		_context = 0;
+
+		agclose( _graph );
+		_graph = 0;
 	}
 	//-------------------------------------------------------------------------
 	void Graph::setRenderer( RendererType type )
@@ -98,7 +126,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createVertex( const QString& label )
 	{
-		Q_ASSERT( _graph && !label.isEmpty() );
+		Q_ASSERT( !label.isEmpty() );
 #ifdef GraphViz_USE_CGRAPH
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
 #else
@@ -165,16 +193,16 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	bool Graph::applyLayout( const QString& algorithm )
+	bool Graph::applyLayout()
 	{
-		Q_ASSERT( _context && _graph && !_svgItem );
-		if( !_isPluginAvailable( algorithm, "layout" ) ||
+		Q_ASSERT( !_svgItem );
+		if( !_isPluginAvailable( _layoutAlgorithm, "layout" ) ||
 				!_isPluginAvailable( "svg", "render" ) )
 		{
 			return false;
 		}
 
-		if( gvLayout( _context, _graph, algorithm.toStdString().c_str() ) != 0 )
+		if( gvLayout( _context, _graph, G_STR( _layoutAlgorithm ) ) != 0 )
 		{
 			QMessageBox::critical(
 				this->parentWidget(),
@@ -208,7 +236,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
-		Q_ASSERT( _context && _graph && !filename.isEmpty() && !format.isEmpty() );
+		Q_ASSERT( !filename.isEmpty() && !format.isEmpty() );
 		bool result = false;
 
 		if( _isPluginAvailable( format, "loadimage" ) )
@@ -252,19 +280,6 @@ namespace depgraphV
 		return retValue;
 	}
 	//-------------------------------------------------------------------------
-	void Graph::prepare()
-	{
-		Q_ASSERT( !_context && !_graph );
-		_context = gvContext();
-#ifdef GraphViz_USE_CGRAPH
-		_graph = agopen( G_STR( QString( "" ) ), Agdirected, 0 );
-#else
-		_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH );
-#endif
-		_lookForAvailablePlugins();
-		_setGraphAttributes();
-	}
-	//-------------------------------------------------------------------------
 	QStringList* Graph::pluginsListByKind( const QString& kind ) const
 	{
 		Q_ASSERT( !kind.isEmpty() );
@@ -279,13 +294,22 @@ namespace depgraphV
 	{
 		QList<const char*> props;
 		props << "rendererType"
-			  << "highQualityAA";
+			  << "highQualityAA"
+			  << "layoutAlgorithm"
+			  << "graphAttributes"
+			  << "verticesAttributes"
+			  << "edgesAttributes";
 
 		return props;
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setGraphAttribute( const QString& name, const QString& value ) const
+	void Graph::setGraphAttribute( const QString& name, const QString& value )
 	{
+		if( _graphAttributes.contains( name ) )
+			_graphAttributes[ name ] = value;
+		else
+			_graphAttributes.insert( name, value );
+
 #ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGRAPH, G_STR( name ), G_STR( value ) );
 #else
@@ -293,8 +317,13 @@ namespace depgraphV
 #endif
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setVerticesAttribute( const QString& name, const QString& value ) const
+	void Graph::setVerticesAttribute( const QString& name, const QString& value )
 	{
+		if( _verticesAttributes.contains( name ) )
+			_verticesAttributes[ name ] = value;
+		else
+			_verticesAttributes.insert( name, value );
+
 #ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGNODE, G_STR( name ), G_STR( value ) );
 #else
@@ -302,8 +331,13 @@ namespace depgraphV
 #endif
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setEdgesAttribute( const QString& name, const QString& value ) const
+	void Graph::setEdgesAttribute( const QString& name, const QString& value )
 	{
+		if( _edgesAttributes.contains( name ) )
+			_edgesAttributes[ name ] = value;
+		else
+			_edgesAttributes.insert( name, value );
+
 #ifdef GraphViz_USE_CGRAPH
 		agattr( _graph, AGEDGE, G_STR( name ), G_STR( value ) );
 #else
@@ -320,17 +354,9 @@ namespace depgraphV
 			_svgItem = 0;
 		}
 
-		if( _graph )
-		{
-			gvFreeLayout( _context, _graph );
-			_vertices.clear();
-			_edges.clear();
-			agclose( _graph );
-			gvFreeContext( _context );
-
-			_graph = 0;
-			_context = 0;
-		}
+		gvFreeLayout( _context, _graph );
+		_vertices.clear();
+		_edges.clear();
 	}
 	//-------------------------------------------------------------------------
 	void Graph::wheelEvent( QWheelEvent* event )
@@ -342,7 +368,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
 	{
-		Q_ASSERT( _graph && src && dest );
+		Q_ASSERT( src && dest );
 #ifdef GraphViz_USE_CGRAPH
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
 #else
@@ -376,19 +402,6 @@ namespace depgraphV
 			*outString = QString::fromUtf8( rawData, length );
 
 		return retValue;
-	}
-	//-------------------------------------------------------------------------
-	void Graph::_setGraphAttributes() const
-	{
-		//Configuring graph attributes
-		//http://www.graphviz.org/doc/info/attrs.html
-		this->setGraphAttribute( "splines", "spline" );
-		this->setGraphAttribute( "nodesep", "0.4" );
-
-		this->setVerticesAttribute( "shape", "box" );
-		this->setVerticesAttribute( "style", "rounded" );
-
-		this->setEdgesAttribute( "minlen", "3" );
 	}
 	//-------------------------------------------------------------------------
 	void Graph::_lookForAvailablePlugins()

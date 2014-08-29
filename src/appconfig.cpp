@@ -335,21 +335,31 @@ namespace depgraphV
 
 				QMetaProperty p = metaObj->property( propIdx );
 				QString key = QString( "%1_%2" ).arg( obj->objectName(), p.name() );
+				QVariant qv = save ? p.read( obj ) : _settings.value( key );
+
+				if( qv.isNull() || !qv.isValid() )
+				{
+					qDebug() << qPrintable( tr( "Skipping property \"" )
+											+ className + "::" + p.name() +
+											tr( "\" because has either null or invalid value." )
+					);
+					continue;
+				}
+
 				if( save )
-					_settings.setValue( key, p.read( obj ) );
+					_settings.setValue( key, qv );
 				else
 				{
 					if( p.isWritable() )
-					{
-						QVariant qv = _settings.value( key );
 						p.write( obj, p.isEnumType() ? qv.toInt() : qv );
-					}
 					else
+					{
 						qDebug() << qPrintable(
 							tr( "Property \"" ) + className + "::" + p.name() +
 							tr( "\" doesn't use the WRITE keyword. "
 								"Please check its Q_PROPERTY declaration." )
 						);
+					}
 				}
 			}
 			_settings.endGroup();

@@ -38,13 +38,12 @@
 #ifndef Q_MOC_RUN
 #	include <gvc.h>
 #	ifdef GraphViz_USE_CGRAPH
-#		include <cgraph.h>
+#		include <graphviz/cgraph.h>
 #		ifndef WITH_CGRAPH
 #			define WITH_CGRAPH 1
 #		endif
 #	else
-		//TODO Following GraphViz include has the same name of this class..
-#		include <graph.h>
+#		include <graphviz/graph.h>
 #	endif // Using_CGRAPH
 #endif // Q_MOC_RUN
 
@@ -58,9 +57,15 @@ namespace depgraphV
 		Q_OBJECT
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
 		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
+		Q_PROPERTY( QString layoutAlgorithm READ layoutAlgorithm WRITE setLayoutAlgorithm )
+		Q_PROPERTY( NameValuePair graphAttributes READ graphAttributes WRITE setGraphAttributes )
+		Q_PROPERTY( NameValuePair verticesAttributes READ verticesAttributes WRITE setVerticesAttributes )
+		Q_PROPERTY( NameValuePair edgesAttributes READ edgesAttributes WRITE setEdgesAttributes )
 		Q_ENUMS( RendererType )
 
 	public:
+		typedef QMap<QString, QString> NameValuePair;
+
 		/**
 		 * @brief The RendererType enum which is used to set the render method used by Graph
 		 */
@@ -91,6 +96,14 @@ namespace depgraphV
 		 * @return True if high quality antialiasing is enabled, false otherwise.
 		 */
 		bool highQualityAA() const;
+
+		const QString& layoutAlgorithm() const { return _layoutAlgorithm; }
+
+		const NameValuePair& graphAttributes() const { return _graphAttributes; }
+
+		const NameValuePair& verticesAttributes() const { return _verticesAttributes; }
+
+		const NameValuePair& edgesAttributes() const { return _edgesAttributes; }
 
 		/**
 		 * @brief Create a new graph vertex.
@@ -124,12 +137,9 @@ namespace depgraphV
 
 		/**
 		 * @brief Calculate the graph layout.
-		 * @param algorithm The layout algorithm used. Valid values are: "dot",
-		 *	"neato", "fdp", "sfdp", "twopi", "circo", "patchwork", "osage".
-		 *	Default is dot.
 		 * @return true if everything went fine, false otherwise.
 		 */
-		bool applyLayout( const QString& algorithm = "dot" );
+		bool applyLayout();
 
 		/**
 		 * @brief Save the graph as image.
@@ -145,11 +155,6 @@ namespace depgraphV
 		 * @return True if the file has been saved successfully, false otherwise.
 		 */
 		bool saveDot( const QString& filename ) const;
-
-		/**
-		 * @brief Prepare every logic structure to be popoluated before creating the graph.
-		 */
-		void prepare();
 
 		/**
 		 * @brief Get plugins list by kind
@@ -182,26 +187,34 @@ namespace depgraphV
 		 */
 		void setHighQualityAntialiasing( bool highQualityAA );
 
+		void setLayoutAlgorithm( const QString& value ) { _layoutAlgorithm = value; }
+
+		void setGraphAttributes( const NameValuePair& value ) { _graphAttributes = value; }
+
+		void setVerticesAttributes( const NameValuePair& value ) { _verticesAttributes = value; }
+
+		void setEdgesAttributes( const NameValuePair& value ) { _edgesAttributes = value; }
+
 		/**
 		 * @brief Change value of a graph attribute by name.
 		 * @param name Attribute name.
 		 * @param value Attribute (new) value.
 		 */
-		void setGraphAttribute( const QString& name, const QString& value ) const;
+		void setGraphAttribute( const QString& name, const QString& value );
 
 		/**
 		 * @brief Change value of vertices attributes by name.
 		 * @param name Attribute name.
 		 * @param value Attribute value.
 		 */
-		void setVerticesAttribute( const QString& name, const QString& value ) const;
+		void setVerticesAttribute( const QString& name, const QString& value );
 
 		/**
 		 * @brief Change value of edges attributes by name.
 		 * @param name Attribute name.
 		 * @param value Attribute value.
 		 */
-		void setEdgesAttribute( const QString& name, const QString& value ) const;
+		void setEdgesAttribute( const QString& name, const QString& value );
 
 		/**
 		 * @brief Clear this graph.
@@ -213,6 +226,8 @@ namespace depgraphV
 
 	private:
 		RendererType _renderer;
+		QString _layoutAlgorithm;
+
 		QGraphicsSvgItem* _svgItem;
 
 		GVC_t* _context;
@@ -240,7 +255,10 @@ namespace depgraphV
 		 */
 		bool _renderDataAs( const QString& format, QString* outString ) const;
 
-		void _setGraphAttributes() const;
+		NameValuePair _graphAttributes;
+		NameValuePair _verticesAttributes;
+		NameValuePair _edgesAttributes;
+
 		void _lookForAvailablePlugins();
 		bool _isPluginAvailable( const QString& format, const QString& kind = "" ) const;
 	};

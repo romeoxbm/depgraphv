@@ -78,16 +78,6 @@ namespace depgraphV
 										  "you could meet unespected issues." ) );
 		}
 
-		//Getting available plugins for "Save As Image..."
-		QStringList* iPlugins = _ui->graph->pluginsListByKind( "loadimage" );
-		if( iPlugins )
-		{
-			foreach( QString plugin, *iPlugins )
-			{
-				//TODO
-			}
-		}
-
 		//Create language action group and setting up actionSystem_language
 		_langGroup = new QActionGroup( _ui->menu_Language );
 		_ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
@@ -158,8 +148,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onDraw()
 	{
-		_ui->graph->prepare();
-
 		//TODO Warn when no file/folder has been selected
 		if( _config->scanByFolders() )
 			_scanDlg->scanFolders();
@@ -268,7 +256,7 @@ namespace depgraphV
 				QMessageBox::critical(
 							const_cast<MainWindow*>( this ),
 							tr( "Cannot save image" ),
-							tr( "Unable to save graph as image; Plugin not found." )
+							tr( "Unable to save graph as image; No plugin found." )
 				);
 				return;
 			}
