@@ -77,7 +77,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QString GraphPage::iconPath() const
 	{
-		return ":/settingsDlgIcons/folder-scan_96x96.png";
+		return ":/settingsDlgIcons/graph-settings_96x96.png";
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::changeEvent( QEvent* evt )

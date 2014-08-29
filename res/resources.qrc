@@ -20,6 +20,7 @@
         <file>folder-scan_96x96.png</file>
         <file>hdr-filter_96x96.png</file>
         <file>src-filter_96x96.png</file>
+        <file>graph-settings_96x96.png</file>
     </qresource>
     <qresource prefix="/toolBarIcons">
         <file>settings_48x48.png</file>
