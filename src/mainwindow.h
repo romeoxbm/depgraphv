@@ -37,6 +37,8 @@
 
 #include <QMainWindow>
 #include <QActionGroup>
+#include <QProgressBar>
+#include <QNetworkReply>
 
 namespace depgraphV
 {
@@ -90,6 +92,11 @@ namespace depgraphV
 		void parseOptionsChanged();
 		void saveAsImage();
 		void saveAsDot() const;
+
+		void checkForUpdates() const;
+		void onUpdateReplyProgress( qint64, qint64 );
+		void onUpdateReply( QNetworkReply* );
+
 		void exitApp();
 		void onSelectFilesOrFolders();
 		void onLanguageActionTriggered( QAction* action );
@@ -97,7 +104,10 @@ namespace depgraphV
 
 	private:
 		Ui::MainWindow* _ui;
+		QProgressBar* _progressBar;
 		AppConfig* _config;
+
+		QNetworkAccessManager* _netManager;
 
 		//Dialogs
 		AboutDialog* _aboutDlg;
@@ -119,6 +129,9 @@ namespace depgraphV
 
 		void _showAboutDialog( bool showDonations );
 		QString _ucFirst( const QString& value ) const;
+
+		//Post request data
+		static QByteArray _postData();
 	};
 }
 

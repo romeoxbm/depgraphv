@@ -45,10 +45,21 @@ namespace depgraphV
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
 		_ui( new Ui::MainWindow ),
+		_progressBar( new QProgressBar( this ) ),
+		_netManager( new QNetworkAccessManager() ),
 		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
 		this->setWindowTitle( APP_NAME );
+
+		//Title bar progress bar
+		_progressBar->setMaximumHeight( 16 );
+		_progressBar->setMaximumWidth( 200 );
+		_progressBar->setVisible( false );
+		_ui->statusBar->addPermanentWidget( _progressBar, 0 );
+		_progressBar->setValue( 0 );
+		_progressBar->setMinimum( 0 );
+		_progressBar->setMaximum( 0 );
 
 		//Dialogs
 		_config			= new AppConfig( _ui->graph, this );
@@ -112,6 +123,10 @@ namespace depgraphV
 		_config->restore();
 
 		_ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
+
+		QObject::connect( _netManager, SIGNAL( finished( QNetworkReply* ) ),
+						  this, SLOT( onUpdateReply( QNetworkReply* ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	MainWindow::~MainWindow()
@@ -123,6 +138,7 @@ namespace depgraphV
 		delete _rootsDlg;
 		delete _filesDlg;
 		delete _config;
+		delete _netManager;
 	}
 	//------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -320,6 +336,79 @@ namespace depgraphV
 			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
 	//-------------------------------------------------------------------------
+	void MainWindow::checkForUpdates() const
+	{
+		QNetworkRequest request(
+					QUrl( "http://depgraphv.sourceforge.net/update.php" )
+		);
+
+		request.setHeader( QNetworkRequest::ContentTypeHeader,
+						   "application/x-www-form-urlencoded"
+		);
+
+		request.setHeader( QNetworkRequest::UserAgentHeader, APP_NAME );
+
+		QNetworkReply* reply = _netManager->post( request, _postData() );
+
+		connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
+					this, SLOT( onUpdateReplyProgress( qint64, qint64 ) ) );
+
+		_ui->statusBar->showMessage( tr( "Downloading response..." ) );
+		_progressBar->setVisible( true );
+
+		_ui->action_Check_for_updates->setEnabled( false );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onUpdateReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+	{
+		if( _progressBar->maximum() == 0 )
+			_progressBar->setMaximum( bytesTotal );
+
+		_progressBar->setValue( bytesReceived );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onUpdateReply( QNetworkReply* reply )
+	{
+		_ui->statusBar->showMessage( tr( "Response received" ) );
+		_progressBar->setMaximum( 0 );
+		_progressBar->setVisible( false );
+
+		bool error = false;
+		QString message;
+		if( reply->error() )
+		{
+			error = true;
+			message = reply->errorString();
+		}
+		else
+		{
+			QStringList res = QString( reply->readAll() ).
+							  split( '\n', QString::SkipEmptyParts );
+
+			if( res[ 0 ] == "OK" )
+			{
+				if( res[ 1 ] == "NO" )
+					message = tr( "There's no update available.\n"
+								  "You're using the latest version of " ) + APP_NAME;
+				else
+				{
+					message = tr( "A new version of " ) + APP_NAME +
+							  " (v" + res[ 1 ] + tr ( ") is available for download." );
+				}
+			}
+			else
+			{
+				error = true;
+				message = tr( "The server returned an error message:" ) + " \n" + res[ 1 ];
+			}
+		}
+
+		if( error )
+			QMessageBox::critical( 0, tr( "Check for updates" ), message );
+		else
+			QMessageBox::information( 0, tr( "Check for updates" ), message );
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::exitApp()
 	{
 		this->close();
@@ -451,5 +540,34 @@ namespace depgraphV
 		}
 
 		return split.join( " " );
+	}
+	//-------------------------------------------------------------------------
+	QByteArray MainWindow::_postData()
+	{
+		static QByteArray postData;
+
+		if( postData.isEmpty() )
+		{
+			QString d = "ver=" APP_VER "&os="
+#ifdef WIN32
+			"Windows"
+#else
+			"Linux"
+#endif
+			"&arch=" ARCH "&qt="
+#ifdef QT_USE_QT5
+			"5&gl="
+#else
+			"4&gl="
+#endif
+#ifdef QT_USE_OPENGL
+			"yes";
+#else
+			"no";
+#endif
+			postData = d.toUtf8();
+		}
+
+		return postData;
 	}
 } // end of depgraphV namespace
