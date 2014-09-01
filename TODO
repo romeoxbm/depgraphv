@@ -2,18 +2,16 @@ This is the list of features I would like to add in dep-graphV.
 I don't have any kind of time-table of when I plan to implement these
 features, and there's no particular order.
 
-* Multiple graph layout algorithms;
 * A "manual-mode" to manually arrange some graph vertices by dragging them;
 * Copy-paste support (???);
-* Selecting background and graph theme;
-* Optionally subdividing an huge graph into multiple small portions, maybe accessible by multiple tab pages;
-* Selecting font family used by vertices labels;
+* Select graph background;
+* Select font family used by vertices labels;
+* Optionally subdivide an huge graph into multiple small portions, maybe accessible by multiple tab pages;
 * Per-folder and/or per-src subgraphs;
-* Highlightning of vertex and of its connected edges;
-* Detecting graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);
-* Running as stand-alone or as Qt Creator plugin (or any other "compatible" IDE);
+* Highlight vertex and its connected edges;
+* Detect graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);
+* Run as stand-alone or as Qt Creator plugin (or any other "compatible" IDE);
 * Watch over file system changes and automatically update the graph;
 * Optionally add redundand include guards;
 * Navigate to source code function, that allow users to easily see/edit the code by double-clicking a vertex in the graph.
 * Generate either "include" or "included-by" graphs.
-* Check for updates.
