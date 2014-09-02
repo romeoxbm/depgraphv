@@ -210,9 +210,14 @@ namespace depgraphV
 		o = static_cast<Qt::Orientation>( ( o % 2 ) + 1 );
 		_ui->toolBar->setOrientation( o );
 
-		//TODO There are still two task to achieve:
-		//1) Handle orientation only when the toolbar is floating (DONE)
-		//2) Resize toolbar when changing orientation
+		//Adjust toolbar size
+		QSize hint = _ui->toolBar->sizeHint();
+		bool h = o == Qt::Horizontal;
+
+		_ui->toolBar->resize(
+					h ? hint.width() : _ui->toolBar->minimumWidth(),
+					h ? _ui->toolBar->minimumHeight() : hint.height()
+		);
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
