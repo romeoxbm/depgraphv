@@ -31,7 +31,6 @@
 #include "graph.h"
 #include "aboutdialog.h"
 #include "settingsdialog.h"
-//#include "scandialog.h"
 #include "handlerootsdialog.h"
 #include "selectfilesdialog.h"
 
@@ -112,7 +111,6 @@ namespace depgraphV
 		//Dialogs
 		AboutDialog* _aboutDlg;
 		SettingsDialog* _settingsDlg;
-		//ScanDialog* _scanDlg;
 		HandleRootsDialog* _rootsDlg;
 		SelectFilesDialog* _filesDlg;
 

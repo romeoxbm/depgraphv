@@ -79,7 +79,6 @@ namespace depgraphV
 		_settingsDlg	= new SettingsDialog( this );
 		_rootsDlg		= new HandleRootsDialog( this );
 		_filesDlg		= new SelectFilesDialog( this );
-		//_scanDlg		= new ScanDialog( this );
 
 		//Renderer action group
 		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
@@ -146,7 +145,6 @@ namespace depgraphV
 		delete _ui;
 		delete _settingsDlg;
 		delete _aboutDlg;
-		//delete _scanDlg;
 		delete _rootsDlg;
 		delete _filesDlg;
 		delete _config;
