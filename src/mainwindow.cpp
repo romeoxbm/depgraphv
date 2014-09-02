@@ -211,7 +211,7 @@ namespace depgraphV
 		_ui->toolBar->setOrientation( o );
 
 		//TODO There are still two task to achieve:
-		//1) Handle orientation only when the toolbar is floating
+		//1) Handle orientation only when the toolbar is floating (DONE)
 		//2) Resize toolbar when changing orientation
 	}
 	//-------------------------------------------------------------------------
@@ -407,6 +407,8 @@ namespace depgraphV
 			QMessageBox::critical( 0, tr( "Check for updates" ), message );
 		else
 			QMessageBox::information( 0, tr( "Check for updates" ), message );
+
+		_ui->action_Check_for_updates->setEnabled( true );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::exitApp()
