@@ -314,8 +314,15 @@
    </property>
   </action>
   <action name="actionToolbarOrientation">
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/orientation_48x48.png</normaloff>:/toolBarIcons/orientation_48x48.png</iconset>
+   </property>
    <property name="text">
-    <string>Change Orientation</string>
+    <string>Orientation</string>
+   </property>
+   <property name="toolTip">
+    <string>Change orientation of this tool bar</string>
    </property>
    <property name="visible">
     <bool>false</bool>
