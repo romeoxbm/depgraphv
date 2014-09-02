@@ -48,8 +48,8 @@ else()
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
 	
-	#Force CMAKE_BUILD_TYPE to DEBUG macro on Linux when is not defined
-	if( NOT CMAKE_BUILD_TYPE )
+	#Force CMAKE_BUILD_TYPE to DEBUG on Linux when is not defined
+	if( "${CMAKE_BUILD_TYPE}" STREQUAL "" )
 		set( CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE )
 	endif()
 endif()
@@ -59,28 +59,52 @@ project( ${ProjectName} )
 set( Headers
 	src/aboutdialog.h
 	src/appconfig.h
-	src/backgroundworker.h
+	src/checkablefilesystemmodel.h
+	src/filesmodel.h
+	src/filterpage.h
+	src/foldersmodel.h
 	src/graph.h
+	src/graphpage.h
+	src/handlerootsdialog.h
+	src/helpers.h
+	src/iserializableobject.h
 	src/mainwindow.h
-	src/qtimerlabel.h
-	src/scandialog.h
+	src/memento.h
+	src/scanmodepage.h
+	src/selectfilesdialog.h
+	src/settingsdialog.h
+	src/settingspage.h
+	src/singleton.h
 )
 
 set( Sources
 	src/aboutdialog.cpp
 	src/appconfig.cpp
-	src/backgroundworker.cpp
+	src/checkablefilesystemmodel.cpp
+	src/filesmodel.cpp
+	src/filterpage.cpp
+	src/foldersmodel.cpp
 	src/graph.cpp
+	src/graphpage.cpp
+	src/handlerootsdialog.cpp
+	src/helpers.cpp
 	src/main.cpp
 	src/mainwindow.cpp
-	src/qtimerlabel.cpp
-	src/scandialog.cpp
+	src/scanmodepage.cpp
+	src/selectfilesdialog.cpp
+	src/settingsdialog.cpp
+	src/settingspage.cpp
 )
 
 set( Sources_ui
 	ui/aboutdialog.ui
+	ui/filterpage.ui
+	ui/graphpage.ui
+	ui/handlerootsdialog.ui
 	ui/mainwindow.ui
-	ui/scandialog.ui
+	ui/scanmodepage.ui
+	ui/selectfilesdialog.ui
+	ui/settingsdialog.ui
 )
 
 set( Resources
@@ -116,7 +140,12 @@ option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( QT_USE_OPENGL FALSE )
 option( QT_UPDATE_TRANSLATIONS false )
 if( CMAKE_COMPILER_IS_GNUCXX )
-	option( BUILD_32 "Build 32bit executable (when false, 64bit will be selected)" TRUE )
+	if( ${CMAKE_SIZEOF_VOID_P} STREQUAL "8" )
+		set( DEF_X86 FALSE )
+	else()
+		set( DEF_X86 TRUE )
+	endif()
+	option( BUILD_32 "Build 32bit executable (when false, 64bit will be selected)" ${DEF_X86} )
 endif()
 
 #Looking for Graphviz
@@ -130,13 +159,18 @@ endif()
 
 #Include right file depending on selected Qt version.
 if( QT_USE_QT5 )
-	set( qt5Modules "Widgets;Svg;LinguistTools" )
+	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
 
 	if( QT_USE_OPENGL )
 		set( qt5Modules "${qt5Modules};OpenGL" )
 	endif( QT_USE_OPENGL )
 	include( buildQt5 )
 else()
+	set( qt4Modules "QtCore;QtSvg;QtNetwork" )
+
+	if( QT_USE_OPENGL )
+		set( qt4Modules "${qt4Modules};QtOpenGL" )
+	endif( QT_USE_OPENGL )
 	include( buildQt4 )
 endif( QT_USE_QT5 )
 
@@ -147,7 +181,7 @@ else()
 endif()
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	set( definitions "-Wall" )
+	set( definitions "-Wall -std=c++0x" )
 	
 	if( BUILD_32 )
 		set( definitions "${definitions} -m32" )
