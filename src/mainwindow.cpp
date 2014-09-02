@@ -40,6 +40,18 @@
 #include <QDebug>
 #include <QImageReader>
 
+#ifndef QT_NO_CONCURRENT
+#	ifdef QT_USE_QT5
+#		include <QtConcurrent>
+#	else
+#		include <QtCore>
+#	endif
+#else
+//TODO Warn on missing QtConcurrent support
+#endif // QT_NO_CONCURRENT
+
+#include <functional>
+
 namespace depgraphV
 {
 	MainWindow::MainWindow( QWidget* parent )
@@ -67,7 +79,7 @@ namespace depgraphV
 		_settingsDlg	= new SettingsDialog( this );
 		_rootsDlg		= new HandleRootsDialog( this );
 		_filesDlg		= new SelectFilesDialog( this );
-		_scanDlg		= new ScanDialog( this );
+		//_scanDlg		= new ScanDialog( this );
 
 		//Renderer action group
 		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
@@ -134,7 +146,7 @@ namespace depgraphV
 		delete _ui;
 		delete _settingsDlg;
 		delete _aboutDlg;
-		delete _scanDlg;
+		//delete _scanDlg;
 		delete _rootsDlg;
 		delete _filesDlg;
 		delete _config;
@@ -165,16 +177,22 @@ namespace depgraphV
 	void MainWindow::onDraw()
 	{
 		//TODO Warn when no file/folder has been selected
-		if( _config->scanByFolders() )
-			_scanDlg->scanFolders();
-		else
-			_scanDlg->scanFiles( _filesDlg->selectedFiles() );
+		_setButtonsAndActionsEnabled( false );
+		_progressBar->setVisible( true );
 
-		//TODO scandialog exec?
-		/*if( _scanDlg->exec() == QDialog::Accepted )
-			_setButtonsAndActionsEnabled( true );
+		if( _config->scanByFolders() )
+			_scanFolders();
 		else
-			_doClearGraph();*/
+			_scanFiles( _filesDlg->selectedFiles() );
+
+		if( !_applyGraphLayout() )
+			_ui->graph->clear();
+
+		_setButtonsAndActionsEnabled( true );
+		_progressBar->setVisible( false );
+		_ui->statusBar->showMessage( tr( "All done" ) );
+		_ui->actionDraw->setEnabled( false );
+		_ui->actionClear->setEnabled( true );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onClear()
@@ -188,7 +206,12 @@ namespace depgraphV
 		);
 
 		if( answer != QMessageBox::No )
-			_doClearGraph();
+		{
+			_ui->graph->clear();
+			_ui->actionDraw->setEnabled( true );
+			_ui->actionClear->setEnabled( false );
+			//_doClearGraph();
+		}
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onConfigRestored()
@@ -220,10 +243,97 @@ namespace depgraphV
 		);
 	}
 	//-------------------------------------------------------------------------
+	void MainWindow::_scanFolder( const QFlags<QDir::Filter>& flags,
+								  QStringList* filesList,
+								  QFileInfo& dirInfo )
+	{
+		bool isGuiThread = QThread::currentThread() ==
+						   QCoreApplication::instance()->thread();
+
+		QStack<QFileInfo> stack;
+		stack.push( dirInfo );
+		QStringList nameFilters = _config->headerNameFilters() +
+								  _config->sourceNameFilters();
+
+		while( !stack.isEmpty() )
+		{
+			if( isGuiThread )
+				QCoreApplication::processEvents();
+
+			QFileInfo folderInfo = stack.pop();
+			QString folder = folderInfo.filePath();
+			QDir d( folder );
+			//TODO emit folderFound signal?
+			foreach( QFileInfo childFolderInfo, d.entryInfoList( flags ) )
+				stack.push( childFolderInfo );
+
+			//Look for files in current folder
+			d.setNameFilters( nameFilters );
+			QFileInfoList fList = d.entryInfoList( QDir::NoDotAndDotDot | QDir::Files );
+			foreach( QFileInfo fileEntry, fList )
+				filesList->append( fileEntry.filePath() );
+		}
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_scanFolders() const
+	{
+		QStringList filesList;
+		_progressBar->setValue( 0 );
+		_progressBar->setMaximum( _config->selectedFolders().count() );
+		_ui->statusBar->showMessage( tr( "Scanning folders..." ) );
+		QFlags<QDir::Filter> flags = QDir::NoDotAndDotDot | QDir::Dirs;
+
+		if( _config->hiddenFoldersIncluded() )
+			flags |= QDir::Hidden;
+
+		QStringList::const_iterator it = _config->selectedFolders().begin();
+		for( ; it != _config->selectedFolders().end(); it++ )
+		{
+			QFileInfoList infos = QDir( *it ).entryInfoList( flags );
+			auto memberFuncPtr = std::bind(
+									 &MainWindow::_scanFolder,
+									 const_cast<MainWindow*>( this ),
+									 flags,
+									 &filesList,
+									 std::placeholders::_1
+			);
+
+			//TODO Cancel...
+			QtConcurrent::blockingMap( infos, memberFuncPtr );
+			_progressBar->setValue( _progressBar->value() + 1 );
+		}
+
+		_scanFiles( filesList );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_scanFiles( const QStringList& files ) const
+	{
+		_progressBar->setValue( 0 );
+		_progressBar->setMaximum( files.count() );
+		_ui->statusBar->showMessage( tr( "Analyzing files..." ) );
+		//TODO blockingMap here instead of the following "simple" foreach loop?
+		foreach( QString path, files )
+		{
+			QFileInfo f( path );
+			_ui->graph->createOrRetrieveVertex( f.fileName() );
+			_ui->graph->createEdges( f.absolutePath(), f.fileName() );
+			_progressBar->setValue( _progressBar->value() + 1 );
+		}
+	}
+	//-------------------------------------------------------------------------
+	bool MainWindow::_applyGraphLayout() const
+	{
+		_progressBar->setValue( 0 );
+		_progressBar->setMaximum( 0 );
+		_ui->statusBar->showMessage( tr( "Applying layout..." ) );
+		return _ui->graph->applyLayout();
+			//qDebug() << "Unable to render; Plugin not found.";
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
 	{
-		_ui->graph->clear();
-		_setButtonsAndActionsEnabled( false );
+		//_ui->graph->clear();
+		//_setButtonsAndActionsEnabled( false );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::about()
@@ -424,10 +534,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
 	{
-		_ui->actionDraw->setEnabled( !value );
-		_ui->actionClear->setEnabled( value );
-		_ui->actionSave_as_Image->setEnabled( value );
-		_ui->actionSave_as_dot->setEnabled( value );
+		_ui->toolBar->setEnabled( value );
+		_ui->menuBar->setEnabled( value );
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const

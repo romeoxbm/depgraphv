@@ -31,7 +31,7 @@
 #include "graph.h"
 #include "aboutdialog.h"
 #include "settingsdialog.h"
-#include "scandialog.h"
+//#include "scandialog.h"
 #include "handlerootsdialog.h"
 #include "selectfilesdialog.h"
 
@@ -112,7 +112,7 @@ namespace depgraphV
 		//Dialogs
 		AboutDialog* _aboutDlg;
 		SettingsDialog* _settingsDlg;
-		ScanDialog* _scanDlg;
+		//ScanDialog* _scanDlg;
 		HandleRootsDialog* _rootsDlg;
 		SelectFilesDialog* _filesDlg;
 
@@ -123,6 +123,10 @@ namespace depgraphV
 		QMap<QString, QAction*> _langActions;
 		QMap<QString, QString> _imageFiltersByExt;
 
+		void _scanFolder( const QFlags<QDir::Filter>& flags, QStringList* filesList, QFileInfo& dirInfo );
+		void _scanFolders() const;
+		void _scanFiles( const QStringList& files ) const;
+		bool _applyGraphLayout() const;
 		void _doClearGraph() const;
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		bool _lookForRequiredImageFormats();
