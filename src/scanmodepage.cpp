@@ -27,7 +27,6 @@
  */
 #include "scanmodepage.h"
 #include "ui_scanmodepage.h"
-#include "scandialog.h"
 #include "appconfig.h"
 #include "handlerootsdialog.h"
 #include "selectfilesdialog.h"
