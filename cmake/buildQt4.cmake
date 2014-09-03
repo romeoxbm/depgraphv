@@ -26,6 +26,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #####################################################################################
+if( NOT DEFINED qt4Modules )
+	set( qt4Modules "QtCore" )
+endif()
+
 if( WIN32 )
 	if( MSVC10 )
 		set( CMAKE_PREFIX_PATH "C:/Qt/4.8.5_msvc2010/" )
@@ -35,14 +39,8 @@ if( WIN32 )
 	endif()
 endif( WIN32 )
 
-#Looking for Qt4
-message( STATUS "* Looking for Qt4..." )
-if( QT_USE_OPENGL )
-	find_package( Qt4 REQUIRED QtCore QtSvg QtOpenGL )
-else()
-	find_package( Qt4 REQUIRED QtCore QtSvg )
-endif( QT_USE_OPENGL )
-	
+#Looking for Qt4 modules
+find_package( Qt4 REQUIRED ${qt4Modules} )
 if( NOT Qt4_FOUND )
 	message( SEND_ERROR "* Failed to find Qt4." )
 else()
