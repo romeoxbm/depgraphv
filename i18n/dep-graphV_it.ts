@@ -749,26 +749,6 @@ You&apos;re using the latest version of </source>
         <translation>Cartella</translation>
     </message>
     <message>
-        <source>Parse options</source>
-        <translation type="obsolete">Opzioni di analisi</translation>
-    </message>
-    <message>
-        <source>Parse sources</source>
-        <translation type="obsolete">Analizza sorgenti</translation>
-    </message>
-    <message>
-        <source>Standard filters</source>
-        <translation type="obsolete">Filtri standard</translation>
-    </message>
-    <message>
-        <source>Custom (semicolon-separated)</source>
-        <translation type="obsolete">Personalizzato (separati da ; )</translation>
-    </message>
-    <message>
-        <source>Sources filter</source>
-        <translation type="obsolete">Filtri sui sorgenti</translation>
-    </message>
-    <message>
         <location filename="../ui/mainwindow.ui" line="289"/>
         <source>Clear</source>
         <translation>Pulisci</translation>
@@ -802,10 +782,6 @@ You&apos;re using the latest version of </source>
         <location filename="../ui/mainwindow.ui" line="104"/>
         <source>&amp;Language</source>
         <translation>&amp;Lingua</translation>
-    </message>
-    <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">&amp;Visualizza</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="129"/>
@@ -1014,10 +990,6 @@ You&apos;re using the latest version of </source>
 </context>
 <context>
     <name>depgraphV::ScanModeWidget</name>
-    <message>
-        <source>Scan recursively</source>
-        <translation type="obsolete">Scansiona ricorsivamente</translation>
-    </message>
 </context>
 <context>
     <name>depgraphV::SelectFilesDialog</name>
