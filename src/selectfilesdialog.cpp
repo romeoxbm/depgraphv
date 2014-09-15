@@ -41,10 +41,6 @@ namespace depgraphV
 		);
 
 		_folderModel = new FoldersModel( this );
-		//TODO  QDir::homePath() as root path?
-		QStringList l = { "*.h", "*.cpp" };
-		_folderModel->setFileNameFilters( l );
-		_folderModel->initialize( _ui->treeView, _ui->listView, QDir::homePath() );
 	}
 	//-------------------------------------------------------------------------
 	SelectFilesDialog::~SelectFilesDialog()
@@ -73,11 +69,12 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::onConfigRestored()
 	{
-		//TODO Empty folders list after changing name filters...
-		/*AppConfig* c = Singleton<AppConfig>::instancePtr();
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		_folderModel->setFileNameFilters(
 					c->headerNameFilters() + c->sourceNameFilters()
-		);*/
+		);
+		//TODO QDir::homePath() as root path?
+		_folderModel->initialize( _ui->treeView, _ui->listView, QDir::homePath() );
 		_selectedFiles = _folderModel->checkedFiles();
 	}
 }
