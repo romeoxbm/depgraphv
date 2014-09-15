@@ -60,10 +60,12 @@ namespace depgraphV
 
 	private slots:
 		void onConfigRestored();
+		void onCustomFiltersChanged( QString );
 
 	private:
 		Ui::FilterPage* _ui;
 		bool _worksWithHeaders;
+		QStringList _defaultCustomExts;
 	};
 }
 

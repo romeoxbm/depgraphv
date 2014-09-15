@@ -46,10 +46,9 @@ namespace depgraphV
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
 
-		QStringList exts;
 		if( _worksWithHeaders )
 		{
-			exts << "*.h" << "*.hh" << "*.hxx" << "*.hpp" << "*.hp";
+			_defaultCustomExts << "*.h" << "*.hh" << "*.hxx" << "*.hpp" << "*.hp";
 			_ui->parseEnabled->setText( tr( "Parse headers" ) );
 			_ui->groupBox->setTitle( tr( "Headers filter" ) );
 
@@ -61,13 +60,10 @@ namespace depgraphV
 
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( hdr_setCurrentStandardFilter( QString ) ) );
-
-			connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
-					 c, SLOT( hdr_setCustomFilters( QString ) ) );
 		}
 		else
 		{
-			exts << "*.cpp" << "*.cc" << "*.cp" << "*.cxx" << "*.c++" << "*.C";
+			_defaultCustomExts << "*.cpp" << "*.cc" << "*.cp" << "*.cxx" << "*.c++" << "*.C";
 			_ui->parseEnabled->setText( tr( "Parse sources" ) );
 			_ui->groupBox->setTitle( tr( "Sources filter" ) );
 
@@ -79,13 +75,13 @@ namespace depgraphV
 
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
 					 c, SLOT( src_setCurrentStandardFilter( QString ) ) );
-
-			connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
-					 c, SLOT( src_setCustomFilters( QString ) ) );
 		}
 
-		_ui->customFilters->setText( exts.join( "; " ) );
-		_ui->standardFilters->addItems( exts );
+		connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
+				 this, SLOT( onCustomFiltersChanged( QString ) ) );
+
+		_ui->customFilters->setText( _defaultCustomExts.join( "; " ) );
+		_ui->standardFilters->addItems( _defaultCustomExts );
 	}
 	//-------------------------------------------------------------------------
 	FilterPage::~FilterPage()
@@ -145,5 +141,23 @@ namespace depgraphV
 			Helpers::setCurrentText( _ui->standardFilters, c->src_currentStandardFilter() );
 			_ui->customFilters->setText( c->src_customFilters() );
 		}
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onCustomFiltersChanged( QString newValue )
+	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		QLineEdit* l = _ui->customFilters;
+
+		if( newValue.isEmpty() )
+		{
+			l->blockSignals( true );
+			l->setText( _defaultCustomExts.join( "; " ) );
+			l->blockSignals( false );
+		}
+
+		if( _worksWithHeaders )
+			c->hdr_setCustomFilters( l->text() );
+		else
+			c->src_setCustomFilters( l->text() );
 	}
 } // end of depgraphV namespace
