@@ -32,6 +32,8 @@
 
 namespace depgraphV
 {
+	class SettingsDialog;
+
 	class SettingsPage : public QWidget
 	{
 		Q_OBJECT
@@ -41,7 +43,7 @@ namespace depgraphV
 		virtual QString iconPath() const = 0;
 
 	protected:
-		explicit SettingsPage( QWidget* parent = 0 );
+		explicit SettingsPage( SettingsDialog* parent = 0 );
 	};
 }
 #endif // SETTINGSPAGE_H

@@ -1,8 +1,9 @@
 #include "settingspage.h"
+#include "settingsdialog.h"
 
 namespace depgraphV
 {
-	SettingsPage::SettingsPage( QWidget* parent )
+	SettingsPage::SettingsPage( SettingsDialog* parent )
 		: QWidget( parent )
 	{
 	}

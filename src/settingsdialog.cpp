@@ -69,7 +69,21 @@ namespace depgraphV
 		if( !current )
 			current = previous;
 
-		_ui->stackedWidget->setCurrentIndex( _ui->listWidget->row( current ) );
-		emit pageChanged( current );
+		SettingsPage* nextPage = static_cast<SettingsPage*>(
+					_ui->stackedWidget->widget( _ui->listWidget->row( current ) )
+		);
+		SettingsPage* currentPage = static_cast<SettingsPage*>(
+					_ui->stackedWidget->widget( _ui->listWidget->row( previous ) )
+		);
+
+		bool accept = true;
+		pageChanging( currentPage, nextPage, accept );
+		if( accept )
+		{
+			_ui->stackedWidget->setCurrentWidget( nextPage );
+			emit pageChanged( nextPage );
+		}
+		else
+			_ui->listWidget->setCurrentItem( previous );
 	}
 }

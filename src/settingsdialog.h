@@ -31,6 +31,7 @@
 #include "settingspage.h"
 #include <QDialog>
 #include <QListWidgetItem>
+#include <QEvent>
 
 namespace depgraphV
 {
@@ -61,12 +62,11 @@ namespace depgraphV
 		virtual void changeEvent( QEvent* );
 
 	signals:
-		void pageChanged( QListWidgetItem* newPage );
-
-	public slots:
-		void changePage( QListWidgetItem* current, QListWidgetItem* previous );
+		void pageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
+		void pageChanged( SettingsPage* nextPage );
 
 	private slots:
+		void changePage( QListWidgetItem* current, QListWidgetItem* previous );
 
 	private:
 		Ui::SettingsDialog* _ui;

@@ -30,9 +30,11 @@
 #include "appconfig.h"
 #include "helpers.h"
 
+#include <QMessageBox>
+
 namespace depgraphV
 {
-	FilterPage::FilterPage( QWidget* parent, bool worksWithHeaders )
+	FilterPage::FilterPage( SettingsDialog* parent, bool worksWithHeaders )
 		: SettingsPage( parent ),
 		_ui( new Ui::FilterPage ),
 		_worksWithHeaders( worksWithHeaders )
@@ -40,8 +42,7 @@ namespace depgraphV
 		_ui->setupUi( this );
 
 		QRegExp rx( "\\*\\.\\*|(\\s*\\*\\.\\w+\\s*;?)+" );
-		QValidator* validator = new QRegExpValidator( rx );
-		_ui->customFilters->setValidator( validator );
+		_ui->customFilters->setValidator( new QRegExpValidator( rx ) );
 
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
@@ -77,8 +78,8 @@ namespace depgraphV
 					 c, SLOT( src_setCurrentStandardFilter( QString ) ) );
 		}
 
-		connect( _ui->customFilters, SIGNAL( textChanged( QString ) ),
-				 this, SLOT( onCustomFiltersChanged( QString ) ) );
+		connect( parent, SIGNAL( pageChanging( SettingsPage*, SettingsPage*, bool& ) ),
+				 this, SLOT( onPageChanging( SettingsPage*, SettingsPage*, bool& ) ) );
 
 		_ui->customFilters->setText( _defaultCustomExts.join( "; " ) );
 		_ui->standardFilters->addItems( _defaultCustomExts );
@@ -143,21 +144,49 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void FilterPage::onCustomFiltersChanged( QString newValue )
+	void FilterPage::onCustomFilterTextChanged( QString )
+	{
+		Qt::GlobalColor c = _ui->customFilters->hasAcceptableInput() ? Qt::black : Qt::red;
+		if( _ui->customFilters->palette().color( QPalette::Text ) != c )
+		{
+			QPalette p;
+			p.setColor( QPalette::Text, c );
+			_ui->customFilters->setPalette( p );
+		}
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onCustomFiltersEditFinished()
 	{
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		QLineEdit* l = _ui->customFilters;
-
-		if( newValue.isEmpty() )
-		{
-			l->blockSignals( true );
-			l->setText( _defaultCustomExts.join( "; " ) );
-			l->blockSignals( false );
-		}
 
 		if( _worksWithHeaders )
 			c->hdr_setCustomFilters( l->text() );
 		else
 			c->src_setCustomFilters( l->text() );
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onPageChanging( SettingsPage* currentPage, SettingsPage*, bool& accept )
+	{
+		if( currentPage == this && !_ui->customFilters->hasAcceptableInput() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::warning(
+				this,
+				tr( "Invalid name filters specified!" ),
+				tr( "Would you like to discard last changes?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
+
+			if( answer == QMessageBox::No )
+				accept = false;
+			else
+			{
+				AppConfig* c = Singleton<AppConfig>::instancePtr();
+				_ui->customFilters->setText(
+							_worksWithHeaders ? c->hdr_customFilters() : c->src_customFilters()
+				);
+			}
+		}
 	}
 } // end of depgraphV namespace

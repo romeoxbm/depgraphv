@@ -83,8 +83,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="standardFilters">
-       </widget>
+       <widget class="QComboBox" name="standardFilters"/>
       </item>
       <item>
        <widget class="QRadioButton" name="customFilterRadio">
@@ -154,5 +153,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>customFilters</sender>
+   <signal>editingFinished()</signal>
+   <receiver>depgraphV::FilterPage</receiver>
+   <slot>onCustomFiltersEditFinished()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>128</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>customFilters</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>depgraphV::FilterPage</receiver>
+   <slot>onCustomFilterTextChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>128</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>onCustomFiltersEditFinished()</slot>
+  <slot>onCustomFilterTextChanged(QString)</slot>
+ </slots>
 </ui>

@@ -46,7 +46,7 @@ namespace depgraphV
 		 * @brief ScanModePage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit ScanModePage( QWidget* parent = 0 );
+		explicit ScanModePage( SettingsDialog* parent );
 
 		/**
 		 * @brief ScanModePage destructor.

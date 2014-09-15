@@ -33,7 +33,7 @@
 
 namespace depgraphV
 {
-	ScanModePage::ScanModePage( QWidget* parent )
+	ScanModePage::ScanModePage( SettingsDialog* parent )
 		: SettingsPage( parent ),
 		_ui( new Ui::ScanModePage )
 	{

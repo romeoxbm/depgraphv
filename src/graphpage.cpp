@@ -32,7 +32,7 @@
 
 namespace depgraphV
 {
-	GraphPage::GraphPage( QWidget* parent )
+	GraphPage::GraphPage( SettingsDialog* parent )
 		: SettingsPage( parent ),
 		_ui( new Ui::GraphPage )
 	{

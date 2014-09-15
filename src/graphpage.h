@@ -46,7 +46,7 @@ namespace depgraphV
 		 * @brief GraphPage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit GraphPage( QWidget* parent = 0 );
+		explicit GraphPage( SettingsDialog* parent );
 
 		/**
 		 * @brief GraphPage destructor.

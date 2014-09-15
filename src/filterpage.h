@@ -28,7 +28,7 @@
 #ifndef FILTERPAGE_H
 #define FILTERPAGE_H
 
-#include "settingspage.h"
+#include "settingsdialog.h"
 
 namespace depgraphV
 {
@@ -46,7 +46,7 @@ namespace depgraphV
 		 * @brief FilterPage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit FilterPage( QWidget* parent = 0, bool worksWithHeaders = true );
+		explicit FilterPage( SettingsDialog* parent, bool worksWithHeaders = true );
 
 		/**
 		 * @brief FilterPage destructor.
@@ -60,7 +60,9 @@ namespace depgraphV
 
 	private slots:
 		void onConfigRestored();
-		void onCustomFiltersChanged( QString );
+		void onCustomFilterTextChanged( QString );
+		void onCustomFiltersEditFinished();
+		void onPageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
 
 	private:
 		Ui::FilterPage* _ui;
