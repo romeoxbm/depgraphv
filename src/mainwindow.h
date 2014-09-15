@@ -129,6 +129,8 @@ namespace depgraphV
 		void _setButtonsAndActionsEnabled( bool value ) const;
 		bool _lookForRequiredImageFormats();
 
+		void _startSlowOperation( const QString& message, int maxValue ) const;
+
 		void _showAboutDialog( bool showDonations );
 		QString _ucFirst( const QString& value ) const;
 

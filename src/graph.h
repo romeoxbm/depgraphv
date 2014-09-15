@@ -216,10 +216,12 @@ namespace depgraphV
 		 */
 		void setEdgesAttribute( const QString& name, const QString& value );
 
+		void clearLayout();
+
 		/**
 		 * @brief Clear this graph.
 		 */
-		void clear();
+		void clearGraph();
 
 	protected:
 		virtual void wheelEvent( QWheelEvent* event );

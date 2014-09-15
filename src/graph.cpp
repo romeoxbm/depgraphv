@@ -39,21 +39,24 @@
 
 #define G_STR( str ) str.toUtf8().data()
 
+#ifdef GraphViz_USE_CGRAPH
+#	define NEW_GRAPH()	_graph = agopen( G_STR( QString( "" ) ), Agdirected, 0 )
+#else
+#	define NEW_GRAPH()	_graph = agopen( G_STR( QString( "" ) ), AGDIGRAPH )
+#endif
+
 namespace depgraphV
 {
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
 		  _layoutAlgorithm( "dot" ),
 		_svgItem( 0 ),
-		_context( gvContext() ),
-#ifdef GraphViz_USE_CGRAPH
-		_graph( agopen( G_STR( QString( "" ) ), Agdirected, 0 ) )
-#else
-		_graph( agopen( G_STR( QString( "" ) ), AGDIGRAPH ) )
-#endif
+		_context( gvContext() )
 	{
 		qRegisterMetaType<NameValuePair>( "NameValuePair" );
 		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );
+
+		NEW_GRAPH();
 
 		setScene( new QGraphicsScene( this ) );
 		this->setRenderer( Native );
@@ -75,7 +78,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
 	{
-		this->clear();
+		this->clearGraph();
 		foreach( QStringList* l, _availablePlugins )
 			delete l;
 
@@ -345,7 +348,7 @@ namespace depgraphV
 #endif
 	}
 	//-------------------------------------------------------------------------
-	void Graph::clear()
+	void Graph::clearLayout()
 	{
 		if( _svgItem )
 		{
@@ -355,8 +358,15 @@ namespace depgraphV
 		}
 
 		gvFreeLayout( _context, _graph );
+	}
+	//-------------------------------------------------------------------------
+	void Graph::clearGraph()
+	{
+		clearLayout();
 		_vertices.clear();
 		_edges.clear();
+		agclose( _graph );
+		NEW_GRAPH();
 	}
 	//-------------------------------------------------------------------------
 	void Graph::wheelEvent( QWheelEvent* event )

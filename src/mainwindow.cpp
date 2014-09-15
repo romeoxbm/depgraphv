@@ -112,20 +112,40 @@ namespace depgraphV
 		_config->lookForTranslations();
 
 		//Settings dialog pages
-		_settingsDlg->addPage( tr( "Scan Mode" ), new ScanModePage( _settingsDlg ) );
-		_settingsDlg->addPage( tr( "Header Filters" ), new FilterPage( _settingsDlg ) );
-		_settingsDlg->addPage( tr( "Source Filters" ), new FilterPage( _settingsDlg, false ) );
-		_settingsDlg->addPage( tr( "Graph Settings" ), new GraphPage( _settingsDlg ) );
+		_settingsDlg->addPage(
+					tr( "Scan Mode" ),
+					new ScanModePage( _settingsDlg )
+		);
+		_settingsDlg->addPage(
+					tr( "Header Filters" ),
+					new FilterPage( _settingsDlg )
+		);
+		_settingsDlg->addPage(
+					tr( "Source Filters" ),
+					new FilterPage( _settingsDlg, false )
+		);
+		_settingsDlg->addPage(
+					tr( "Graph Settings" ),
+					new GraphPage( _settingsDlg )
+		);
 
 		//Register serializable objects
 		_config->registerSerializable( this );
 		_config->registerSerializable( _ui->graph );
 
 		//Connect other signals and slots
-		connect( _langGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( onLanguageActionTriggered( QAction* ) ) );
-		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
-		connect( rendererGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rendererTypeChanged( QAction* ) ) );
-		connect( _config, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
+		connect( _langGroup, SIGNAL( triggered( QAction* ) ),
+				 this, SLOT( onLanguageActionTriggered( QAction* ) )
+		);
+		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ),
+				 qApp, SLOT( aboutQt() )
+		);
+		connect( rendererGroup, SIGNAL( triggered( QAction* ) ),
+				 this, SLOT( rendererTypeChanged( QAction* ) )
+		);
+		connect( _config, SIGNAL( configRestored() ),
+				 this, SLOT( onConfigRestored() )
+		);
 
 		//Save default settings, if this is the first time we launch this application
 		_config->saveDefault();
@@ -176,7 +196,6 @@ namespace depgraphV
 	{
 		//TODO Warn when no file/folder has been selected
 		_setButtonsAndActionsEnabled( false );
-		_progressBar->setVisible( true );
 
 		if( _config->scanByFolders() )
 			_scanFolders();
@@ -184,7 +203,7 @@ namespace depgraphV
 			_scanFiles( _filesDlg->selectedFiles() );
 
 		if( !_applyGraphLayout() )
-			_ui->graph->clear();
+			_ui->graph->clearGraph();
 
 		_setButtonsAndActionsEnabled( true );
 		_progressBar->setVisible( false );
@@ -205,7 +224,7 @@ namespace depgraphV
 
 		if( answer != QMessageBox::No )
 		{
-			_ui->graph->clear();
+			_ui->graph->clearGraph();
 			_ui->actionDraw->setEnabled( true );
 			_ui->actionClear->setEnabled( false );
 			//_doClearGraph();
@@ -276,9 +295,10 @@ namespace depgraphV
 	void MainWindow::_scanFolders() const
 	{
 		QStringList filesList;
-		_progressBar->setValue( 0 );
-		_progressBar->setMaximum( _config->selectedFolders().count() );
-		_ui->statusBar->showMessage( tr( "Scanning folders..." ) );
+		_startSlowOperation(
+					tr( "Scanning folders..." ),
+					_config->selectedFolders().count()
+		);
 		QFlags<QDir::Filter> flags = QDir::NoDotAndDotDot | QDir::Dirs;
 
 		if( _config->hiddenFoldersIncluded() )
@@ -306,9 +326,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFiles( const QStringList& files ) const
 	{
-		_progressBar->setValue( 0 );
-		_progressBar->setMaximum( files.count() );
-		_ui->statusBar->showMessage( tr( "Analyzing files..." ) );
+		_startSlowOperation( tr( "Analyzing files..." ), files.count() );
 		//TODO blockingMap here instead of the following "simple" foreach loop?
 		foreach( QString path, files )
 		{
@@ -321,9 +339,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool MainWindow::_applyGraphLayout() const
 	{
-		_progressBar->setValue( 0 );
-		_progressBar->setMaximum( 0 );
-		_ui->statusBar->showMessage( tr( "Applying layout..." ) );
+		_startSlowOperation( tr( "Applying layout..." ), 0 );
 		return _ui->graph->applyLayout();
 			//qDebug() << "Unable to render; Plugin not found.";
 	}
@@ -459,24 +475,20 @@ namespace depgraphV
 						   "application/x-www-form-urlencoded"
 		);
 
-		request.setHeader( QNetworkRequest::UserAgentHeader, APP_NAME );
+		request.setRawHeader( "User-Agent", APP_NAME );
 
 		QNetworkReply* reply = _netManager->post( request, _postData() );
 
 		connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
 					this, SLOT( onUpdateReplyProgress( qint64, qint64 ) ) );
 
-		_ui->statusBar->showMessage( tr( "Downloading response..." ) );
-		_progressBar->setVisible( true );
-
+		_startSlowOperation( tr( "Downloading response..." ), 0 );
 		_ui->action_Check_for_updates->setEnabled( false );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onUpdateReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 	{
-		if( _progressBar->maximum() == 0 )
-			_progressBar->setMaximum( bytesTotal );
-
+		_progressBar->setMaximum( bytesTotal );
 		_progressBar->setValue( bytesReceived );
 	}
 	//-------------------------------------------------------------------------
@@ -587,6 +599,14 @@ namespace depgraphV
 		}
 
 		return true;
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_startSlowOperation( const QString& message, int maxValue ) const
+	{
+		_ui->statusBar->showMessage( message );
+		_progressBar->setValue( 0 );
+		_progressBar->setMaximum( maxValue );
+		_progressBar->setVisible( true );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_showAboutDialog( bool showDonations )
