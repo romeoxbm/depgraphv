@@ -260,6 +260,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setCustomFilters( const QString& value )
 	{
+		if( value.isEmpty() )
+			return;
+
 		_hdrCustomFilters = value;
 		_hdrNameFiltersDirty = true;
 	}
@@ -284,6 +287,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setCustomFilters( const QString& value )
 	{
+		if( value.isEmpty() )
+			return;
+
 		_srcCustomFilters = value;
 		_srcNameFiltersDirty = true;
 	}
