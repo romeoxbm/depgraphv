@@ -27,7 +27,6 @@
  */
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
-#include "mainwindow.h"
 
 namespace depgraphV
 {
