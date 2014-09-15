@@ -39,7 +39,7 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		QRegExp rx( "(\\s*\\*\\.\\w+\\s*;?)+" );
+		QRegExp rx( "\\*\\.\\*|(\\s*\\*\\.\\w+\\s*;?)+" );
 		QValidator* validator = new QRegExpValidator( rx );
 		_ui->customFilters->setValidator( validator );
 
