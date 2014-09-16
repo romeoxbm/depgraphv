@@ -195,7 +195,8 @@ namespace depgraphV
 	void MainWindow::onDraw()
 	{
 		//TODO Warn when no file/folder has been selected
-		_setButtonsAndActionsEnabled( false );
+		_ui->toolBar->setEnabled( false );
+		_ui->menuBar->setEnabled( false );
 
 		if( _config->scanByFolders() )
 			_scanFolders();
@@ -205,11 +206,11 @@ namespace depgraphV
 		if( !_applyGraphLayout() )
 			_ui->graph->clearGraph();
 
-		_setButtonsAndActionsEnabled( true );
+		_ui->toolBar->setEnabled( true );
+		_ui->menuBar->setEnabled( true );
 		_progressBar->setVisible( false );
 		_ui->statusBar->showMessage( tr( "All done" ) );
-		_ui->actionDraw->setEnabled( false );
-		_ui->actionClear->setEnabled( true );
+		_setButtonsAndActionsEnabled( true );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onClear()
@@ -222,13 +223,12 @@ namespace depgraphV
 			QMessageBox::No
 		);
 
-		if( answer != QMessageBox::No )
-		{
-			_ui->graph->clearGraph();
-			_ui->actionDraw->setEnabled( true );
-			_ui->actionClear->setEnabled( false );
-			//_doClearGraph();
-		}
+		if( answer == QMessageBox::No )
+			return;
+
+		_ui->graph->clearGraph();
+		_setButtonsAndActionsEnabled( false );
+		//_doClearGraph();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onConfigRestored()
@@ -544,8 +544,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
 	{
-		_ui->toolBar->setEnabled( value );
-		_ui->menuBar->setEnabled( value );
+		_ui->actionDraw->setEnabled( !value );
+		_ui->actionClear->setEnabled( value );
+		_ui->actionSave_as_dot->setEnabled( value );
+		_ui->actionSave_as_Image->setEnabled( value );
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const

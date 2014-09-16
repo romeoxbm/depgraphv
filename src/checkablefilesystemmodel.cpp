@@ -199,8 +199,7 @@ namespace depgraphV
 		if( v != All )
 		{
 			QFileInfo fi = fileInfo( child );
-			//TODO toLower could create issues with case sensitive extensions
-			QString filter = "*." + fi.completeSuffix().toLower();
+			QString filter = "*." + fi.completeSuffix();
 			AppConfig* c = Singleton<AppConfig>::instancePtr();
 			QStringList filters;
 			if( v == Hdr )

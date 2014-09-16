@@ -71,8 +71,7 @@ namespace depgraphV
 	bool FilesModel::isCheckable( const QModelIndex& i, int role ) const
 	{
 		bool baseRes = CheckableFileSystemModel::isCheckable( i, role );
-		//TODO toLower could create issues with case sensitive extensions
-		QString filter = "*." + fileInfo( i ).completeSuffix().toLower();
+		QString filter = "*." + fileInfo( i ).completeSuffix();
 		return baseRes && nameFilters().contains( filter );
 	}
 	//-------------------------------------------------------------------------

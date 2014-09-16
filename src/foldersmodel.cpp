@@ -64,6 +64,10 @@ namespace depgraphV
 
 		_createContextMenu();
 		_connectSignalsToSlots();
+
+		//Force treeview selection update
+		setSelectedFolderPath( _selectedFolderPath );
+
 		initialized = true;
 	}
 	//-------------------------------------------------------------------------
@@ -104,6 +108,14 @@ namespace depgraphV
 	{
 		this->clearSelection();
 		_filesModel->setNameFilters( filters );
+	}
+	//-------------------------------------------------------------------------
+	QList<const char*> FoldersModel::propList() const
+	{
+		QList<const char*> props = CheckableFileSystemModel::propList();
+		props << "selectedFolderPath";
+
+		return props;
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::commitChanges()
@@ -160,6 +172,14 @@ namespace depgraphV
 		this->setFilter( f );
 	}
 	//-------------------------------------------------------------------------
+	void FoldersModel::setSelectedFolderPath( const QString& value )
+	{
+		if( _treeView )
+			_treeView->setCurrentIndex( index( value ) );
+		else
+			_selectedFolderPath = value;
+	}
+	//-------------------------------------------------------------------------
 	void FoldersModel::_on_expandAll()
 	{
 		if( !_treeView )
@@ -185,8 +205,8 @@ namespace depgraphV
 	void FoldersModel::_updateSelection( const QModelIndex& current,
 										 const QModelIndex& )
 	{
-		QString path = this->fileInfo( current ).absoluteFilePath();
-		_filesModel->view()->setRootIndex( _filesModel->setRootPath( path ) );
+		_selectedFolderPath = this->fileInfo( current ).absoluteFilePath();
+		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _selectedFolderPath ) );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::_itemExpandedCollapsed( const QModelIndex& )

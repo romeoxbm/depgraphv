@@ -36,6 +36,7 @@ namespace depgraphV
 	class FoldersModel : public CheckableFileSystemModel
 	{
 		Q_OBJECT
+		Q_PROPERTY( QString selectedFolderPath READ selectedFolderPath WRITE setSelectedFolderPath )
 
 	public:
 		explicit FoldersModel( QObject* parent = 0 );
@@ -45,6 +46,8 @@ namespace depgraphV
 		inline const QStringList& checkedFiles() const { return _filesModel->checkedItems(); }
 
 		void initialize( QTreeView* view, QListView* filesView, const QString& rootPath );
+
+		const QString& selectedFolderPath() const { return _selectedFolderPath; }
 
 		/**
 		 * @brief Returns true if parent has any children and haven't
@@ -62,6 +65,8 @@ namespace depgraphV
 
 		void setFileNameFilters( const QStringList& filters );
 
+		virtual QList<const char*> propList() const;
+
 		virtual void commitChanges();
 		virtual void revertChanges();
 
@@ -72,6 +77,8 @@ namespace depgraphV
 		virtual void clearSelection();
 		void changeRoot( const QString& newRoot );
 		void showHiddenFolders( bool show );
+
+		void setSelectedFolderPath( const QString& value );
 
 	signals:
 		void folderCheckStateChanged( QModelIndex, Qt::CheckState );
@@ -90,6 +97,8 @@ namespace depgraphV
 		QAction* _showHiddenFolders;
 		QAction* _expandAll;
 		QAction* _collapseAll;
+
+		QString _selectedFolderPath;
 
 		void _createContextMenu();
 		void _connectSignalsToSlots();
