@@ -27,6 +27,7 @@
  */
 #include "foldersmodel.h"
 #include "buildsettings.h"
+#include "appconfig.h"
 #include <QFileDialog>
 
 namespace depgraphV
@@ -142,6 +143,7 @@ namespace depgraphV
 
 		_treeView->setRootIndex( this->setRootPath( newRoot ) );
 		_filesModel->view()->setRootIndex( _filesModel->setRootPath( newRoot ) );
+		Singleton<AppConfig>::instancePtr()->setRootFolder( newRoot );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::showHiddenFolders( bool show )
@@ -194,9 +196,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FoldersModel::_on_changeRoot_triggered()
 	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		QString root = QFileDialog::getExistingDirectory(
-						  _treeView,
-						  tr( "Change Root..." )
+					_treeView,
+					tr( "Change Root..." ),
+					c->rootFolder()
 		);
 
 		this->changeRoot( root );

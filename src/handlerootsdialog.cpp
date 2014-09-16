@@ -104,9 +104,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void HandleRootsDialog::on_actionAdd_triggered()
 	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		QString root = QFileDialog::getExistingDirectory(
-						  _ui->rootFolders,
-						  tr( "Add root folder" )
+					_ui->rootFolders,
+					tr( "Add root folder" ),
+					c->rootFolder()
 		);
 
 		if( root.isNull() )
@@ -114,8 +116,7 @@ namespace depgraphV
 
 		//TODO Check if root is a subfolder of an already added folder
 		//and if recursive scan is enabled; If so, do not add root.
-		//_ui->rootFolders->addItem( root );
-		if( Singleton<AppConfig>::instance().isRecursiveScanEnabled() )
+		if( c->isRecursiveScanEnabled() )
 		{
 
 		}

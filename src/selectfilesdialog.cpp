@@ -74,9 +74,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::onConfigRestored()
 	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		onNameFiltersChanged();
-		//TODO QDir::homePath() as root path?
-		_folderModel->initialize( _ui->treeView, _ui->listView, QDir::homePath() );
+		_folderModel->initialize( _ui->treeView, _ui->listView, c->rootFolder() );
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::onNameFiltersChanged()

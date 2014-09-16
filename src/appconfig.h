@@ -54,6 +54,8 @@ namespace depgraphV
 		Q_PROPERTY( QStringList selectedFolders READ selectedFolders WRITE setSelectedFolders )
 		Q_PROPERTY( bool showDonateOnExit READ showDonateOnExit WRITE setShowDonateOnExit )
 
+		Q_PROPERTY( QString rootFolder READ rootFolder WRITE setRootFolder )
+
 		//Header Filters
 		Q_PROPERTY( bool hdr_parseEnabled READ hdr_parseEnabled WRITE hdr_setParseEnabled )
 		Q_PROPERTY( bool hdr_standardFiltersEnabled READ hdr_standardFiltersEnabled WRITE hdr_setStandardFiltersEnabled )
@@ -143,6 +145,11 @@ namespace depgraphV
 		 */
 		bool showDonateOnExit() const { return _showDonateOnExit; }
 
+		/**
+		 * @brief The root folder used by both SelectFilesDialog and HandleRootsDialog
+		 */
+		const QString& rootFolder() const { return _rootFolder; }
+
 		//Header Filters
 		bool hdr_parseEnabled() const						{ return _hdrParseEnabled; }
 		bool hdr_standardFiltersEnabled() const				{ return _hdrStandardFiltersEnabled; }
@@ -182,6 +189,8 @@ namespace depgraphV
 		 * @param value The new "visibility" value used by _showDonateOnExit field.
 		 */
 		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
+
+		void setRootFolder( const QString& value );
 
 		//Header Filters
 		void hdr_setParseEnabled( bool value );
@@ -235,6 +244,8 @@ namespace depgraphV
 		bool _recursiveScan;
 		bool _hiddenFolders;
 		bool _showDonateOnExit;
+
+		QString _rootFolder;
 
 		//Header Filters
 		bool _hdrParseEnabled;

@@ -46,6 +46,7 @@ namespace depgraphV
 		  _selectedFolders( new Memento<QStringList>() ),
 		  _recursiveScan( true ),
 		  _showDonateOnExit( true ),
+		  _rootFolder( QDir::homePath() ),
 		  _hdrParseEnabled( true ),
 		  _hdrStandardFiltersEnabled( true ),
 		  _srcParseEnabled( true ),
@@ -155,6 +156,8 @@ namespace depgraphV
 				 << "selectedFolders"
 				 << "showDonateOnExit"
 
+				 << "rootFolder"
+
 				 << "hdr_parseEnabled"
 				 << "hdr_standardFiltersEnabled"
 				 << "hdr_currentStandardFilter"
@@ -232,6 +235,17 @@ namespace depgraphV
 
 		//Changing locale
 		QLocale::setDefault( QLocale( _language ) );
+	}
+	//-------------------------------------------------------------------------
+	void AppConfig::setRootFolder( const QString& value )
+	{
+		if( value.isEmpty() )
+			_rootFolder = QDir::homePath();
+		else
+		{
+			QDir d( value );
+			_rootFolder = d.exists() ? value : QDir::homePath();
+		}
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::setSelectedFolders( const QStringList& folders )
