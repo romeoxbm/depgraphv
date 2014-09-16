@@ -199,6 +199,9 @@ namespace depgraphV
 		void configSaved();
 		void configRestored();
 
+		void headerNameFiltersChanged();
+		void sourceNameFiltersChanged();
+
 		void translationFound( QString lang, QString path );
 
 	private:

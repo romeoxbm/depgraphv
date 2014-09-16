@@ -54,12 +54,18 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FilesModel::initialize( QListView* view, const QString& rootPath )
 	{
+		static bool initialized = false;
+		if( initialized )
+			return;
+
+
 		Q_ASSERT( view && !rootPath.isNull() );
 		_listView = view;
 		_listView->setModel( this );
 		_listView->setRootIndex( this->setRootPath( rootPath ) );
 
 		_createContextMenu();
+		initialized = true;
 	}
 	//-------------------------------------------------------------------------
 	bool FilesModel::isCheckable( const QModelIndex& i, int role ) const

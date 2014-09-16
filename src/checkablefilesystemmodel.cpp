@@ -124,12 +124,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CheckableFileSystemModel::clearSelection()
 	{
-		//TODO Still not checked, so I still don't know how reset works
 		/*QVector<int> roles;
 		roles << Qt::CheckStateRole;*/
 		_checkedItemsList.state().clear();
-		if( view() )
-			view()->reset();
 		//TODO emit dataChanged signal
 	}
 	//-------------------------------------------------------------------------

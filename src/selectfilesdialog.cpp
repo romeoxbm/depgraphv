@@ -36,8 +36,16 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		connect( Singleton<AppConfig>::instancePtr(), SIGNAL( configRestored() ),
-				this, SLOT( onConfigRestored() )
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+
+		connect( c, SIGNAL( configRestored() ),
+				 this, SLOT( onConfigRestored() )
+		);
+		connect( c, SIGNAL( headerNameFiltersChanged() ),
+				 this, SLOT( onNameFiltersChanged() )
+		);
+		connect( c, SIGNAL( sourceNameFiltersChanged() ),
+				 this, SLOT( onNameFiltersChanged() )
 		);
 
 		_folderModel = new FoldersModel( this );
@@ -59,22 +67,22 @@ namespace depgraphV
 	void SelectFilesDialog::onClose( int result )
 	{
 		if( result )
-		{
 			_folderModel->commitChanges();
-			_selectedFiles = _folderModel->checkedFiles();
-		}
 		else
 			_folderModel->revertChanges();
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::onConfigRestored()
 	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		_folderModel->setFileNameFilters(
-					c->headerNameFilters() + c->sourceNameFilters()
-		);
+		onNameFiltersChanged();
 		//TODO QDir::homePath() as root path?
 		_folderModel->initialize( _ui->treeView, _ui->listView, QDir::homePath() );
-		_selectedFiles = _folderModel->checkedFiles();
+	}
+	//-------------------------------------------------------------------------
+	void SelectFilesDialog::onNameFiltersChanged()
+	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		QStringList l = c->headerNameFilters() + c->sourceNameFilters();
+		_folderModel->setFileNameFilters( l );
 	}
 }

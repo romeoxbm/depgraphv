@@ -244,18 +244,21 @@ namespace depgraphV
 	{
 		_hdrParseEnabled = value;
 		_hdrNameFiltersDirty = true;
+		emit headerNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setStandardFiltersEnabled( bool value )
 	{
 		_hdrStandardFiltersEnabled = value;
 		_hdrNameFiltersDirty = true;
+		emit headerNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
 	{
 		_hdrCurrentStandardFilter = value;
 		_hdrNameFiltersDirty = true;
+		emit headerNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setCustomFilters( const QString& value )
@@ -265,24 +268,28 @@ namespace depgraphV
 
 		_hdrCustomFilters = value;
 		_hdrNameFiltersDirty = true;
+		emit headerNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setParseEnabled( bool value )
 	{
 		_srcParseEnabled = value;
 		_srcNameFiltersDirty = true;
+		emit sourceNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setStandardFiltersEnabled( bool value )
 	{
 		_srcStandardFiltersEnabled = value;
 		_srcNameFiltersDirty = true;
+		emit sourceNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setCurrentStandardFilter( const QString& value )
 	{
 		_srcCurrentStandardFilter = value;
 		_srcNameFiltersDirty = true;
+		emit sourceNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setCustomFilters( const QString& value )
@@ -292,6 +299,7 @@ namespace depgraphV
 
 		_srcCustomFilters = value;
 		_srcNameFiltersDirty = true;
+		emit sourceNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::_doSaveRestore( bool save, bool def )
@@ -316,6 +324,7 @@ namespace depgraphV
 		}
 		qDebug() << qPrintable( message );
 
+		this->blockSignals( true );
 		foreach( ISerializableObject* sObj, _serializableObjects )
 		{
 			QObject* obj = dynamic_cast<QObject*>( sObj );
@@ -370,6 +379,7 @@ namespace depgraphV
 			}
 			_settings.endGroup();
 		} //foreach ISerializableObject*
+		this->blockSignals( false );
 
 		if( save )
 			emit configSaved();

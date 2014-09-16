@@ -47,7 +47,7 @@ namespace depgraphV
 		explicit SelectFilesDialog( QWidget* parent = 0 );
 		~SelectFilesDialog();
 
-		const QStringList& selectedFiles() const { return _selectedFiles; }
+		const QStringList& selectedFiles() const { return _folderModel->checkedFiles(); }
 
 	protected:
 		virtual void changeEvent( QEvent* );
@@ -55,11 +55,11 @@ namespace depgraphV
 	private slots:
 		void onClose( int );
 		void onConfigRestored();
+		void onNameFiltersChanged();
 
 	private:
 		Ui::SelectFilesDialog* _ui;
 		FoldersModel* _folderModel;
-		QStringList _selectedFiles;
 	};
 }
 
