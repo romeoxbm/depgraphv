@@ -63,6 +63,7 @@ namespace depgraphV
 		void onCustomFilterTextChanged( QString );
 		void onCustomFiltersEditFinished();
 		void onPageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
+		void onFiltersChanging( bool& accept );
 
 	private:
 		Ui::FilterPage* _ui;

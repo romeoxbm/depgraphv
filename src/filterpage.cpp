@@ -54,13 +54,17 @@ namespace depgraphV
 			_ui->groupBox->setTitle( tr( "Headers filter" ) );
 
 			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
-					 c, SLOT( hdr_setParseEnabled( bool ) ) );
-
+					 c, SLOT( hdr_setParseEnabled( bool ) )
+			);
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
-					 c, SLOT( hdr_setStandardFiltersEnabled( bool ) ) );
-
+					 c, SLOT( hdr_setStandardFiltersEnabled( bool ) )
+			);
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
-					 c, SLOT( hdr_setCurrentStandardFilter( QString ) ) );
+					 c, SLOT( hdr_setCurrentStandardFilter( QString ) )
+			);
+			connect( c, SIGNAL( headerNameFiltersChanging( bool& ) ),
+					 this, SLOT( onFiltersChanging( bool& ) )
+			);
 		}
 		else
 		{
@@ -69,13 +73,17 @@ namespace depgraphV
 			_ui->groupBox->setTitle( tr( "Sources filter" ) );
 
 			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
-					 c, SLOT( src_setParseEnabled( bool ) ) );
-
+					 c, SLOT( src_setParseEnabled( bool ) )
+			);
 			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
-					 c, SLOT( src_setStandardFiltersEnabled( bool ) ) );
-
+					 c, SLOT( src_setStandardFiltersEnabled( bool ) )
+			);
 			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
-					 c, SLOT( src_setCurrentStandardFilter( QString ) ) );
+					 c, SLOT( src_setCurrentStandardFilter( QString ) )
+			);
+			connect( c, SIGNAL( sourceNameFiltersChanging( bool& ) ),
+					 this, SLOT( onFiltersChanging( bool& ) )
+			);
 		}
 
 		connect( parent, SIGNAL( pageChanging( SettingsPage*, SettingsPage*, bool& ) ),
@@ -166,7 +174,8 @@ namespace depgraphV
 			c->src_setCustomFilters( l->text() );
 	}
 	//-------------------------------------------------------------------------
-	void FilterPage::onPageChanging( SettingsPage* currentPage, SettingsPage*, bool& accept )
+	void FilterPage::onPageChanging( SettingsPage* currentPage,
+									 SettingsPage*, bool& accept )
 	{
 		if( currentPage == this && !_ui->customFilters->hasAcceptableInput() )
 		{
@@ -188,5 +197,23 @@ namespace depgraphV
 				);
 			}
 		}
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onFiltersChanging( bool& accept )
+	{
+		//TODO Check also selected files count > 0
+		if( Singleton<AppConfig>::instancePtr()->scanByFolders() )
+			return;
+
+		QMessageBox::StandardButton answer = QMessageBox::warning(
+			this,
+			tr( "Filters" ),
+			tr( "By changing filters, you invalidate your current files selection"
+				".\nWould you like to continue?" ),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No
+		);
+
+		accept = answer != QMessageBox::No;
 	}
 } // end of depgraphV namespace

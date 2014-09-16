@@ -208,6 +208,9 @@ namespace depgraphV
 		void configSaved();
 		void configRestored();
 
+		void headerNameFiltersChanging( bool& accept );
+		void sourceNameFiltersChanging( bool& accept );
+
 		void headerNameFiltersChanged();
 		void sourceNameFiltersChanged();
 

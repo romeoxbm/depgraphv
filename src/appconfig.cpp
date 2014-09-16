@@ -256,6 +256,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setParseEnabled( bool value )
 	{
+		if( value == _hdrParseEnabled )
+			return;
+
+		bool accept = true;
+		emit headerNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_hdrParseEnabled = value;
 		_hdrNameFiltersDirty = true;
 		emit headerNameFiltersChanged();
@@ -263,6 +271,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setStandardFiltersEnabled( bool value )
 	{
+		if( value == _hdrStandardFiltersEnabled )
+			return;
+
+		bool accept = true;
+		emit headerNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_hdrStandardFiltersEnabled = value;
 		_hdrNameFiltersDirty = true;
 		emit headerNameFiltersChanged();
@@ -270,6 +286,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
 	{
+		if( value.isEmpty() || value == _hdrCurrentStandardFilter )
+			return;
+
+		bool accept = true;
+		emit headerNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_hdrCurrentStandardFilter = value;
 		_hdrNameFiltersDirty = true;
 		emit headerNameFiltersChanged();
@@ -280,6 +304,11 @@ namespace depgraphV
 		if( value.isEmpty() || value == _hdrCustomFilters )
 			return;
 
+		bool accept = true;
+		emit headerNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_hdrCustomFilters = value;
 		_hdrNameFiltersDirty = true;
 		emit headerNameFiltersChanged();
@@ -287,6 +316,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setParseEnabled( bool value )
 	{
+		if( value == _srcParseEnabled )
+			return;
+
+		bool accept = true;
+		emit sourceNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_srcParseEnabled = value;
 		_srcNameFiltersDirty = true;
 		emit sourceNameFiltersChanged();
@@ -294,6 +331,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setStandardFiltersEnabled( bool value )
 	{
+		if( value == _srcStandardFiltersEnabled )
+			return;
+
+		bool accept = true;
+		emit sourceNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_srcStandardFiltersEnabled = value;
 		_srcNameFiltersDirty = true;
 		emit sourceNameFiltersChanged();
@@ -301,6 +346,14 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setCurrentStandardFilter( const QString& value )
 	{
+		if( value == _srcCurrentStandardFilter )
+			return;
+
+		bool accept = true;
+		emit sourceNameFiltersChanging( accept );
+		if( !accept )
+			return;
+
 		_srcCurrentStandardFilter = value;
 		_srcNameFiltersDirty = true;
 		emit sourceNameFiltersChanged();
@@ -309,6 +362,11 @@ namespace depgraphV
 	void AppConfig::src_setCustomFilters( const QString& value )
 	{
 		if( value.isEmpty() || value == _srcCustomFilters )
+			return;
+
+		bool accept = true;
+		emit sourceNameFiltersChanging( accept );
+		if( !accept )
 			return;
 
 		_srcCustomFilters = value;
