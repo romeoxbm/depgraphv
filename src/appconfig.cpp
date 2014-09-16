@@ -277,7 +277,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::hdr_setCustomFilters( const QString& value )
 	{
-		if( value.isEmpty() )
+		if( value.isEmpty() || value == _hdrCustomFilters )
 			return;
 
 		_hdrCustomFilters = value;
@@ -308,7 +308,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void AppConfig::src_setCustomFilters( const QString& value )
 	{
-		if( value.isEmpty() )
+		if( value.isEmpty() || value == _srcCustomFilters )
 			return;
 
 		_srcCustomFilters = value;
