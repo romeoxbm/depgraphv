@@ -32,7 +32,8 @@
 namespace depgraphV
 {
 	CheckableFileSystemModel::CheckableFileSystemModel( QObject* parent )
-		: QFileSystemModel( parent )
+		: QFileSystemModel( parent ),
+		  _initialized( false )
 	{
 		this->setReadOnly( true );
 
@@ -126,7 +127,8 @@ namespace depgraphV
 	{
 		/*QVector<int> roles;
 		roles << Qt::CheckStateRole;*/
-		_checkedItemsList.state().clear();
+		if( _initialized )
+			_checkedItemsList.state().clear();
 		//TODO emit dataChanged signal
 	}
 	//-------------------------------------------------------------------------

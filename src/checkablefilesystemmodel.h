@@ -60,6 +60,8 @@ namespace depgraphV
 		virtual void commitChanges();
 		virtual void revertChanges();
 
+		bool initialized() const { return _initialized; }
+
 		enum FilesGroup
 		{
 			Hdr,
@@ -68,6 +70,8 @@ namespace depgraphV
 		};
 
 	protected:
+		bool _initialized;
+
 		virtual bool isCheckable( const QModelIndex& i, int role ) const;
 
 	public slots:

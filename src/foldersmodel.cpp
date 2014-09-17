@@ -47,8 +47,7 @@ namespace depgraphV
 	void FoldersModel::initialize( QTreeView* foldersView,
 								   QListView* filesView, const QString& rootPath )
 	{
-		static bool initialized = false;
-		if( initialized )
+		if( _initialized )
 			return;
 
 		Q_ASSERT( foldersView && filesView && !rootPath.isNull() );
@@ -68,7 +67,7 @@ namespace depgraphV
 		//Force treeview selection update
 		setSelectedFolderPath( _selectedFolderPath );
 
-		initialized = true;
+		_initialized = true;
 	}
 	//-------------------------------------------------------------------------
 	bool FoldersModel::hasChildren( const QModelIndex& parent ) const
