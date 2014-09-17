@@ -52,15 +52,14 @@ namespace depgraphV
 	{
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::initialize( QListView* view, const QString& rootPath )
+	void FilesModel::initialize( QListView* view )
 	{
 		if( _initialized )
 			return;
 
-		Q_ASSERT( view && !rootPath.isNull() );
+		Q_ASSERT( view );
 		_listView = view;
 		_listView->setModel( this );
-		_listView->setRootIndex( this->setRootPath( rootPath ) );
 
 		_createContextMenu();
 		_initialized = true;

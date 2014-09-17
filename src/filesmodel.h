@@ -45,7 +45,7 @@ namespace depgraphV
 
 		virtual QAbstractItemView* view() const { return _listView; }
 
-		void initialize( QListView* view, const QString& rootPath );
+		void initialize( QListView* view );
 
 	protected:
 		virtual bool isCheckable( const QModelIndex& i, int role ) const;

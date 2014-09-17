@@ -52,7 +52,7 @@ namespace depgraphV
 
 		Q_ASSERT( foldersView && filesView && !rootPath.isNull() );
 
-		_filesModel->initialize( filesView, rootPath );
+		_filesModel->initialize( filesView );
 
 		_treeView = foldersView;
 		_treeView->setModel( this );
@@ -273,19 +273,16 @@ namespace depgraphV
 				 this,
 				 SLOT( _updateSelection( QModelIndex, QModelIndex ) )
 		);
-
 		connect( _treeView,
 				 SIGNAL( collapsed( QModelIndex ) ),
 				 this,
 				 SLOT( _itemExpandedCollapsed( QModelIndex ) )
 		);
-
 		connect( _treeView,
 				 SIGNAL( expanded( QModelIndex ) ),
 				 this,
 				 SLOT( _itemExpandedCollapsed( QModelIndex ) )
 		);
-
 		connect( _treeView,
 				 SIGNAL( doubleClicked( QModelIndex ) ),
 				 this,
@@ -296,15 +293,12 @@ namespace depgraphV
 		connect( _changeRoot, SIGNAL( triggered() ),
 				 this, SLOT( _on_changeRoot_triggered() )
 		);
-
 		connect( _showHiddenFolders, SIGNAL( toggled( bool ) ),
 				 this, SLOT( showHiddenFolders( bool ) )
 		);
-
 		connect( _expandAll, SIGNAL( triggered() ),
 				 this, SLOT( _on_expandAll() )
 		);
-
 		connect( _collapseAll, SIGNAL( triggered() ),
 				 this, SLOT( _on_collapseAll() )
 		);
