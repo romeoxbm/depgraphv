@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<TS version="2.1" language="it_IT">
 <context>
     <name>depgraphV::AboutDialog</name>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV is an useful tool to analize header dependendencies via graphs.&lt;/p&gt;&lt;p&gt;Written in C++ and powered by Qt and GraphViz, it creates a graph of your codebase&lt;br/&gt;by parsing every &lt;span style=&quot; font-style:italic;&quot;&gt;#include&lt;/span&gt; statement found in the project&apos;s root folder.&lt;/p&gt;&lt;p&gt;It is helpful when you need to analize and visualize the dependecy tree,&lt;br/&gt;highlightining cycles and &amp;quot;useless paths&amp;quot;, and It means, in short, that you could drastically&lt;br/&gt;reduce build times, especially when working on large-scale projects.&lt;/p&gt;&lt;p&gt;Report bugs and download new versions at &lt;a href=&quot;http://sourceforge.net/projects/depgraph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://sourceforge.net/projects/depgraph&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV è un utile strumento per analizzare le dipendenze degli header attraverso grafi.&lt;/p&gt;&lt;p&gt;Scritto in C++ e &amp;quot;powered by&amp;quot; Qt e GraphViz, crea un grafo di inclusione dei tuoi sorgenti&lt;br/&gt;facendo un parsing di ogni direttiva &lt;span style=&quot; font-style:italic;&quot;&gt;#include&lt;/span&gt; trovata nella cartella di root del progetto.&lt;/p&gt;&lt;p&gt;Risulta utile quando è necessario analizzare e visualizzare l&apos;albero delle dipendenze,&lt;br/&gt;evidenziando cicli e &amp;quot;percorsi inutili&amp;quot;, e ciò vuol dire, in breve, che è possibile ridurre drasticamente&lt;br/&gt;i tempi di build, specialmente lavorando su progetti molto grandi.&lt;/p&gt;&lt;p&gt;Segnala bug e scarica nuove versioni da &lt;a href=&quot;http://sourceforge.net/projects/depgraph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://sourceforge.net/projects/depgraph&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;dep-graphV è un utile strumento per analizzare le dipendenze degli header attraverso grafi.&lt;/p&gt;&lt;p&gt;Scritto in C++ e &amp;quot;powered by&amp;quot; Qt e GraphViz, crea un grafo di inclusione dei tuoi sorgenti&lt;br/&gt;facendo un parsing di ogni direttiva &lt;span style=&quot; font-style:italic;&quot;&gt;#include&lt;/span&gt; trovata nella cartella di root del progetto.&lt;/p&gt;&lt;p&gt;Risulta utile quando è necessario analizzare e visualizzare l&apos;albero delle dipendenze,&lt;br/&gt;evidenziando cicli e &amp;quot;percorsi inutili&amp;quot;, e ciò vuol dire, in breve, che è possibile ridurre drasticamente&lt;br/&gt;i tempi di build, specialmente lavorando su progetti molto grandi.&lt;/p&gt;&lt;p&gt;Segnala bug e scarica nuove versioni da &lt;a href=&quot;http://sourceforge.net/projects/depgraph&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://sourceforge.net/projects/depgraph&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialog.ui" line="52"/>
@@ -87,77 +87,77 @@
 <context>
     <name>depgraphV::AppConfig</name>
     <message>
-        <location filename="../src/appconfig.cpp" line="93"/>
+        <location filename="../src/appconfig.cpp" line="94"/>
         <source>Missing default settings</source>
         <translation>Impostazioni di default mancanti</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="307"/>
+        <location filename="../src/appconfig.cpp" line="393"/>
         <source>Saving settings...</source>
         <translation>Sto salvando le impostazioni...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="299"/>
+        <location filename="../src/appconfig.cpp" line="385"/>
         <source>Saving default settings...</source>
         <translation>Sto salvando le impostazioni di default...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="309"/>
+        <location filename="../src/appconfig.cpp" line="395"/>
         <source>Restoring settings...</source>
         <translation>Sto ripristinando le impostazioni...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="301"/>
+        <location filename="../src/appconfig.cpp" line="387"/>
         <source>Restoring default settings...</source>
         <translation>Sto ripristinando le impostazioni di default...</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="145"/>
+        <location filename="../src/appconfig.cpp" line="146"/>
         <source>Object already registered.</source>
         <translation>Oggetto già registrato.</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="329"/>
+        <location filename="../src/appconfig.cpp" line="416"/>
         <source>Unable to find property &quot;</source>
         <translation>Impossibile trovare la proprietà &quot;</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="330"/>
+        <location filename="../src/appconfig.cpp" line="417"/>
         <source>&quot;. Please review propList implementation for &quot;</source>
         <translation>&quot;. Per favore controlla l&apos;implementazione di propList per &quot;</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="342"/>
+        <location filename="../src/appconfig.cpp" line="429"/>
         <source>Skipping property &quot;</source>
         <translation>Sto saltanto la proprietà </translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="344"/>
+        <location filename="../src/appconfig.cpp" line="431"/>
         <source>&quot; because has either null or invalid value.</source>
         <translation> poiché ha un valore nullo o non valido.</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="358"/>
+        <location filename="../src/appconfig.cpp" line="445"/>
         <source>Property &quot;</source>
         <translation>Proprietà &quot;</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="359"/>
+        <location filename="../src/appconfig.cpp" line="446"/>
         <source>&quot; doesn&apos;t use the WRITE keyword. Please check its Q_PROPERTY declaration.</source>
         <translation>&quot; non utilizza la parola chiave WRITE. Per favore, controlla la dichiarazione Q_PROPERTY.</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="389"/>
+        <location filename="../src/appconfig.cpp" line="477"/>
         <source>Found translation &quot;%1&quot; in %2</source>
         <translation>Trovata traduzione &quot;%1&quot; in %2</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="408"/>
+        <location filename="../src/appconfig.cpp" line="496"/>
         <source>Translation &quot;%1&quot; does not exists</source>
         <translation>La traduzione &quot;%1&quot; non esiste</translation>
     </message>
     <message>
-        <location filename="../src/appconfig.cpp" line="417"/>
+        <location filename="../src/appconfig.cpp" line="505"/>
         <source>Now using translation &quot;%1&quot; (%2)</source>
         <translation>Sto utilizzando la traduzione &quot;%1&quot; (%2)</translation>
     </message>
@@ -166,118 +166,118 @@
     <name>depgraphV::BackgroundWorker</name>
     <message>
         <source>Aborted.</source>
-        <translation>Annullato.</translation>
+        <translation type="vanished">Annullato.</translation>
     </message>
 </context>
 <context>
     <name>depgraphV::FilesModel</name>
     <message>
-        <location filename="../src/filesmodel.cpp" line="106"/>
+        <location filename="../src/filesmodel.cpp" line="111"/>
         <source>Show All Files</source>
         <translation>Mostra tutti i file</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="115"/>
+        <location filename="../src/filesmodel.cpp" line="120"/>
         <source>Select All</source>
         <translation>Seleziona tutto</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="119"/>
+        <location filename="../src/filesmodel.cpp" line="124"/>
         <source>Select None</source>
         <translation>Deseleziona tutti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="123"/>
+        <location filename="../src/filesmodel.cpp" line="128"/>
         <source>Invert Selection</source>
         <translation>Inverti selezione</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="133"/>
+        <location filename="../src/filesmodel.cpp" line="138"/>
         <source>Headers</source>
         <translation>Headers</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="136"/>
+        <location filename="../src/filesmodel.cpp" line="141"/>
         <source>Select All Headers</source>
         <translation>Seleziona tutti gli header</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="144"/>
+        <location filename="../src/filesmodel.cpp" line="149"/>
         <source>Invert Headers Selection</source>
         <translation>Inverti la selezione degli header</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="158"/>
+        <location filename="../src/filesmodel.cpp" line="163"/>
         <source>Select All Sources</source>
         <translation>Seleziona tutti i sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="140"/>
+        <location filename="../src/filesmodel.cpp" line="145"/>
         <source>Deselect All Headers</source>
         <translation>Deseleziona tutti gli header</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="155"/>
+        <location filename="../src/filesmodel.cpp" line="160"/>
         <source>Sources</source>
         <translation>Sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="162"/>
+        <location filename="../src/filesmodel.cpp" line="167"/>
         <source>Deselect All Sources</source>
         <translation>Deseleziona tutti i sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="166"/>
+        <location filename="../src/filesmodel.cpp" line="171"/>
         <source>Invert Sources Selection</source>
         <translation>Inverti la selezione dei sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="180"/>
+        <location filename="../src/filesmodel.cpp" line="185"/>
         <source>Show all files, including filtered ones</source>
         <translation>Mostra tutti i file, inclusi quelli filtrati</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="182"/>
+        <location filename="../src/filesmodel.cpp" line="187"/>
         <source>Select all valid files in this folder</source>
         <translation>Seleziona tutti i file validi in questa cartella</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="183"/>
+        <location filename="../src/filesmodel.cpp" line="188"/>
         <source>Clear selection</source>
         <translation>Svuota la selezione</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="184"/>
+        <location filename="../src/filesmodel.cpp" line="189"/>
         <source>Invert current files selection</source>
         <translation>Inverte l&apos;attuale selezione di file</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="186"/>
+        <location filename="../src/filesmodel.cpp" line="191"/>
         <source>Select all headers in this folder</source>
         <translation>Seleziona tutti gli header in questa cartella</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="187"/>
+        <location filename="../src/filesmodel.cpp" line="192"/>
         <source>Clear headers selection</source>
         <translation>Svuota la selezione degli header</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="188"/>
+        <location filename="../src/filesmodel.cpp" line="193"/>
         <source>Invert current headers selection</source>
         <translation>Inverte l&apos;attuale selezione degli header</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="190"/>
+        <location filename="../src/filesmodel.cpp" line="195"/>
         <source>Select all sources in this folder</source>
         <translation>Seleziona tutti i sorgenti in questa cartella</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="191"/>
+        <location filename="../src/filesmodel.cpp" line="196"/>
         <source>Clear sources selection</source>
         <translation>Svuota l&apos;attuale selezione di sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filesmodel.cpp" line="192"/>
+        <location filename="../src/filesmodel.cpp" line="197"/>
         <source>Invert current sources selection</source>
         <translation>Inverte l&apos;attuale selezione di sorgenti</translation>
     </message>
@@ -290,113 +290,134 @@
         <translation>Filtri standard</translation>
     </message>
     <message>
-        <location filename="../ui/filterpage.ui" line="98"/>
+        <location filename="../ui/filterpage.ui" line="97"/>
         <source>Custom (semicolon-separated)</source>
         <translation>Personalizzato (separati da ; )</translation>
     </message>
     <message>
         <location filename="../src/filterpage.cpp" line="53"/>
-        <location filename="../src/filterpage.cpp" line="110"/>
+        <location filename="../src/filterpage.cpp" line="115"/>
         <source>Parse headers</source>
         <translation>Analizza header</translation>
     </message>
     <message>
         <location filename="../src/filterpage.cpp" line="54"/>
-        <location filename="../src/filterpage.cpp" line="111"/>
+        <location filename="../src/filterpage.cpp" line="116"/>
         <source>Headers filter</source>
         <translation>Filtri sugli header</translation>
     </message>
     <message>
-        <location filename="../src/filterpage.cpp" line="71"/>
-        <location filename="../src/filterpage.cpp" line="115"/>
+        <location filename="../src/filterpage.cpp" line="72"/>
+        <location filename="../src/filterpage.cpp" line="120"/>
         <source>Parse sources</source>
         <translation>Analizza sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/filterpage.cpp" line="72"/>
-        <location filename="../src/filterpage.cpp" line="116"/>
+        <location filename="../src/filterpage.cpp" line="73"/>
+        <location filename="../src/filterpage.cpp" line="121"/>
         <source>Sources filter</source>
         <translation>Filtri sui sorgenti</translation>
+    </message>
+    <message>
+        <location filename="../src/filterpage.cpp" line="184"/>
+        <source>Invalid name filters specified!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filterpage.cpp" line="185"/>
+        <source>Would you like to discard last changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filterpage.cpp" line="210"/>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filterpage.cpp" line="211"/>
+        <source>By changing filters, you invalidate your current files selection.
+Would you like to continue?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>depgraphV::FilterWidget</name>
     <message>
         <source>Parse headers</source>
-        <translation>Analizza header</translation>
+        <translation type="vanished">Analizza header</translation>
     </message>
     <message>
         <source>Headers filter</source>
-        <translation>Filtri sugli header</translation>
+        <translation type="vanished">Filtri sugli header</translation>
     </message>
     <message>
         <source>Standard filters</source>
-        <translation>Filtri standard</translation>
+        <translation type="vanished">Filtri standard</translation>
     </message>
     <message>
         <source>Custom (semicolon-separated)</source>
-        <translation>Personalizzato (separati da ; )</translation>
+        <translation type="vanished">Personalizzato (separati da ; )</translation>
     </message>
     <message>
         <source>Parse sources</source>
-        <translation>Analizza sorgenti</translation>
+        <translation type="vanished">Analizza sorgenti</translation>
     </message>
     <message>
         <source>Sources filter</source>
-        <translation>Filtro sui sorgenti</translation>
+        <translation type="vanished">Filtro sui sorgenti</translation>
     </message>
 </context>
 <context>
     <name>depgraphV::FolderWidget</name>
     <message>
         <source>Root folder</source>
-        <translation>Cartella radice</translation>
+        <translation type="vanished">Cartella radice</translation>
     </message>
     <message>
         <source>Scan recursively</source>
-        <translation>Scansiona ricorsivamente</translation>
+        <translation type="vanished">Scansiona ricorsivamente</translation>
     </message>
     <message>
         <source>Select root folder</source>
-        <translation>Seleziona la cartella radice</translation>
+        <translation type="vanished">Seleziona la cartella radice</translation>
     </message>
 </context>
 <context>
     <name>depgraphV::FoldersModel</name>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="193"/>
-        <location filename="../src/foldersmodel.cpp" line="211"/>
+        <location filename="../src/foldersmodel.cpp" line="222"/>
+        <location filename="../src/foldersmodel.cpp" line="241"/>
         <source>Change Root...</source>
         <translation>Cambia Radice...</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="214"/>
-        <location filename="../src/foldersmodel.cpp" line="226"/>
+        <location filename="../src/foldersmodel.cpp" line="244"/>
+        <location filename="../src/foldersmodel.cpp" line="256"/>
         <source>Show Hidden Folders</source>
         <translation>Mostra cartelle nascoste</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="218"/>
+        <location filename="../src/foldersmodel.cpp" line="248"/>
         <source>Expand All</source>
         <translation>Espandi tutto</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="221"/>
+        <location filename="../src/foldersmodel.cpp" line="251"/>
         <source>Collapse All</source>
         <translation>Collassa tutto</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="225"/>
+        <location filename="../src/foldersmodel.cpp" line="255"/>
         <source>Change root folder being inspected</source>
         <translation>Cambia la cartella radice ispezionata</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="227"/>
+        <location filename="../src/foldersmodel.cpp" line="257"/>
         <source>Expand all visible folders</source>
         <translation>Espandi tutte le cartelle visibili</translation>
     </message>
     <message>
-        <location filename="../src/foldersmodel.cpp" line="228"/>
+        <location filename="../src/foldersmodel.cpp" line="258"/>
         <source>Collapse all visible folders</source>
         <translation>Collassa tutte le cartelle visibili</translation>
     </message>
@@ -551,22 +572,22 @@ For other layouts, this affects the spacing between loops on a single node, or m
         <translation>Rimuovi selezione</translation>
     </message>
     <message>
-        <location filename="../src/handlerootsdialog.cpp" line="109"/>
+        <location filename="../src/handlerootsdialog.cpp" line="110"/>
         <source>Add root folder</source>
         <translation>Aggiungi cartella radice</translation>
     </message>
     <message>
-        <location filename="../src/handlerootsdialog.cpp" line="132"/>
+        <location filename="../src/handlerootsdialog.cpp" line="133"/>
         <source>Remove selected root folders</source>
         <translation>Rimuovi le cartelle radice selezionate</translation>
     </message>
     <message>
-        <location filename="../src/handlerootsdialog.cpp" line="133"/>
+        <location filename="../src/handlerootsdialog.cpp" line="134"/>
         <source>Are you sure you want to remove </source>
         <translation>Sei sicuro di voler rimuovere </translation>
     </message>
     <message>
-        <location filename="../src/handlerootsdialog.cpp" line="135"/>
+        <location filename="../src/handlerootsdialog.cpp" line="136"/>
         <source> selected folders?</source>
         <translation> cartelle selezionate?</translation>
     </message>
@@ -579,12 +600,12 @@ For other layouts, this affects the spacing between loops on a single node, or m
         <translation>pronto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="219"/>
+        <location filename="../src/mainwindow.cpp" line="220"/>
         <source>Clear graph</source>
         <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="220"/>
+        <location filename="../src/mainwindow.cpp" line="221"/>
         <location filename="../src/mainwindow.cpp" line="369"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
@@ -601,7 +622,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
     </message>
     <message>
         <source>Unable to save graph as image; Plugin not found.</source>
-        <translation>Impossibile salvare il grafo come immagine; Plugin non trovato.</translation>
+        <translation type="vanished">Impossibile salvare il grafo come immagine; Plugin non trovato.</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.cpp" line="425"/>
@@ -650,7 +671,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
         <translation>Impostazioni del Grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="210"/>
+        <location filename="../src/mainwindow.cpp" line="212"/>
         <source>All done</source>
         <translation>Tutto fatto</translation>
     </message>
@@ -718,31 +739,31 @@ Stai usando l&apos;ultima versione di </translation>
         <translation>Controlla aggiornamenti</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="575"/>
+        <location filename="../src/mainwindow.cpp" line="577"/>
         <source>Unable to restore window state!</source>
         <translation>Impossibile ripristinare lo stato della finestra!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="585"/>
+        <location filename="../src/mainwindow.cpp" line="587"/>
         <source>Unable to restore geometry state!</source>
         <translation>Impossibile ripristinare lo stato della geometria!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="660"/>
+        <location filename="../src/mainwindow.cpp" line="662"/>
         <source>&quot;%1&quot; is the system language.</source>
         <translation>&quot;%1&quot; è la lingua di sistema.</translation>
     </message>
     <message>
         <source>Found locale %1 in %2</source>
-        <translation>Trovata localizzazione %1 in %2</translation>
+        <translation type="vanished">Trovata localizzazione %1 in %2</translation>
     </message>
     <message>
         <source>Translation file &quot;%1&quot; does not exists</source>
-        <translation>File di traduzione &quot;%1&quot; non esistente</translation>
+        <translation type="vanished">File di traduzione &quot;%1&quot; non esistente</translation>
     </message>
     <message>
         <source>Switched to translation file %1 in %2</source>
-        <translation>Selezionato file di tradizione %1 in %2</translation>
+        <translation type="vanished">Selezionato file di tradizione %1 in %2</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.ui" line="256"/>
@@ -895,55 +916,55 @@ Stai usando l&apos;ultima versione di </translation>
     <name>depgraphV::ScanDialog</name>
     <message>
         <source>Scanning folder...</source>
-        <translation>Analizzo la cartella...</translation>
+        <translation type="vanished">Analizzo la cartella...</translation>
     </message>
     <message>
         <source>Details</source>
-        <translation>Dettagli</translation>
+        <translation type="vanished">Dettagli</translation>
     </message>
     <message>
         <source>Folders found:</source>
-        <translation>Cartelle trovate:</translation>
+        <translation type="vanished">Cartelle trovate:</translation>
     </message>
     <message>
         <source>Files Found:</source>
-        <translation>File trovati:</translation>
+        <translation type="vanished">File trovati:</translation>
     </message>
     <message>
         <source>Analized files:</source>
-        <translation>File analizzati:</translation>
+        <translation type="vanished">File analizzati:</translation>
     </message>
     <message>
         <source>Elapsed time:</source>
-        <translation>Tempo trascorso:</translation>
+        <translation type="vanished">Tempo trascorso:</translation>
     </message>
     <message>
         <source>Details &gt;&gt;&gt;</source>
-        <translation>Dettagli &gt;&gt;&gt;</translation>
+        <translation type="vanished">Dettagli &gt;&gt;&gt;</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="vanished">Annulla</translation>
     </message>
     <message>
         <source>Creating graph...</source>
-        <translation>Creo il grafo...</translation>
+        <translation type="vanished">Creo il grafo...</translation>
     </message>
     <message>
         <source>Layouting...</source>
-        <translation>Applico il layout...</translation>
+        <translation type="vanished">Applico il layout...</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Fatto</translation>
+        <translation type="vanished">Fatto</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Chiudi</translation>
+        <translation type="vanished">Chiudi</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Errore</translation>
+        <translation type="vanished">Errore</translation>
     </message>
 </context>
 <context>
@@ -1000,7 +1021,7 @@ Stai usando l&apos;ultima versione di </translation>
 <context>
     <name>depgraphV::SettingsDialog</name>
     <message>
-        <location filename="../ui/settingsdialog.ui" line="82"/>
+        <location filename="../ui/settingsdialog.ui" line="85"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
