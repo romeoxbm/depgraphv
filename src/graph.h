@@ -38,12 +38,12 @@
 #ifndef Q_MOC_RUN
 #	include <gvc.h>
 #	ifdef GraphViz_USE_CGRAPH
-#		include <graphviz/cgraph.h>
+#		include <cgraph.h>
 #		ifndef WITH_CGRAPH
 #			define WITH_CGRAPH 1
 #		endif
 #	else
-#		include <graphviz/graph.h>
+#		include <graph.h>
 #	endif // Using_CGRAPH
 #endif // Q_MOC_RUN
 
@@ -163,7 +163,7 @@ namespace depgraphV
 		 * @return A QStringList* containing all the available plugins of type
 		 *	"kind", NULL otherwise.
 		 */
-		QStringList* pluginsListByKind( const QString& kind ) const;
+		static QStringList* pluginsListByKind( const QString& kind );
 
 		virtual QList<const char*> propList() const;
 
@@ -238,7 +238,7 @@ namespace depgraphV
 		QMap<QString, Agnode_t*> _vertices;
 		QList<Agedge_t*> _edges;
 
-		QMap<QString, QStringList*> _availablePlugins;
+		static QMap<QString, QStringList*> _availablePlugins;
 
 		/**
 		 * @brief Create a new edge between two vertices.

@@ -47,6 +47,8 @@
 
 namespace depgraphV
 {
+	QMap<QString, QStringList*> Graph::_availablePlugins;
+
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
 		  _layoutAlgorithm( "dot" ),
@@ -283,7 +285,7 @@ namespace depgraphV
 		return retValue;
 	}
 	//-------------------------------------------------------------------------
-	QStringList* Graph::pluginsListByKind( const QString& kind ) const
+	QStringList* Graph::pluginsListByKind( const QString& kind )
 	{
 		Q_ASSERT( !kind.isEmpty() );
 
