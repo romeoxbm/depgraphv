@@ -109,5 +109,3 @@ else( GRAPHVIZ_FOUND )
 endif( GRAPHVIZ_FOUND )
 
 mark_as_advanced( GraphViz_INCLUDE_DIRS GraphViz_LIBRARIES GraphViz_USE_CGRAPH )
-
-

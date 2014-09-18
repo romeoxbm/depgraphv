@@ -62,10 +62,12 @@
 
 //Works with MSVC and GCC
 #ifndef ARCH
-#	if defined( _M_X64 ) || defined( __amd64__ )
+#	if defined( _WIN64 ) || defined( __amd64__ )
 #		define ARCH "x64"
-#	elif defined( _M_X86 ) || defined( __i386__ )
+#	elif defined( _WIN32 ) || defined( __i386__ )
 #		define ARCH "x86"
+#	else
+#		define ARCH "unknown"
 #	endif
 #endif //ARCH
 
