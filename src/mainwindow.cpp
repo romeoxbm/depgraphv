@@ -74,7 +74,8 @@ namespace depgraphV
 		_progressBar->setMaximum( 0 );
 
 		//Dialogs
-		_config			= new AppConfig( _ui->graph, this );
+		//TODO
+		_config			= new AppConfig( new Graph( _ui->tabWidget ), this );//( _ui->graph, this );
 		_aboutDlg		= new AboutDialog( this );
 		_settingsDlg	= new SettingsDialog( this );
 		_rootsDlg		= new HandleRootsDialog( this );
@@ -131,7 +132,8 @@ namespace depgraphV
 
 		//Register serializable objects
 		_config->registerSerializable( this );
-		_config->registerSerializable( _ui->graph );
+		//TODO
+		//_config->registerSerializable( _ui->graph );
 
 		//Connect other signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ),
@@ -204,7 +206,7 @@ namespace depgraphV
 			_scanFiles( _filesDlg->selectedFiles() );
 
 		if( !_applyGraphLayout() )
-			_ui->graph->clearGraph();
+			_ui->tabWidget->currentGraph()->clearGraph();
 
 		_ui->toolBar->setEnabled( true );
 		_ui->menuBar->setEnabled( true );
@@ -226,21 +228,22 @@ namespace depgraphV
 		if( answer == QMessageBox::No )
 			return;
 
-		_ui->graph->clearGraph();
+		_ui->tabWidget->currentGraph()->clearGraph();
 		_setButtonsAndActionsEnabled( false );
 		//_doClearGraph();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onConfigRestored()
 	{
-		_ui->actionHigh_Quality_Antialiasing->setChecked(
+		//TODO
+		/*_ui->actionHigh_Quality_Antialiasing->setChecked(
 					_ui->graph->highQualityAA()
 		);
 
 		QAction* a = _ui->graph->renderer() == Graph::Native ?
 						 _ui->actionNative : _ui->actionOpenGL;
 
-		a->setChecked( true );
+		a->setChecked( true );*/
 		_langActions[ _config->language() ]->setChecked( true );
 	}
 	//-------------------------------------------------------------------------
@@ -327,20 +330,23 @@ namespace depgraphV
 	void MainWindow::_scanFiles( const QStringList& files ) const
 	{
 		_startSlowOperation( tr( "Analyzing files..." ), files.count() );
+		Graph* g = _ui->tabWidget->currentGraph();
+
 		//TODO blockingMap here instead of the following "simple" foreach loop?
 		foreach( QString path, files )
 		{
 			QFileInfo f( path );
-			_ui->graph->createOrRetrieveVertex( f.fileName() );
-			_ui->graph->createEdges( f.absolutePath(), f.fileName() );
+			g->createOrRetrieveVertex( f.fileName() );
+			g->createEdges( f.absolutePath(), f.fileName() );
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
 	}
 	//-------------------------------------------------------------------------
 	bool MainWindow::_applyGraphLayout() const
 	{
+		//TODO
 		_startSlowOperation( tr( "Applying layout..." ), 0 );
-		return _ui->graph->applyLayout();
+		return _ui->tabWidget->currentGraph()->applyLayout();
 			//qDebug() << "Unable to render; Plugin not found.";
 	}
 	//-------------------------------------------------------------------------
@@ -379,9 +385,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::rendererTypeChanged( QAction* action )
 	{
-		Q_ASSERT( action );
+		//TODO
+		/*Q_ASSERT( action );
 		_ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
-		_ui->statusBar->showMessage( tr( "Renderer method changed" ) );
+		_ui->statusBar->showMessage( tr( "Renderer method changed" ) );*/
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::parseOptionsChanged()
@@ -395,7 +402,7 @@ namespace depgraphV
 	{
 		if( !_imageFiltersUpdated )
 		{
-			QStringList* list = _ui->graph->pluginsListByKind( "loadimage" );
+			QStringList* list = Graph::pluginsListByKind( "loadimage" );
 			if( !list )
 			{
 				QMessageBox::critical(
@@ -437,7 +444,8 @@ namespace depgraphV
 			path += "." + format;
 		}
 
-		if( _ui->graph->saveImage( path, format ) )
+		Graph* g = _ui->tabWidget->currentGraph();
+		if( g->saveImage( path, format ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 	}
 	//-------------------------------------------------------------------------
@@ -459,7 +467,8 @@ namespace depgraphV
 		if( format.isEmpty() )
 			path += ".dot";
 
-		if( _ui->graph->saveDot( path ) )
+		Graph* g = _ui->tabWidget->currentGraph();
+		if( g->saveDot( path ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
 			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );

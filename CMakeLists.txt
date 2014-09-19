@@ -60,6 +60,7 @@ set( Headers
 	src/aboutdialog.h
 	src/appconfig.h
 	src/checkablefilesystemmodel.h
+	src/customtabwidget.h
 	src/filesmodel.h
 	src/filterpage.h
 	src/foldersmodel.h
@@ -81,6 +82,7 @@ set( Sources
 	src/aboutdialog.cpp
 	src/appconfig.cpp
 	src/checkablefilesystemmodel.cpp
+	src/customtabwidget.cpp
 	src/filesmodel.cpp
 	src/filterpage.cpp
 	src/foldersmodel.cpp

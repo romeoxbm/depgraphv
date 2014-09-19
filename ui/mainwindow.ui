@@ -32,30 +32,15 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="depgraphV::Graph" name="graph">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <widget class="CustomTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>-1</number>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>350</width>
-        <height>625</height>
-       </size>
+      <property name="documentMode">
+       <bool>true</bool>
       </property>
-      <property name="renderHints">
-       <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
-      </property>
-      <property name="dragMode">
-       <enum>QGraphicsView::ScrollHandDrag</enum>
-      </property>
-      <property name="transformationAnchor">
-       <enum>QGraphicsView::AnchorUnderMouse</enum>
-      </property>
-      <property name="viewportUpdateMode">
-       <enum>QGraphicsView::FullViewportUpdate</enum>
+      <property name="tabsClosable">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -67,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>559</width>
-     <height>29</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -140,6 +125,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNew_Graph"/>
+   <addaction name="separator"/>
    <addaction name="actionDraw"/>
    <addaction name="actionClear"/>
    <addaction name="separator"/>
@@ -328,21 +315,27 @@
     <bool>false</bool>
    </property>
   </action>
+  <action name="actionNew_Graph">
+   <property name="text">
+    <string>New Graph</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new graph</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>depgraphV::Graph</class>
-   <extends>QGraphicsView</extends>
-   <header>graph.h</header>
+   <class>CustomTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>customtabwidget.h</header>
+   <container>1</container>
    <slots>
-    <slot>setHighQualityAntialiasing(bool)</slot>
+    <slot>newGraph()</slot>
    </slots>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>graph</tabstop>
- </tabstops>
  <resources>
   <include location="../res/resources.qrc"/>
  </resources>
@@ -444,22 +437,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionHigh_Quality_Antialiasing</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>graph</receiver>
-   <slot>setHighQualityAntialiasing(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>489</x>
-     <y>341</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionDraw</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
@@ -555,6 +532,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionNew_Graph</sender>
+   <signal>triggered()</signal>
+   <receiver>tabWidget</receiver>
+   <slot>newGraph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>395</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>parseOptionsChanged()</slot>
@@ -569,5 +562,7 @@
   <slot>changeToolbarOrientation()</slot>
   <slot>onSelectFilesOrFolders()</slot>
   <slot>checkForUpdates()</slot>
+  <slot>newGraph()</slot>
+  <slot>closeTab(int)</slot>
  </slots>
 </ui>
