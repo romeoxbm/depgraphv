@@ -47,14 +47,22 @@
 
 namespace depgraphV
 {
+	GVC_t* Graph::_context = 0;
 	QMap<QString, QStringList*> Graph::_availablePlugins;
+	QMap<QString, QStringList*> Graph::_parsedFiles;
+
+	unsigned short Graph::_instances = 0;
 
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
 		  _layoutAlgorithm( "dot" ),
-		_svgItem( 0 ),
-		_context( gvContext() )
+		_svgItem( 0 )
 	{
+		_instances++;
+
+		if( !_context )
+			_context = gvContext();
+
 		qRegisterMetaType<NameValuePair>( "NameValuePair" );
 		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );
 
@@ -80,17 +88,23 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
 	{
+		_instances--;
 		this->clearGraph();
-		foreach( QStringList* l, _availablePlugins )
-			delete l;
 
-		_availablePlugins.clear();
 		_graphAttributes.clear();
 		_verticesAttributes.clear();
 		_edgesAttributes.clear();
 
-		gvFreeContext( _context );
-		_context = 0;
+		if( !_instances )
+		{
+			foreach( QStringList* l, _availablePlugins )
+				delete l;
+
+			_availablePlugins.clear();
+
+			gvFreeContext( _context );
+			_context = 0;
+		}
 
 		agclose( _graph );
 		_graph = 0;
@@ -144,7 +158,7 @@ namespace depgraphV
 		}
 
 		_vertices.insert( label, v );
-		emit vertexCreated();
+		emit vertexCreated( v );
 		return v;
 	}
 	//-------------------------------------------------------------------------
@@ -170,32 +184,40 @@ namespace depgraphV
 		Q_ASSERT( !absPath.isEmpty() );
 		QString absFilePath = QString( "%1/%2" ).arg( absPath, vertexLabel );
 
-		QFile f( absFilePath );
-		if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
-			return;
-
-		QTextStream stream( &f );
-		QString fileContent = stream.readAll();
-		f.close();
-
-		//Before parsing includes, we remove every comment;
-		//By this way, commented include statements will not match anymore.
-		QString includeReg( "(//[^\\r\\n]*)|(/\\*([^*]"
-					 "|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)"
-		);
-		fileContent.remove( QRegExp( includeReg ) );
-
-		QRegExp rExp( "#\\s*include\\s*((<[^>]+>)|(\"[^\"]+\"))" );
-		int pos = 0;
-
-		Agnode_t* src = vertex( vertexLabel );
-		while( ( pos = rExp.indexIn( fileContent, pos ) ) != -1 )
+		if( !_parsedFiles.contains( absFilePath ) )
 		{
-			QString match( rExp.cap( 1 ) );
-			QString currentInclude( match.mid( 1, match.length() - 2 ) );
-			_createEdge( src, createOrRetrieveVertex( currentInclude ) );
-			pos += rExp.matchedLength();
+			QFile f( absFilePath );
+			if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
+				return;
+
+			_parsedFiles.insert( absFilePath, new QStringList );
+
+			QTextStream stream( &f );
+			QString fileContent = stream.readAll();
+			f.close();
+
+			//Before parsing includes, we remove every comment;
+			//By this way, commented include statements will not match anymore.
+			QString includeReg( "(//[^\\r\\n]*)|(/\\*([^*]"
+						 "|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)"
+			);
+			fileContent.remove( QRegExp( includeReg ) );
+
+			QRegExp rExp( "#\\s*include\\s*((<[^>]+>)|(\"[^\"]+\"))" );
+			int pos = 0;
+
+			while( ( pos = rExp.indexIn( fileContent, pos ) ) != -1 )
+			{
+				QString match( rExp.cap( 1 ) );
+				QString currentInclude( match.mid( 1, match.length() - 2 ) );
+				_parsedFiles[ absFilePath ]->append( currentInclude );
+				pos += rExp.matchedLength();
+			}
 		}
+
+		Agnode_t* src = createOrRetrieveVertex( vertexLabel );
+		foreach( QString inc, *_parsedFiles[ absFilePath ] )
+			_createEdge( src, createOrRetrieveVertex( inc ) );
 	}
 	//-------------------------------------------------------------------------
 	bool Graph::applyLayout()
@@ -221,7 +243,7 @@ namespace depgraphV
 		emit layoutApplied();
 
 		QString data;
-		if( !_renderDataAs( "svg", &data ) )
+		if( !_renderDataAs( _graph, "svg", &data ) )
 			return false;
 
 		QXmlStreamReader xmlReader( data );
@@ -274,7 +296,7 @@ namespace depgraphV
 			return retValue;
 
 		QString data;
-		if( _isPluginAvailable( "dot", "render" ) && _renderDataAs( "dot", &data ) )
+		if( _isPluginAvailable( "dot", "render" ) && _renderDataAs( _graph, "dot", &data ) )
 		{
 			QTextStream stream( &f );
 			stream << data;
@@ -366,7 +388,6 @@ namespace depgraphV
 	{
 		clearLayout();
 		_vertices.clear();
-		_edges.clear();
 		agclose( _graph );
 		NEW_GRAPH();
 	}
@@ -392,18 +413,17 @@ namespace depgraphV
 			return 0;
 		}
 
-		_edges << e;
-		emit edgeCreated();
+		emit edgeCreated( e );
 		return e;
 	}
 	//-------------------------------------------------------------------------
-	bool Graph::_renderDataAs( const QString& format, QString* outString ) const
+	bool Graph::_renderDataAs( Agraph_t* graph, const QString& format, QString* outString )
 	{
 		unsigned int length;
 		char* rawData = 0;
 		bool retValue = gvRenderData(
 							_context,
-							_graph,
+							graph,
 							G_STR( format ),
 							&rawData,
 							&length
@@ -473,7 +493,7 @@ namespace depgraphV
 #endif
 	}
 	//-------------------------------------------------------------------------
-	bool Graph::_isPluginAvailable( const QString& format, const QString& kind ) const
+	bool Graph::_isPluginAvailable( const QString& format, const QString& kind )
 	{
 		if( _availablePlugins.empty() )
 			return false;

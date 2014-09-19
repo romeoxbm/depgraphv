@@ -168,8 +168,8 @@ namespace depgraphV
 		virtual QList<const char*> propList() const;
 
 	signals:
-		void vertexCreated();
-		void edgeCreated();
+		void vertexCreated( Agnode_t* );
+		void edgeCreated( Agedge_t* );
 
 		void layoutApplied();
 
@@ -232,13 +232,13 @@ namespace depgraphV
 
 		QGraphicsSvgItem* _svgItem;
 
-		GVC_t* _context;
+		static GVC_t* _context;
 		Agraph_t* _graph;
 
 		QMap<QString, Agnode_t*> _vertices;
-		QList<Agedge_t*> _edges;
 
 		static QMap<QString, QStringList*> _availablePlugins;
+		static QMap<QString, QStringList*> _parsedFiles;
 
 		/**
 		 * @brief Create a new edge between two vertices.
@@ -251,18 +251,21 @@ namespace depgraphV
 
 		/**
 		 * @brief Helper method used to "translate" the graph into different formats.
+		 * @param graph
 		 * @param format The selected format.
 		 * @param outString A string containing the graph representation in the selected format.
 		 * @return True if everything went fine, false otherwise.
 		 */
-		bool _renderDataAs( const QString& format, QString* outString ) const;
+		static bool _renderDataAs( Agraph_t* graph, const QString& format, QString* outString );
 
 		NameValuePair _graphAttributes;
 		NameValuePair _verticesAttributes;
 		NameValuePair _edgesAttributes;
 
-		void _lookForAvailablePlugins();
-		bool _isPluginAvailable( const QString& format, const QString& kind = "" ) const;
+		static void _lookForAvailablePlugins();
+		static bool _isPluginAvailable( const QString& format, const QString& kind = "" );
+
+		static unsigned short _instances;
 	};
 }
 

@@ -41,12 +41,13 @@ namespace depgraphV
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
 
-		QStringList* lPlugins = c->graph()->pluginsListByKind( "layout" );
+		QStringList* lPlugins = Graph::pluginsListByKind( "layout" );
 		if( lPlugins )
 			_ui->layoutAlgorithm->addItems( *lPlugins );
 
-		connect( _ui->layoutAlgorithm, SIGNAL( currentIndexChanged( QString ) ),
-				 c->graph(), SLOT( setLayoutAlgorithm( QString ) ) );
+		//TODO
+		/*connect( _ui->layoutAlgorithm, SIGNAL( currentIndexChanged( QString ) ),
+				 c->graph(), SLOT( setLayoutAlgorithm( QString ) ) );*/
 
 		//Graph attributes
 		connect( _ui->splines, SIGNAL( currentIndexChanged( QString ) ),
@@ -90,7 +91,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void GraphPage::onConfigRestored()
 	{
-		Graph* g = Singleton<AppConfig>::instancePtr()->graph();
+		//TODO
+		/*Graph* g = Singleton<AppConfig>::instancePtr()->graph();
 		Helpers::setCurrentText( _ui->layoutAlgorithm, g->layoutAlgorithm() );
 
 		//Graph attributes
@@ -106,12 +108,13 @@ namespace depgraphV
 		//Edges attributes
 		Graph::NameValuePair eAttribs = g->edgesAttributes();
 		Helpers::setCurrentText( _ui->edge_style, eAttribs[ "style" ] );
-		_ui->minlen->setValue( eAttribs[ "minlen" ].toInt() );
+		_ui->minlen->setValue( eAttribs[ "minlen" ].toInt() );*/
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::onStringAttribChanged( const QString& value )
 	{
-		Graph* g = Singleton<AppConfig>::instancePtr()->graph();
+		//TODO
+		/*Graph* g = Singleton<AppConfig>::instancePtr()->graph();
 		QObject* o = sender();
 		QString attrName = o->objectName();
 		if( attrName.contains( '_' ) )
@@ -124,6 +127,6 @@ namespace depgraphV
 			g->setVerticesAttribute( attrName, value );
 
 		else if( o->parent() == _ui->edgeAttribsGroupBox )
-			g->setEdgesAttribute( attrName, value );
+			g->setEdgesAttribute( attrName, value );*/
 	}
 } // end of depgraphV namespace

@@ -74,8 +74,7 @@ namespace depgraphV
 		_progressBar->setMaximum( 0 );
 
 		//Dialogs
-		//TODO
-		_config			= new AppConfig( new Graph( _ui->tabWidget ), this );//( _ui->graph, this );
+		_config			= new AppConfig( this );
 		_aboutDlg		= new AboutDialog( this );
 		_settingsDlg	= new SettingsDialog( this );
 		_rootsDlg		= new HandleRootsDialog( this );
@@ -336,7 +335,6 @@ namespace depgraphV
 		foreach( QString path, files )
 		{
 			QFileInfo f( path );
-			g->createOrRetrieveVertex( f.fileName() );
 			g->createEdges( f.absolutePath(), f.fileName() );
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
