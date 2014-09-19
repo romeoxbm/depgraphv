@@ -6,7 +6,6 @@ features, and there's no particular order.
 * Copy-paste support (???);
 * Select graph background;
 * Select font family used by vertices labels;
-* Optionally subdivide an huge graph into multiple small portions, maybe accessible by multiple tab pages;
 * Per-folder and/or per-src subgraphs;
 * Highlight vertex and its connected edges;
 * Detect graph cycles and warn about them (Tarjan's strongly connected components algorithm wich is O(E+V) in the worst case);

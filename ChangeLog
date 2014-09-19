@@ -10,6 +10,7 @@
 		- Check for updates function;
 		- Customizable graph theme;
 		- Selectable layout algorithm;
+		- Multiple graphs can be created within a signle work session;
 
 * Version 0.2
 	- User interface has been localized, so it's now possible to change the main window language at run-time;
@@ -19,4 +20,4 @@
 	- Minor fixes and changes;
 
 * Version 0.1
-	- First initial public release
+	- First public release
