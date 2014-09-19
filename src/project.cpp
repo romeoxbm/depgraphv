@@ -27,12 +27,14 @@
  */
 #include "project.h"
 #include <QSqlError>
+#include <QFileInfo>
 #include <QDebug>
 
 namespace depgraphV
 {
 	Project::Project( const QString& filePath, QObject* parent )
 		: QObject( parent ),
+		  Singleton<Project>(),
 		  _db( QSqlDatabase::addDatabase( "QSQLITE" ) )
 	{
 		_db.setDatabaseName( filePath );
@@ -40,6 +42,10 @@ namespace depgraphV
 		{
 			qDebug() << _db.lastError();
 		}
+
+		QFileInfo f( filePath );
+		_name = f.baseName();
+		_path = f.absolutePath();
 	}
 	//-------------------------------------------------------------------------
 	Project::~Project()
@@ -59,5 +65,18 @@ namespace depgraphV
 	Project* Project::openProject( const QString& filePath, QObject* parent )
 	{
 		return new Project( filePath, parent );
+	}
+	//-------------------------------------------------------------------------
+	QSqlTableModel* Project::tableModel( const QString& table )
+	{
+		if( !_models.contains( table ) )
+		{
+			QSqlTableModel* m = new QSqlTableModel( this, _db );
+			m->setTable( table );
+			m->select();
+			_models.insert( table, m );
+		}
+
+		return _models[ table ];
 	}
 }

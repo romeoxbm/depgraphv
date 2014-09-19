@@ -170,6 +170,19 @@
     </message>
 </context>
 <context>
+    <name>depgraphV::CustomTabWidget</name>
+    <message>
+        <location filename="../src/customtabwidget.cpp" line="68"/>
+        <source>Change graph name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/customtabwidget.cpp" line="69"/>
+        <source>Type a new graph name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>depgraphV::FilesModel</name>
     <message>
         <location filename="../src/filesmodel.cpp" line="108"/>
@@ -484,12 +497,12 @@ Would you like to continue?</source>
         <translation>Algoritmo</translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="84"/>
+        <location filename="../ui/graphpage.ui" line="87"/>
         <source>Graph Attributes</source>
         <translation>Attributi del Grafo</translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="97"/>
+        <location filename="../ui/graphpage.ui" line="103"/>
         <source>Controls how, and if, edges are represented.
 If spline, edges are drawn as splines routed around nodes;
 if line, edges are drawn as line segments.
@@ -497,39 +510,39 @@ If set to none, no edges are drawn at all. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="144"/>
+        <location filename="../ui/graphpage.ui" line="153"/>
         <source>In dot, this specifies the minimum space between two adjacent nodes in the same rank, in inches.
 For other layouts, this affects the spacing between loops on a single node, or multiedges between a pair of nodes. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="161"/>
+        <location filename="../ui/graphpage.ui" line="170"/>
         <source>Vertices Attributes</source>
         <translation>Attributi sui Vertici</translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="174"/>
+        <location filename="../ui/graphpage.ui" line="186"/>
         <source>Set the shape of a node.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="343"/>
-        <location filename="../ui/graphpage.ui" line="401"/>
+        <location filename="../ui/graphpage.ui" line="358"/>
+        <location filename="../ui/graphpage.ui" line="419"/>
         <source>Set style information for components of the graph.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="388"/>
+        <location filename="../ui/graphpage.ui" line="403"/>
         <source>Edges Attributes</source>
         <translation>Attributi sugli Archi</translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="435"/>
+        <location filename="../ui/graphpage.ui" line="456"/>
         <source>Minimum edge length (rank difference between head and tail). </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/graphpage.ui" line="445"/>
+        <location filename="../ui/graphpage.ui" line="466"/>
         <source>&lt;html&gt;&lt;body&gt;&lt;a href=&quot;http://www.graphviz.org/doc/info/attrs.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;click here for more information&lt;/span&gt;&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;body&gt;&lt;a href=&quot;http://www.graphviz.org/doc/info/attrs.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;clicca qui per maggiori informazioni&lt;/span&gt;&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -595,18 +608,18 @@ For other layouts, this affects the spacing between loops on a single node, or m
 <context>
     <name>depgraphV::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="157"/>
+        <location filename="../src/mainwindow.cpp" line="163"/>
         <source>ready</source>
         <translation>pronto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="221"/>
+        <location filename="../src/mainwindow.cpp" line="301"/>
         <source>Clear graph</source>
         <translation>Pulisci grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="222"/>
-        <location filename="../src/mainwindow.cpp" line="357"/>
+        <location filename="../src/mainwindow.cpp" line="302"/>
+        <location filename="../src/mainwindow.cpp" line="437"/>
         <source>Are you sure?</source>
         <translation>Sei sicuro?</translation>
     </message>
@@ -615,7 +628,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
         <translation>Modalità di render modificata</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="392"/>
+        <location filename="../src/mainwindow.cpp" line="472"/>
         <source>Cannot save image</source>
         <translation>Impossibile salvare l&apos;immagine</translation>
     </message>
@@ -624,131 +637,169 @@ For other layouts, this affects the spacing between loops on a single node, or m
         <translation>Impossibile salvare il grafo come immagine; Plugin non trovato.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="414"/>
+        <location filename="../src/mainwindow.cpp" line="494"/>
         <source>Select path and name of the image file</source>
         <translation>Seleziona percorso e nome del file immagine</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="431"/>
-        <location filename="../src/mainwindow.cpp" line="454"/>
+        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="534"/>
         <source>File successfully saved.</source>
         <translation>File salvato con successo.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="456"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Unable to save file</source>
         <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="438"/>
+        <location filename="../src/mainwindow.cpp" line="518"/>
         <source>Select path and name of the dot file</source>
         <translation>Seleziona percorso e nome del file dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="99"/>
+        <location filename="../src/mainwindow.cpp" line="100"/>
         <source>Missing one or more required image formats; you could meet unespected issues.</source>
         <translation>Uno o più formati di immagine richiesti mancanti; potresti riscontrare problemi inaspettati.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="116"/>
+        <location filename="../src/mainwindow.cpp" line="119"/>
         <source>Scan Mode</source>
         <translation>Modalità di scansione</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="120"/>
+        <location filename="../src/mainwindow.cpp" line="124"/>
         <source>Header Filters</source>
         <translation>Filtro sugli header</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="124"/>
+        <location filename="../src/mainwindow.cpp" line="129"/>
         <source>Source Filters</source>
         <translation>Filtri sui sorgenti</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="128"/>
+        <location filename="../src/mainwindow.cpp" line="134"/>
         <source>Graph Settings</source>
         <translation>Impostazioni del Grafo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="213"/>
+        <location filename="../src/mainwindow.cpp" line="207"/>
+        <location filename="../src/mainwindow.cpp" line="237"/>
+        <source>Projects (*.dProj)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="210"/>
+        <source>Create a new project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="225"/>
+        <location filename="../src/mainwindow.cpp" line="252"/>
+        <location filename="../src/mainwindow.cpp" line="269"/>
+        <source>Project &quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="227"/>
+        <source>&quot; successfully created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="240"/>
+        <source>Open project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="254"/>
+        <source>&quot; successfully opened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="271"/>
+        <source>&quot; has been closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.cpp" line="293"/>
         <source>All done</source>
         <translation>Tutto fatto</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="285"/>
+        <location filename="../src/mainwindow.cpp" line="365"/>
         <source>Scanning folders...</source>
         <translation>Sto analizzando le cartelle...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="315"/>
+        <location filename="../src/mainwindow.cpp" line="395"/>
         <source>Analyzing files...</source>
         <translation>Sto analizzando i file...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="330"/>
+        <location filename="../src/mainwindow.cpp" line="410"/>
         <source>Applying layout...</source>
         <translation>Sto applicando il layout...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="393"/>
+        <location filename="../src/mainwindow.cpp" line="473"/>
         <source>Unable to save graph as image; No plugin found.</source>
         <translation>Impossibile salvare il grafo come immagine; Nessun plugin trovato.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="456"/>
+        <location filename="../src/mainwindow.cpp" line="536"/>
         <source>Save as dot</source>
         <translation>Salva come dot</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="476"/>
+        <location filename="../src/mainwindow.cpp" line="556"/>
         <source>Downloading response...</source>
         <translation>Sto scaricando la risposta...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="488"/>
+        <location filename="../src/mainwindow.cpp" line="568"/>
         <source>Response received</source>
         <translation>Risposta ricevuta</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="507"/>
+        <location filename="../src/mainwindow.cpp" line="587"/>
         <source>There&apos;s no update available.
 You&apos;re using the latest version of </source>
         <translation>Nessun aggiornamento disponibile.
 Stai usando l&apos;ultima versione di </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="511"/>
+        <location filename="../src/mainwindow.cpp" line="591"/>
         <source>A new version of </source>
         <translation>Una nuova versione di </translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="512"/>
+        <location filename="../src/mainwindow.cpp" line="592"/>
         <source>) is available for download.</source>
         <translation>) è disponibile per il download.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="518"/>
+        <location filename="../src/mainwindow.cpp" line="598"/>
         <source>The server returned an error message:</source>
         <translation>Il server ha ritornato un messaggio d&apos;errore:</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="523"/>
-        <location filename="../src/mainwindow.cpp" line="525"/>
+        <location filename="../src/mainwindow.cpp" line="603"/>
+        <location filename="../src/mainwindow.cpp" line="605"/>
         <source>Check for updates</source>
         <translation>Controlla aggiornamenti</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="568"/>
+        <location filename="../src/mainwindow.cpp" line="648"/>
         <source>Unable to restore window state!</source>
         <translation>Impossibile ripristinare lo stato della finestra!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="578"/>
+        <location filename="../src/mainwindow.cpp" line="658"/>
         <source>Unable to restore geometry state!</source>
         <translation>Impossibile ripristinare lo stato della geometria!</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="653"/>
+        <location filename="../src/mainwindow.cpp" line="733"/>
         <source>&quot;%1&quot; is the system language.</source>
         <translation>&quot;%1&quot; è la lingua di sistema.</translation>
     </message>
@@ -765,17 +816,17 @@ Stai usando l&apos;ultima versione di </translation>
         <translation>Selezionato file di tradizione %1 in %2</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="242"/>
+        <location filename="../ui/mainwindow.ui" line="249"/>
         <source>Folder</source>
         <translation>Cartella</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="275"/>
+        <location filename="../ui/mainwindow.ui" line="282"/>
         <source>Clear</source>
         <translation>Pulisci</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="263"/>
+        <location filename="../ui/mainwindow.ui" line="270"/>
         <source>Draw</source>
         <translation>Disegna</translation>
     </message>
@@ -785,125 +836,140 @@ Stai usando l&apos;ultima versione di </translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="69"/>
+        <location filename="../ui/mainwindow.ui" line="73"/>
         <source>&amp;Help</source>
         <translation>&amp;Aiuto</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="78"/>
+        <location filename="../ui/mainwindow.ui" line="82"/>
         <source>&amp;Options</source>
         <translation>&amp;Opzioni</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="82"/>
+        <location filename="../ui/mainwindow.ui" line="86"/>
         <source>&amp;Renderer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="89"/>
+        <location filename="../ui/mainwindow.ui" line="93"/>
         <source>&amp;Language</source>
         <translation>&amp;Lingua</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="114"/>
+        <location filename="../ui/mainwindow.ui" line="121"/>
         <source>Main Toolbar</source>
         <translation>Barra degli strumenti principale</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="143"/>
+        <location filename="../ui/mainwindow.ui" line="150"/>
         <source>About &amp;Qt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="154"/>
+        <location filename="../ui/mainwindow.ui" line="161"/>
         <source>&amp;Native</source>
         <translation>&amp;Nativo</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="157"/>
+        <location filename="../ui/mainwindow.ui" line="164"/>
         <source>Ctrl+R, Ctrl+N</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="165"/>
+        <location filename="../ui/mainwindow.ui" line="172"/>
         <source>&amp;OpenGL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="168"/>
+        <location filename="../ui/mainwindow.ui" line="175"/>
         <source>Ctrl+R, Ctrl+O</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="176"/>
+        <location filename="../ui/mainwindow.ui" line="183"/>
         <source>High Quality &amp;Antialiasing</source>
         <translation>&amp;Antialiasing ad alta qualità</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="184"/>
+        <location filename="../ui/mainwindow.ui" line="191"/>
         <source>Save as &amp;image...</source>
         <translation>Salva come &amp;immagine...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="187"/>
+        <location filename="../ui/mainwindow.ui" line="194"/>
         <source>Ctrl+I</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="195"/>
+        <location filename="../ui/mainwindow.ui" line="202"/>
         <source>&amp;Save as dot...</source>
         <translation>&amp;Salva come dot...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="198"/>
+        <location filename="../ui/mainwindow.ui" line="205"/>
         <source>Ctrl+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="207"/>
+        <location filename="../ui/mainwindow.ui" line="214"/>
         <source>&amp;Exit</source>
         <translation>&amp;Esci</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="212"/>
+        <location filename="../ui/mainwindow.ui" line="219"/>
         <source>&amp;About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="226"/>
+        <location filename="../ui/mainwindow.ui" line="233"/>
         <source>System language</source>
         <translation>Lingua di sistema</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="231"/>
-        <location filename="../src/mainwindow.cpp" line="356"/>
+        <location filename="../ui/mainwindow.ui" line="238"/>
+        <location filename="../src/mainwindow.cpp" line="436"/>
         <source>Restore default settings</source>
         <translation>Ripristina impostazioni di default</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="251"/>
+        <location filename="../ui/mainwindow.ui" line="258"/>
         <source>Settings...</source>
         <translation>Impostazioni...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="284"/>
+        <location filename="../ui/mainwindow.ui" line="291"/>
         <source>Select</source>
         <translation>Seleziona</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="287"/>
+        <location filename="../ui/mainwindow.ui" line="294"/>
         <source>Select...</source>
         <translation>Seleziona...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="304"/>
+        <location filename="../ui/mainwindow.ui" line="311"/>
         <source>New Graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="307"/>
+        <location filename="../ui/mainwindow.ui" line="314"/>
         <source>Create a new graph</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="319"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="324"/>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.ui" line="332"/>
+        <source>Close</source>
+        <translation type="unfinished">Chiudi</translation>
     </message>
     <message>
         <source>Orientation</source>
@@ -914,7 +980,7 @@ Stai usando l&apos;ultima versione di </translation>
         <translation>Cambia l&apos;orientamento di questa barra degli strumenti</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.ui" line="299"/>
+        <location filename="../ui/mainwindow.ui" line="306"/>
         <source>&amp;Check for updates...</source>
         <translation>&amp;Controlla aggiornamenti...</translation>
     </message>
@@ -1028,7 +1094,12 @@ Stai usando l&apos;ultima versione di </translation>
 <context>
     <name>depgraphV::SettingsDialog</name>
     <message>
-        <location filename="../ui/settingsdialog.ui" line="85"/>
+        <location filename="../ui/settingsdialog.ui" line="26"/>
+        <source>Settings</source>
+        <translation>Impostazioni</translation>
+    </message>
+    <message>
+        <location filename="../ui/settingsdialog.ui" line="110"/>
         <source>Close</source>
         <translation>Chiudi</translation>
     </message>
@@ -1036,12 +1107,12 @@ Stai usando l&apos;ultima versione di </translation>
 <context>
     <name>depgraphV::SwivelingToolBar</name>
     <message>
-        <location filename="../src/swivelingtoolbar.cpp" line="39"/>
+        <location filename="../src/swivelingtoolbar.cpp" line="72"/>
         <source>Orientation</source>
         <translation>Orientamento</translation>
     </message>
     <message>
-        <location filename="../src/swivelingtoolbar.cpp" line="40"/>
+        <location filename="../src/swivelingtoolbar.cpp" line="73"/>
         <source>Change orientation of this tool bar</source>
         <translation>Cambia l&apos;orientamento di questa barra degli strumenti</translation>
     </message>

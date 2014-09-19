@@ -461,6 +461,19 @@ For other layouts, this affects the spacing between loops on a single node, or m
        </widget>
       </item>
       <item>
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
+        </property>
+        <property name="centerButtons">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="docLabel">
         <property name="text">
          <string>&lt;html&gt;&lt;body&gt;&lt;a href=&quot;http://www.graphviz.org/doc/info/attrs.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;click here for more information&lt;/span&gt;&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;</string>

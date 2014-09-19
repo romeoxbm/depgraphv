@@ -112,20 +112,25 @@ namespace depgraphV
 
 		_config->lookForTranslations();
 
-		//Settings dialog pages
+		//Settings dialog
+		_settingsDlg->setTrContext( "depgraphV::MainWindow" );
 		_settingsDlg->addPage(
+					"Scan Mode",
 					tr( "Scan Mode" ),
 					new ScanModePage( _settingsDlg )
 		);
 		_settingsDlg->addPage(
+					"Header Filters",
 					tr( "Header Filters" ),
 					new FilterPage( _settingsDlg )
 		);
 		_settingsDlg->addPage(
+					"Source Filters",
 					tr( "Source Filters" ),
 					new FilterPage( _settingsDlg, false )
 		);
 		_settingsDlg->addPage(
+					"Graph Settings",
 					tr( "Graph Settings" ),
 					new GraphPage( _settingsDlg )
 		);
@@ -217,6 +222,11 @@ namespace depgraphV
 		_project = Project::newProject( file, this );
 		_ui->toolBar->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
+		_ui->statusBar->showMessage( tr( "Project \"" ) +
+									 _project->name() +
+									 tr( "\" successfully created." )
+		);
+		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::openProject()
@@ -239,17 +249,29 @@ namespace depgraphV
 		_project = Project::openProject( file, this );
 		_ui->toolBar->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
+		_ui->statusBar->showMessage( tr( "Project \"" ) +
+									 _project->name() +
+									 tr( "\" successfully opened." )
+		);
+		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::closeProject()
 	{
 		if( !_project )
-			return
+			return;
 
+		QString pName = _project->name();
 		delete _project;
 		_project = 0;
 		_ui->toolBar->setEnabled( false );
 		_ui->actionClose->setEnabled( false );
+		_ui->statusBar->showMessage( tr( "Project \"" ) +
+									 pName +
+									 tr( "\" has been closed." )
+		);
+		this->setWindowTitle( APP_NAME );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onDraw()

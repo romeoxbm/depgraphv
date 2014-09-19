@@ -29,6 +29,7 @@
 #include "ui_graphpage.h"
 #include "appconfig.h"
 #include "helpers.h"
+#include "project.h"
 
 namespace depgraphV
 {
@@ -50,7 +51,7 @@ namespace depgraphV
 				 c->graph(), SLOT( setLayoutAlgorithm( QString ) ) );*/
 
 		//Graph attributes
-		connect( _ui->splines, SIGNAL( currentIndexChanged( QString ) ),
+		/*connect( _ui->splines, SIGNAL( currentIndexChanged( QString ) ),
 				 this, SLOT( onStringAttribChanged( QString ) ) );
 
 		connect( _ui->nodesep, SIGNAL( valueChanged( QString ) ),
@@ -68,7 +69,7 @@ namespace depgraphV
 				 this, SLOT( onStringAttribChanged( QString ) ) );
 
 		connect( _ui->edge_style, SIGNAL( currentIndexChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
+				 this, SLOT( onStringAttribChanged( QString ) ) );*/
 	}
 	//-------------------------------------------------------------------------
 	GraphPage::~GraphPage()
@@ -79,6 +80,32 @@ namespace depgraphV
 	QString GraphPage::iconPath() const
 	{
 		return ":/settingsDlgIcons/graph-settings_96x96.png";
+	}
+	//-------------------------------------------------------------------------
+	void GraphPage::mapData()
+	{
+		Project* p = Singleton<Project>::instancePtr();
+		QSqlTableModel* tableModel = p->tableModel( "graphSettings" );
+		_dataMapper = new QDataWidgetMapper( this );
+		_dataMapper->setModel( tableModel );
+		// We want that data is stored only if we call QDataWidgetMapper::submit()
+		_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
+		//dataMapper->setItemDelegate( new QSqlRelationalDelegate( dataMapper ) );
+
+		_dataMapper->addMapping( _ui->layoutAlgorithm, tableModel->fieldIndex( "layoutAlgorithm" ) );
+
+		//Graph attributes
+		_dataMapper->addMapping( _ui->splines, tableModel->fieldIndex( "splines" ) );
+		_dataMapper->addMapping( _ui->nodesep, tableModel->fieldIndex( "nodesep" ) );
+
+		//Vertices attributes
+		_dataMapper->addMapping( _ui->shape, tableModel->fieldIndex( "shape" ) );
+		_dataMapper->addMapping( _ui->vert_style, tableModel->fieldIndex( "vert_style" ) );
+
+		//Edges attributes
+		_dataMapper->addMapping( _ui->minlen, tableModel->fieldIndex( "minlen" ) );
+		_dataMapper->addMapping( _ui->edge_style, tableModel->fieldIndex( "edge_style" ) );
+		_dataMapper->toFirst();
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::changeEvent( QEvent* evt )
@@ -128,5 +155,14 @@ namespace depgraphV
 
 		else if( o->parent() == _ui->edgeAttribsGroupBox )
 			g->setEdgesAttribute( attrName, value );*/
+	}
+	//-------------------------------------------------------------------------
+	void GraphPage::onApplyCancel( QAbstractButton* b )
+	{
+		QDialogButtonBox::StandardButton btn = _ui->buttonBox->standardButton( b );
+		if( btn == QDialogButtonBox::Apply )
+			_dataMapper->submit();
+		else
+			_dataMapper->revert();
 	}
 } // end of depgraphV namespace

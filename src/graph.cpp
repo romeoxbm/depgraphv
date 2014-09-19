@@ -82,8 +82,6 @@ namespace depgraphV
 		setVerticesAttribute( "style", "rounded" );
 
 		setEdgesAttribute( "minlen", "3" );
-
-		_lookForAvailablePlugins();
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
@@ -310,6 +308,7 @@ namespace depgraphV
 	QStringList* Graph::pluginsListByKind( const QString& kind )
 	{
 		Q_ASSERT( !kind.isEmpty() );
+		_lookForAvailablePlugins();
 
 		if( _availablePlugins.contains( kind ) )
 			return _availablePlugins[ kind ];
@@ -452,6 +451,10 @@ namespace depgraphV
 
 			qDebug() << qPrintable( tr( "Plugins for kind \"%1\":" ).arg( kinds[ k ] ) );
 			_availablePlugins.insert( kinds[ k ], new QStringList() );
+
+			if( !_context )
+				_context = gvContext();
+
 			char** list = gvPluginList(
 							  _context,
 							  const_cast<char*>( kinds[ k ].toStdString().c_str() ),

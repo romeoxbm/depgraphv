@@ -28,6 +28,8 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
+#define C_STR( s ) s.toStdString().c_str()
+
 namespace depgraphV
 {
 	SettingsDialog::SettingsDialog( QWidget* parent )
@@ -40,25 +42,51 @@ namespace depgraphV
 	SettingsDialog::~SettingsDialog()
 	{
 		delete _ui;
+		_pages.clear();
 	}
 	//-------------------------------------------------------------------------
-	void SettingsDialog::addPage( const QString& buttonText, SettingsPage* page )
+	bool SettingsDialog::addPage( const QString& key, const QString& text, SettingsPage* page )
 	{
-		Q_ASSERT( !buttonText.isEmpty() && page );
+		Q_ASSERT( !text.isEmpty() && page );
+		if( _pages.contains( text ) )
+			return false;
 		
 		QListWidgetItem* button = new QListWidgetItem( _ui->listWidget );
 		button->setIcon( QIcon( page->iconPath() ) );
-		button->setText( buttonText );
+		button->setText( text );
+		button->setData( Qt::UserRole, key );
 		button->setTextAlignment( Qt::AlignHCenter );
 		button->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
 		_ui->stackedWidget->addWidget( page );
+		_pages.insert( key, page );
+
+		return true;
+	}
+	//-------------------------------------------------------------------------
+	SettingsPage* SettingsDialog::page( const QString& key ) const
+	{
+		if( _pages.contains( key ) )
+			return _pages[ key ];
+
+		return 0;
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::changeEvent( QEvent* event )
 	{
 		if( event && event->type() == QEvent::LanguageChange )
+		{
 			_ui->retranslateUi( this );
+			if( !_context.isEmpty() )
+			{
+				for( int i = 0; i < _ui->listWidget->count(); i++ )
+				{
+					QListWidgetItem* it = _ui->listWidget->item( i );
+					QString key = it->data( Qt::UserRole ).toString();
+					it->setText( QApplication::translate( C_STR( _context ), C_STR( key ) ) );
+				}
+			}
+		}
 
 		QDialog::changeEvent( event );
 	}

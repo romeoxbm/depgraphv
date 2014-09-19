@@ -29,6 +29,8 @@
 #define GRAPHPAGE_H
 
 #include "settingspage.h"
+#include <QAbstractButton>
+#include <QDataWidgetMapper>
 
 namespace depgraphV
 {
@@ -54,20 +56,19 @@ namespace depgraphV
 		~GraphPage();
 
 		virtual QString iconPath() const;
+		void mapData();
 
 	protected:
 		virtual void changeEvent( QEvent* evt );
 
-	signals:
-
-	public slots:
-
 	private slots:
 		void onConfigRestored();
 		void onStringAttribChanged( const QString& );
+		void onApplyCancel( QAbstractButton* );
 
 	private:
 		Ui::GraphPage* _ui;
+		QDataWidgetMapper* _dataMapper;
 	};
 }
 

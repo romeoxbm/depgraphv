@@ -28,12 +28,14 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
+#include "singleton.h"
 #include <QObject>
 #include <QSqlDatabase>
+#include <QSqlTableModel>
 
 namespace depgraphV
 {
-	class Project : public QObject
+	class Project : public QObject, public Singleton<Project>
 	{
 		Q_OBJECT
 
@@ -43,9 +45,17 @@ namespace depgraphV
 
 		~Project();
 
+		const QString& name() const { return _name; }
+		const QString& path() const { return _path; }
+
+		QSqlTableModel* tableModel( const QString& table );
+
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );
 		QSqlDatabase _db;
+		QString _name;
+		QString _path;
+		QMap<QString, QSqlTableModel*> _models;
 	};
 }
 
