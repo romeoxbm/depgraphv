@@ -33,6 +33,7 @@
 #include "settingsdialog.h"
 #include "handlerootsdialog.h"
 #include "selectfilesdialog.h"
+#include "project.h"
 
 #include <QMainWindow>
 #include <QActionGroup>
@@ -80,6 +81,10 @@ namespace depgraphV
 		virtual void closeEvent( QCloseEvent* );
 
 	private slots:
+		void newProject();
+		void openProject();
+		void closeProject();
+
 		void onDraw();
 		void onClear();
 		void onConfigRestored();
@@ -102,6 +107,8 @@ namespace depgraphV
 
 	private:
 		Ui::MainWindow* _ui;
+		Project* _project;
+
 		QProgressBar* _progressBar;
 		AppConfig* _config;
 

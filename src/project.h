@@ -38,10 +38,13 @@ namespace depgraphV
 		Q_OBJECT
 
 	public:
-		explicit Project( const QString& filePath, QObject* parent = 0 );
+		static Project* newProject( const QString& filePath, QObject* parent = 0 );
+		static Project* openProject( const QString& filePath, QObject* parent = 0 );
+
 		~Project();
 
 	private:
+		explicit Project( const QString& filePath, QObject* parent = 0 );
 		QSqlDatabase _db;
 	};
 }

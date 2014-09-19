@@ -46,4 +46,18 @@ namespace depgraphV
 	{
 		_db.close();
 	}
+	//-------------------------------------------------------------------------
+	Project* Project::newProject( const QString& filePath, QObject* parent )
+	{
+		Project* p = new Project( filePath, parent );
+
+		//TODO Create here tables, views, etc.
+
+		return p;
+	}
+	//-------------------------------------------------------------------------
+	Project* Project::openProject( const QString& filePath, QObject* parent )
+	{
+		return new Project( filePath, parent );
+	}
 }

@@ -57,6 +57,7 @@ namespace depgraphV
 	MainWindow::MainWindow( QWidget* parent )
 		: QMainWindow( parent ),
 		_ui( new Ui::MainWindow ),
+		_project( 0 ),
 		_progressBar( new QProgressBar( this ) ),
 		_netManager( new QNetworkAccessManager() ),
 		_imageFiltersUpdated( false )
@@ -191,6 +192,64 @@ namespace depgraphV
 		_showAboutDialog( true );
 		_config->save();
 		event->accept();
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::newProject()
+	{
+		//Close open project first( if open )
+		closeProject();
+
+		QString filter = tr( "Projects (*.dProj)" );
+		QString file = QFileDialog::getSaveFileName(
+						   this,
+						   tr( "Create a new project..." ),
+						   QDir::homePath(),
+						   filter,
+						   &filter
+		);
+
+		if( file.isEmpty() )
+			return;
+
+		if( !file.endsWith( ".dProj" ) )
+			file += ".dProj";
+
+		_project = Project::newProject( file, this );
+		_ui->toolBar->setEnabled( true );
+		_ui->actionClose->setEnabled( true );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::openProject()
+	{
+		//Close open project first( if open )
+		closeProject();
+
+		QString filter = tr( "Projects (*.dProj)" );
+		QString file = QFileDialog::getOpenFileName(
+						   this,
+						   tr( "Open project..." ),
+						   QDir::homePath(),
+						   filter,
+						   &filter
+		);
+
+		if( file.isEmpty() )
+			return;
+
+		_project = Project::openProject( file, this );
+		_ui->toolBar->setEnabled( true );
+		_ui->actionClose->setEnabled( true );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::closeProject()
+	{
+		if( !_project )
+			return
+
+		delete _project;
+		_project = 0;
+		_ui->toolBar->setEnabled( false );
+		_ui->actionClose->setEnabled( false );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onDraw()
