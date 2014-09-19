@@ -59,6 +59,10 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
+    <addaction name="separator"/>
     <addaction name="actionSave_as_dot"/>
     <addaction name="actionSave_as_Image"/>
     <addaction name="separator"/>
@@ -110,6 +114,9 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="SwivelingToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="windowTitle">
     <string>Main Toolbar</string>
    </property>
@@ -305,6 +312,24 @@
    </property>
    <property name="toolTip">
     <string>Create a new graph</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
  </widget>

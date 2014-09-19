@@ -71,6 +71,7 @@ set( Headers
 	src/iserializableobject.h
 	src/mainwindow.h
 	src/memento.h
+	src/project.h
 	src/scanmodepage.h
 	src/selectfilesdialog.h
 	src/settingsdialog.h
@@ -93,6 +94,7 @@ set( Sources
 	src/helpers.cpp
 	src/main.cpp
 	src/mainwindow.cpp
+	src/project.cpp
 	src/scanmodepage.cpp
 	src/selectfilesdialog.cpp
 	src/settingsdialog.cpp
@@ -163,14 +165,14 @@ endif()
 
 #Include right file depending on selected Qt version.
 if( QT_USE_QT5 )
-	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
+	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network;Sql" )
 
 	if( QT_USE_OPENGL )
 		set( qt5Modules "${qt5Modules};OpenGL" )
 	endif( QT_USE_OPENGL )
 	include( buildQt5 )
 else()
-	set( qt4Modules "QtCore;QtSvg;QtNetwork" )
+	set( qt4Modules "QtCore;QtSvg;QtNetwork;QtSql" )
 
 	if( QT_USE_OPENGL )
 		set( qt4Modules "${qt4Modules};QtOpenGL" )

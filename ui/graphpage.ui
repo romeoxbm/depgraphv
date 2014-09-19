@@ -66,9 +66,12 @@
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
-          <widget class="QLabel" name="layoutAlgorithmLlbel">
+          <widget class="QLabel" name="layoutAlgorithmLabel">
            <property name="text">
             <string>Algorithm</string>
+           </property>
+           <property name="buddy">
+            <cstring>layoutAlgorithm</cstring>
            </property>
           </widget>
          </item>
@@ -88,6 +91,9 @@
           <widget class="QLabel" name="splinesLabel">
            <property name="text">
             <string notr="true">splines</string>
+           </property>
+           <property name="buddy">
+            <cstring>splines</cstring>
            </property>
           </widget>
          </item>
@@ -136,6 +142,9 @@ If set to none, no edges are drawn at all. </string>
            <property name="text">
             <string notr="true">nodesep</string>
            </property>
+           <property name="buddy">
+            <cstring>nodesep</cstring>
+           </property>
           </widget>
          </item>
          <item row="1" column="1">
@@ -165,6 +174,9 @@ For other layouts, this affects the spacing between loops on a single node, or m
           <widget class="QLabel" name="shapeLabel">
            <property name="text">
             <string notr="true">shape</string>
+           </property>
+           <property name="buddy">
+            <cstring>shape</cstring>
            </property>
           </widget>
          </item>
@@ -335,6 +347,9 @@ For other layouts, this affects the spacing between loops on a single node, or m
            <property name="text">
             <string notr="true">style</string>
            </property>
+           <property name="buddy">
+            <cstring>vert_style</cstring>
+           </property>
           </widget>
          </item>
          <item row="1" column="1">
@@ -393,6 +408,9 @@ For other layouts, this affects the spacing between loops on a single node, or m
            <property name="text">
             <string notr="true">minlen</string>
            </property>
+           <property name="buddy">
+            <cstring>minlen</cstring>
+           </property>
           </widget>
          </item>
          <item row="1" column="3">
@@ -427,6 +445,9 @@ For other layouts, this affects the spacing between loops on a single node, or m
            <property name="text">
             <string notr="true">style</string>
            </property>
+           <property name="buddy">
+            <cstring>edge_style</cstring>
+           </property>
           </widget>
          </item>
          <item row="0" column="3">
@@ -457,6 +478,15 @@ For other layouts, this affects the spacing between loops on a single node, or m
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>layoutAlgorithm</tabstop>
+  <tabstop>splines</tabstop>
+  <tabstop>nodesep</tabstop>
+  <tabstop>shape</tabstop>
+  <tabstop>vert_style</tabstop>
+  <tabstop>minlen</tabstop>
+  <tabstop>edge_style</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <slots>

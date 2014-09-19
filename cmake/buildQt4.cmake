@@ -33,7 +33,6 @@ endif()
 if( WIN32 )
 	set( QT_INSTALL_PATH "C:/Qt/4.8.5" CACHE PATH "Installation path of Qt libraries." FORCE )
 	set( CMAKE_PREFIX_PATH "${QT_INSTALL_PATH}" )
-	endif()
 endif( WIN32 )
 
 #Looking for Qt4 modules
