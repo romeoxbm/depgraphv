@@ -83,7 +83,6 @@ namespace depgraphV
 		void onDraw();
 		void onClear();
 		void onConfigRestored();
-		void changeToolbarOrientation();
 		void about();
 		void settings();
 		void restoreDefaultSettings();

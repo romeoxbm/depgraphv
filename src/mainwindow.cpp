@@ -246,22 +246,6 @@ namespace depgraphV
 		_langActions[ _config->language() ]->setChecked( true );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::changeToolbarOrientation()
-	{
-		Qt::Orientation o = _ui->toolBar->orientation();
-		o = static_cast<Qt::Orientation>( ( o % 2 ) + 1 );
-		_ui->toolBar->setOrientation( o );
-
-		//Adjust toolbar size
-		QSize hint = _ui->toolBar->sizeHint();
-		bool h = o == Qt::Horizontal;
-
-		_ui->toolBar->resize(
-					h ? hint.width() : _ui->toolBar->minimumWidth(),
-					h ? _ui->toolBar->minimumHeight() : hint.height()
-		);
-	}
-	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolder( const QFlags<QDir::Filter>& flags,
 								  QStringList* filesList,
 								  QFileInfo& dirInfo )

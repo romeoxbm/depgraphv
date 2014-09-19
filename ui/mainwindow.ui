@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>559</width>
-     <height>20</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -109,7 +109,7 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="SwivelingToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Main Toolbar</string>
    </property>
@@ -133,7 +133,6 @@
    <addaction name="actionSelect_FilesFolders"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
-   <addaction name="actionToolbarOrientation"/>
   </widget>
   <action name="actionAbout_Qt">
    <property name="icon">
@@ -300,21 +299,6 @@
     <string>&amp;Check for updates...</string>
    </property>
   </action>
-  <action name="actionToolbarOrientation">
-   <property name="icon">
-    <iconset resource="../res/resources.qrc">
-     <normaloff>:/toolBarIcons/orientation_48x48.png</normaloff>:/toolBarIcons/orientation_48x48.png</iconset>
-   </property>
-   <property name="text">
-    <string>Orientation</string>
-   </property>
-   <property name="toolTip">
-    <string>Change orientation of this tool bar</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
-  </action>
   <action name="actionNew_Graph">
    <property name="text">
     <string>New Graph</string>
@@ -334,6 +318,11 @@
    <slots>
     <slot>newGraph()</slot>
    </slots>
+  </customwidget>
+  <customwidget>
+   <class>SwivelingToolBar</class>
+   <extends>QToolBar</extends>
+   <header>swivelingtoolbar.h</header>
   </customwidget>
  </customwidgets>
  <resources>
@@ -469,22 +458,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionToolbarOrientation</sender>
-   <signal>triggered()</signal>
-   <receiver>depgraphV::MainWindow</receiver>
-   <slot>changeToolbarOrientation()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>279</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionSelect_FilesFolders</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
@@ -513,22 +486,6 @@
     <hint type="destinationlabel">
      <x>279</x>
      <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>toolBar</sender>
-   <signal>topLevelChanged(bool)</signal>
-   <receiver>actionToolbarOrientation</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>279</x>
-     <y>58</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
     </hint>
    </hints>
   </connection>

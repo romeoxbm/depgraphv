@@ -76,6 +76,7 @@ set( Headers
 	src/settingsdialog.h
 	src/settingspage.h
 	src/singleton.h
+	src/swivelingtoolbar.h
 )
 
 set( Sources
@@ -96,6 +97,7 @@ set( Sources
 	src/selectfilesdialog.cpp
 	src/settingsdialog.cpp
 	src/settingspage.cpp
+	src/swivelingtoolbar.cpp
 )
 
 set( Sources_ui
