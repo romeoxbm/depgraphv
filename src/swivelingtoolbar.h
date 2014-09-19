@@ -29,6 +29,8 @@
 #define SWIVELINGTOOLBAR_H
 
 #include <QToolBar>
+#include <QAction>
+#include <QEvent>
 
 namespace depgraphV
 {
@@ -39,11 +41,22 @@ namespace depgraphV
 	public:
 		explicit SwivelingToolBar( QWidget* parent = 0 );
 
-	signals:
+	protected:
+		void changeEvent( QEvent* evt );
+
+	private:
+		QAction* _oAction;
+
+		/**
+		 * @brief Adjust size of this tool bar after changing orientation or when
+		 * translating the ui.
+		 */
+		void _adjustSize();
+
+		void _setTranslatableTexts();
 
 	private slots:
 		void changeToolbarOrientation();
-
 	};
 }
 

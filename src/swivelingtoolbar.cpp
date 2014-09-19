@@ -27,39 +27,55 @@
  */
 #include "swivelingtoolbar.h"
 
-#include <QAction>
-
 namespace depgraphV
 {
 	SwivelingToolBar::SwivelingToolBar( QWidget* parent )
-		: QToolBar( parent )
+		: QToolBar( parent ),
+		  _oAction( new QAction( this ) )
 	{
-		QAction* a = new QAction( this );
-		a->setIcon( QIcon( ":/toolBarIcons/orientation_48x48.png" ) );
-		a->setText( tr( "Orientation" ) );
-		a->setToolTip( tr( "Change orientation of this tool bar" ) );
-		a->setVisible( false );
+		_setTranslatableTexts();
+		_oAction->setIcon( QIcon( ":/toolBarIcons/orientation_48x48.png" ) );
+		_oAction->setVisible( false );
 
-		connect( a, SIGNAL( triggered() ), this, SLOT( changeToolbarOrientation() ) );
-		connect( this, SIGNAL( topLevelChanged( bool ) ), a, SLOT( setVisible( bool ) ) );
-		addAction( a );
+		connect( _oAction, SIGNAL( triggered() ), this, SLOT( changeToolbarOrientation() ) );
+		connect( this, SIGNAL( topLevelChanged( bool ) ), _oAction, SLOT( setVisible( bool ) ) );
+		addAction( _oAction );
 
 		QAction* sep = addSeparator();
 		sep->setVisible( false );
 		connect( this, SIGNAL( topLevelChanged( bool ) ), sep, SLOT( setVisible( bool ) ) );
 	}
-	//-------------------------------------------------------------------------
-	void SwivelingToolBar::changeToolbarOrientation()
+	//------------------------------------------------------------------------
+	void SwivelingToolBar::changeEvent( QEvent* evt )
 	{
-		Qt::Orientation o = static_cast<Qt::Orientation>( ( orientation() % 2 ) + 1 );
-		setOrientation( o );
+		if( evt && evt->type() == QEvent::LanguageChange )
+		{
+			_setTranslatableTexts();
+			_adjustSize();
+		}
 
-		//Adjust toolbar size
-		bool h = o == Qt::Horizontal;
+		QToolBar::changeEvent( evt );
+	}
+	//-------------------------------------------------------------------------
+	void SwivelingToolBar::_adjustSize()
+	{
+		bool h = orientation() == Qt::Horizontal;
 
 		resize(
 				h ? sizeHint().width() : minimumWidth(),
 				h ? minimumHeight() : sizeHint().height()
 		);
+	}
+	//-------------------------------------------------------------------------
+	void SwivelingToolBar::_setTranslatableTexts()
+	{
+		_oAction->setText( tr( "Orientation" ) );
+		_oAction->setToolTip( tr( "Change orientation of this tool bar" ) );
+	}
+	//-------------------------------------------------------------------------
+	void SwivelingToolBar::changeToolbarOrientation()
+	{
+		setOrientation( static_cast<Qt::Orientation>( ( orientation() % 2 ) + 1 ) );
+		_adjustSize();
 	}
 }
