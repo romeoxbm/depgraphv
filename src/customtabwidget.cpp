@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  */
 #include "customtabwidget.h"
+#include <QInputDialog>
 
 namespace depgraphV
 {
@@ -34,6 +35,7 @@ namespace depgraphV
 		  _newGraphCount( 0 )
 	{
 		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+		connect( this, SIGNAL( tabBarDoubleClicked( int ) ), this, SLOT( renameTab( int ) ) );
 	}
 	//-------------------------------------------------------------------------
 	Graph* CustomTabWidget::currentGraph() const
@@ -56,5 +58,21 @@ namespace depgraphV
 	{
 		//TODO Check for changes and warn about them..
 		delete widget( index );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::renameTab( int index )
+	{
+		bool ok;
+		QString newName = QInputDialog::getText(
+							  this,
+							  tr( "Change graph name" ),
+							  tr( "Type a new graph name" ),
+							  QLineEdit::Normal,
+							  tabText( index ),
+							  &ok
+		);
+
+		if( ok && !newName.isEmpty() )
+			setTabText( index, newName );
 	}
 }

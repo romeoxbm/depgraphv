@@ -49,6 +49,7 @@ namespace depgraphV
 
 	private slots:
 		void closeTab( int index );
+		void renameTab( int index );
 
 	private:
 		unsigned short _newGraphCount;
