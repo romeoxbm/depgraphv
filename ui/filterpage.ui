@@ -25,10 +25,7 @@
   <property name="windowTitle">
    <string notr="true"/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -52,18 +49,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>150</height>
-      </size>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="title">
-      <string notr="true"/>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
@@ -122,34 +119,18 @@
  <resources/>
  <connections>
   <connection>
-   <sender>parseEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>groupBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>92</x>
-     <y>24</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>117</x>
-     <y>52</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>customFilterRadio</sender>
    <signal>toggled(bool)</signal>
    <receiver>customFilters</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>61</x>
-     <y>302</y>
+     <x>20</x>
+     <y>145</y>
     </hint>
     <hint type="destinationlabel">
-     <x>86</x>
-     <y>395</y>
+     <x>20</x>
+     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -160,12 +141,12 @@
    <slot>onCustomFiltersEditFinished()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>175</y>
+     <x>20</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
-     <x>128</x>
-     <y>99</y>
+     <x>20</x>
+     <y>20</y>
     </hint>
    </hints>
   </connection>
@@ -176,8 +157,24 @@
    <slot>onCustomFilterTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
+     <x>20</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>parseEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>frame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
      <x>128</x>
-     <y>175</y>
+     <y>19</y>
     </hint>
     <hint type="destinationlabel">
      <x>128</x>

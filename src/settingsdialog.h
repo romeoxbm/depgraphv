@@ -56,9 +56,7 @@ namespace depgraphV
 		 */
 		~SettingsDialog();
 
-		void setTrContext( const QString& value ) { _context = value; }
-
-		bool addPage( const QString& key, const QString& text, SettingsPage* page );
+		bool addPage( const QString& key, SettingsPage* page );
 		SettingsPage* page( const QString& key ) const;
 
 	protected:
@@ -73,7 +71,6 @@ namespace depgraphV
 
 	private:
 		Ui::SettingsDialog* _ui;
-		QString _context;
 		QMap<QString, SettingsPage*> _pages;
 	};
 }

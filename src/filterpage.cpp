@@ -51,7 +51,7 @@ namespace depgraphV
 		{
 			_defaultCustomExts << "*.h" << "*.hh" << "*.hxx" << "*.hpp" << "*.hp";
 			_ui->parseEnabled->setText( tr( "Parse headers" ) );
-			_ui->groupBox->setTitle( tr( "Headers filter" ) );
+			setWindowTitle( tr( "Headers filter" ) );
 
 			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
 					 c, SLOT( hdr_setParseEnabled( bool ) )
@@ -70,7 +70,7 @@ namespace depgraphV
 		{
 			_defaultCustomExts << "*.cpp" << "*.cc" << "*.cp" << "*.cxx" << "*.c++" << "*.C";
 			_ui->parseEnabled->setText( tr( "Parse sources" ) );
-			_ui->groupBox->setTitle( tr( "Sources filter" ) );
+			setWindowTitle( tr( "Sources filter" ) );
 
 			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
 					 c, SLOT( src_setParseEnabled( bool ) )
@@ -113,12 +113,12 @@ namespace depgraphV
 			if( _worksWithHeaders )
 			{
 				_ui->parseEnabled->setText( tr( "Parse headers" ) );
-				_ui->groupBox->setTitle( tr( "Headers filter" ) );
+				setWindowTitle( tr( "Headers filter" ) );
 			}
 			else
 			{
 				_ui->parseEnabled->setText( tr( "Parse sources" ) );
-				_ui->groupBox->setTitle( tr( "Sources filter" ) );
+				setWindowTitle( tr( "Sources filter" ) );
 			}
 		}
 

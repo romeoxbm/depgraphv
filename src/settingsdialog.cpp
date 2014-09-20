@@ -45,16 +45,15 @@ namespace depgraphV
 		_pages.clear();
 	}
 	//-------------------------------------------------------------------------
-	bool SettingsDialog::addPage( const QString& key, const QString& text, SettingsPage* page )
+	bool SettingsDialog::addPage( const QString& key, SettingsPage* page )
 	{
-		Q_ASSERT( !text.isEmpty() && page );
-		if( _pages.contains( text ) )
+		Q_ASSERT( !key.isEmpty() && page );
+		if( _pages.contains( key ) )
 			return false;
 		
 		QListWidgetItem* button = new QListWidgetItem( _ui->listWidget );
 		button->setIcon( QIcon( page->iconPath() ) );
-		button->setText( text );
-		button->setData( Qt::UserRole, key );
+		button->setText( page->windowTitle() );
 		button->setTextAlignment( Qt::AlignHCenter );
 		button->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
@@ -77,14 +76,11 @@ namespace depgraphV
 		if( event && event->type() == QEvent::LanguageChange )
 		{
 			_ui->retranslateUi( this );
-			if( !_context.isEmpty() )
+			_ui->pageLabel->setText( _ui->stackedWidget->currentWidget()->windowTitle() );
+			for( int i = 0; i < _ui->listWidget->count(); i++ )
 			{
-				for( int i = 0; i < _ui->listWidget->count(); i++ )
-				{
-					QListWidgetItem* it = _ui->listWidget->item( i );
-					QString key = it->data( Qt::UserRole ).toString();
-					it->setText( QApplication::translate( C_STR( _context ), C_STR( key ) ) );
-				}
+				QListWidgetItem* it = _ui->listWidget->item( i );
+				it->setText( _ui->stackedWidget->widget( i )->windowTitle() );
 			}
 		}
 
@@ -109,6 +105,7 @@ namespace depgraphV
 		if( accept )
 		{
 			_ui->stackedWidget->setCurrentWidget( nextPage );
+			_ui->pageLabel->setText( nextPage->windowTitle() );
 			emit pageChanged( nextPage );
 		}
 		else

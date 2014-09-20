@@ -112,26 +112,21 @@ namespace depgraphV
 
 		_config->lookForTranslations();
 
-		//Settings dialog
-		_settingsDlg->setTrContext( "depgraphV::MainWindow" );
+		//Settings dialog pages
 		_settingsDlg->addPage(
 					"Scan Mode",
-					tr( "Scan Mode" ),
 					new ScanModePage( _settingsDlg )
 		);
 		_settingsDlg->addPage(
 					"Header Filters",
-					tr( "Header Filters" ),
 					new FilterPage( _settingsDlg )
 		);
 		_settingsDlg->addPage(
 					"Source Filters",
-					tr( "Source Filters" ),
 					new FilterPage( _settingsDlg, false )
 		);
 		_settingsDlg->addPage(
 					"Graph Settings",
-					tr( "Graph Settings" ),
 					new GraphPage( _settingsDlg )
 		);
 
