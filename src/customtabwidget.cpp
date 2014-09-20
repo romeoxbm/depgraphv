@@ -26,7 +26,11 @@
  * THE SOFTWARE.
  */
 #include "customtabwidget.h"
+#include "project.h"
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSqlRecord>
+#include <QSqlField>
 #ifndef QT_USE_QT5
 #	include <QTabBar>
 #endif
@@ -56,9 +60,28 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::newGraph()
 	{
-		this->addTab(
+		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
+
+		Project* p = Singleton<Project>::instancePtr();
+		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		QSqlField f( "name", QVariant::String );
+		f.setValue( graphName );
+		QSqlRecord r;
+		r.append( f );
+		if( !model->insertRecord( -1, r ) )
+		{
+			QMessageBox::critical(
+						this,
+						tr( "New Graph" ),
+						tr( "Unable to add a new graph:\n"
+							"There's something wrong with your project file." )
+			);
+			return;
+		}
+
+		addTab(
 			new Graph( this ),
-			"New Graph " + QString::number( ++_newGraphCount )
+			graphName
 		);
 	}
 	//-------------------------------------------------------------------------

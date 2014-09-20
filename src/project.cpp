@@ -87,11 +87,11 @@ namespace depgraphV
 		return _models[ table ];
 	}
 	//-------------------------------------------------------------------------
-	void Project::applyChanges( QSqlTableModel* model )
+	bool Project::applyChanges( QSqlTableModel* model )
 	{
 		_db.transaction();
 		if( model->submitAll() )
-			_db.commit();
+			return _db.commit();
 		else
 		{
 			_db.rollback();
@@ -101,15 +101,28 @@ namespace depgraphV
 						tr( "An error occurred: %1" ).arg( model->lastError().text() )
 			);
 		}
+
+		return false;
 	}
 	//-------------------------------------------------------------------------
-	void Project::applyChanges( const QString& table )
+	bool Project::applyChanges( const QString& table )
 	{
-		applyChanges( tableModel( table ) );
+		return applyChanges( tableModel( table ) );
 	}
 	//-------------------------------------------------------------------------
 	void Project::revertAll( const QString& table )
 	{
 		tableModel( table )->revertAll();
+	}
+	//-------------------------------------------------------------------------
+	bool Project::applyAllChanges()
+	{
+		foreach( QSqlTableModel* m, _models )
+		{
+			if( !applyChanges( m ) )
+				return false;
+		}
+
+		return true;
 	}
 }

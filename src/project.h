@@ -51,10 +51,13 @@ namespace depgraphV
 
 		QSqlTableModel* tableModel( const QString& table, const QString& filter = "" );
 
-		void applyChanges( QSqlTableModel* model );
-		void applyChanges( const QString& table );
+		bool applyChanges( QSqlTableModel* model );
+		bool applyChanges( const QString& table );
 
 		void revertAll( const QString& table );
+
+	public slots:
+		bool applyAllChanges();
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );

@@ -1,12 +1,12 @@
 CREATE TABLE "graphSettings"
 (
-	"id" INTEGER PRIMARY KEY NOT NULL,
-	"name" TEXT DEFAULT '',
-	"layoutAlgorithm" TEXT NOT NULL DEFAULT 'dot',
-	"splines" TEXT NOT NULL DEFAULT 'spline',
-	"nodesep" DOUBLE NOT NULL DEFAULT 0.4,
-	"shape" TEXT NOT NULL DEFAULT 'box',
-	"vert_style" TEXT NOT NULL DEFAULT 'rounded',
-	"minlen" INTEGER NOT NULL DEFAULT 3,
-	"edge_style" TEXT NOT NULL DEFAULT 'solid'
+	id INTEGER PRIMARY KEY NOT NULL,
+	name TEXT DEFAULT NULL,
+	layoutAlgorithm TEXT NOT NULL DEFAULT dot,
+	splines TEXT NOT NULL DEFAULT spline,
+	nodesep DOUBLE NOT NULL DEFAULT 0.4,
+	shape TEXT NOT NULL DEFAULT box,
+	vert_style TEXT NOT NULL DEFAULT rounded,
+	minlen INTEGER NOT NULL DEFAULT 3,
+	edge_style TEXT NOT NULL DEFAULT solid
 );

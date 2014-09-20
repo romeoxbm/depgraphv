@@ -57,34 +57,34 @@ namespace depgraphV
 	void GraphPage::mapData()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* tableModel = p->tableModel( "graphSettings" );
+		QSqlTableModel* model = p->tableModel( "graphSettings" );
 		QDataWidgetMapper* dataMapper = new QDataWidgetMapper( this );
-		dataMapper->setModel( tableModel );
+		dataMapper->setModel( model );
 		// We want that data is stored only if we call QDataWidgetMapper::submit()
 		//_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
 		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
 
-		int nameIndex = tableModel->fieldIndex( "name" );
-		_ui->graphName->setModel( tableModel );
+		int nameIndex = model->fieldIndex( "name" );
+		_ui->graphName->setModel( model );
 		_ui->graphName->setModelColumn( nameIndex );
 		dataMapper->addMapping( _ui->graphName, nameIndex );
 
-		dataMapper->addMapping( _ui->layoutAlgorithm, tableModel->fieldIndex( "layoutAlgorithm" ) );
+		dataMapper->addMapping( _ui->layoutAlgorithm, model->fieldIndex( "layoutAlgorithm" ) );
 
 		//Graph attributes
-		dataMapper->addMapping( _ui->splines, tableModel->fieldIndex( "splines" ) );
-		dataMapper->addMapping( _ui->nodesep, tableModel->fieldIndex( "nodesep" ) );
+		dataMapper->addMapping( _ui->splines, model->fieldIndex( "splines" ) );
+		dataMapper->addMapping( _ui->nodesep, model->fieldIndex( "nodesep" ) );
 
 		//Vertices attributes
-		dataMapper->addMapping( _ui->shape, tableModel->fieldIndex( "shape" ) );
-		dataMapper->addMapping( _ui->vert_style, tableModel->fieldIndex( "vert_style" ) );
+		dataMapper->addMapping( _ui->shape, model->fieldIndex( "shape" ) );
+		dataMapper->addMapping( _ui->vert_style, model->fieldIndex( "vert_style" ) );
 
 		//Edges attributes
-		dataMapper->addMapping( _ui->minlen, tableModel->fieldIndex( "minlen" ) );
-		dataMapper->addMapping( _ui->edge_style, tableModel->fieldIndex( "edge_style" ) );
+		dataMapper->addMapping( _ui->minlen, model->fieldIndex( "minlen" ) );
+		dataMapper->addMapping( _ui->edge_style, model->fieldIndex( "edge_style" ) );
 		dataMapper->toFirst();
 
-		connect( tableModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+		connect( model, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
 				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
 		);
 		connect( _ui->graphName, SIGNAL( currentIndexChanged( int ) ),

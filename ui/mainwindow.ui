@@ -63,6 +63,8 @@
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
     <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
     <addaction name="actionSave_as_dot"/>
     <addaction name="actionSave_as_Image"/>
     <addaction name="separator"/>
@@ -250,6 +252,9 @@
    </property>
   </action>
   <action name="actionSettings">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../res/resources.qrc">
      <normaloff>:/toolBarIcons/settings_48x48.png</normaloff>:/toolBarIcons/settings_48x48.png</iconset>
@@ -330,6 +335,11 @@
    </property>
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>
