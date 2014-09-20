@@ -42,7 +42,10 @@ namespace depgraphV
 
 		Graph* currentGraph() const;
 
-	signals:
+	protected:
+#ifndef QT_USE_QT5
+		bool eventFilter( QObject* o, QEvent* evt );
+#endif
 
 	public slots:
 		void newGraph();

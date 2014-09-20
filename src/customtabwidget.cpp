@@ -26,8 +26,10 @@
  * THE SOFTWARE.
  */
 #include "customtabwidget.h"
-#include "buildsettings.h"
 #include <QInputDialog>
+#ifndef QT_USE_QT5
+#	include <QTabBar>
+#endif
 
 namespace depgraphV
 {
@@ -37,11 +39,10 @@ namespace depgraphV
 	{
 		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 
-		//TODO tabBarDoubleClicked signal only available in Qt5
 #ifdef QT_USE_QT5
 		connect( this, SIGNAL( tabBarDoubleClicked( int ) ), this, SLOT( renameTab( int ) ) );
 #else
-		//TODO
+		tabBar()->installEventFilter( this );
 #endif
 	}
 	//-------------------------------------------------------------------------
@@ -66,6 +67,26 @@ namespace depgraphV
 		//TODO Check for changes and warn about them..
 		delete widget( index );
 	}
+	//-------------------------------------------------------------------------
+#ifndef QT_USE_QT5
+	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
+	{
+		bool result = QTabWidget::eventFilter( o, evt );
+
+		if( o == tabBar() && evt->type() == QEvent::MouseButtonDblClick )
+		{
+			QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
+			int index = tabBar()->tabAt( mouseEvt->pos() );
+			if( index == -1 )
+				return result;
+
+			renameTab( index );
+			return true;
+		}
+
+		return result;
+	}
+#endif
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::renameTab( int index )
 	{
