@@ -91,9 +91,6 @@
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="sizeAdjustPolicy">
-          <enum>QAbstractScrollArea::AdjustToContents</enum>
-         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>

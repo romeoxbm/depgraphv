@@ -50,7 +50,11 @@ namespace depgraphV
 		const QString& path() const { return _path; }
 
 		QSqlTableModel* tableModel( const QString& table, const QString& filter = "" );
+
 		void applyChanges( QSqlTableModel* model );
+		void applyChanges( const QString& table );
+
+		void revertAll( const QString& table );
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );

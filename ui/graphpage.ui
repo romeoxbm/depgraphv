@@ -454,7 +454,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
       <item>
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="standardButtons">
          <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>

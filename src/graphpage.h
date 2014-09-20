@@ -66,11 +66,10 @@ namespace depgraphV
 		void onConfigRestored();
 		void onStringAttribChanged( const QString& );
 		void onApplyCancel( QAbstractButton* );
+		void onDataChanged( QModelIndex, QModelIndex );
 
 	private:
 		Ui::GraphPage* _ui;
-		QDataWidgetMapper* _dataMapper;
-		QSqlTableModel* _tableModel;
 	};
 }
 

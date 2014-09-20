@@ -102,4 +102,14 @@ namespace depgraphV
 			);
 		}
 	}
+	//-------------------------------------------------------------------------
+	void Project::applyChanges( const QString& table )
+	{
+		applyChanges( tableModel( table ) );
+	}
+	//-------------------------------------------------------------------------
+	void Project::revertAll( const QString& table )
+	{
+		tableModel( table )->revertAll();
+	}
 }

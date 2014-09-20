@@ -86,27 +86,30 @@ namespace depgraphV
 	void GraphPage::mapData()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		_tableModel = p->tableModel( "graphSettings" );
-		_dataMapper = new QDataWidgetMapper( this );
-		_dataMapper->setModel( _tableModel );
+		QSqlTableModel* tableModel = p->tableModel( "graphSettings" );
+		QDataWidgetMapper* dataMapper = new QDataWidgetMapper( this );
+		dataMapper->setModel( tableModel );
 		// We want that data is stored only if we call QDataWidgetMapper::submit()
 		//_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
 		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
 
-		_dataMapper->addMapping( _ui->layoutAlgorithm, _tableModel->fieldIndex( "layoutAlgorithm" ) );
+		dataMapper->addMapping( _ui->layoutAlgorithm, tableModel->fieldIndex( "layoutAlgorithm" ) );
 
 		//Graph attributes
-		_dataMapper->addMapping( _ui->splines, _tableModel->fieldIndex( "splines" ) );
-		_dataMapper->addMapping( _ui->nodesep, _tableModel->fieldIndex( "nodesep" ) );
+		dataMapper->addMapping( _ui->splines, tableModel->fieldIndex( "splines" ) );
+		dataMapper->addMapping( _ui->nodesep, tableModel->fieldIndex( "nodesep" ) );
 
 		//Vertices attributes
-		_dataMapper->addMapping( _ui->shape, _tableModel->fieldIndex( "shape" ) );
-		_dataMapper->addMapping( _ui->vert_style, _tableModel->fieldIndex( "vert_style" ) );
+		dataMapper->addMapping( _ui->shape, tableModel->fieldIndex( "shape" ) );
+		dataMapper->addMapping( _ui->vert_style, tableModel->fieldIndex( "vert_style" ) );
 
 		//Edges attributes
-		_dataMapper->addMapping( _ui->minlen, _tableModel->fieldIndex( "minlen" ) );
-		_dataMapper->addMapping( _ui->edge_style, _tableModel->fieldIndex( "edge_style" ) );
-		_dataMapper->toFirst();
+		dataMapper->addMapping( _ui->minlen, tableModel->fieldIndex( "minlen" ) );
+		dataMapper->addMapping( _ui->edge_style, tableModel->fieldIndex( "edge_style" ) );
+		dataMapper->toFirst();
+
+		connect( tableModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) ) );
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::changeEvent( QEvent* evt )
@@ -161,9 +164,17 @@ namespace depgraphV
 	void GraphPage::onApplyCancel( QAbstractButton* b )
 	{
 		QDialogButtonBox::StandardButton btn = _ui->buttonBox->standardButton( b );
+		Project* p = Singleton<Project>::instancePtr();
 		if( btn == QDialogButtonBox::Apply )
-			Singleton<Project>::instancePtr()->applyChanges( _tableModel );
+			p->applyChanges( "graphSettings" );
 		else
-			_tableModel->revertAll();
+			p->revertAll( "graphSettings" );
+
+		_ui->buttonBox->setEnabled( false );
+	}
+	//-------------------------------------------------------------------------
+	void GraphPage::onDataChanged( QModelIndex, QModelIndex )
+	{
+		_ui->buttonBox->setEnabled( true );
 	}
 } // end of depgraphV namespace
