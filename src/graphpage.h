@@ -29,6 +29,7 @@
 #define GRAPHPAGE_H
 
 #include "settingspage.h"
+#include "project.h"
 #include <QAbstractButton>
 #include <QDataWidgetMapper>
 
@@ -69,6 +70,7 @@ namespace depgraphV
 	private:
 		Ui::GraphPage* _ui;
 		QDataWidgetMapper* _dataMapper;
+		QSqlTableModel* _tableModel;
 	};
 }
 

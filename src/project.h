@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlTableModel>
+#include <QSqlError>
 
 namespace depgraphV
 {
@@ -48,7 +49,8 @@ namespace depgraphV
 		const QString& name() const { return _name; }
 		const QString& path() const { return _path; }
 
-		QSqlTableModel* tableModel( const QString& table );
+		QSqlTableModel* tableModel( const QString& table, const QString& filter = "" );
+		void applyChanges( QSqlTableModel* model );
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );

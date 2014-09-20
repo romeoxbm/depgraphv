@@ -29,7 +29,8 @@
 #include "ui_graphpage.h"
 #include "appconfig.h"
 #include "helpers.h"
-#include "project.h"
+
+//#include <QSqlRelationalDelegate>
 
 namespace depgraphV
 {
@@ -85,26 +86,26 @@ namespace depgraphV
 	void GraphPage::mapData()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* tableModel = p->tableModel( "graphSettings" );
+		_tableModel = p->tableModel( "graphSettings" );
 		_dataMapper = new QDataWidgetMapper( this );
-		_dataMapper->setModel( tableModel );
+		_dataMapper->setModel( _tableModel );
 		// We want that data is stored only if we call QDataWidgetMapper::submit()
-		_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
-		//dataMapper->setItemDelegate( new QSqlRelationalDelegate( dataMapper ) );
+		//_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
+		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
 
-		_dataMapper->addMapping( _ui->layoutAlgorithm, tableModel->fieldIndex( "layoutAlgorithm" ) );
+		_dataMapper->addMapping( _ui->layoutAlgorithm, _tableModel->fieldIndex( "layoutAlgorithm" ) );
 
 		//Graph attributes
-		_dataMapper->addMapping( _ui->splines, tableModel->fieldIndex( "splines" ) );
-		_dataMapper->addMapping( _ui->nodesep, tableModel->fieldIndex( "nodesep" ) );
+		_dataMapper->addMapping( _ui->splines, _tableModel->fieldIndex( "splines" ) );
+		_dataMapper->addMapping( _ui->nodesep, _tableModel->fieldIndex( "nodesep" ) );
 
 		//Vertices attributes
-		_dataMapper->addMapping( _ui->shape, tableModel->fieldIndex( "shape" ) );
-		_dataMapper->addMapping( _ui->vert_style, tableModel->fieldIndex( "vert_style" ) );
+		_dataMapper->addMapping( _ui->shape, _tableModel->fieldIndex( "shape" ) );
+		_dataMapper->addMapping( _ui->vert_style, _tableModel->fieldIndex( "vert_style" ) );
 
 		//Edges attributes
-		_dataMapper->addMapping( _ui->minlen, tableModel->fieldIndex( "minlen" ) );
-		_dataMapper->addMapping( _ui->edge_style, tableModel->fieldIndex( "edge_style" ) );
+		_dataMapper->addMapping( _ui->minlen, _tableModel->fieldIndex( "minlen" ) );
+		_dataMapper->addMapping( _ui->edge_style, _tableModel->fieldIndex( "edge_style" ) );
 		_dataMapper->toFirst();
 	}
 	//-------------------------------------------------------------------------
@@ -161,8 +162,8 @@ namespace depgraphV
 	{
 		QDialogButtonBox::StandardButton btn = _ui->buttonBox->standardButton( b );
 		if( btn == QDialogButtonBox::Apply )
-			_dataMapper->submit();
+			Singleton<Project>::instancePtr()->applyChanges( _tableModel );
 		else
-			_dataMapper->revert();
+			_tableModel->revertAll();
 	}
 } // end of depgraphV namespace

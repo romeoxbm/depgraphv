@@ -82,6 +82,7 @@ namespace depgraphV
 		setVerticesAttribute( "style", "rounded" );
 
 		setEdgesAttribute( "minlen", "3" );
+		setEdgesAttribute( "style", "3" );
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()

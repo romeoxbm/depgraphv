@@ -26,8 +26,8 @@
  * THE SOFTWARE.
  */
 #include "project.h"
-#include <QSqlError>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QDebug>
 
 namespace depgraphV
@@ -39,9 +39,7 @@ namespace depgraphV
 	{
 		_db.setDatabaseName( filePath );
 		if( !_db.open() )
-		{
 			qDebug() << _db.lastError();
-		}
 
 		QFileInfo f( filePath );
 		_name = f.baseName();
@@ -50,7 +48,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Project::~Project()
 	{
-		_db.close();
+		if( _db.isOpen() )
+			_db.close();
 	}
 	//-------------------------------------------------------------------------
 	Project* Project::newProject( const QString& filePath, QObject* parent )
@@ -64,19 +63,43 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Project* Project::openProject( const QString& filePath, QObject* parent )
 	{
-		return new Project( filePath, parent );
+		Project* p = new Project( filePath, parent );
+
+		//TODO Check for a valid file by checking if tables exist using query
+		//SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
+
+		return p;
 	}
 	//-------------------------------------------------------------------------
-	QSqlTableModel* Project::tableModel( const QString& table )
+	QSqlTableModel* Project::tableModel( const QString& table, const QString& filter )
 	{
 		if( !_models.contains( table ) )
 		{
 			QSqlTableModel* m = new QSqlTableModel( this, _db );
+			m->setEditStrategy( QSqlTableModel::OnManualSubmit );
 			m->setTable( table );
+			if( !filter.isEmpty() )
+				m->setFilter( filter );
 			m->select();
 			_models.insert( table, m );
 		}
 
 		return _models[ table ];
+	}
+	//-------------------------------------------------------------------------
+	void Project::applyChanges( QSqlTableModel* model )
+	{
+		_db.transaction();
+		if( model->submitAll() )
+			_db.commit();
+		else
+		{
+			_db.rollback();
+			QMessageBox::warning(
+						0,
+						tr( "Cannot apply changes" ),
+						tr( "An error occurred: %1" ).arg( model->lastError().text() )
+			);
+		}
 	}
 }

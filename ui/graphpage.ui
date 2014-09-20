@@ -506,8 +506,25 @@ For other layouts, this affects the spacing between loops on a single node, or m
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>depgraphV::GraphPage</receiver>
+   <slot>onApplyCancel(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>393</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>244</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
-  <slot>_updateEnabledFlags()</slot>
+  <slot>onApplyCancel(QAbstractButton*)</slot>
  </slots>
 </ui>

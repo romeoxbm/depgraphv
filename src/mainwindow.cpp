@@ -217,9 +217,8 @@ namespace depgraphV
 		_project = Project::newProject( file, this );
 		_ui->toolBar->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
-		_ui->statusBar->showMessage( tr( "Project \"" ) +
-									 _project->name() +
-									 tr( "\" successfully created." )
+		_ui->statusBar->showMessage(
+					tr( "Project \"%1\" successfully created." ).arg( _project->name() )
 		);
 		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
 	}
@@ -244,9 +243,8 @@ namespace depgraphV
 		_project = Project::openProject( file, this );
 		_ui->toolBar->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
-		_ui->statusBar->showMessage( tr( "Project \"" ) +
-									 _project->name() +
-									 tr( "\" successfully opened." )
+		_ui->statusBar->showMessage(
+					tr( "Project \"%1\" successfully opened." ).arg( _project->name() )
 		);
 		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
 		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
@@ -262,9 +260,8 @@ namespace depgraphV
 		_project = 0;
 		_ui->toolBar->setEnabled( false );
 		_ui->actionClose->setEnabled( false );
-		_ui->statusBar->showMessage( tr( "Project \"" ) +
-									 pName +
-									 tr( "\" has been closed." )
+		_ui->statusBar->showMessage(
+					tr( "Project \"%1\" has been closed." ).arg( pName )
 		);
 		this->setWindowTitle( APP_NAME );
 	}
