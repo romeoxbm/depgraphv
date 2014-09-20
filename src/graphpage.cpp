@@ -27,8 +27,7 @@
  */
 #include "graphpage.h"
 #include "ui_graphpage.h"
-#include "appconfig.h"
-#include "helpers.h"
+#include "graph.h"
 
 //#include <QSqlRelationalDelegate>
 
@@ -40,37 +39,9 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
-
 		QStringList* lPlugins = Graph::pluginsListByKind( "layout" );
 		if( lPlugins )
 			_ui->layoutAlgorithm->addItems( *lPlugins );
-
-		//TODO
-		/*connect( _ui->layoutAlgorithm, SIGNAL( currentIndexChanged( QString ) ),
-				 c->graph(), SLOT( setLayoutAlgorithm( QString ) ) );*/
-
-		//Graph attributes
-		/*connect( _ui->splines, SIGNAL( currentIndexChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
-
-		connect( _ui->nodesep, SIGNAL( valueChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
-
-		//Vertices attributes
-		connect( _ui->shape, SIGNAL( currentIndexChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
-
-		connect( _ui->vert_style, SIGNAL( currentIndexChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
-
-		//Edges attributes
-		connect( _ui->minlen, SIGNAL( valueChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );
-
-		connect( _ui->edge_style, SIGNAL( currentIndexChanged( QString ) ),
-				 this, SLOT( onStringAttribChanged( QString ) ) );*/
 	}
 	//-------------------------------------------------------------------------
 	GraphPage::~GraphPage()
@@ -93,6 +64,11 @@ namespace depgraphV
 		//_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
 		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
 
+		int nameIndex = tableModel->fieldIndex( "name" );
+		_ui->graphName->setModel( tableModel );
+		_ui->graphName->setModelColumn( nameIndex );
+		dataMapper->addMapping( _ui->graphName, nameIndex );
+
 		dataMapper->addMapping( _ui->layoutAlgorithm, tableModel->fieldIndex( "layoutAlgorithm" ) );
 
 		//Graph attributes
@@ -109,7 +85,11 @@ namespace depgraphV
 		dataMapper->toFirst();
 
 		connect( tableModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
-				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) ) );
+				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
+		);
+		connect( _ui->graphName, SIGNAL( currentIndexChanged( int ) ),
+				 dataMapper, SLOT( setCurrentIndex( int ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::changeEvent( QEvent* evt )
@@ -118,47 +98,6 @@ namespace depgraphV
 			_ui->retranslateUi( this );
 
 		QWidget::changeEvent( evt );
-	}
-	//-------------------------------------------------------------------------
-	void GraphPage::onConfigRestored()
-	{
-		//TODO
-		/*Graph* g = Singleton<AppConfig>::instancePtr()->graph();
-		Helpers::setCurrentText( _ui->layoutAlgorithm, g->layoutAlgorithm() );
-
-		//Graph attributes
-		Graph::NameValuePair gAttribs = g->graphAttributes();
-		Helpers::setCurrentText( _ui->splines, gAttribs[ "splines" ] );
-		_ui->nodesep->setValue( gAttribs[ "nodesep" ].toDouble() );
-
-		//Vertices attributes
-		Graph::NameValuePair vAttribs = g->verticesAttributes();
-		Helpers::setCurrentText( _ui->shape, vAttribs[ "shape" ] );
-		Helpers::setCurrentText( _ui->vert_style, vAttribs[ "style" ] );
-
-		//Edges attributes
-		Graph::NameValuePair eAttribs = g->edgesAttributes();
-		Helpers::setCurrentText( _ui->edge_style, eAttribs[ "style" ] );
-		_ui->minlen->setValue( eAttribs[ "minlen" ].toInt() );*/
-	}
-	//-------------------------------------------------------------------------
-	void GraphPage::onStringAttribChanged( const QString& value )
-	{
-		//TODO
-		/*Graph* g = Singleton<AppConfig>::instancePtr()->graph();
-		QObject* o = sender();
-		QString attrName = o->objectName();
-		if( attrName.contains( '_' ) )
-			attrName = attrName.split( '_' )[ 1 ];
-
-		if( o->parent() == _ui->graphAttribsGroupBox )
-			g->setGraphAttribute( attrName, value );
-
-		else if( o->parent() == _ui->vertAttribsGroupBox )
-			g->setVerticesAttribute( attrName, value );
-
-		else if( o->parent() == _ui->edgeAttribsGroupBox )
-			g->setEdgesAttribute( attrName, value );*/
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::onApplyCancel( QAbstractButton* b )

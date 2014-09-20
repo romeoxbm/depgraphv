@@ -63,8 +63,6 @@ namespace depgraphV
 		virtual void changeEvent( QEvent* evt );
 
 	private slots:
-		void onConfigRestored();
-		void onStringAttribChanged( const QString& );
 		void onApplyCancel( QAbstractButton* );
 		void onDataChanged( QModelIndex, QModelIndex );
 

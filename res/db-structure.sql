@@ -1,6 +1,7 @@
 CREATE TABLE "graphSettings"
 (
-	"graphID" INTEGER PRIMARY KEY NOT NULL,
+	"id" INTEGER PRIMARY KEY NOT NULL,
+	"name" TEXT DEFAULT '',
 	"layoutAlgorithm" TEXT NOT NULL DEFAULT 'dot',
 	"splines" TEXT NOT NULL DEFAULT 'spline',
 	"nodesep" DOUBLE NOT NULL DEFAULT 0.4,

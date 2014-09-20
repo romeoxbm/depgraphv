@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  */
 #include "customtabwidget.h"
+#include "buildsettings.h"
 #include <QInputDialog>
 
 namespace depgraphV
@@ -35,7 +36,13 @@ namespace depgraphV
 		  _newGraphCount( 0 )
 	{
 		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+
+		//TODO tabBarDoubleClicked signal only available in Qt5
+#ifdef QT_USE_QT5
 		connect( this, SIGNAL( tabBarDoubleClicked( int ) ), this, SLOT( renameTab( int ) ) );
+#else
+		//TODO
+#endif
 	}
 	//-------------------------------------------------------------------------
 	Graph* CustomTabWidget::currentGraph() const
