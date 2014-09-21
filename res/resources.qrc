@@ -35,5 +35,6 @@
         <file>orientation_48x48.png</file>
         <file>new-project_48x48.png</file>
         <file>new-graph_48x48.png</file>
+        <file>save_48x48.png</file>
     </qresource>
 </RCC>
