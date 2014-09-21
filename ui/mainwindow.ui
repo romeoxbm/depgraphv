@@ -312,6 +312,10 @@
    </property>
   </action>
   <action name="actionNew_Graph">
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/new-graph_48x48.png</normaloff>:/toolBarIcons/new-graph_48x48.png</iconset>
+   </property>
    <property name="text">
     <string>New Graph</string>
    </property>
@@ -320,8 +324,15 @@
    </property>
   </action>
   <action name="actionNew">
+   <property name="icon">
+    <iconset resource="../res/resources.qrc">
+     <normaloff>:/toolBarIcons/new-project_48x48.png</normaloff>:/toolBarIcons/new-project_48x48.png</iconset>
+   </property>
    <property name="text">
     <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>New project...</string>
    </property>
   </action>
   <action name="actionOpen">
