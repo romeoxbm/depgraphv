@@ -41,8 +41,8 @@ namespace depgraphV
 		Q_OBJECT
 
 	public:
-		static Project* newProject( const QString& filePath, QObject* parent = 0 );
-		static Project* openProject( const QString& filePath, QObject* parent = 0 );
+		static Project* createNew( const QString& filePath, QObject* parent = 0 );
+		static Project* open( const QString& filePath, QObject* parent = 0 );
 
 		~Project();
 

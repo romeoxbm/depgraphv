@@ -53,7 +53,7 @@ namespace depgraphV
 			_db.close();
 	}
 	//-------------------------------------------------------------------------
-	Project* Project::newProject( const QString& filePath, QObject* parent )
+	Project* Project::createNew( const QString& filePath, QObject* parent )
 	{
 		Project* p = new Project( filePath, parent );
 
@@ -63,7 +63,7 @@ namespace depgraphV
 		return p;
 	}
 	//-------------------------------------------------------------------------
-	Project* Project::openProject( const QString& filePath, QObject* parent )
+	Project* Project::open( const QString& filePath, QObject* parent )
 	{
 		Project* p = new Project( filePath, parent );
 

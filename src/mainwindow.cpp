@@ -196,7 +196,7 @@ namespace depgraphV
 		if( !file.endsWith( ".dProj" ) )
 			file += ".dProj";
 
-		_project = Project::newProject( file, this );
+		_project = Project::createNew( file, this );
 		_onLoadProject( tr( "Project \"%1\" successfully created." ) );
 	}
 	//-------------------------------------------------------------------------
@@ -217,7 +217,7 @@ namespace depgraphV
 		if( file.isEmpty() )
 			return;
 
-		_project = Project::openProject( file, this );
+		_project = Project::open( file, this );
 		_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
 	//-------------------------------------------------------------------------
