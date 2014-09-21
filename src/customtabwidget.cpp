@@ -31,9 +31,12 @@
 #include <QMessageBox>
 #include <QSqlRecord>
 #include <QSqlField>
+#include <QMetaEnum>
 #ifndef QT_USE_QT5
 #	include <QTabBar>
 #endif
+
+#define C_STR( s ) s.toStdString().c_str()
 
 namespace depgraphV
 {
@@ -193,6 +196,16 @@ namespace depgraphV
 		QSqlTableModel* m = static_cast<QSqlTableModel*>( sender() );
 		QSqlRecord r = m->record( i.row() );
 		Graph* g = graph( i.row() );
-		g->setAttributes( r );
+
+		if( r.fieldName( i.column() ) == "RendererType" )
+		{
+			const QMetaObject& mo = Graph::staticMetaObject;
+			int enumIndex = mo.indexOfEnumerator( "RendererType" );
+			QMetaEnum e = mo.enumerator( enumIndex );
+			QString valStr = r.value( "RendererType" ).toString();
+			g->setRenderer( static_cast<Graph::RendererType>( e.keyToValue( C_STR( valStr ) ) ) );
+		}
+		else
+			g->setAttributes( r );
 	}
 }

@@ -8,5 +8,6 @@ CREATE TABLE "graphSettings"
 	shape TEXT NOT NULL DEFAULT box,
 	vert_style TEXT NOT NULL DEFAULT rounded,
 	minlen INTEGER NOT NULL DEFAULT 3,
-	edge_style TEXT NOT NULL DEFAULT solid
+	edge_style TEXT NOT NULL DEFAULT solid,
+	RendererType TEXT NOT NULL DEFAULT Native
 );

@@ -69,10 +69,10 @@ namespace depgraphV
 		NEW_GRAPH();
 
 		setScene( new QGraphicsScene( this ) );
-		this->setRenderer( Native );
+		setRenderer( Native );
 
 		//TODO Following code line needs to be tested
-		this->setResizeAnchor( QGraphicsView::AnchorUnderMouse );
+		setResizeAnchor( QGraphicsView::AnchorUnderMouse );
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
