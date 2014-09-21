@@ -469,19 +469,6 @@ For other layouts, this affects the spacing between loops on a single node, or m
        </widget>
       </item>
       <item>
-       <widget class="QDialogButtonBox" name="buttonBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="standardButtons">
-         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
-        </property>
-        <property name="centerButtons">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -520,27 +507,9 @@ For other layouts, this affects the spacing between loops on a single node, or m
   <tabstop>vert_style</tabstop>
   <tabstop>minlen</tabstop>
   <tabstop>edge_style</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
-   <receiver>depgraphV::GraphPage</receiver>
-   <slot>onApplyCancel(QAbstractButton*)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>124</x>
-     <y>393</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>124</x>
-     <y>244</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>onApplyCancel(QAbstractButton*)</slot>
  </slots>

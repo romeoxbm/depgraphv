@@ -60,14 +60,11 @@ namespace depgraphV
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
 		QDataWidgetMapper* dataMapper = new QDataWidgetMapper( this );
 		dataMapper->setModel( model );
-		// We want that data is stored only if we call QDataWidgetMapper::submit()
-		//_dataMapper->setSubmitPolicy( QDataWidgetMapper::ManualSubmit );
 		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
 
 		int nameIndex = model->fieldIndex( "name" );
 		_ui->graphName->setModel( model );
 		_ui->graphName->setModelColumn( nameIndex );
-		dataMapper->addMapping( _ui->graphName, nameIndex );
 
 		dataMapper->addMapping( _ui->layoutAlgorithm, model->fieldIndex( "layoutAlgorithm" ) );
 
@@ -84,9 +81,6 @@ namespace depgraphV
 		dataMapper->addMapping( _ui->edge_style, model->fieldIndex( "edge_style" ) );
 		dataMapper->toFirst();
 
-		connect( model, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
-				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
-		);
 		connect( _ui->graphName, SIGNAL( currentIndexChanged( int ) ),
 				 dataMapper, SLOT( setCurrentIndex( int ) )
 		);
@@ -98,22 +92,5 @@ namespace depgraphV
 			_ui->retranslateUi( this );
 
 		QWidget::changeEvent( evt );
-	}
-	//-------------------------------------------------------------------------
-	void GraphPage::onApplyCancel( QAbstractButton* b )
-	{
-		QDialogButtonBox::StandardButton btn = _ui->buttonBox->standardButton( b );
-		Project* p = Singleton<Project>::instancePtr();
-		if( btn == QDialogButtonBox::Apply )
-			p->applyChanges( "graphSettings" );
-		else
-			p->revertAll( "graphSettings" );
-
-		_ui->buttonBox->setEnabled( false );
-	}
-	//-------------------------------------------------------------------------
-	void GraphPage::onDataChanged( QModelIndex, QModelIndex )
-	{
-		_ui->buttonBox->setEnabled( true );
 	}
 } // end of depgraphV namespace

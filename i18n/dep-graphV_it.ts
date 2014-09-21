@@ -484,7 +484,7 @@ Would you like to continue?</source>
     <message>
         <location filename="../ui/graphpage.ui" line="41"/>
         <source>Graph Settings</source>
-        <translation>Impostazioni del Grafo</translation>
+        <translation>Impostazioni del grafo</translation>
     </message>
     <message>
         <location filename="../ui/graphpage.ui" line="65"/>
