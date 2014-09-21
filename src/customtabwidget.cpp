@@ -196,8 +196,9 @@ namespace depgraphV
 		QSqlTableModel* m = static_cast<QSqlTableModel*>( sender() );
 		QSqlRecord r = m->record( i.row() );
 		Graph* g = graph( i.row() );
+		QString fieldName = r.fieldName( i.column() );
 
-		if( r.fieldName( i.column() ) == "RendererType" )
+		if( fieldName == "RendererType" )
 		{
 			const QMetaObject& mo = Graph::staticMetaObject;
 			int enumIndex = mo.indexOfEnumerator( "RendererType" );
@@ -205,6 +206,9 @@ namespace depgraphV
 			QString valStr = r.value( "RendererType" ).toString();
 			g->setRenderer( static_cast<Graph::RendererType>( e.keyToValue( C_STR( valStr ) ) ) );
 		}
+		else if( fieldName == "highQualityAA" )
+			g->setHighQualityAntialiasing( r.value( "highQualityAA" ).toBool() );
+
 		else
 			g->setAttributes( r );
 	}

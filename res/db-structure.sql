@@ -9,5 +9,6 @@ CREATE TABLE "graphSettings"
 	vert_style TEXT NOT NULL DEFAULT rounded,
 	minlen INTEGER NOT NULL DEFAULT 3,
 	edge_style TEXT NOT NULL DEFAULT solid,
-	RendererType TEXT NOT NULL DEFAULT Native
+	RendererType TEXT NOT NULL DEFAULT Native,
+	highQualityAA BOOL NOT NULL DEFAULT false
 );
