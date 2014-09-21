@@ -132,8 +132,6 @@ namespace depgraphV
 
 		//Register serializable objects
 		_config->registerSerializable( this );
-		//TODO
-		//_config->registerSerializable( _ui->graph );
 
 		//Connect other signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ),

@@ -34,7 +34,6 @@
 #include <QSqlRecord>
 
 #include "buildsettings.h"
-#include "iserializableobject.h"
 
 #ifndef Q_MOC_RUN
 #	include <gvc.h>
@@ -53,7 +52,7 @@ namespace depgraphV
 	/**
 	 * @brief The Graph class
 	 */
-	class Graph : public QGraphicsView, public ISerializableObject
+	class Graph : public QGraphicsView
 	{
 		Q_OBJECT
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
@@ -166,8 +165,6 @@ namespace depgraphV
 		 *	"kind", NULL otherwise.
 		 */
 		static QStringList* pluginsListByKind( const QString& kind );
-
-		virtual QList<const char*> propList() const;
 
 	signals:
 		void vertexCreated( Agnode_t* );

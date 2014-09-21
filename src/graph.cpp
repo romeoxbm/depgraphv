@@ -336,15 +336,6 @@ namespace depgraphV
 		return 0;
 	}
 	//-------------------------------------------------------------------------
-	QList<const char*> Graph::propList() const
-	{
-		QList<const char*> props;
-		props << "rendererType"
-			  << "highQualityAA";
-
-		return props;
-	}
-	//-------------------------------------------------------------------------
 	void Graph::setGraphAttribute( const QString& name, const QString& value )
 	{
 		if( _graphAttributes.contains( name ) )
