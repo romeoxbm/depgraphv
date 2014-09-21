@@ -39,7 +39,7 @@ namespace depgraphV
 	{
 		_db.setDatabaseName( filePath );
 		if( !_db.open() )
-			qDebug() << _db.lastError();
+			_error( tr( "Project creation" ) );
 
 		QFileInfo f( filePath );
 		_name = f.baseName();
@@ -80,8 +80,18 @@ namespace depgraphV
 			m->setTable( table );
 			if( !filter.isEmpty() )
 				m->setFilter( filter );
-			m->select();
+
+			if( !m->select() )
+			{
+				_error( tr( "Select table" ), m );
+				return 0;
+			}
+
 			_models.insert( table, m );
+
+			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+					 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
+			);
 		}
 
 		return _models[ table ];
@@ -89,18 +99,28 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool Project::applyChanges( QSqlTableModel* model )
 	{
-		_db.transaction();
-		if( model->submitAll() )
-			return _db.commit();
-		else
+		if( !_modifiedModels.contains( model ) )
 		{
-			_db.rollback();
-			QMessageBox::warning(
-						0,
-						tr( "Cannot apply changes" ),
-						tr( "An error occurred: %1" ).arg( model->lastError().text() )
-			);
+			qDebug() << tr( "Requested an useless applyChanges" );
+			return false;
 		}
+
+		if( !_db.transaction() )
+		{
+			_error( tr( "Cannot apply changes" ) );
+			return false;
+		}
+
+		if( model->submitAll() && _db.commit() )
+		{
+			_modifiedModels.remove( _modifiedModels.indexOf( model ) );
+			if( _modifiedModels.isEmpty() )
+				emit pendingChanges( false );
+
+			return true;
+		}
+		else
+			_error( tr( "Cannot apply changes" ), _db.rollback() ? model : 0 );
 
 		return false;
 	}
@@ -112,17 +132,44 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void Project::revertAll( const QString& table )
 	{
+		_modifiedModels.clear();
 		tableModel( table )->revertAll();
+		emit pendingChanges( false );
 	}
 	//-------------------------------------------------------------------------
 	bool Project::applyAllChanges()
 	{
-		foreach( QSqlTableModel* m, _models )
+		if( !_modifiedModels.isEmpty() )
 		{
-			if( !applyChanges( m ) )
-				return false;
+			foreach( QSqlTableModel* m, _modifiedModels )
+			{
+				if( !applyChanges( m ) )
+					return false;
+			}
+		}
+		else
+		{
+			//TODO Should I return false when there's no changes to apply?
 		}
 
 		return true;
+	}
+	//-------------------------------------------------------------------------
+	void Project::onDataChanged( QModelIndex, QModelIndex )
+	{
+		_modifiedModels << static_cast<QSqlTableModel*>( sender() );
+		emit pendingChanges( true );
+	}
+	//-------------------------------------------------------------------------
+	void Project::_error( const QString& dlgTitle, QSqlTableModel* model )
+	{
+		QMessageBox::warning(
+					0,
+					dlgTitle,
+					tr( "An error occurred: %1" ).arg(
+						model ? model->lastError().text() :
+								_db.lastError().text()
+					)
+		);
 	}
 }

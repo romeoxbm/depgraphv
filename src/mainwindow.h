@@ -133,6 +133,7 @@ namespace depgraphV
 		bool _applyGraphLayout() const;
 		void _doClearGraph() const;
 		void _setButtonsAndActionsEnabled( bool value ) const;
+		void _onLoadProject( const QString& message );
 		bool _lookForRequiredImageFormats();
 
 		void _startSlowOperation( const QString& message, int maxValue ) const;

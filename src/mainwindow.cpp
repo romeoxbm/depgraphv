@@ -215,13 +215,7 @@ namespace depgraphV
 			file += ".dProj";
 
 		_project = Project::newProject( file, this );
-		_ui->toolBar->setEnabled( true );
-		_ui->actionClose->setEnabled( true );
-		_ui->actionSettings->setEnabled( true );
-		_ui->statusBar->showMessage(
-					tr( "Project \"%1\" successfully created." ).arg( _project->name() )
-		);
-		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+		_onLoadProject( tr( "Project \"%1\" successfully created." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::openProject()
@@ -242,18 +236,7 @@ namespace depgraphV
 			return;
 
 		_project = Project::openProject( file, this );
-		_ui->toolBar->setEnabled( true );
-		_ui->actionClose->setEnabled( true );
-		_ui->actionSettings->setEnabled( true );
-		_ui->statusBar->showMessage(
-					tr( "Project \"%1\" successfully opened." ).arg( _project->name() )
-		);
-		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
-		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
-
-		connect( _ui->actionSave, SIGNAL( triggered() ),
-				 _project, SLOT( applyAllChanges() )
-		);
+		_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::closeProject()
@@ -619,6 +602,27 @@ namespace depgraphV
 		_ui->actionClear->setEnabled( value );
 		_ui->actionSave_as_dot->setEnabled( value );
 		_ui->actionSave_as_Image->setEnabled( value );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_onLoadProject( const QString& message )
+	{
+		_ui->toolBar->setEnabled( true );
+		_ui->actionClose->setEnabled( true );
+		_ui->actionSettings->setEnabled( true );
+		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
+
+		//TODO Create a slot in order to:
+		// 1- Verify applyAllChanges result
+		// 2 - Show a message in the statusBar
+		connect( _ui->actionSave, SIGNAL( triggered() ),
+				 _project, SLOT( applyAllChanges() )
+		);
+		connect( _project, SIGNAL( pendingChanges( bool ) ),
+				 _ui->actionSave, SLOT( setEnabled( bool ) )
+		);
+
+		_ui->statusBar->showMessage( message.arg( _project->name() ) );
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const

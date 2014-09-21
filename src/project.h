@@ -29,7 +29,7 @@
 #define PROJECT_H
 
 #include "singleton.h"
-#include <QObject>
+#include <QVector>
 #include <QSqlDatabase>
 #include <QSqlTableModel>
 #include <QSqlError>
@@ -56,8 +56,14 @@ namespace depgraphV
 
 		void revertAll( const QString& table );
 
+	signals:
+		void pendingChanges( bool );
+
 	public slots:
 		bool applyAllChanges();
+
+	private slots:
+		void onDataChanged( QModelIndex, QModelIndex );
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );
@@ -65,6 +71,9 @@ namespace depgraphV
 		QString _name;
 		QString _path;
 		QMap<QString, QSqlTableModel*> _models;
+		QVector<QSqlTableModel*> _modifiedModels;
+
+		void _error( const QString& dlgTitle, QSqlTableModel* model = 0 );
 	};
 }
 
