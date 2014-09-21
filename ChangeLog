@@ -10,7 +10,8 @@
 		- Check for updates function;
 		- Customizable graph theme;
 		- Selectable layout algorithm;
-		- Multiple graphs can be created within a signle work session;
+		- Multiple graphs can be created within a single work session;
+		- Create and handle project files;
 
 * Version 0.2
 	- User interface has been localized, so it's now possible to change the main window language at run-time;

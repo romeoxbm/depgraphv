@@ -4,6 +4,7 @@ features, and there's no particular order.
 
 * A "manual-mode" to manually arrange some graph vertices by dragging them;
 * Copy-paste support (???);
+* Select files by dragging and dropping them into a graph, if they match filters;
 * Select graph background;
 * Select font family used by vertices labels;
 * Per-folder and/or per-src subgraphs;
