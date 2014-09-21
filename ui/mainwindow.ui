@@ -83,13 +83,6 @@
     <property name="title">
      <string>&amp;Options</string>
     </property>
-    <widget class="QMenu" name="menuRenderer">
-     <property name="title">
-      <string>&amp;Renderer</string>
-     </property>
-     <addaction name="actionNative"/>
-     <addaction name="actionOpenGL"/>
-    </widget>
     <widget class="QMenu" name="menu_Language">
      <property name="title">
       <string>&amp;Language</string>
@@ -101,9 +94,6 @@
      <addaction name="actionSystem_language"/>
      <addaction name="separator"/>
     </widget>
-    <addaction name="menuRenderer"/>
-    <addaction name="actionHigh_Quality_Antialiasing"/>
-    <addaction name="separator"/>
     <addaction name="menu_Language"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>

@@ -36,7 +36,6 @@
 #include "project.h"
 
 #include <QMainWindow>
-#include <QActionGroup>
 #include <QProgressBar>
 #include <QNetworkReply>
 
@@ -91,7 +90,6 @@ namespace depgraphV
 		void about();
 		void settings();
 		void restoreDefaultSettings();
-		void rendererTypeChanged( QAction* );
 		void parseOptionsChanged();
 		void saveAsImage();
 		void saveAsDot() const;

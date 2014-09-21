@@ -81,19 +81,6 @@ namespace depgraphV
 		_rootsDlg		= new HandleRootsDialog( this );
 		_filesDlg		= new SelectFilesDialog( this );
 
-		//Renderer action group
-		QActionGroup* rendererGroup = new QActionGroup( _ui->menuRenderer );
-		rendererGroup->addAction( _ui->actionNative );
-		rendererGroup->addAction( _ui->actionOpenGL );
-
-		_ui->actionNative->setData( Graph::Native );
-		_ui->actionOpenGL->setData( Graph::OpenGL );
-
-#ifndef QT_USE_OPENGL
-		_ui->actionOpenGL->setEnabled( false );
-		_ui->actionHigh_Quality_Antialiasing->setEnabled( false );
-#endif
-
 		//Check for available image formats
 		if( !_lookForRequiredImageFormats() )
 		{
@@ -139,9 +126,6 @@ namespace depgraphV
 		);
 		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ),
 				 qApp, SLOT( aboutQt() )
-		);
-		connect( rendererGroup, SIGNAL( triggered( QAction* ) ),
-				 this, SLOT( rendererTypeChanged( QAction* ) )
 		);
 		connect( _config, SIGNAL( configRestored() ),
 				 this, SLOT( onConfigRestored() )
@@ -295,15 +279,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onConfigRestored()
 	{
-		//TODO
-		/*_ui->actionHigh_Quality_Antialiasing->setChecked(
-					_ui->graph->highQualityAA()
-		);
-
-		QAction* a = _ui->graph->renderer() == Graph::Native ?
-						 _ui->actionNative : _ui->actionOpenGL;
-
-		a->setChecked( true );*/
 		_langActions[ _config->language() ]->setChecked( true );
 	}
 	//-------------------------------------------------------------------------
@@ -424,14 +399,6 @@ namespace depgraphV
 			return;
 
 		_config->restoreDefault();
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::rendererTypeChanged( QAction* action )
-	{
-		//TODO
-		/*Q_ASSERT( action );
-		_ui->graph->setRenderer( (Graph::RendererType)action->data().toInt() );
-		_ui->statusBar->showMessage( tr( "Renderer method changed" ) );*/
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::parseOptionsChanged()
