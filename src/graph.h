@@ -58,12 +58,10 @@ namespace depgraphV
 		Q_OBJECT
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
 		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
-
-		//TODO Should I remove following properties?
 		Q_PROPERTY( QString layoutAlgorithm READ layoutAlgorithm WRITE setLayoutAlgorithm )
-		Q_PROPERTY( NameValuePair graphAttributes READ graphAttributes WRITE setGraphAttributes )
-		Q_PROPERTY( NameValuePair verticesAttributes READ verticesAttributes WRITE setVerticesAttributes )
-		Q_PROPERTY( NameValuePair edgesAttributes READ edgesAttributes WRITE setEdgesAttributes )
+		Q_PROPERTY( NameValuePair graphAttributes READ graphAttributes )
+		Q_PROPERTY( NameValuePair verticesAttributes READ verticesAttributes )
+		Q_PROPERTY( NameValuePair edgesAttributes READ edgesAttributes )
 
 		Q_ENUMS( RendererType )
 
@@ -197,12 +195,6 @@ namespace depgraphV
 
 		void setLayoutAlgorithm( const QString& value ) { _layoutAlgorithm = value; }
 
-		void setGraphAttributes( const NameValuePair& value ) { _graphAttributes = value; }
-
-		void setVerticesAttributes( const NameValuePair& value ) { _verticesAttributes = value; }
-
-		void setEdgesAttributes( const NameValuePair& value ) { _edgesAttributes = value; }
-
 		/**
 		 * @brief Change value of a graph attribute by name.
 		 * @param name Attribute name.
@@ -269,6 +261,11 @@ namespace depgraphV
 		NameValuePair _graphAttributes;
 		NameValuePair _verticesAttributes;
 		NameValuePair _edgesAttributes;
+
+		/**
+		 * @brief This method restore all attributes after clearing this graph.
+		 */
+		void _restoreAttributes();
 
 		static void _lookForAvailablePlugins();
 		static bool _isPluginAvailable( const QString& format, const QString& kind = "" );

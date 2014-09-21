@@ -29,6 +29,7 @@
 #define CUSTOMTABWIDGET_H
 
 #include <QTabWidget>
+#include <QModelIndex>
 #include "graph.h"
 
 namespace depgraphV
@@ -41,6 +42,7 @@ namespace depgraphV
 		explicit CustomTabWidget( QWidget* parent = 0 );
 
 		Graph* currentGraph() const;
+		Graph* graph( int index ) const;
 
 		void loadTabs();
 
@@ -56,8 +58,11 @@ namespace depgraphV
 		void closeTab( int index );
 		void renameTab( int index );
 
+		void onDataChanged( QModelIndex, QModelIndex );
+
 	private:
 		unsigned short _newGraphCount;
+		bool _dataConnected;
 	};
 }
 #endif // CUSTOMTABWIDGET_H

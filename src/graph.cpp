@@ -405,6 +405,7 @@ namespace depgraphV
 		_vertices.clear();
 		agclose( _graph );
 		NEW_GRAPH();
+		_restoreAttributes();
 	}
 	//-------------------------------------------------------------------------
 	void Graph::wheelEvent( QWheelEvent* event )
@@ -449,6 +450,21 @@ namespace depgraphV
 			*outString = QString::fromUtf8( rawData, length );
 
 		return retValue;
+	}
+	//-------------------------------------------------------------------------
+	void Graph::_restoreAttributes()
+	{
+		NameValuePair::iterator i = _graphAttributes.begin();
+		for( ; i != _graphAttributes.end(); i++ )
+			setGraphAttribute( i.key(), i.value() );
+
+		i = _verticesAttributes.begin();
+		for( ; i != _verticesAttributes.end(); i++ )
+			setVerticesAttribute( i.key(), i.value() );
+
+		i = _edgesAttributes.begin();
+		for( ; i != _edgesAttributes.end(); i++ )
+			setEdgesAttribute( i.key(), i.value() );
 	}
 	//-------------------------------------------------------------------------
 	void Graph::_lookForAvailablePlugins()

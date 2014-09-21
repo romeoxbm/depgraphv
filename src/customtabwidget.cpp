@@ -39,7 +39,8 @@ namespace depgraphV
 {
 	CustomTabWidget::CustomTabWidget( QWidget* parent )
 		: QTabWidget( parent ),
-		  _newGraphCount( 0 )
+		  _newGraphCount( 0 ),
+		  _dataConnected( false )
 	{
 		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 
@@ -52,22 +53,33 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Graph* CustomTabWidget::currentGraph() const
 	{
-		if( currentWidget() )
-			return static_cast<Graph*>( currentWidget() );
-
-		return 0;
+		return graph( currentIndex() );
+	}
+	//-------------------------------------------------------------------------
+	Graph* CustomTabWidget::graph( int index ) const
+	{
+		Q_ASSERT( index >= 0 && index < count() );
+		return static_cast<Graph*>( widget( index ) );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::loadTabs()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* model = p->tableModel( "graphSettings" );
-		for( int i = 0; i < model->rowCount(); i ++ )
+		QSqlTableModel* m = p->tableModel( "graphSettings" );
+		for( int i = 0; i < m->rowCount(); i ++ )
 		{
-			QSqlRecord r = model->record( i );
+			QSqlRecord r = m->record( i );
 			Graph* g = new Graph( this );
 			g->setAttributes( r );
 			addTab( g, r.value( "name" ).toString() );
+		}
+
+		if( !_dataConnected )
+		{
+			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+					 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
+			);
+			_dataConnected = true;
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -96,12 +108,12 @@ namespace depgraphV
 		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
 
 		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		QSqlTableModel* m = p->tableModel( "graphSettings" );
 		QSqlField f( "name", QVariant::String );
 		f.setValue( graphName );
 		QSqlRecord r;
 		r.append( f );
-		if( !model->insertRecord( -1, r ) )
+		if( !m->insertRecord( -1, r ) )
 		{
 			QMessageBox::critical(
 						this,
@@ -115,6 +127,14 @@ namespace depgraphV
 		Graph* g = new Graph( this );
 		g->setDefaultAttributes();
 		addTab( g, graphName );
+
+		if( !_dataConnected )
+		{
+			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+					 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
+			);
+			_dataConnected = true;
+		}
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeTab( int index )
@@ -166,5 +186,13 @@ namespace depgraphV
 
 			setTabText( index, newName );
 		}
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::onDataChanged( QModelIndex i, QModelIndex )
+	{
+		QSqlTableModel* m = static_cast<QSqlTableModel*>( sender() );
+		QSqlRecord r = m->record( i.row() );
+		Graph* g = graph( i.row() );
+		g->setAttributes( r );
 	}
 }
