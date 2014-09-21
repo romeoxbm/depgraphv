@@ -87,7 +87,19 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeTab( int index )
 	{
-		//TODO Check for changes and warn about them..
+		Project* p = Singleton<Project>::instancePtr();
+		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		if( !model->removeRow( index ) )
+		{
+			QMessageBox::critical(
+						this,
+						tr( "Remove Graph" ),
+						tr( "Unable to remove selected graph:\n"
+							"There's something wrong with your project file." )
+			);
+			return;
+		}
+
 		delete widget( index );
 	}
 	//-------------------------------------------------------------------------
