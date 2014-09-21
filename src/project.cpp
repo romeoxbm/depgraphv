@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  */
 #include "project.h"
+#include "helpers.h"
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDebug>
@@ -57,6 +58,7 @@ namespace depgraphV
 		Project* p = new Project( filePath, parent );
 
 		//TODO Create here tables, views, etc.
+		QString sql = Helpers::LoadTextFromResources( "db-structure.sql" );
 
 		return p;
 	}

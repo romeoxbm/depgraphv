@@ -33,6 +33,7 @@
 
 namespace depgraphV
 {
+	//TODO This method should be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
 #ifdef QT_USE_QT5

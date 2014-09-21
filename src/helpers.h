@@ -35,7 +35,9 @@ namespace depgraphV
 	class Helpers
 	{
 	public:
+		//TODO This method should be removed
 		static void setCurrentText( QComboBox* combo, const QString& text );
+
 		static QString LoadTextFromResources( const QString& filename );
 
 	private:
