@@ -28,6 +28,9 @@
 #include "helpers.h"
 #include "buildsettings.h"
 
+#include <QFile>
+#include <QDebug>
+
 namespace depgraphV
 {
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
@@ -39,5 +42,22 @@ namespace depgraphV
 		if( idx != -1 )
 			combo->setCurrentIndex( idx );
 #endif
+	}
+	//-------------------------------------------------------------------------
+	QString Helpers::LoadTextFromResources( const QString& filename )
+	{
+		QFile f( ":/text/" + filename );
+		if( !f.open( QFile::ReadOnly | QFile::Text ) )
+		{
+			qWarning() << qPrintable( QObject::tr( "Cannot read " ) + filename );
+			return "";
+		}
+
+		QTextStream in( &f );
+		in.setCodec( "UTF-8" );
+		QString ret = in.readAll();
+		f.close();
+
+		return ret;
 	}
 }

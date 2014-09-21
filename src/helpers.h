@@ -36,6 +36,7 @@ namespace depgraphV
 	{
 	public:
 		static void setCurrentText( QComboBox* combo, const QString& text );
+		static QString LoadTextFromResources( const QString& filename );
 
 	private:
 		Helpers(){}

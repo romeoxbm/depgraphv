@@ -28,7 +28,8 @@
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 #include "appconfig.h"
-#include <QDebug>
+#include "helpers.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <gvc.h>
@@ -49,16 +50,16 @@ namespace depgraphV
 		_ui->projectVersionLabel->setText( "v" + QApplication::applicationVersion() );
 
 		_setTabStopWidth( _ui->authorsText );
-		_ui->authorsText->setPlainText( _loadTextFromResources( "AUTHORS" ) );
+		_ui->authorsText->setPlainText( Helpers::LoadTextFromResources( "AUTHORS" ) );
 
 		_setTabStopWidth( _ui->todoText );
-		_ui->todoText->setPlainText( _loadTextFromResources( "TODO" ) );
+		_ui->todoText->setPlainText( Helpers::LoadTextFromResources( "TODO" ) );
 
 		_setTabStopWidth( _ui->changelogText );
-		_ui->changelogText->setPlainText( _loadTextFromResources( "Changelog" ) );
+		_ui->changelogText->setPlainText( Helpers::LoadTextFromResources( "Changelog" ) );
 
 		_setTabStopWidth( _ui->licenseText );
-		_ui->licenseText->setPlainText( _loadTextFromResources( "COPYING" ) );
+		_ui->licenseText->setPlainText( Helpers::LoadTextFromResources( "COPYING" ) );
 
 		_ui->qtVersion->setText( QT_VERSION_STR );
 
@@ -131,22 +132,5 @@ namespace depgraphV
 	{
 		QFontMetrics metrics( e->font() );
 		e->setTabStopWidth( width * metrics.width( ' ' ) );
-	}
-	//-------------------------------------------------------------------------
-	QString AboutDialog::_loadTextFromResources( const QString& filename )
-	{
-		QFile f( ":/text/" + filename );
-		if( !f.open( QFile::ReadOnly | QFile::Text ) )
-		{
-			qWarning() << qPrintable( tr( "Cannot read " ) + filename );
-			return "";
-		}
-
-		QTextStream in( &f );
-		in.setCodec( "UTF-8" );
-		QString ret = in.readAll();
-		f.close();
-
-		return ret;
 	}
 }
