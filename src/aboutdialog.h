@@ -29,6 +29,7 @@
 #define ABOUTDIALOG_H
 
 #include <QDialog>
+#include <QPlainTextEdit>
 
 namespace depgraphV
 {
@@ -75,6 +76,7 @@ namespace depgraphV
 		Ui::AboutDialog* _ui;
 		bool _donateBtnIcoDirty;
 
+		void _setTabStopWidth( QPlainTextEdit* e, int width = 8 );
 		QString _loadTextFromResources( const QString& filename );
 	};
 }

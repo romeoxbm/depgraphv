@@ -48,9 +48,16 @@ namespace depgraphV
 		_ui->projectNameLabel->setText( QApplication::applicationName() );
 		_ui->projectVersionLabel->setText( "v" + QApplication::applicationVersion() );
 
+		_setTabStopWidth( _ui->authorsText );
 		_ui->authorsText->setPlainText( _loadTextFromResources( "AUTHORS" ) );
+
+		_setTabStopWidth( _ui->todoText );
 		_ui->todoText->setPlainText( _loadTextFromResources( "TODO" ) );
+
+		_setTabStopWidth( _ui->changelogText );
 		_ui->changelogText->setPlainText( _loadTextFromResources( "Changelog" ) );
+
+		_setTabStopWidth( _ui->licenseText );
 		_ui->licenseText->setPlainText( _loadTextFromResources( "COPYING" ) );
 
 		_ui->qtVersion->setText( QT_VERSION_STR );
@@ -118,6 +125,12 @@ namespace depgraphV
 	{
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		_ui->donateCheckBox->setChecked( !c->showDonateOnExit() );
+	}
+	//-------------------------------------------------------------------------
+	void AboutDialog::_setTabStopWidth( QPlainTextEdit* e, int width )
+	{
+		QFontMetrics metrics( e->font() );
+		e->setTabStopWidth( width * metrics.width( ' ' ) );
 	}
 	//-------------------------------------------------------------------------
 	QString AboutDialog::_loadTextFromResources( const QString& filename )
