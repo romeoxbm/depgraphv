@@ -31,6 +31,7 @@
 #include <QGraphicsView>
 #include <QWheelEvent>
 #include <QGraphicsSvgItem>
+#include <QSqlRecord>
 
 #include "buildsettings.h"
 #include "iserializableobject.h"
@@ -57,10 +58,13 @@ namespace depgraphV
 		Q_OBJECT
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
 		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
+
+		//TODO Should I remove following properties?
 		Q_PROPERTY( QString layoutAlgorithm READ layoutAlgorithm WRITE setLayoutAlgorithm )
 		Q_PROPERTY( NameValuePair graphAttributes READ graphAttributes WRITE setGraphAttributes )
 		Q_PROPERTY( NameValuePair verticesAttributes READ verticesAttributes WRITE setVerticesAttributes )
 		Q_PROPERTY( NameValuePair edgesAttributes READ edgesAttributes WRITE setEdgesAttributes )
+
 		Q_ENUMS( RendererType )
 
 	public:
@@ -186,6 +190,10 @@ namespace depgraphV
 		 * @param highQualityAntialiasing the new value of antialiasing property.
 		 */
 		void setHighQualityAntialiasing( bool highQualityAA );
+
+		void setAttributes( const QSqlRecord& r );
+
+		void setDefaultAttributes();
 
 		void setLayoutAlgorithm( const QString& value ) { _layoutAlgorithm = value; }
 

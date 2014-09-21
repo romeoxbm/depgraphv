@@ -65,10 +65,9 @@ namespace depgraphV
 		for( int i = 0; i < model->rowCount(); i ++ )
 		{
 			QSqlRecord r = model->record( i );
-			addTab(
-				new Graph( this ),
-				r.value( "name" ).toString()
-			);
+			Graph* g = new Graph( this );
+			g->setAttributes( r );
+			addTab( g, r.value( "name" ).toString() );
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -113,10 +112,9 @@ namespace depgraphV
 			return;
 		}
 
-		addTab(
-			new Graph( this ),
-			graphName
-		);
+		Graph* g = new Graph( this );
+		g->setDefaultAttributes();
+		addTab( g, graphName );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeTab( int index )

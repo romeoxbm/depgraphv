@@ -73,16 +73,6 @@ namespace depgraphV
 
 		//TODO Following code line needs to be tested
 		this->setResizeAnchor( QGraphicsView::AnchorUnderMouse );
-
-		//Setting default graph attributes
-		setGraphAttribute( "splines", "spline" );
-		setGraphAttribute( "nodesep", "0.4" );
-
-		setVerticesAttribute( "shape", "box" );
-		setVerticesAttribute( "style", "rounded" );
-
-		setEdgesAttribute( "minlen", "3" );
-		setEdgesAttribute( "style", "3" );
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
@@ -140,6 +130,35 @@ namespace depgraphV
 #else
 		Q_UNUSED( highQualityAntialiasing );
 #endif
+	}
+	//-------------------------------------------------------------------------
+	void Graph::setAttributes( const QSqlRecord& r )
+	{
+		setLayoutAlgorithm( r.value( "layoutAlgorithm" ).toString() );
+
+		setGraphAttribute( "splines", r.value( "splines" ).toString() );
+		setGraphAttribute( "nodesep", r.value( "nodesep" ).toString() );
+
+		setVerticesAttribute( "shape", r.value( "shape" ).toString() );
+		setVerticesAttribute( "style", r.value( "vert_style" ).toString() );
+
+		setEdgesAttribute( "minlen", r.value( "minlen" ).toString() );
+		setEdgesAttribute( "style", r.value( "edge_style" ).toString() );
+	}
+	//-------------------------------------------------------------------------
+	void Graph::setDefaultAttributes()
+	{
+		setLayoutAlgorithm( "dot" );
+
+		//Setting default graph attributes
+		setGraphAttribute( "splines", "spline" );
+		setGraphAttribute( "nodesep", "0.4" );
+
+		setVerticesAttribute( "shape", "box" );
+		setVerticesAttribute( "style", "rounded" );
+
+		setEdgesAttribute( "minlen", "3" );
+		setEdgesAttribute( "style", "3" );
 	}
 	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createVertex( const QString& label )
@@ -321,11 +340,7 @@ namespace depgraphV
 	{
 		QList<const char*> props;
 		props << "rendererType"
-			  << "highQualityAA"
-			  << "layoutAlgorithm"
-			  << "graphAttributes"
-			  << "verticesAttributes"
-			  << "edgesAttributes";
+			  << "highQualityAA";
 
 		return props;
 	}
