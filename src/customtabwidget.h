@@ -42,6 +42,8 @@ namespace depgraphV
 
 		Graph* currentGraph() const;
 
+		void loadTabs();
+
 	protected:
 #ifndef QT_USE_QT5
 		bool eventFilter( QObject* o, QEvent* evt );

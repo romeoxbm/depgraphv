@@ -58,6 +58,20 @@ namespace depgraphV
 		return 0;
 	}
 	//-------------------------------------------------------------------------
+	void CustomTabWidget::loadTabs()
+	{
+		Project* p = Singleton<Project>::instancePtr();
+		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		for( int i = 0; i < model->rowCount(); i ++ )
+		{
+			QSqlRecord r = model->record( i );
+			addTab(
+				new Graph( this ),
+				r.value( "name" ).toString()
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
 #ifndef QT_USE_QT5
 	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
 	{

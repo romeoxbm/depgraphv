@@ -610,7 +610,9 @@ namespace depgraphV
 		_ui->actionClose->setEnabled( true );
 		_ui->actionSettings->setEnabled( true );
 		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+
 		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
+		_ui->tabWidget->loadTabs();
 
 		//TODO Create a slot in order to:
 		// 1- Verify applyAllChanges result
