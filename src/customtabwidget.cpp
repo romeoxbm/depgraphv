@@ -58,6 +58,26 @@ namespace depgraphV
 		return 0;
 	}
 	//-------------------------------------------------------------------------
+#ifndef QT_USE_QT5
+	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
+	{
+		bool result = QTabWidget::eventFilter( o, evt );
+
+		if( o == tabBar() && evt->type() == QEvent::MouseButtonDblClick )
+		{
+			QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
+			int index = tabBar()->tabAt( mouseEvt->pos() );
+			if( index == -1 )
+				return result;
+
+			renameTab( index );
+			return true;
+		}
+
+		return result;
+	}
+#endif
+	//-------------------------------------------------------------------------
 	void CustomTabWidget::newGraph()
 	{
 		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
@@ -103,26 +123,6 @@ namespace depgraphV
 		delete widget( index );
 	}
 	//-------------------------------------------------------------------------
-#ifndef QT_USE_QT5
-	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
-	{
-		bool result = QTabWidget::eventFilter( o, evt );
-
-		if( o == tabBar() && evt->type() == QEvent::MouseButtonDblClick )
-		{
-			QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
-			int index = tabBar()->tabAt( mouseEvt->pos() );
-			if( index == -1 )
-				return result;
-
-			renameTab( index );
-			return true;
-		}
-
-		return result;
-	}
-#endif
-	//-------------------------------------------------------------------------
 	void CustomTabWidget::renameTab( int index )
 	{
 		bool ok;
@@ -136,6 +136,23 @@ namespace depgraphV
 		);
 
 		if( ok && !newName.isEmpty() )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			QSqlTableModel* model = p->tableModel( "graphSettings" );
+			QSqlRecord r = model->record( index );
+			r.setValue( "name", newName );
+			if( !model->setRecord( index, r ) )
+			{
+				QMessageBox::critical(
+							this,
+							tr( "Rename Graph" ),
+							tr( "Unable to rename selected graph:\n"
+								"There's something wrong with your project file." )
+				);
+				return;
+			}
+
 			setTabText( index, newName );
+		}
 	}
 }
