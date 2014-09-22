@@ -82,6 +82,7 @@ namespace depgraphV
 	private slots:
 		void newProject();
 		void openProject();
+		void saveProject();
 		void closeProject();
 
 		void onDraw();

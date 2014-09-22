@@ -221,6 +221,17 @@ namespace depgraphV
 		_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
 	//-------------------------------------------------------------------------
+	void MainWindow::saveProject()
+	{
+		Q_ASSERT( _project );
+		if( _project->applyAllChanges() )
+		{
+			_ui->statusBar->showMessage(
+						tr( "Project \"%1\" saved." ).arg( _project->name() )
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::closeProject()
 	{
 		if( !_project )
@@ -579,11 +590,8 @@ namespace depgraphV
 		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
 		_ui->tabWidget->loadTabs();
 
-		//TODO Create a slot in order to:
-		// 1- Verify applyAllChanges result
-		// 2 - Show a message in the statusBar
 		connect( _ui->actionSave, SIGNAL( triggered() ),
-				 _project, SLOT( applyAllChanges() )
+				 this, SLOT( saveProject() )
 		);
 		connect( _project, SIGNAL( pendingChanges( bool ) ),
 				 _ui->actionSave, SLOT( setEnabled( bool ) )
