@@ -81,6 +81,13 @@ namespace depgraphV
 		_rootsDlg		= new HandleRootsDialog( this );
 		_filesDlg		= new SelectFilesDialog( this );
 
+		//Clear recent projects action
+		_actionClearRecentList = new QAction( this );
+		_actionClearRecentList->setText( tr( "Clear list" ) );
+		connect( _actionClearRecentList, SIGNAL( triggered() ),
+				 this, SLOT( clearRecentDocs() )
+		);
+
 		//Check for available image formats
 		if( !_lookForRequiredImageFormats() )
 		{
@@ -215,7 +222,8 @@ namespace depgraphV
 			file += ".dProj";
 
 		_project = Project::createNew( file, this );
-		_onLoadProject( tr( "Project \"%1\" successfully created." ) );
+		if( _project )
+			_onLoadProject( tr( "Project \"%1\" successfully created." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::openProject()
@@ -236,7 +244,9 @@ namespace depgraphV
 			return;
 
 		_project = Project::open( file, this );
-		_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
+
+		if( _project )
+			_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::saveProject()
@@ -343,6 +353,26 @@ namespace depgraphV
 		this->setWindowTitle( APP_NAME );
 	}
 	//-------------------------------------------------------------------------
+	void MainWindow::clearRecentDocs()
+	{
+		QMessageBox::StandardButton answer = QMessageBox::question(
+			this,
+			tr( "Clear recent projects list" ),
+			tr( "Are you sure?" ),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No
+		);
+
+		if( answer == QMessageBox::No )
+			return;
+
+		_config->setRecentDocuments( QStringList() );
+		_ui->menuOpen_Recent->clear();
+		_actionClearRecentList->setEnabled( false );
+		_actionClearRecentList->setText( tr( "Empty list" ) );
+		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::onDraw()
 	{
 		//TODO Warn when no file/folder has been selected
@@ -385,6 +415,35 @@ namespace depgraphV
 	void MainWindow::onConfigRestored()
 	{
 		_langActions[ _config->language() ]->setChecked( true );
+
+		//Setup Open Recent menu
+		if( !_config->recentDocuments().isEmpty() )
+		{
+			foreach( QString doc, _config->recentDocuments() )
+				_ui->menuOpen_Recent->addAction( _newRecentDocument( doc ) );
+
+			_ui->menuOpen_Recent->addSeparator();
+		}
+		else
+		{
+			_actionClearRecentList->setEnabled( false );
+			_actionClearRecentList->setText( tr( "Empty list" ) );
+		}
+		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
+	}
+	//-------------------------------------------------------------------------
+	QAction* MainWindow::_newRecentDocument( const QString& filePath )
+	{
+		QFileInfo f( filePath );
+		QAction* aDoc = new QAction( this );
+		aDoc->setData( filePath );
+		aDoc->setText( f.fileName() );
+
+		connect( aDoc, SIGNAL( triggered() ),
+				 this, SLOT( onRecentDocumentTriggered() )
+		);
+
+		return aDoc;
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolder( const QFlags<QDir::Filter>& flags,
@@ -506,13 +565,6 @@ namespace depgraphV
 		_config->restoreDefault();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::parseOptionsChanged()
-	{
-		/*_ui->actionDraw->setEnabled( _ui->folderWidget->validDirSelected() &&
-			( _ui->headerFilter->parseEnabled() || _ui->parseSourcesCheckbox->isChecked() )
-		);*/
-	}
-	//-------------------------------------------------------------------------
 	void MainWindow::checkForUpdates() const
 	{
 		QNetworkRequest request(
@@ -610,6 +662,29 @@ namespace depgraphV
 		);
 
 		_ui->statusBar->showMessage( message.arg( _project->name() ) );
+
+		if( !_config->recentDocuments().contains( _project->fullPath() ) )
+		{
+			QAction* before = _actionClearRecentList;
+			int actionCount = _ui->menuOpen_Recent->actions().count();
+			if( actionCount == 1 )
+			{
+				before = _ui->menuOpen_Recent->insertSeparator( before );
+				_actionClearRecentList->setEnabled( true );
+				_actionClearRecentList->setText( tr( "Clear list" ) );
+			}
+			else
+				before = _ui->menuOpen_Recent->actions()[ actionCount - 2 ];
+
+			_ui->menuOpen_Recent->insertAction(
+						before,
+						_newRecentDocument( _project->fullPath() )
+			);
+
+			QStringList d = _config->recentDocuments();
+			d << _project->fullPath();
+			_config->setRecentDocuments( d );
+		}
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const
@@ -725,6 +800,18 @@ namespace depgraphV
 		}
 
 		_langActions.insert( lang, newLang );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onRecentDocumentTriggered()
+	{
+		//Close open project first( if open )
+		closeProject();
+
+		QAction* s = qobject_cast<QAction*>( sender () );
+		_project = Project::open( s->data().toString(), this );
+
+		if( _project )
+			_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
 	//-------------------------------------------------------------------------
 	QString MainWindow::_ucFirst( const QString& value ) const

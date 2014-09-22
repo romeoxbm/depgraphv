@@ -36,11 +36,15 @@ namespace depgraphV
 	Project::Project( const QString& filePath, QObject* parent )
 		: QObject( parent ),
 		  Singleton<Project>(),
-		  _db( QSqlDatabase::addDatabase( "QSQLITE" ) )
+		  _db( QSqlDatabase::addDatabase( "QSQLITE" ) ),
+		  _fullPath( filePath )
 	{
 		_db.setDatabaseName( filePath );
 		if( !_db.open() )
+		{
 			_error( tr( "Project creation" ) );
+			throw std::exception();
+		}
 
 		QFileInfo f( filePath );
 		_name = f.baseName();
@@ -55,20 +59,33 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Project* Project::createNew( const QString& filePath, QObject* parent )
 	{
-		Project* p = new Project( filePath, parent );
-
-		//TODO Create here tables, views, etc.
-		QString sql = Helpers::LoadTextFromResources( "db-structure.sql" );
+		Project* p = 0;
+		try
+		{
+			p = new Project( filePath, parent );
+			//TODO Create here tables, views, etc.
+			QString sql = Helpers::LoadTextFromResources( "db-structure.sql" );
+		}
+		catch( std::exception& )
+		{
+		}
 
 		return p;
 	}
 	//-------------------------------------------------------------------------
 	Project* Project::open( const QString& filePath, QObject* parent )
 	{
-		Project* p = new Project( filePath, parent );
+		Project* p = 0;
+		try
+		{
+			p = new Project( filePath, parent );
 
-		//TODO Check for a valid file by checking if tables exist using query
-		//SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
+			//TODO Check for a valid file by checking if tables exist using query
+			//SELECT name FROM sqlite_master WHERE type='table' AND name='table_name';
+		}
+		catch( std::exception& )
+		{
+		}
 
 		return p;
 	}

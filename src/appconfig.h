@@ -47,6 +47,7 @@ namespace depgraphV
 	class AppConfig : public QObject, public Singleton<AppConfig>, public ISerializableObject
 	{
 		Q_OBJECT
+		Q_PROPERTY( QStringList recentDocuments READ recentDocuments WRITE setRecentDocuments )
 		Q_PROPERTY( QString language READ language WRITE setLanguage )
 		Q_PROPERTY( bool scanByFolders READ scanByFolders WRITE setScanByFolders )
 		Q_PROPERTY( bool isRecursiveScanEnabled READ isRecursiveScanEnabled WRITE setRecursiveScanEnabled )
@@ -117,6 +118,8 @@ namespace depgraphV
 
 		void lookForTranslations();
 
+		const QStringList& recentDocuments() const { return _recentDocs; }
+
 		/**
 		 * @return Return a string containing the language currently in use (for instance, "en").
 		 */
@@ -165,6 +168,7 @@ namespace depgraphV
 		const QStringList& sourceNameFilters();
 
 	public slots:
+		void setRecentDocuments( const QStringList& value ) { _recentDocs = value; }
 		void setLanguage( const QString& value );
 
 		void setScanByFolders( bool value ) { _scanByFolders = value; }
@@ -215,9 +219,6 @@ namespace depgraphV
 		void translationFound( QString lang, QString path );
 
 	private:
-		QSettings _settings;
-		QList<ISerializableObject*> _serializableObjects;
-
 		/**
 		 * @brief It does the save/restore job.
 		 * @param save True when saving, false when restoring.
@@ -229,8 +230,13 @@ namespace depgraphV
 		void _switchTranslator( QTranslator* t, const QString& fileName,
 								const QString& directory = "", bool justRemoveTranslator = false );
 
+		QSettings _settings;
+		QList<ISerializableObject*> _serializableObjects;
+
 		QString _instPrefix;
 		QString _trPath;
+
+		QStringList _recentDocs;
 
 		QString _language;
 		QTranslator _qtTranslator;

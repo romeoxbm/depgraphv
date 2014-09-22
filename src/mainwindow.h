@@ -87,6 +87,7 @@ namespace depgraphV
 		void saveAsDot() const;
 		void saveAsImage();
 		void closeProject();
+		void clearRecentDocs();
 
 		void onDraw();
 		void onClear();
@@ -94,7 +95,6 @@ namespace depgraphV
 		void about();
 		void settings();
 		void restoreDefaultSettings();
-		void parseOptionsChanged();
 
 		void checkForUpdates() const;
 		void onUpdateReplyProgress( qint64, qint64 );
@@ -103,6 +103,8 @@ namespace depgraphV
 		void onSelectFilesOrFolders();
 		void onLanguageActionTriggered( QAction* action );
 		void onTranslationFound( QString lang, QString path );
+
+		void onRecentDocumentTriggered();
 
 	private:
 		Ui::MainWindow* _ui;
@@ -121,11 +123,14 @@ namespace depgraphV
 
 		QActionGroup* _langGroup;
 
+		QAction* _actionClearRecentList;
+
 		bool _imageFiltersUpdated;
 		QString _imageFilters;
 		QMap<QString, QAction*> _langActions;
 		QMap<QString, QString> _imageFiltersByExt;
 
+		QAction* _newRecentDocument( const QString& filePath );
 		void _scanFolder( const QFlags<QDir::Filter>& flags, QStringList* filesList, QFileInfo& dirInfo );
 		void _scanFolders() const;
 		void _scanFiles( const QStringList& files ) const;

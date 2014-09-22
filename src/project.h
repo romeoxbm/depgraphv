@@ -48,6 +48,7 @@ namespace depgraphV
 
 		const QString& name() const { return _name; }
 		const QString& path() const { return _path; }
+		const QString& fullPath() const { return _fullPath; }
 
 		QSqlTableModel* tableModel( const QString& table, const QString& filter = "" );
 
@@ -73,6 +74,7 @@ namespace depgraphV
 		QSqlDatabase _db;
 		QString _name;
 		QString _path;
+		QString _fullPath;
 		QMap<QString, QSqlTableModel*> _models;
 		QVector<QSqlTableModel*> _modifiedModels;
 

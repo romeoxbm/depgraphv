@@ -148,7 +148,8 @@ namespace depgraphV
 	QList<const char*> AppConfig::propList() const
 	{
 		QList<const char*> props;
-		props 	 << "language"
+		props 	 << "recentDocuments"
+				 << "language"
 				 << "scanByFolders"
 				 << "isRecursiveScanEnabled"
 				 << "hiddenFoldersIncluded"
