@@ -139,6 +139,16 @@ namespace depgraphV
 		emit pendingChanges( false );
 	}
 	//-------------------------------------------------------------------------
+	bool Project::hasPendingChanges( const QString& table ) const
+	{
+		return _modifiedModels.contains( _models[ table ] );
+	}
+	//-------------------------------------------------------------------------
+	bool Project::hasPendingChanges( QSqlTableModel* model ) const
+	{
+		return _modifiedModels.contains( model );
+	}
+	//-------------------------------------------------------------------------
 	bool Project::applyAllChanges()
 	{
 		if( !_modifiedModels.isEmpty() )

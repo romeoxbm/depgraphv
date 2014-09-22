@@ -56,6 +56,9 @@ namespace depgraphV
 
 		void revertAll( const QString& table );
 
+		bool hasPendingChanges( const QString& table ) const;
+		bool hasPendingChanges( QSqlTableModel* model ) const;
+
 	signals:
 		void pendingChanges( bool );
 
