@@ -29,7 +29,7 @@
 #include "ui_graphpage.h"
 #include "graph.h"
 
-//#include <QSqlRelationalDelegate>
+#include <QComboBox>
 
 namespace depgraphV
 {
@@ -60,7 +60,7 @@ namespace depgraphV
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
 		QDataWidgetMapper* dataMapper = new QDataWidgetMapper( this );
 		dataMapper->setModel( model );
-		//_dataMapper->setItemDelegate( new QSqlRelationalDelegate( _dataMapper ) );
+		dataMapper->setItemDelegate( new ComboBoxItemDelegate( this ) );
 
 		int nameIndex = model->fieldIndex( "name" );
 		_ui->graphName->setModel( model );
@@ -96,5 +96,31 @@ namespace depgraphV
 			_ui->retranslateUi( this );
 
 		QWidget::changeEvent( evt );
+	}
+	//-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	ComboBoxItemDelegate::ComboBoxItemDelegate( QObject* parent )
+		: QItemDelegate( parent )
+	{
+	}
+	//-------------------------------------------------------------------------
+	void ComboBoxItemDelegate::setEditorData( QWidget* editor,
+										  const QModelIndex& index ) const
+	{
+		QComboBox* combo = qobject_cast<QComboBox*>( editor );
+		if( combo )
+			combo->setCurrentIndex( combo->findText( index.data().toString() ) );
+		else
+			QItemDelegate::setEditorData( editor, index );
+	}
+	//-------------------------------------------------------------------------
+	void ComboBoxItemDelegate::setModelData( QWidget* editor,QAbstractItemModel* model,
+										 const QModelIndex& index ) const
+	{
+		QComboBox* combo = qobject_cast<QComboBox*>( editor );
+		if( combo )
+			model->setData( index, combo->currentText() );
+		else
+			QItemDelegate::setModelData( editor, model, index );
 	}
 } // end of depgraphV namespace

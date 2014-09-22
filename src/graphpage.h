@@ -33,6 +33,8 @@
 #include <QAbstractButton>
 #include <QDataWidgetMapper>
 
+#include <QItemDelegate>
+
 namespace depgraphV
 {
 	namespace Ui
@@ -64,6 +66,18 @@ namespace depgraphV
 
 	private:
 		Ui::GraphPage* _ui;
+	};
+
+	//TODO Maybe it should be better to move this class in a separate file
+	class ComboBoxItemDelegate : public QItemDelegate
+	{
+		Q_OBJECT
+
+	public:
+		explicit ComboBoxItemDelegate( QObject* parent = 0 );
+
+		void setEditorData( QWidget* editor, const QModelIndex& index ) const;
+		void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const;
 	};
 }
 
