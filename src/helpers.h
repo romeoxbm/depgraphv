@@ -43,6 +43,8 @@ namespace depgraphV
 	private:
 		Helpers(){}
 		~Helpers(){}
+
+		static QMap<QString, QString> _readTexts;
 	};
 }
 

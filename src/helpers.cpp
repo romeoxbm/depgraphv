@@ -33,6 +33,8 @@
 
 namespace depgraphV
 {
+	QMap<QString, QString> Helpers::_readTexts;
+
 	//TODO This method should be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
@@ -47,18 +49,21 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QString Helpers::LoadTextFromResources( const QString& filename )
 	{
-		QFile f( ":/text/" + filename );
-		if( !f.open( QFile::ReadOnly | QFile::Text ) )
+		if( !_readTexts.contains( filename ) )
 		{
-			qWarning() << qPrintable( QObject::tr( "Cannot read " ) + filename );
-			return "";
+			QFile f( ":/text/" + filename );
+			if( !f.open( QFile::ReadOnly | QFile::Text ) )
+			{
+				qWarning() << qPrintable( QObject::tr( "Cannot read " ) + filename );
+				return "";
+			}
+
+			QTextStream in( &f );
+			in.setCodec( "UTF-8" );
+			_readTexts.insert( filename, in.readAll() );
+			f.close();
 		}
 
-		QTextStream in( &f );
-		in.setCodec( "UTF-8" );
-		QString ret = in.readAll();
-		f.close();
-
-		return ret;
+		return _readTexts[ filename ];
 	}
 }
