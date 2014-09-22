@@ -170,10 +170,7 @@ namespace depgraphV
 	{
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
-		if( !model )
-			return;
-
-		if( !model->removeRow( index ) )
+		if( !( model && model->removeRow( index ) ) )
 		{
 			QMessageBox::critical(
 						this,

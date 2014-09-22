@@ -64,6 +64,9 @@ namespace depgraphV
 	protected:
 		virtual void changeEvent( QEvent* evt );
 
+	private slots:
+		void onDataChanged( QModelIndex, QModelIndex );
+
 	private:
 		Ui::GraphPage* _ui;
 	};

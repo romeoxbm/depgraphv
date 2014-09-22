@@ -91,6 +91,12 @@ namespace depgraphV
 		connect( _ui->graphName, SIGNAL( currentIndexChanged( int ) ),
 				 dataMapper, SLOT( setCurrentIndex( int ) )
 		);
+		connect( model, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+				 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
+		);
+
+		//Force update of frame
+		onDataChanged( QModelIndex(), QModelIndex() );
 
 		return true;
 	}
@@ -101,6 +107,11 @@ namespace depgraphV
 			_ui->retranslateUi( this );
 
 		QWidget::changeEvent( evt );
+	}
+	//-------------------------------------------------------------------------
+	void GraphPage::onDataChanged( QModelIndex, QModelIndex )
+	{
+		_ui->frame->setEnabled( _ui->graphName->count() != 0 );
 	}
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
