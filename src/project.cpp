@@ -141,6 +141,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool Project::hasPendingChanges( const QString& table ) const
 	{
+		if( table.isEmpty() )
+			return !_modifiedModels.isEmpty();
+
 		return _modifiedModels.contains( _models[ table ] );
 	}
 	//-------------------------------------------------------------------------

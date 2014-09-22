@@ -52,7 +52,7 @@
      <x>0</x>
      <y>0</y>
      <width>559</width>
-     <height>20</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -61,6 +61,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpen_Recent"/>
     <addaction name="actionClose"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
@@ -194,7 +195,7 @@
     <string>&amp;Save as dot...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionExit">
@@ -204,6 +205,9 @@
    </property>
    <property name="text">
     <string>&amp;Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -324,6 +328,9 @@
    <property name="toolTip">
     <string>New project...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionOpen">
    <property name="text">
@@ -331,6 +338,9 @@
    </property>
    <property name="toolTip">
     <string>Open project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionClose">
@@ -342,6 +352,9 @@
    </property>
    <property name="toolTip">
     <string>Close project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
   <action name="actionSave">
@@ -357,6 +370,14 @@
    </property>
    <property name="toolTip">
     <string>Save project changes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionOpen_Recent">
+   <property name="text">
+    <string>Open Recent...</string>
    </property>
   </action>
  </widget>
@@ -417,7 +438,7 @@
    <sender>actionExit</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>exitApp()</slot>
+   <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -610,7 +631,6 @@
   <slot>parseOptionsChanged()</slot>
   <slot>saveAsImage()</slot>
   <slot>saveAsDot()</slot>
-  <slot>exitApp()</slot>
   <slot>about()</slot>
   <slot>restoreDefaultSettings()</slot>
   <slot>settings()</slot>

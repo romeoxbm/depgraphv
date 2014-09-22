@@ -80,9 +80,12 @@ namespace depgraphV
 		virtual void closeEvent( QCloseEvent* );
 
 	private slots:
+		//File Menu
 		void newProject();
 		void openProject();
 		void saveProject();
+		void saveAsDot() const;
+		void saveAsImage();
 		void closeProject();
 
 		void onDraw();
@@ -92,14 +95,11 @@ namespace depgraphV
 		void settings();
 		void restoreDefaultSettings();
 		void parseOptionsChanged();
-		void saveAsImage();
-		void saveAsDot() const;
 
 		void checkForUpdates() const;
 		void onUpdateReplyProgress( qint64, qint64 );
 		void onUpdateReply( QNetworkReply* );
 
-		void exitApp();
 		void onSelectFilesOrFolders();
 		void onLanguageActionTriggered( QAction* action );
 		void onTranslationFound( QString lang, QString path );

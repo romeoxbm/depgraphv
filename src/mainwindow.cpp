@@ -171,9 +171,27 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
+		if( _project && _project->hasPendingChanges() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Exit" ),
+				tr( "Would you like to exit discarding changes?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
+
+			if( answer == QMessageBox::No )
+			{
+				event->ignore();
+				return;
+			}
+		}
+
 		_showAboutDialog( true );
 		_config->save();
 		event->accept();
+		qApp->quit();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::newProject()
@@ -230,6 +248,82 @@ namespace depgraphV
 						tr( "Project \"%1\" saved." ).arg( _project->name() )
 			);
 		}
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::saveAsDot() const
+	{
+		QString path = QFileDialog::getSaveFileName(
+						   const_cast<MainWindow*>( this ),
+						   tr( "Select path and name of the dot file" ),
+						   QDir::currentPath(),
+						   "DOT (*.dot)"
+		);
+
+		if( path.isEmpty() )
+			return;
+
+		QFileInfo info( path );
+		QString format = info.suffix();
+
+		if( format.isEmpty() )
+			path += ".dot";
+
+		Graph* g = _ui->tabWidget->currentGraph();
+		if( g->saveDot( path ) )
+			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
+		else
+			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::saveAsImage()
+	{
+		if( !_imageFiltersUpdated )
+		{
+			QStringList* list = Graph::pluginsListByKind( "loadimage" );
+			if( !list )
+			{
+				QMessageBox::critical(
+							const_cast<MainWindow*>( this ),
+							tr( "Cannot save image" ),
+							tr( "Unable to save graph as image; No plugin found." )
+				);
+				return;
+			}
+
+			for( int i = 0; i < list->count(); ++i )
+			{
+				QString f = list->at( i );
+				QString currentFilter = QString( "%1 (*.%2)" ).arg( f.toUpper(), f );
+				_imageFiltersByExt[ currentFilter ] = f;
+				_imageFilters += currentFilter;
+				if( i < list->count() - 1 )
+					_imageFilters += ";;";
+			}
+
+			_imageFiltersUpdated = true;
+		}
+
+		QString selectedFilter;
+		QString path = QFileDialog::getSaveFileName(
+			const_cast<MainWindow*>( this ),
+			tr( "Select path and name of the image file" ),
+			QDir::currentPath(), _imageFilters, &selectedFilter );
+
+		if( path.isEmpty() )
+			return;
+
+		QFileInfo info( path );
+		QString format = info.suffix();
+
+		if( format.isEmpty() )
+		{
+			format = _imageFiltersByExt[ selectedFilter ];
+			path += "." + format;
+		}
+
+		Graph* g = _ui->tabWidget->currentGraph();
+		if( g->saveImage( path, format ) )
+			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::closeProject()
@@ -419,82 +513,6 @@ namespace depgraphV
 		);*/
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveAsImage()
-	{
-		if( !_imageFiltersUpdated )
-		{
-			QStringList* list = Graph::pluginsListByKind( "loadimage" );
-			if( !list )
-			{
-				QMessageBox::critical(
-							const_cast<MainWindow*>( this ),
-							tr( "Cannot save image" ),
-							tr( "Unable to save graph as image; No plugin found." )
-				);
-				return;
-			}
-
-			for( int i = 0; i < list->count(); ++i )
-			{
-				QString f = list->at( i );
-				QString currentFilter = QString( "%1 (*.%2)" ).arg( f.toUpper(), f );
-				_imageFiltersByExt[ currentFilter ] = f;
-				_imageFilters += currentFilter;
-				if( i < list->count() - 1 )
-					_imageFilters += ";;";
-			}
-
-			_imageFiltersUpdated = true;
-		}
-
-		QString selectedFilter;
-		QString path = QFileDialog::getSaveFileName(
-			const_cast<MainWindow*>( this ),
-			tr( "Select path and name of the image file" ),
-			QDir::currentPath(), _imageFilters, &selectedFilter );
-
-		if( path.isEmpty() )
-			return;
-
-		QFileInfo info( path );
-		QString format = info.suffix();
-
-		if( format.isEmpty() )
-		{
-			format = _imageFiltersByExt[ selectedFilter ];
-			path += "." + format;
-		}
-
-		Graph* g = _ui->tabWidget->currentGraph();
-		if( g->saveImage( path, format ) )
-			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::saveAsDot() const
-	{
-		QString path = QFileDialog::getSaveFileName(
-						   const_cast<MainWindow*>( this ),
-						   tr( "Select path and name of the dot file" ),
-						   QDir::currentPath(),
-						   "DOT (*.dot)"
-		);
-
-		if( path.isEmpty() )
-			return;
-
-		QFileInfo info( path );
-		QString format = info.suffix();
-
-		if( format.isEmpty() )
-			path += ".dot";
-
-		Graph* g = _ui->tabWidget->currentGraph();
-		if( g->saveDot( path ) )
-			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
-		else
-			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
-	}
-	//-------------------------------------------------------------------------
 	void MainWindow::checkForUpdates() const
 	{
 		QNetworkRequest request(
@@ -564,12 +582,6 @@ namespace depgraphV
 			QMessageBox::information( 0, tr( "Check for updates" ), message );
 
 		_ui->action_Check_for_updates->setEnabled( true );
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::exitApp()
-	{
-		this->close();
-		qApp->quit();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
