@@ -45,6 +45,7 @@ namespace depgraphV
 		Graph* graph( int index ) const;
 
 		void loadTabs();
+		void closeAllTabs();
 
 	protected:
 #ifndef QT_USE_QT5

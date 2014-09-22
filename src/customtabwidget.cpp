@@ -86,6 +86,12 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
+	void CustomTabWidget::closeAllTabs()
+	{
+		while( tabBar()->count() > 0 )
+			delete widget( 0 );
+	}
+	//-------------------------------------------------------------------------
 #ifndef QT_USE_QT5
 	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
 	{

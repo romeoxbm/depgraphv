@@ -344,6 +344,7 @@ namespace depgraphV
 		QString pName = _project->name();
 		delete _project;
 		_project = 0;
+		_ui->tabWidget->closeAllTabs();
 		_ui->toolBar->setEnabled( false );
 		_ui->actionClose->setEnabled( false );
 		_ui->actionSettings->setEnabled( false );
