@@ -100,12 +100,15 @@ namespace depgraphV
 		if( o == tabBar() && evt->type() == QEvent::MouseButtonDblClick )
 		{
 			QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
-			int index = tabBar()->tabAt( mouseEvt->pos() );
-			if( index == -1 )
-				return result;
+			if( mouseEvt->buttons() & Qt::LeftButton )
+			{
+				int index = tabBar()->tabAt( mouseEvt->pos() );
+				if( index == -1 )
+					return result;
 
-			renameTab( index );
-			return true;
+				renameTab( index );
+				return true;
+			}
 		}
 
 		return result;
