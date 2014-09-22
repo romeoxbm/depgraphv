@@ -44,7 +44,7 @@ namespace depgraphV
 		Graph* currentGraph() const;
 		Graph* graph( int index ) const;
 
-		void loadTabs();
+		bool loadTabs();
 		void closeAllTabs();
 
 	protected:
@@ -57,6 +57,7 @@ namespace depgraphV
 
 	private slots:
 		void closeTab( int index );
+		void closeAllButCurrentTab();
 		void renameTab( int index );
 
 		void onDataChanged( QModelIndex, QModelIndex );

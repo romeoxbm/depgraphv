@@ -647,13 +647,19 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_onLoadProject( const QString& message )
 	{
+		//Ensure everything is ok
+		GraphPage* gP = static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) );
+		if( !( gP->mapData() && _ui->tabWidget->loadTabs() ) )
+		{
+			delete _project;
+			_project = 0;
+			return;
+		}
+
 		_ui->toolBar->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
 		_ui->actionSettings->setEnabled( true );
 		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
-
-		static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) )->mapData();
-		_ui->tabWidget->loadTabs();
 
 		connect( _ui->actionSave, SIGNAL( triggered() ),
 				 this, SLOT( saveProject() )

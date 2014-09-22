@@ -54,10 +54,13 @@ namespace depgraphV
 		return ":/settingsDlgIcons/graph-settings_96x96.png";
 	}
 	//-------------------------------------------------------------------------
-	void GraphPage::mapData()
+	bool GraphPage::mapData()
 	{
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		if( !model )
+			return false;
+
 		QDataWidgetMapper* dataMapper = new QDataWidgetMapper( this );
 		dataMapper->setModel( model );
 		dataMapper->setItemDelegate( new ComboBoxItemDelegate( this ) );
@@ -88,6 +91,8 @@ namespace depgraphV
 		connect( _ui->graphName, SIGNAL( currentIndexChanged( int ) ),
 				 dataMapper, SLOT( setCurrentIndex( int ) )
 		);
+
+		return true;
 	}
 	//-------------------------------------------------------------------------
 	void GraphPage::changeEvent( QEvent* evt )

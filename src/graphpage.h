@@ -59,7 +59,7 @@ namespace depgraphV
 		~GraphPage();
 
 		virtual QString iconPath() const;
-		void mapData();
+		bool mapData();
 
 	protected:
 		virtual void changeEvent( QEvent* evt );

@@ -32,6 +32,7 @@
 #include <QSqlRecord>
 #include <QSqlField>
 #include <QMetaEnum>
+#include <QAction>
 #ifndef QT_USE_QT5
 #	include <QTabBar>
 #endif
@@ -52,6 +53,15 @@ namespace depgraphV
 #else
 		tabBar()->installEventFilter( this );
 #endif
+
+		tabBar()->setContextMenuPolicy( Qt::ActionsContextMenu );
+		QAction* closeButCurrent = new QAction( this );
+		closeButCurrent->setText( tr( "Close all but current selected" ) );
+		tabBar()->addAction( closeButCurrent );
+
+		connect( closeButCurrent, SIGNAL( triggered() ),
+				 this, SLOT( closeAllButCurrentTab() )
+		);
 	}
 	//-------------------------------------------------------------------------
 	Graph* CustomTabWidget::currentGraph() const
@@ -65,10 +75,13 @@ namespace depgraphV
 		return static_cast<Graph*>( widget( index ) );
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::loadTabs()
+	bool CustomTabWidget::loadTabs()
 	{
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* m = p->tableModel( "graphSettings" );
+		if( !m )
+			return false;
+
 		for( int i = 0; i < m->rowCount(); i ++ )
 		{
 			QSqlRecord r = m->record( i );
@@ -84,6 +97,8 @@ namespace depgraphV
 			);
 			_dataConnected = true;
 		}
+
+		return true;
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeAllTabs()
@@ -119,6 +134,12 @@ namespace depgraphV
 	{
 		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
 
+		//The new tab must be created before inserting the new row
+		//in the project file, or connected dataChanged slots will crash
+		Graph* g = new Graph( this );
+		g->setDefaultAttributes();
+		addTab( g, graphName );
+
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* m = p->tableModel( "graphSettings" );
 		QSqlField f( "name", QVariant::String );
@@ -136,10 +157,6 @@ namespace depgraphV
 			return;
 		}
 
-		Graph* g = new Graph( this );
-		g->setDefaultAttributes();
-		addTab( g, graphName );
-
 		if( !_dataConnected )
 		{
 			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
@@ -153,6 +170,9 @@ namespace depgraphV
 	{
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
+		if( !model )
+			return;
+
 		if( !model->removeRow( index ) )
 		{
 			QMessageBox::critical(
@@ -164,7 +184,31 @@ namespace depgraphV
 			return;
 		}
 
-		delete widget( index );
+		//QSqlTableModel does no longer implicitly select() once a row has been removed
+		if( model->select() )
+			delete widget( index );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::closeAllButCurrentTab()
+	{
+		QMessageBox::StandardButton answer = QMessageBox::question(
+			this,
+			tr( "Close all tabs but selected" ),
+			tr( "Are you sure?" ),
+			QMessageBox::Yes | QMessageBox::No,
+			QMessageBox::No
+		);
+
+		if( answer == QMessageBox::No )
+			return;
+
+		//Close all tabs *after* current selected
+		for( int i = tabBar()->count() - 1; i > currentIndex(); i-- )
+			closeTab( i );
+
+		//Now remove all tabs *before*
+		while( tabBar()->count() > 1 )
+			closeTab( 0 );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::renameTab( int index )
