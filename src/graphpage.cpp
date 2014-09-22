@@ -68,6 +68,10 @@ namespace depgraphV
 
 		dataMapper->addMapping( _ui->layoutAlgorithm, model->fieldIndex( "layoutAlgorithm" ) );
 
+		//Rendering options
+		dataMapper->addMapping( _ui->highQualityAA, model->fieldIndex( "highQualityAA" ) );
+		dataMapper->addMapping( _ui->rendererType, model->fieldIndex( "RendererType" ) );
+
 		//Graph attributes
 		dataMapper->addMapping( _ui->splines, model->fieldIndex( "splines" ) );
 		dataMapper->addMapping( _ui->nodesep, model->fieldIndex( "nodesep" ) );
