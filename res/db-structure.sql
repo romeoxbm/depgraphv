@@ -1,7 +1,7 @@
 CREATE TABLE "graphSettings"
 (
 	id INTEGER PRIMARY KEY NOT NULL,
-	name TEXT DEFAULT NULL,
+	name TEXT NOT NULL DEFAULT '',
 	layoutAlgorithm TEXT NOT NULL DEFAULT dot,
 	splines TEXT NOT NULL DEFAULT spline,
 	nodesep DOUBLE NOT NULL DEFAULT 0.4,
@@ -10,5 +10,5 @@ CREATE TABLE "graphSettings"
 	minlen INTEGER NOT NULL DEFAULT 3,
 	edge_style TEXT NOT NULL DEFAULT solid,
 	RendererType TEXT NOT NULL DEFAULT Native,
-	highQualityAA BOOL NOT NULL DEFAULT false
+	highQualityAA TEXT NOT NULL DEFAULT false
 );

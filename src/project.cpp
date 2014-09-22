@@ -36,11 +36,15 @@ namespace depgraphV
 	Project::Project( const QString& filePath, QObject* parent )
 		: QObject( parent ),
 		  Singleton<Project>(),
-		  _db( QSqlDatabase::addDatabase( "QSQLITE" ) ),
 		  _fullPath( filePath )
 	{
+		if( !QSqlDatabase::contains( "depConn" ) )
+			QSqlDatabase::addDatabase( "QSQLITE", "depConn" );
+
+		_db = QSqlDatabase::database( "depConn", false );
 		_db.setDatabaseName( filePath );
-		if( !_db.open() )
+
+		if( !( _db.isValid() && _db.open() ) )
 		{
 			_error( tr( "Project creation" ) );
 			throw std::exception();

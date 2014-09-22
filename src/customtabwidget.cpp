@@ -33,9 +33,7 @@
 #include <QSqlField>
 #include <QMetaEnum>
 #include <QAction>
-#ifndef QT_USE_QT5
-#	include <QTabBar>
-#endif
+#include <QTabBar>
 
 #define C_STR( s ) s.toStdString().c_str()
 
@@ -170,6 +168,10 @@ namespace depgraphV
 	{
 		Project* p = Singleton<Project>::instancePtr();
 		QSqlTableModel* model = p->tableModel( "graphSettings" );
+
+		//TODO removeRow works properly with Qt5, but not with Qt4.
+		//In fact, onDataChanged signal isn't being fired and no
+		//row has been removed after executing following code line
 		if( !( model && model->removeRow( index ) ) )
 		{
 			QMessageBox::critical(
@@ -181,9 +183,7 @@ namespace depgraphV
 			return;
 		}
 
-		//QSqlTableModel does no longer implicitly select() once a row has been removed
-		if( model->select() )
-			delete widget( index );
+		delete widget( index );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeAllButCurrentTab()
