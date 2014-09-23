@@ -61,6 +61,7 @@ namespace depgraphV
 		 */
 		bool hasChildren( const QModelIndex& parent ) const;
 
+		QVariant data( const QModelIndex& i, int role ) const;
 		bool setData( const QModelIndex& i, const QVariant& value, int role );
 
 		void setFileNameFilters( const QStringList& filters );

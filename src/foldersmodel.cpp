@@ -85,9 +85,16 @@ namespace depgraphV
 		).hasNext();
 	}
 	//-------------------------------------------------------------------------
+	QVariant FoldersModel::data( const QModelIndex& i, int role ) const
+	{
+		if( role == Qt::ToolTipRole )
+			return filePath( i );
+
+		return CheckableFileSystemModel::data( i, role );
+	}
+	//-------------------------------------------------------------------------
 	bool FoldersModel::setData( const QModelIndex& i, const QVariant& value, int role )
 	{
-		//TODO Set fullpath as hint of every tree node
 		if( CheckableFileSystemModel::setData( i, value, role ) )
 		{
 			Qt::CheckState c = (Qt::CheckState)value.toInt();
