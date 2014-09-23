@@ -46,11 +46,7 @@ namespace depgraphV
 	{
 		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 
-#ifdef QT_USE_QT5
-		connect( this, SIGNAL( tabBarDoubleClicked( int ) ), this, SLOT( renameTab( int ) ) );
-#else
 		tabBar()->installEventFilter( this );
-#endif
 
 		tabBar()->setContextMenuPolicy( Qt::ActionsContextMenu );
 		QAction* closeButCurrent = new QAction( this );
@@ -101,11 +97,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::closeAllTabs()
 	{
+		//TODO Should I call closeTab( int ) instead of directly removing tabs?
 		while( tabBar()->count() > 0 )
 			delete widget( 0 );
 	}
 	//-------------------------------------------------------------------------
-#ifndef QT_USE_QT5
 	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
 	{
 		bool result = QTabWidget::eventFilter( o, evt );
@@ -126,7 +122,6 @@ namespace depgraphV
 
 		return result;
 	}
-#endif
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::newGraph()
 	{
