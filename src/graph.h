@@ -143,6 +143,12 @@ namespace depgraphV
 		bool applyLayout();
 
 		/**
+		 * @return True if this graph has been drawn (structure created and layout applied),
+		 *	false otherwise.
+		 */
+		bool drawn() const { return _drawn; }
+
+		/**
 		 * @brief Save the graph as image.
 		 * @param filename The filename where to save.
 		 * @param format The image format name ("png" or "svg" for instance).
@@ -237,6 +243,12 @@ namespace depgraphV
 		static QMap<QString, QStringList*> _availablePlugins;
 		static QMap<QString, QStringList*> _parsedFiles;
 
+		NameValuePair _graphAttributes;
+		NameValuePair _verticesAttributes;
+		NameValuePair _edgesAttributes;
+
+		bool _drawn;
+
 		/**
 		 * @brief Create a new edge between two vertices.
 		 * @param src The source vertex.
@@ -254,10 +266,6 @@ namespace depgraphV
 		 * @return True if everything went fine, false otherwise.
 		 */
 		static bool _renderDataAs( Agraph_t* graph, const QString& format, QString* outString );
-
-		NameValuePair _graphAttributes;
-		NameValuePair _verticesAttributes;
-		NameValuePair _edgesAttributes;
 
 		/**
 		 * @brief This method restore all attributes after clearing this graph.

@@ -57,7 +57,8 @@ namespace depgraphV
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
 		  _layoutAlgorithm( "dot" ),
-		_svgItem( 0 )
+		_svgItem( 0 ),
+		_drawn( false )
 	{
 		_instances++;
 
@@ -296,6 +297,7 @@ namespace depgraphV
 		QGraphicsScene* s = scene();
 		s->addItem( _svgItem );
 		s->setSceneRect( _svgItem->boundingRect().adjusted( -10, -10, 10, 10 ) );
+		_drawn = true;
 		return true;
 	}
 	//-------------------------------------------------------------------------
@@ -408,6 +410,7 @@ namespace depgraphV
 		}
 
 		gvFreeLayout( _context, _graph );
+		_drawn = false;
 	}
 	//-------------------------------------------------------------------------
 	void Graph::clearGraph()

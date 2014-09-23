@@ -260,10 +260,10 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveAsDot() const
+	void MainWindow::saveAsDot()
 	{
 		QString path = QFileDialog::getSaveFileName(
-						   const_cast<MainWindow*>( this ),
+						   this,
 						   tr( "Select path and name of the dot file" ),
 						   QDir::currentPath(),
 						   "DOT (*.dot)"
@@ -293,7 +293,7 @@ namespace depgraphV
 			if( !list )
 			{
 				QMessageBox::critical(
-							const_cast<MainWindow*>( this ),
+							this,
 							tr( "Cannot save image" ),
 							tr( "Unable to save graph as image; No plugin found." )
 				);
@@ -315,7 +315,7 @@ namespace depgraphV
 
 		QString selectedFilter;
 		QString path = QFileDialog::getSaveFileName(
-			const_cast<MainWindow*>( this ),
+			this,
 			tr( "Select path and name of the image file" ),
 			QDir::currentPath(), _imageFilters, &selectedFilter );
 
@@ -392,7 +392,8 @@ namespace depgraphV
 		_ui->menuBar->setEnabled( true );
 		_progressBar->setVisible( false );
 		_ui->statusBar->showMessage( tr( "All done" ) );
-		_setButtonsAndActionsEnabled( true );
+		//Force toolbar buttons update
+		onCurrentTabChanged();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onClear()
@@ -409,7 +410,8 @@ namespace depgraphV
 			return;
 
 		_ui->tabWidget->currentGraph()->clearGraph();
-		_setButtonsAndActionsEnabled( false );
+		//Force toolbar buttons update
+		onCurrentTabChanged();
 		//_doClearGraph();
 	}
 	//-------------------------------------------------------------------------
@@ -431,6 +433,16 @@ namespace depgraphV
 			_actionClearRecentList->setText( tr( "Empty list" ) );
 		}
 		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::onCurrentTabChanged( int )
+	{
+		Graph* g = _ui->tabWidget->currentGraph();
+
+		_ui->actionDraw->setEnabled( !g->drawn() );
+		_ui->actionClear->setEnabled( g->drawn() );
+		_ui->actionSave_as_dot->setEnabled( g->drawn() );
+		_ui->actionSave_as_Image->setEnabled( g->drawn() );
 	}
 	//-------------------------------------------------------------------------
 	QAction* MainWindow::_newRecentDocument( const QString& filePath )
@@ -637,13 +649,13 @@ namespace depgraphV
 		_ui->action_Check_for_updates->setEnabled( true );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
+	/*void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
 	{
 		_ui->actionDraw->setEnabled( !value );
 		_ui->actionClear->setEnabled( value );
 		_ui->actionSave_as_dot->setEnabled( value );
 		_ui->actionSave_as_Image->setEnabled( value );
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	void MainWindow::_onLoadProject( const QString& message )
 	{

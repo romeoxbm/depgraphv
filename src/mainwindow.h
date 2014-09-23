@@ -84,7 +84,7 @@ namespace depgraphV
 		void newProject();
 		void openProject();
 		void saveProject();
-		void saveAsDot() const;
+		void saveAsDot();
 		void saveAsImage();
 		void closeProject();
 		void clearRecentDocs();
@@ -92,6 +92,7 @@ namespace depgraphV
 		void onDraw();
 		void onClear();
 		void onConfigRestored();
+		void onCurrentTabChanged( int = -1 );
 		void about();
 		void settings();
 		void restoreDefaultSettings();
@@ -136,7 +137,6 @@ namespace depgraphV
 		void _scanFiles( const QStringList& files ) const;
 		bool _applyGraphLayout() const;
 		void _doClearGraph() const;
-		void _setButtonsAndActionsEnabled( bool value ) const;
 		void _onLoadProject( const QString& message );
 		bool _lookForRequiredImageFormats();
 

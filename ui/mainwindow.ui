@@ -634,9 +634,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>depgraphV::MainWindow</receiver>
+   <slot>onCurrentTabChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>279</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>parseOptionsChanged()</slot>
   <slot>saveAsImage()</slot>
   <slot>saveAsDot()</slot>
   <slot>about()</slot>
@@ -644,7 +659,6 @@
   <slot>settings()</slot>
   <slot>onDraw()</slot>
   <slot>onClear()</slot>
-  <slot>changeToolbarOrientation()</slot>
   <slot>onSelectFilesOrFolders()</slot>
   <slot>checkForUpdates()</slot>
   <slot>newGraph()</slot>
@@ -652,5 +666,6 @@
   <slot>newProject()</slot>
   <slot>openProject()</slot>
   <slot>closeProject()</slot>
+  <slot>onCurrentTabChanged(int)</slot>
  </slots>
 </ui>
