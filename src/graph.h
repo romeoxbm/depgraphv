@@ -188,7 +188,7 @@ namespace depgraphV
 
 		void setAttributes( const QSqlRecord& r );
 
-		void setDefaultAttributes();
+		void setDefaultAttributes( QSqlRecord* = 0 );
 
 		void setLayoutAlgorithm( const QString& value ) { _layoutAlgorithm = value; }
 

@@ -27,8 +27,7 @@
  */
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
-
-#define C_STR( s ) s.toStdString().c_str()
+#include "helpers.h"
 
 namespace depgraphV
 {

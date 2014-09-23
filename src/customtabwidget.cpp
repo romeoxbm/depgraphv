@@ -27,15 +27,13 @@
  */
 #include "customtabwidget.h"
 #include "project.h"
+#include "helpers.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSqlRecord>
 #include <QSqlField>
-#include <QMetaEnum>
 #include <QAction>
 #include <QTabBar>
-
-#define C_STR( s ) s.toStdString().c_str()
 
 namespace depgraphV
 {
@@ -127,18 +125,16 @@ namespace depgraphV
 	{
 		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
 
+		Project* p = Singleton<Project>::instancePtr();
+		QSqlTableModel* m = p->tableModel( "graphSettings" );
+
 		//The new tab must be created before inserting the new row
 		//in the project file, or connected dataChanged slots will crash
 		Graph* g = new Graph( this );
-		g->setDefaultAttributes();
-		addTab( g, graphName );
-
-		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* m = p->tableModel( "graphSettings" );
-		QSqlField f( "name", QVariant::String );
-		f.setValue( graphName );
-		QSqlRecord r;
-		r.append( f );
+		QSqlRecord r = m->record();
+		g->setDefaultAttributes( &r );
+		int index = addTab( g, graphName );
+		r.setValue( "name", graphName );
 		if( !m->insertRecord( -1, r ) )
 		{
 			QMessageBox::critical(
@@ -147,6 +143,8 @@ namespace depgraphV
 						tr( "Unable to add a new graph:\n"
 							"There's something wrong with your project file." )
 			);
+
+			delete widget( index );
 			return;
 		}
 
@@ -245,11 +243,12 @@ namespace depgraphV
 
 		if( fieldName == "RendererType" )
 		{
-			const QMetaObject& mo = Graph::staticMetaObject;
-			int enumIndex = mo.indexOfEnumerator( "RendererType" );
-			QMetaEnum e = mo.enumerator( enumIndex );
-			QString valStr = r.value( "RendererType" ).toString();
-			g->setRenderer( static_cast<Graph::RendererType>( e.keyToValue( C_STR( valStr ) ) ) );
+			Graph::RendererType rType = Helpers::QStringToEnum<Graph::RendererType>(
+											Graph::staticMetaObject,
+											"RendererType",
+											r.value( "RendererType" ).toString()
+			);
+			g->setRenderer( rType );
 		}
 		else if( fieldName == "highQualityAA" )
 			g->setHighQualityAntialiasing( r.value( "highQualityAA" ).toBool() );

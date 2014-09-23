@@ -66,4 +66,10 @@ namespace depgraphV
 
 		return _readTexts[ filename ];
 	}
+	//-------------------------------------------------------------------------
+	QString Helpers::EnumToQString( const QMetaObject& o, const char* enumName, int value )
+	{
+		QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
+		return e.valueToKey( value );
+	}
 }

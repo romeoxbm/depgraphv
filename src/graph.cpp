@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  */
 #include "graph.h"
+#include "helpers.h"
 #include <QSvgRenderer>
 #include <QTextStream>
 #include <QXmlStreamReader>
@@ -146,7 +147,7 @@ namespace depgraphV
 		setEdgesAttribute( "style", r.value( "edge_style" ).toString() );
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setDefaultAttributes()
+	void Graph::setDefaultAttributes( QSqlRecord* r )
 	{
 		setLayoutAlgorithm( "dot" );
 
@@ -159,6 +160,25 @@ namespace depgraphV
 
 		setEdgesAttribute( "minlen", "3" );
 		setEdgesAttribute( "style", "3" );
+
+		if( r )
+		{
+			r->setValue( "layoutAlgorithm", "dot" );
+			r->setValue( "splines", "spline" );
+			r->setValue( "nodesep", "0.4" );
+			r->setValue( "shape", "box" );
+			r->setValue( "vert_style", "rounded" );
+			r->setValue( "minlen", "3" );
+			r->setValue( "edge_style", "solid" );
+
+			QString rType = Helpers::EnumToQString(
+								Graph::staticMetaObject,
+								"RendererType",
+								_renderer
+			);
+			r->setValue( "RendererType", rType );
+			r->setValue( "highQualityAA", highQualityAA() ? "true" : "false" );
+		}
 	}
 	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createVertex( const QString& label )

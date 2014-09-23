@@ -29,6 +29,9 @@
 #define HELPERS_H
 
 #include <QComboBox>
+#include <QMetaEnum>
+
+#define C_STR( s ) s.toStdString().c_str()
 
 namespace depgraphV
 {
@@ -39,6 +42,15 @@ namespace depgraphV
 		static void setCurrentText( QComboBox* combo, const QString& text );
 
 		static QString LoadTextFromResources( const QString& filename );
+
+		static QString EnumToQString( const QMetaObject& o, const char* enumName, int value );
+
+		template<typename T>
+		static T QStringToEnum( const QMetaObject& o, const char* enumName, const QString& value )
+		{
+			QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
+			return static_cast<T>( e.keyToValue( value.toStdString().c_str() ) );
+		}
 
 	private:
 		Helpers(){}
