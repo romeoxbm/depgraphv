@@ -61,6 +61,7 @@ set( Headers
 	src/appconfig.h
 	src/checkablefilesystemmodel.h
 	src/customtabwidget.h
+	src/depgraphv_pch.h
 	src/filesmodel.h
 	src/filterpage.h
 	src/foldersmodel.h
@@ -142,9 +143,11 @@ foreach( t ${AvailableLanguages} )
 	list( APPEND Translations_rel ${newT} )
 endforeach()
 
-option( QT_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
-option( QT_USE_OPENGL FALSE )
-option( QT_UPDATE_TRANSLATIONS false )
+option( DEPGRAPHV_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
+option( DEPGRAPHV_USE_OPENGL FALSE )
+option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS false )
+option( DEPGRAPHV_ENABLE_PCH_SUPPORT false )
+
 if( CMAKE_COMPILER_IS_GNUCXX )
 	if( ${CMAKE_SIZEOF_VOID_P} STREQUAL "8" )
 		set( DEF_X86 FALSE )
@@ -164,21 +167,21 @@ else()
 endif()
 
 #Include right file depending on selected Qt version.
-if( QT_USE_QT5 )
+if( DEPGRAPHV_USE_QT5 )
 	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network;Sql" )
 
-	if( QT_USE_OPENGL )
+	if( DEPGRAPHV_USE_OPENGL )
 		set( qt5Modules "${qt5Modules};OpenGL" )
-	endif( QT_USE_OPENGL )
+	endif( DEPGRAPHV_USE_OPENGL )
 	include( buildQt5 )
 else()
 	set( qt4Modules "QtCore;QtSvg;QtNetwork;QtSql" )
 
-	if( QT_USE_OPENGL )
+	if( DEPGRAPHV_USE_OPENGL )
 		set( qt4Modules "${qt4Modules};QtOpenGL" )
-	endif( QT_USE_OPENGL )
+	endif( DEPGRAPHV_USE_OPENGL )
 	include( buildQt4 )
-endif( QT_USE_QT5 )
+endif( DEPGRAPHV_USE_QT5 )
 
 if( GraphViz_USE_CGRAPH )
 	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
@@ -199,6 +202,10 @@ elseif( MSVC_IDE )
 	set( definitions "/W4 /MP" )
 	list( APPEND RCCSrcs "res/${ProjectName}.rc" )
 	list( APPEND RCCSrcs "res/resource.h" )
+	
+	if( ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
+		list( APPEND Sources src/depgraphv_pch.cpp )
+	endif()
 endif()
 
 message( STATUS "* Using definitions: ${definitions}" )
@@ -214,9 +221,9 @@ add_executable( ${ProjectName} WIN32
 	${i18nSrcs}
 )
 
-if( QT_USE_QT5 )
+if( DEPGRAPHV_USE_QT5 )
 	qt5_use_modules( ${ProjectName} ${qt5Modules} )
-endif( QT_USE_QT5 )
+endif( DEPGRAPHV_USE_QT5 )
 
 target_link_libraries( ${ProjectName} ${libraries} )
 
@@ -228,6 +235,8 @@ foreach( t ${AvailableLanguages} )
 	install( FILES ${newT} DESTINATION ${TRANSLATION_INSTALL_PATH} COMPONENT comp_i18n_${t} )
 endforeach()
 install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
+
+include( PCH_Support )
 
 if( WIN32 )
 	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}bin;${GraphViz_INSTALL_DIRS}/bin" )
@@ -308,3 +317,10 @@ configure_file(
 )
 
 add_custom_target( uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" )
+
+if( PCHSupport_FOUND AND ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
+	ADD_PRECOMPILED_HEADER( ${ProjectName} 
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/depgraphv_pch.h"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/depgraphv_pch.cpp"
+	)
+endif()

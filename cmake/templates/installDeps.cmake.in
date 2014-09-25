@@ -39,7 +39,7 @@ list( APPEND deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_gdiplus.dll" )
 #gvplugin_neato_layout.dll
 #gvplugin_pango.dll
 
-set( QT5 @QT_USE_QT5@ )
+set( QT5 @DEPGRAPHV_USE_QT5@ )
 if( QT5 )
 	list( APPEND deps "@CMAKE_PREFIX_PATH@bin/libEGL.dll" )
 endif()

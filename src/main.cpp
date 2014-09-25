@@ -74,7 +74,7 @@ namespace depgraphV
 	 * @brief This function is being used when it is necessary to disable log messages sent by this application
 	 *		  via qDebug(), qWarning(), etc.
 	 */
-#ifdef QT_USE_QT5
+#ifdef DEPGRAPHV_USE_QT5
 	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
 #else
 	void noMessageOutput( QtMsgType, const char* ) {}
@@ -131,7 +131,7 @@ int main( int argc, char* argv[] )
 {
 	QApplication app( argc, argv );
 
-#ifndef QT_USE_QT5
+#ifndef DEPGRAPHV_USE_QT5
 	//Required to show menu icons with Qt4
 	app.setAttribute( Qt::AA_DontShowIconsInMenus, false );
 #endif
@@ -180,7 +180,7 @@ int main( int argc, char* argv[] )
 	}
 	else
 	{
-#ifdef QT_USE_QT5
+#ifdef DEPGRAPHV_USE_QT5
 		qInstallMessageHandler( &depgraphV::noMessageOutput );
 #else
 		qInstallMsgHandler( &depgraphV::noMessageOutput );

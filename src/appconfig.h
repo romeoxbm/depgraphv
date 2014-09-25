@@ -35,9 +35,9 @@
 #include "graph.h"
 #include <QSettings>
 #include <QTranslator>
-#ifndef QT_USE_QT5
+#ifndef DEPGRAPHV_USE_QT5
 #	include <QStringList>
-#endif // QT_USE_QT5
+#endif // DEPGRAPHV_USE_QT5
 
 namespace depgraphV
 {

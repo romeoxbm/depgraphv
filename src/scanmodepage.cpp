@@ -33,9 +33,10 @@
 
 namespace depgraphV
 {
-	ScanModePage::ScanModePage( SettingsDialog* parent )
+	ScanModePage::ScanModePage( MainWindow* w, SettingsDialog* parent )
 		: SettingsPage( parent ),
-		_ui( new Ui::ScanModePage )
+		_ui( new Ui::ScanModePage ),
+		_mainW( w )
 	{
 		_ui->setupUi( this );
 
@@ -75,7 +76,11 @@ namespace depgraphV
 		if( _ui->selectRootFoldersRadio->isChecked() )
 			Singleton<HandleRootsDialog>::instancePtr()->exec();
 		else
-			Singleton<SelectFilesDialog>::instancePtr()->exec();
+		{
+			Singleton<SelectFilesDialog>::instancePtr()->exec(
+						_mainW->currentGraph()->model()
+			);
+		}
 	}
 	//-------------------------------------------------------------------------
 	void ScanModePage::onConfigRestored()

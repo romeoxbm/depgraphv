@@ -1,5 +1,5 @@
 /**
- * buildsettings.h
+ * depgraphv_pch.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,50 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef BUILDSETTINGS_H
-#define BUILDSETTINGS_H
+#ifndef DEPGRAPHV_PCH_H
+#define DEPGRAPHV_PCH_H
 
-#ifndef APP_NAME
-#	define APP_NAME "@ProjectName@"
-#endif //APP_NAME
-
-#ifndef APP_VER
-#	define APP_VER "@ProjectVersion@"
-#endif //APP_VER
-
-#ifndef APP_VENDOR
-#	define APP_VENDOR "@CPACK_PACKAGE_VENDOR@"
-#endif //APP_VENDOR
-
-#if !defined( WIN32 ) && !defined( APP_BIN_PATH )
-#	define APP_BIN_PATH "@BIN_INSTALL_PATH@"
-#endif //WIN32
-
-#ifndef APP_TR_PATH
-#	define APP_TR_PATH "@TRANSLATION_INSTALL_PATH@"
-#endif //APP_TR_PATH
-
-#ifndef GraphViz_USE_CGRAPH
-	#cmakedefine GraphViz_USE_CGRAPH
-#endif //GraphViz_USE_CGRAPH
-
-#ifndef DEPGRAPHV_USE_QT5
-	#cmakedefine DEPGRAPHV_USE_QT5
-#endif //DEPGRAPHV_USE_QT5
-
-#ifndef DEPGRAPHV_USE_OPENGL
-	#cmakedefine DEPGRAPHV_USE_OPENGL
-#endif //DEPGRAPHV_USE_OPENGL
-
-//Works with MSVC and GCC
-#ifndef ARCH
-#	if defined( _WIN64 ) || defined( __amd64__ )
-#		define ARCH "x64"
-#	elif defined( _WIN32 ) || defined( __i386__ )
-#		define ARCH "x86"
-#	else
-#		define ARCH "unknown"
-#	endif
-#endif //ARCH
-
-#endif // BUILDSETTINGS_H
+#endif // DEPGRAPHV_PCH_H

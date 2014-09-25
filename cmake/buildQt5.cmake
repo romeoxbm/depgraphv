@@ -68,11 +68,11 @@ if( DEFINED Resources )
 endif()
 
 foreach( t ${AvailableLanguages} )
-    if( QT_UPDATE_TRANSLATIONS )
+    if( DEPGRAPHV_UPDATE_QT_TRANSLATIONS )
 	    qt5_create_translation( i18nSrcs ${FilesToTranslate} ${i18n_${t}} )
     else()
 	    qt5_add_translation( i18nSrcs ${i18n_${t}} )
-    endif( QT_UPDATE_TRANSLATIONS )
+    endif( DEPGRAPHV_UPDATE_QT_TRANSLATIONS )
 endforeach()
 
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS}" )

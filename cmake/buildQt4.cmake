@@ -51,11 +51,11 @@ qt4_wrap_ui( UISrcs ${Sources_ui} )
 qt4_add_resources( RCCSrcs ${Resources} )
 
 foreach( t ${AvailableLanguages} )
-    if( QT_UPDATE_TRANSLATIONS )
+    if( DEPGRAPHV_UPDATE_QT_TRANSLATIONS )
 	    qt4_create_translation( i18nSrcs ${FilesToTranslate} ${i18n_${t}} )
     else()
 	    qt4_add_translation( i18nSrcs ${i18n_${t}} )
-    endif( QT_UPDATE_TRANSLATIONS )
+    endif( DEPGRAPHV_UPDATE_QT_TRANSLATIONS )
 endforeach()
 
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${QT_INCLUDES}" )

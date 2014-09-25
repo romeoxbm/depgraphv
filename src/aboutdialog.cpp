@@ -43,7 +43,7 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-#ifndef QT_USE_OPENGL
+#ifndef DEPGRAPHV_USE_OPENGL
 		_ui->glSupportValue->setText( "NO" );
 #endif
 		_ui->projectNameLabel->setText( QApplication::applicationName() );
