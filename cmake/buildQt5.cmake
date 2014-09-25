@@ -31,7 +31,7 @@ if( NOT DEFINED qt5Modules )
 endif()
 
 if( WIN32 )
-	set( QT_INSTALL_PATH "C:/Qt/5.1.1" CACHE PATH "Installation path of Qt libraries." FORCE )
+	set( QT_INSTALL_PATH "C:/Qt/Qt5.2.1/5.2.1" CACHE PATH "Installation path of Qt libraries." FORCE )
 	if( MSVC12 )
 		set( CMAKE_PREFIX_PATH "${QT_INSTALL_PATH}/msvc2013_opengl/" )
 	elseif( MSVC11 )
