@@ -36,10 +36,6 @@
 #	include "singleton.h"
 #endif
 
-#ifndef MEMENTO_H
-#	include "memento.h"
-#endif
-
 #ifndef GRAPH_H
 #	include "graph.h"
 #endif
