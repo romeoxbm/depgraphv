@@ -28,8 +28,6 @@
 #ifndef ISERIALIZABLEOBJECT_H
 #define ISERIALIZABLEOBJECT_H
 
-#include <QList>
-
 namespace depgraphV
 {
 	/**

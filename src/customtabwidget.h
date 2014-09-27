@@ -28,9 +28,9 @@
 #ifndef CUSTOMTABWIDGET_H
 #define CUSTOMTABWIDGET_H
 
-#include <QTabWidget>
-#include <QModelIndex>
-#include "graph.h"
+#ifndef GRAPH_H
+#	include "graph.h"
+#endif
 
 namespace depgraphV
 {

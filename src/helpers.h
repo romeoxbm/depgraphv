@@ -28,11 +28,6 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <QComboBox>
-#include <QMetaEnum>
-
-#define C_STR( s ) s.toStdString().c_str()
-
 namespace depgraphV
 {
 	class Helpers

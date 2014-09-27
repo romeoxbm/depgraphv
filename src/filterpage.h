@@ -28,7 +28,9 @@
 #ifndef FILTERPAGE_H
 #define FILTERPAGE_H
 
-#include "settingsdialog.h"
+#ifndef SETTINGSDIALOG_H
+#	include "settingsdialog.h"
+#endif
 
 namespace depgraphV
 {

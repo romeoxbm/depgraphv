@@ -25,15 +25,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "customtabwidget.h"
 #include "project.h"
 #include "helpers.h"
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QSqlRecord>
-#include <QSqlField>
-#include <QAction>
-#include <QTabBar>
 
 namespace depgraphV
 {

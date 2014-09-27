@@ -28,10 +28,9 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
-#include "settingspage.h"
-#include <QDialog>
-#include <QListWidgetItem>
-#include <QEvent>
+#ifndef SETTINGSPAGE_H
+#	include "settingspage.h"
+#endif
 
 namespace depgraphV
 {

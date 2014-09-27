@@ -28,24 +28,9 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <QGraphicsView>
-#include <QWheelEvent>
-#include <QGraphicsSvgItem>
-#include <QSqlRecord>
-
-#include "buildsettings.h"
-
-#ifndef Q_MOC_RUN
-#	include <gvc.h>
-#	ifdef GraphViz_USE_CGRAPH
-#		include <cgraph.h>
-#		ifndef WITH_CGRAPH
-#			define WITH_CGRAPH 1
-#		endif
-#	else
-#		include <graph.h>
-#	endif // Using_CGRAPH
-#endif // Q_MOC_RUN
+#ifndef FOLDERSMODEL_H
+#	include "foldersmodel.h"
+#endif
 
 namespace depgraphV
 {
@@ -148,6 +133,8 @@ namespace depgraphV
 		 */
 		bool drawn() const { return _drawn; }
 
+		FoldersModel* model() const { return _folderModel; }
+
 		/**
 		 * @brief Save the graph as image.
 		 * @param filename The filename where to save.
@@ -248,6 +235,7 @@ namespace depgraphV
 		NameValuePair _edgesAttributes;
 
 		bool _drawn;
+		FoldersModel* _folderModel;
 
 		/**
 		 * @brief Create a new edge between two vertices.
