@@ -28,9 +28,6 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
 
-#include <QDialog>
-#include <QPlainTextEdit>
-
 namespace depgraphV
 {
 	namespace Ui

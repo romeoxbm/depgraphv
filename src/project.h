@@ -28,11 +28,9 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include "singleton.h"
-#include <QVector>
-#include <QSqlDatabase>
-#include <QSqlTableModel>
-#include <QSqlError>
+#ifndef SINGLETON_H
+#	include "singleton.h"
+#endif
 
 namespace depgraphV
 {

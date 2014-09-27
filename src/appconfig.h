@@ -28,16 +28,21 @@
 #ifndef APPCONFIG_H
 #define APPCONFIG_H
 
-#include "iserializableobject.h"
-#include "singleton.h"
-#include "memento.h"
-#include "buildsettings.h"
-#include "graph.h"
-#include <QSettings>
-#include <QTranslator>
-#ifndef DEPGRAPHV_USE_QT5
-#	include <QStringList>
-#endif // DEPGRAPHV_USE_QT5
+#ifndef ISERIALIZABLEOBJECT_H
+#	include "iserializableobject.h"
+#endif
+
+#ifndef SINGLETON_H
+#	include "singleton.h"
+#endif
+
+#ifndef MEMENTO_H
+#	include "memento.h"
+#endif
+
+#ifndef GRAPH_H
+#	include "graph.h"
+#endif
 
 namespace depgraphV
 {

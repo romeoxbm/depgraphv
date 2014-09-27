@@ -28,8 +28,6 @@
 #ifndef SETTINGSPAGE_H
 #define SETTINGSPAGE_H
 
-#include <QWidget>
-
 namespace depgraphV
 {
 	class SettingsDialog;

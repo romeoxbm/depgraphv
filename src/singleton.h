@@ -28,8 +28,6 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
 
-#include <qglobal.h>
-
 namespace depgraphV
 {
 	template<typename T>

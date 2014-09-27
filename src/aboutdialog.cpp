@@ -25,14 +25,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 #include "appconfig.h"
 #include "helpers.h"
-
-#include <QDesktopServices>
-#include <QUrl>
-#include <gvc.h>
 
 namespace depgraphV
 {

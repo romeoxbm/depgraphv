@@ -25,14 +25,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "appconfig.h"
-#include <QDebug>
-#include <QMetaProperty>
-#include <QLibraryInfo>
-#include <QDir>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QMainWindow>
 
 namespace depgraphV
 {

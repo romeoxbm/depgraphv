@@ -25,15 +25,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "mainwindow.h"
-#include "buildsettings.h"
-#include <QApplication>
-#include <stdio.h>
-
-#ifdef WIN32
-#	define WIN32_LEAN_AND_MEAN
-#	include <windows.h>
-#endif
 
 namespace depgraphV
 {
