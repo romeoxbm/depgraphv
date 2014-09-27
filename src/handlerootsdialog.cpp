@@ -25,13 +25,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "handlerootsdialog.h"
 #include "ui_handlerootsdialog.h"
-
-#include <QPushButton>
-#include <QAction>
-#include <QFileDialog>
-#include <QMessageBox>
 
 namespace depgraphV
 {

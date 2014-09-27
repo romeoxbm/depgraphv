@@ -25,11 +25,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "graphpage.h"
 #include "ui_graphpage.h"
 #include "graph.h"
-
-#include <QComboBox>
 
 namespace depgraphV
 {

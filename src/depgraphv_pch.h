@@ -28,4 +28,101 @@
 #ifndef DEPGRAPHV_PCH_H
 #define DEPGRAPHV_PCH_H
 
+#include "buildsettings.h"
+
+//Qt Includes
+#include <QAbstractButton>
+#include <QAbstractItemView>
+#include <QAction>
+#include <QActionGroup>
+#include <QApplication>
+#include <QComboBox>
+#include <QDataWidgetMapper>
+#include <QDebug>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDialog>
+#include <QDir>
+#include <QEvent>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QFileSystemModel>
+#include <qglobal.h>
+#include <QGraphicsSvgItem>
+#include <QGraphicsView>
+#include <QImageReader>
+#include <QInputDialog>
+#include <QItemDelegate>
+#include <QLibraryInfo>
+#include <QList>
+#include <QListView>
+#include <QListWidgetItem>
+#include <QMainWindow>
+#include <qmath.h>
+#include <QMessageBox>
+#include <QMetaEnum>
+#include <QMetaProperty>
+#include <QModelIndex>
+#include <QNetworkReply>
+#include <QPlainTextEdit>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QSettings>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlRecord>
+#include <QSqlField>
+#include <QSqlTableModel>
+#include <QStringList>
+#include <QSvgRenderer>
+#include <QTabBar>
+#include <QTabWidget>
+#include <QTextStream>
+#include <QToolBar>
+#include <QTranslator>
+#include <QTreeView>
+#include <QUrl>
+#include <QVector>
+#include <QWheelEvent>
+#include <QWidget>
+#include <QXmlStreamReader>
+
+#ifdef DEPGRAPHV_USE_OPENGL
+#	include <QGLWidget>
+#endif
+
+#ifndef QT_NO_CONCURRENT
+#	ifdef DEPGRAPHV_USE_QT5
+#		include <QtConcurrent>
+#	else
+#		include <QtCore>
+#	endif
+#else
+//TODO Warn on missing QtConcurrent support
+#endif // QT_NO_CONCURRENT
+
+//Graphviz includes
+#ifndef Q_MOC_RUN
+#	include <gvc.h>
+#	ifdef GraphViz_USE_CGRAPH
+#		include <cgraph.h>
+#		ifndef WITH_CGRAPH
+#			define WITH_CGRAPH 1
+#		endif
+#	else
+#		include <graph.h>
+#	endif // Using_CGRAPH
+#endif // Q_MOC_RUN
+
+//other includes
+#include <stdio.h>
+
+#ifdef WIN32
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+#endif
+
+#include <functional>
+
 #endif // DEPGRAPHV_PCH_H

@@ -28,10 +28,6 @@
 #ifndef SWIVELINGTOOLBAR_H
 #define SWIVELINGTOOLBAR_H
 
-#include <QToolBar>
-#include <QAction>
-#include <QEvent>
-
 namespace depgraphV
 {
 	class SwivelingToolBar : public QToolBar

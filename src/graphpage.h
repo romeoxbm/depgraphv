@@ -28,12 +28,13 @@
 #ifndef GRAPHPAGE_H
 #define GRAPHPAGE_H
 
-#include "settingspage.h"
-#include "project.h"
-#include <QAbstractButton>
-#include <QDataWidgetMapper>
+#ifndef SETTINGSPAGE_H
+#	include "settingspage.h"
+#endif
 
-#include <QItemDelegate>
+#ifndef PROJECT_H
+#	include "project.h"
+#endif
 
 namespace depgraphV
 {

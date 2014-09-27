@@ -28,8 +28,9 @@
 #ifndef HANDLEROOTSDIALOG_H
 #define HANDLEROOTSDIALOG_H
 
-#include <QDialog>
-#include "appconfig.h"
+#ifndef APPCONFIG_H
+#	include "appconfig.h"
+#endif
 
 namespace depgraphV
 {
@@ -64,7 +65,6 @@ namespace depgraphV
 
 	private slots:
 		void _invertSelection();
-		void _updateEnabledFlags();
 		void on_actionAdd_triggered();
 		void on_actionRemove_Selection_triggered();
 		void onClose( int );
@@ -73,6 +73,8 @@ namespace depgraphV
 	private:
 		Ui::HandleRootsDialog* _ui;
 		QStringList* _selectedFolders;
+
+		void _updateEnabledFlags();
 	};
 }
 
