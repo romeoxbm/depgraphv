@@ -30,11 +30,7 @@ cmake_minimum_required( VERSION 2.8.11 )
 
 set( ProjectName "dep-graphV" )
 set( ProjectVersion "0.3" )
-set( CMAKE_AUTOMOC ON )
 
-# As moc files are generated in the binary dir, tell CMake
-# to always look for includes there:
-set( CMAKE_INCLUDE_CURRENT_DIR ON )
 set( CMAKE_SCRIPTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
 set( CMAKE_TEMPLATES_PATH "${CMAKE_SCRIPTS_PATH}/templates" )
 set( CMAKE_MODULE_PATH "${CMAKE_SCRIPTS_PATH};${CMAKE_MODULE_PATH}" )
@@ -114,6 +110,14 @@ set( Sources_ui
 	ui/settingsdialog.ui
 )
 
+set( Ignored_Moc
+	src/depgraphv_pch.h
+	src/helpers.h
+	src/iserializableobject.h
+	src/memento.h
+	src/singleton.h
+)
+
 set( Resources
 	res/resources.qrc
 )
@@ -137,6 +141,10 @@ set( DOCS
 	TODO
 )
 
+#Create Sources_Moc list by diff
+set( Sources_Moc ${Headers} )
+list( REMOVE_ITEM Sources_Moc ${Ignored_Moc} )
+
 foreach( t ${AvailableLanguages} )
 	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )
 	string( REPLACE ".ts" ".qm" newT ${newT} )
@@ -145,8 +153,8 @@ endforeach()
 
 option( DEPGRAPHV_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( DEPGRAPHV_USE_OPENGL FALSE )
-option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS false )
-option( DEPGRAPHV_ENABLE_PCH_SUPPORT false )
+option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS FALSE )
+option( DEPGRAPHV_ENABLE_PCH_SUPPORT TRUE )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
 	if( ${CMAKE_SIZEOF_VOID_P} STREQUAL "8" )
@@ -166,6 +174,16 @@ else()
 	message( STATUS "* Found" )
 endif()
 
+#Setting up Graphviz includes and libraries
+set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${CMAKE_CURRENT_BINARY_DIR}/src" )
+set( libraries "${GraphViz_gvc_LIBRARY}" )
+
+if( GraphViz_USE_CGRAPH )
+	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
+else()
+	list( APPEND libraries "${GraphViz_graph_LIBRARY}" )
+endif()
+
 #Include right file depending on selected Qt version.
 if( DEPGRAPHV_USE_QT5 )
 	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network;Sql" )
@@ -183,14 +201,8 @@ else()
 	include( buildQt4 )
 endif( DEPGRAPHV_USE_QT5 )
 
-if( GraphViz_USE_CGRAPH )
-	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
-else()
-	list( APPEND libraries "${GraphViz_graph_LIBRARY}" )
-endif()
-
 if( CMAKE_COMPILER_IS_GNUCXX )
-	set( definitions "-Wall -std=c++0x" )
+	set( definitions "-fPIC -Wall -std=c++0x" )
 	
 	if( BUILD_32 )
 		set( definitions "${definitions} -m32" )
@@ -219,11 +231,8 @@ add_executable( ${ProjectName} WIN32
 	${UISrcs}
 	${RCCSrcs}
 	${i18nSrcs}
+	${Mocs}
 )
-
-if( DEPGRAPHV_USE_QT5 )
-	qt5_use_modules( ${ProjectName} ${qt5Modules} )
-endif( DEPGRAPHV_USE_QT5 )
 
 target_link_libraries( ${ProjectName} ${libraries} )
 
@@ -239,15 +248,16 @@ install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 include( PCH_Support )
 
 if( WIN32 )
-	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}bin;${GraphViz_INSTALL_DIRS}/bin" )
+	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}/bin;${GraphViz_INSTALL_DIRS}/bin" )
 	
 	if( MSVC_IDE )
 		include( CreateLaunchers )
 		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
 
+		source_group( "Compiled Translations" FILES ${Translations_rel} )
+		source_group( "Mocs" FILES ${Mocs} )
 		source_group( "Resources" FILES ${Resources} ${RCCSrcs} )
 		source_group( "Ui" FILES ${Sources_ui} ${UISrcs} )
-		source_group( "Compiled Translations" FILES ${Translations_rel} )
 	endif( MSVC_IDE )
 			
 	#Configure installDeps.cmake
@@ -279,8 +289,7 @@ else()
 		"${CMAKE_TEMPLATES_PATH}/${ProjectName}.desktop.in"
 		"${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop"
 		IMMEDIATE @ONLY
-	)
-	
+	)	
 	set( icoResolutions
 		"512x512"
 		"256x256"
@@ -305,7 +314,7 @@ include( packaging )
 #Configure buildsettings file
 configure_file(
 	"${CMAKE_TEMPLATES_PATH}/buildsettings.h.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h"
+	"${CMAKE_CURRENT_BINARY_DIR}/src/buildsettings.h"
 	IMMEDIATE @ONLY
 )
 
