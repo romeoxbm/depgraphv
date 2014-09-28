@@ -28,7 +28,9 @@
 #ifndef SCANMODEPAGE_H
 #define SCANMODEPAGE_H
 
-#include "settingspage.h"
+#ifndef MAINWINDOW_H
+#	include "mainwindow.h"
+#endif
 
 namespace depgraphV
 {
@@ -46,7 +48,7 @@ namespace depgraphV
 		 * @brief ScanModePage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit ScanModePage( SettingsDialog* parent );
+		explicit ScanModePage( MainWindow* w, SettingsDialog* parent );
 
 		/**
 		 * @brief ScanModePage destructor.
@@ -68,6 +70,7 @@ namespace depgraphV
 
 	private:
 		Ui::ScanModePage* _ui;
+		MainWindow* _mainW;
 	};
 }
 

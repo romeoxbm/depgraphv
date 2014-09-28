@@ -1,5 +1,5 @@
-/**
- * helpers.h
+﻿/**
+ * packedparameters.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,36 +25,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef PACKEDPARAMETERS_H
+#define PACKEDPARAMETERS_H
+
+#ifndef FILESMODEL_H
+#	include "filesmodel.h"
+#endif
 
 namespace depgraphV
 {
-	class Helpers
+	class PackedParameters
 	{
 	public:
-		//TODO This method should be removed
-		static void setCurrentText( QComboBox* combo, const QString& text );
+		Qt::CheckState checkState() const { return _checkstate; }
+		FilesModel::FileGroup filesGroup() const { return _group; }
 
-		static QString LoadTextFromResources( const QString& filename );
+		static PackedParameters* ptr( const QVariant& v );
 
-		static QString EnumToQString( const QMetaObject& o, const char* enumName, int value );
-
-		template<typename T>
-		static T QStringToEnum( const QMetaObject& o, const char* enumName, const QString& value )
-		{
-			QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
-			return static_cast<T>( e.keyToValue( value.toStdString().c_str() ) );
-		}
-
-		static void insertSeparator( QAbstractItemView* view );
+		static QVariant toQVariant( Qt::CheckState c,
+			FilesModel::FileGroup g = FilesModel::All );
 
 	private:
-		Helpers(){}
-		~Helpers(){}
+		PackedParameters( Qt::CheckState c, FilesModel::FileGroup g );
 
-		static QMap<QString, QString> _readTexts;
+		Qt::CheckState _checkstate;
+		FilesModel::FileGroup _group;
 	};
 }
 
-#endif // HELPERS_H
+#endif // PACKEDPARAMETERS_H

@@ -25,32 +25,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "appconfig.h"
-#include "buildsettings.h"
 
 //Settings Dialog pages
 #include "scanmodepage.h"
 #include "filterpage.h"
 #include "graphpage.h"
-
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QDebug>
-#include <QImageReader>
-
-#ifndef QT_NO_CONCURRENT
-#	ifdef QT_USE_QT5
-#		include <QtConcurrent>
-#	else
-#		include <QtCore>
-#	endif
-#else
-//TODO Warn on missing QtConcurrent support
-#endif // QT_NO_CONCURRENT
-
-#include <functional>
 
 namespace depgraphV
 {
@@ -109,7 +92,7 @@ namespace depgraphV
 		//Settings dialog pages
 		_settingsDlg->addPage(
 					"Scan Mode",
-					new ScanModePage( _settingsDlg )
+					new ScanModePage( this, _settingsDlg )
 		);
 		_settingsDlg->addPage(
 					"Header Filters",
@@ -160,6 +143,25 @@ namespace depgraphV
 		delete _filesDlg;
 		delete _config;
 		delete _netManager;
+	}
+	//------------------------------------------------------------------------
+	void MainWindow::show( const QString& fileName )
+	{
+		if( !fileName.isEmpty() )
+		{
+			//Check if file exists
+			QFile f( fileName );
+			if( f.exists() )
+			{
+				_project = Project::open( fileName, this );
+				if( _project )
+					_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
+			}
+			else
+				QMessageBox::critical( this, tr( "Open Project" ), tr( "File doesn't exist!" ) );
+		}
+
+		QMainWindow::show();
 	}
 	//------------------------------------------------------------------------
 	void MainWindow::changeEvent( QEvent* event )
@@ -244,7 +246,6 @@ namespace depgraphV
 			return;
 
 		_project = Project::open( file, this );
-
 		if( _project )
 			_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
 	}
@@ -278,11 +279,10 @@ namespace depgraphV
 		if( format.isEmpty() )
 			path += ".dot";
 
-		Graph* g = _ui->tabWidget->currentGraph();
-		if( g->saveDot( path ) )
+		if( currentGraph()->saveDot( path ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
-			QMessageBox::critical( 0, tr( "Save as dot" ), tr( "Unable to save file" ) );
+			QMessageBox::critical( this, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::saveAsImage()
@@ -331,8 +331,7 @@ namespace depgraphV
 			path += "." + format;
 		}
 
-		Graph* g = _ui->tabWidget->currentGraph();
-		if( g->saveImage( path, format ) )
+		if( currentGraph()->saveImage( path, format ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 	}
 	//-------------------------------------------------------------------------
@@ -383,10 +382,10 @@ namespace depgraphV
 		if( _config->scanByFolders() )
 			_scanFolders();
 		else
-			_scanFiles( _filesDlg->selectedFiles() );
+			_scanFiles( currentGraph()->model()->checkedFiles() );
 
 		if( !_applyGraphLayout() )
-			_ui->tabWidget->currentGraph()->clearGraph();
+			currentGraph()->clearGraph();
 
 		_ui->toolBar->setEnabled( true );
 		_ui->menuBar->setEnabled( true );
@@ -409,7 +408,7 @@ namespace depgraphV
 		if( answer == QMessageBox::No )
 			return;
 
-		_ui->tabWidget->currentGraph()->clearGraph();
+		currentGraph()->clearGraph();
 		//Force toolbar buttons update
 		onCurrentTabChanged();
 		//_doClearGraph();
@@ -437,7 +436,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onCurrentTabChanged( int )
 	{
-		Graph* g = _ui->tabWidget->currentGraph();
+		Graph* g = currentGraph();
 
 		_ui->actionDraw->setEnabled( !g->drawn() );
 		_ui->actionClear->setEnabled( g->drawn() );
@@ -526,13 +525,12 @@ namespace depgraphV
 	void MainWindow::_scanFiles( const QStringList& files ) const
 	{
 		_startSlowOperation( tr( "Analyzing files..." ), files.count() );
-		Graph* g = _ui->tabWidget->currentGraph();
 
 		//TODO blockingMap here instead of the following "simple" foreach loop?
 		foreach( QString path, files )
 		{
 			QFileInfo f( path );
-			g->createEdges( f.absolutePath(), f.fileName() );
+			currentGraph()->createEdges( f.absolutePath(), f.fileName() );
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
 	}
@@ -541,7 +539,7 @@ namespace depgraphV
 	{
 		//TODO
 		_startSlowOperation( tr( "Applying layout..." ), 0 );
-		return _ui->tabWidget->currentGraph()->applyLayout();
+		return currentGraph()->applyLayout();
 			//qDebug() << "Unable to render; Plugin not found.";
 	}
 	//-------------------------------------------------------------------------
@@ -642,9 +640,9 @@ namespace depgraphV
 		}
 
 		if( error )
-			QMessageBox::critical( 0, tr( "Check for updates" ), message );
+			QMessageBox::critical( this, tr( "Check for updates" ), message );
 		else
-			QMessageBox::information( 0, tr( "Check for updates" ), message );
+			QMessageBox::information( this, tr( "Check for updates" ), message );
 
 		_ui->action_Check_for_updates->setEnabled( true );
 	}
@@ -715,6 +713,11 @@ namespace depgraphV
 		return props;
 	}
 	//-------------------------------------------------------------------------
+	Graph* MainWindow::currentGraph() const
+	{
+		return _ui->tabWidget->currentGraph();
+	}
+	//-------------------------------------------------------------------------
 	QByteArray MainWindow::windowState() const
 	{
 		return this->saveState();
@@ -781,7 +784,7 @@ namespace depgraphV
 		if( _config->scanByFolders() )
 			_rootsDlg->exec();
 		else
-			_filesDlg->exec();
+			_filesDlg->exec( currentGraph()->model() );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onLanguageActionTriggered( QAction* action )
@@ -858,12 +861,12 @@ namespace depgraphV
 			"Linux"
 #endif
 			"&arch=" ARCH "&qt="
-#ifdef QT_USE_QT5
+#ifdef DEPGRAPHV_USE_QT5
 			"5&gl="
 #else
 			"4&gl="
 #endif
-#ifdef QT_USE_OPENGL
+#ifdef DEPGRAPHV_USE_OPENGL
 			"yes";
 #else
 			"no";

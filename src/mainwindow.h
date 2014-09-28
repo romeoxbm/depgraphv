@@ -28,16 +28,25 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "graph.h"
-#include "aboutdialog.h"
-#include "settingsdialog.h"
-#include "handlerootsdialog.h"
-#include "selectfilesdialog.h"
-#include "project.h"
+#ifndef ABOUTDIALOG_H
+#	include "aboutdialog.h"
+#endif
 
-#include <QMainWindow>
-#include <QProgressBar>
-#include <QNetworkReply>
+#ifndef SETTINGSDIALOG_H
+#	include "settingsdialog.h"
+#endif
+
+#ifndef HANDLEROOTSDIALOG_H
+#	include "handlerootsdialog.h"
+#endif
+
+#ifndef SELECTFILESDIALOG_H
+#	include "selectfilesdialog.h"
+#endif
+
+#ifndef PROJECT_H
+#	include "project.h"
+#endif
 
 namespace depgraphV
 {
@@ -66,7 +75,11 @@ namespace depgraphV
 		 */
 		~MainWindow();
 
+		void show( const QString& fileName = "" );
+
 		virtual QList<const char*> propList() const;
+
+		Graph* currentGraph() const;
 
 		QByteArray windowState() const;
 		QByteArray geometryState() const;

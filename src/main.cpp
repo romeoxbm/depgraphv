@@ -56,7 +56,7 @@ namespace depgraphV
 	{
 		printVersion();
 		printf( "Usage\n\n" );
-		printf( "\t%s [options]\n\n", APP_NAME );
+		printf( "\t%s [options] [filename]\n\n", APP_NAME );
 		printf( "Options\n" );
 		printf( "\t-h (--help) \t\t= Print this help message and quit.\n" );
 		printf( "\t-V (--version) \t\t= Print %s version and quit.\n", APP_NAME );
@@ -132,6 +132,7 @@ int main( int argc, char* argv[] )
 #endif
 
 	bool logEnabled = false;
+	QString filename;
 	if( app.arguments().count() > 1 )
 	{
 		//First of all, check for valid option..
@@ -140,7 +141,7 @@ int main( int argc, char* argv[] )
 		for( unsigned short i = 1; i < app.arguments().count(); i++ )
 		{
 			QString current = app.arguments()[ i ];
-			if( !validOptions.contains( current ) )
+			if( current.startsWith( '-' ) && !validOptions.contains( current ) || !filename.isEmpty() )
 			{
 				//Wrong option. Print help and quit
 				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", current.toStdString().c_str() );
@@ -162,6 +163,9 @@ int main( int argc, char* argv[] )
 
 			else if( current == "--with-log" || current == "-l" )
 				logEnabled = true;
+
+			else
+				filename = current;
 		}
 	}
 
@@ -184,7 +188,7 @@ int main( int argc, char* argv[] )
 	app.setApplicationVersion( APP_VER );
 
 	depgraphV::MainWindow w;
-	w.show();
+	w.show( filename );
 
 	return app.exec();
 }

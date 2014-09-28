@@ -200,7 +200,7 @@ namespace depgraphV
 		QMessageBox::warning(
 					0,
 					dlgTitle,
-					tr( "An error occurred: %1" ).arg(
+					tr( "An error occurred:\n%1" ).arg(
 						model ? model->lastError().text() :
 								_db.lastError().text()
 					)

@@ -68,6 +68,7 @@ set( Headers
 	src/iserializableobject.h
 	src/mainwindow.h
 	src/memento.h
+	src/packedparameters.h
 	src/project.h
 	src/scanmodepage.h
 	src/selectfilesdialog.h
@@ -91,6 +92,7 @@ set( Sources
 	src/helpers.cpp
 	src/main.cpp
 	src/mainwindow.cpp
+	src/packedparameters.cpp
 	src/project.cpp
 	src/scanmodepage.cpp
 	src/selectfilesdialog.cpp
@@ -115,6 +117,7 @@ set( Ignored_Moc
 	src/helpers.h
 	src/iserializableobject.h
 	src/memento.h
+	src/packedparameters.h
 	src/singleton.h
 )
 
@@ -274,7 +277,7 @@ if( WIN32 )
 		IMMEDIATE @ONLY
 	)
 
-	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
+	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/src/buildsettings.h
 		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
 
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" COMPONENT runtime )

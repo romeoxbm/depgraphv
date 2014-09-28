@@ -35,7 +35,7 @@ namespace depgraphV
 	//TODO This method should be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
-#ifdef DEPGRAPHV_USE_QT5
+#ifdef DEPGRAPHV_USE_QT5S
 		combo->setCurrentText( text );
 #else
 		int idx = combo->findText( text );
@@ -68,5 +68,12 @@ namespace depgraphV
 	{
 		QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
 		return e.valueToKey( value );
+	}
+	//-------------------------------------------------------------------------
+	void Helpers::insertSeparator( QAbstractItemView* view )
+	{
+		QAction* sep = new QAction( view );
+		sep->setSeparator( true );
+		view->addAction( sep );
 	}
 }
