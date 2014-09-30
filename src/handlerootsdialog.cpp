@@ -28,6 +28,7 @@
 #include "depgraphv_pch.h"
 #include "handlerootsdialog.h"
 #include "ui_handlerootsdialog.h"
+#include "helpers.h"
 
 namespace depgraphV
 {
@@ -38,13 +39,10 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		QAction* sep = new QAction( this );
-		sep->setSeparator( true );
-
 		_ui->rootFolders->addAction( _ui->actionSelect_All );
 		_ui->rootFolders->addAction( _ui->actionSelect_None );
 		_ui->rootFolders->addAction( _ui->actionInvert_Selection );
-		_ui->rootFolders->addAction( sep );
+		Helpers::insertSeparator( _ui->rootFolders );
 		_ui->rootFolders->addAction( _ui->actionAdd );
 		_ui->rootFolders->addAction( _ui->actionRemove_Selection );
 		_ui->rootFolders->viewport()->installEventFilter( this );
@@ -90,12 +88,11 @@ namespace depgraphV
 		int selectedCount = _ui->rootFolders->selectedItems().count();
 		int count = _selectedFolders->count();
 
-		_ui->actionSelect_None->setEnabled( selectedCount > 0 && count );
+		_ui->actionSelect_All->setEnabled( count && selectedCount < count );
+		_ui->actionSelect_None->setEnabled( count && selectedCount );
+		_ui->actionInvert_Selection->setEnabled( count );
 
-		_ui->actionSelect_All->setEnabled( selectedCount != count && count > 0 );
-
-		_ui->actionInvert_Selection->setEnabled( count > 0 );
-		_ui->actionRemove_Selection->setEnabled( selectedCount > 0 );
+		_ui->actionRemove_Selection->setEnabled( selectedCount );
 	}
 	//-------------------------------------------------------------------------
 	void HandleRootsDialog::on_actionAdd_triggered()

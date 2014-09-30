@@ -141,7 +141,7 @@ int main( int argc, char* argv[] )
 		for( unsigned short i = 1; i < app.arguments().count(); i++ )
 		{
 			QString current = app.arguments()[ i ];
-			if( current.startsWith( '-' ) && !validOptions.contains( current ) || !filename.isEmpty() )
+			if( ( current.startsWith( '-' ) && !validOptions.contains( current ) ) || !filename.isEmpty() )
 			{
 				//Wrong option. Print help and quit
 				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", current.toStdString().c_str() );
