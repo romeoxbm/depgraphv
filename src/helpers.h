@@ -38,16 +38,27 @@ namespace depgraphV
 
 		static QString LoadTextFromResources( const QString& filename );
 
-		static QString EnumToQString( const QMetaObject& o, const char* enumName, int value );
+		static bool EnumToQString( const QMetaObject& o, const char* enumName, int value , QString* dest );
 
 		template<typename T>
-		static T QStringToEnum( const QMetaObject& o, const char* enumName, const QString& value )
+		static bool QStringToEnum( const QMetaObject& o, const char* enumName, const QString& value, T* dest )
 		{
-			QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
-			return static_cast<T>( e.keyToValue( value.toStdString().c_str() ) );
+			int index = o.indexOfEnumerator( enumName );
+			if( index == -1 )
+				return false;
+
+			QMetaEnum e = o.enumerator( index );
+			int val = e.keyToValue( value.toStdString().c_str() );
+			if( val == -1 )
+				return false;
+
+			*dest = static_cast<T>( val );
+			return true;
 		}
 
 		static void insertSeparator( QAbstractItemView* view );
+
+		static bool addExtension( QString& filename, const QString& ext );
 
 	private:
 		Helpers(){}

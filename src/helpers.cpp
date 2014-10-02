@@ -64,10 +64,19 @@ namespace depgraphV
 		return _readTexts[ filename ];
 	}
 	//-------------------------------------------------------------------------
-	QString Helpers::EnumToQString( const QMetaObject& o, const char* enumName, int value )
+	bool Helpers::EnumToQString( const QMetaObject& o, const char* enumName, int value, QString* dest )
 	{
-		QMetaEnum e = o.enumerator( o.indexOfEnumerator( enumName ) );
-		return e.valueToKey( value );
+		int index = o.indexOfEnumerator( enumName );
+		if( index == -1 )
+			return false;
+
+		QMetaEnum e = o.enumerator( index );
+		const char* val = e.valueToKey( value );
+		if( !val )
+			return false;
+
+		*dest = val;
+		return true;
 	}
 	//-------------------------------------------------------------------------
 	void Helpers::insertSeparator( QAbstractItemView* view )
@@ -75,5 +84,16 @@ namespace depgraphV
 		QAction* sep = new QAction( view );
 		sep->setSeparator( true );
 		view->addAction( sep );
+	}
+	//-------------------------------------------------------------------------
+	bool Helpers::addExtension( QString& filename, const QString& ext )
+	{
+		if( filename.isEmpty() )
+			return false;
+
+		if( !filename.toLower().endsWith( ext.toLower() ) )
+			filename += ext.startsWith( '.' ) ? ext : "." + ext;
+
+		return true;
 	}
 }
