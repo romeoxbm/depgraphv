@@ -66,7 +66,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool HandleRootsDialog::eventFilter( QObject* obj, QEvent* evt )
 	{
-		if( obj == _ui->rootFolders->viewport() &&evt->type() == QEvent::ContextMenu )
+		if( obj == _ui->rootFolders->viewport() && evt->type() == QEvent::ContextMenu )
 			_updateEnabledFlags();
 
 		return QDialog::eventFilter( obj, evt );
