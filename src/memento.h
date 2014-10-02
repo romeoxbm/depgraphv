@@ -36,22 +36,28 @@ namespace depgraphV
 	public:
 		Memento()
 		{
-			this->commit();
+			commit();
 		}
 
 		Memento( const T& s )
 		{
-			this->setState( s );
-			this->commit();
+			setState( s );
+			commit();
 		}
 
 		~Memento()
 		{
 		}
 
-		void commit()
+		bool commit()
 		{
-			_mementoState = _state;
+			if( _mementoState != _state )
+			{
+				_mementoState = _state;
+				return true;
+			}
+
+			return false;
 		}
 
 		void revert()
