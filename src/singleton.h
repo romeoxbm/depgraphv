@@ -36,12 +36,12 @@ namespace depgraphV
 	public:
 		static T& instance()
 		{
+			Q_ASSERT( _instance );
 			return *Singleton<T>::instancePtr();
 		}
 
 		static T* instancePtr()
 		{
-			Q_ASSERT( _instance );
 			return _instance;
 		}
 
