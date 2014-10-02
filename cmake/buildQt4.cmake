@@ -78,41 +78,40 @@ macro( CUSTOM_QT4_ADD_RESOURCES outfiles )
 endmacro()
 
 macro( CUSTOM_QT4_WRAP_UI outfiles )
-  QT4_EXTRACT_OPTIONS( ui_files ui_options ui_target ${ARGN} )
+	QT4_EXTRACT_OPTIONS( ui_files ui_options ui_target ${ARGN} )
 
-  foreach( it ${ui_files} )
-    get_filename_component(outfile ${it} NAME_WE)
-    get_filename_component(infile ${it} ABSOLUTE)
-    set( outfile ${CMAKE_CURRENT_BINARY_DIR}/src/ui_${outfile}.h )
-    add_custom_command( OUTPUT ${outfile}
-		COMMAND ${QT_UIC_EXECUTABLE}
-		ARGS ${ui_options} -o ${outfile} ${infile}
-		MAIN_DEPENDENCY ${infile} VERBATIM
-	)
-    set( ${outfiles} ${${outfiles}} ${outfile} )
-  endforeach()
+	foreach( it ${ui_files} )
+		get_filename_component(outfile ${it} NAME_WE)
+		get_filename_component(infile ${it} ABSOLUTE)
+		set( outfile ${CMAKE_CURRENT_BINARY_DIR}/src/ui_${outfile}.h )
+		add_custom_command( OUTPUT ${outfile}
+			COMMAND ${QT_UIC_EXECUTABLE}
+			ARGS ${ui_options} -o ${outfile} ${infile}
+			MAIN_DEPENDENCY ${infile} VERBATIM
+		)
+		set( ${outfiles} ${${outfiles}} ${outfile} )
+	endforeach()
 endmacro()
 
 macro( CUSTOM_QT4_WRAP_CPP outfiles )
-  # get include dirs
-  QT4_GET_MOC_FLAGS( moc_flags )
-  QT4_EXTRACT_OPTIONS( moc_files moc_options moc_target ${ARGN} )
+	# get include dirs
+	QT4_GET_MOC_FLAGS( moc_flags )
+	QT4_EXTRACT_OPTIONS( moc_files moc_options moc_target ${ARGN} )
 
-  foreach( it ${moc_files} )
-    get_filename_component( it ${it} ABSOLUTE )
-    QT4_MAKE_OUTPUT_FILE( ${it} moc_ cxx outfile )
-	#message( STATUS "${it} ${outfile} ${moc_flags} ${moc_options} ${moc_target}" )
-    #CUSTOM_QT4_CREATE_MOC_COMMAND( ${it} ${outfile} "${moc_flags}" "${moc_options}" "${moc_target}" )
-	add_custom_command( OUTPUT ${outfile}
-		COMMAND ${CMAKE_COMMAND}
-		ARGS -E echo "#include \"depgraphv_pch.h\"" > ${outfile}
-		COMMAND ${QT_MOC_EXECUTABLE}
-		ARGS ${moc_flags} ${moc_options} ${moc_target} ${it} >> ${outfile}
-		DEPENDS ${it} VERBATIM
-	)
-    set( ${outfiles} ${${outfiles}} ${outfile} )
-  endforeach()
-
+	foreach( it ${moc_files} )
+		get_filename_component( it ${it} ABSOLUTE )
+		QT4_MAKE_OUTPUT_FILE( ${it} moc_ cxx outfile )
+		#message( STATUS "${it} ${outfile} ${moc_flags} ${moc_options} ${moc_target}" )
+		#CUSTOM_QT4_CREATE_MOC_COMMAND( ${it} ${outfile} "${moc_flags}" "${moc_options}" "${moc_target}" )
+		add_custom_command( OUTPUT ${outfile}
+			COMMAND ${CMAKE_COMMAND}
+			ARGS -E echo "#include \"depgraphv_pch.h\"" > ${outfile}
+			COMMAND ${QT_MOC_EXECUTABLE}
+			ARGS ${moc_flags} ${moc_options} ${moc_target} ${it} >> ${outfile}
+			DEPENDS ${it} VERBATIM
+		)
+		set( ${outfiles} ${${outfiles}} ${outfile} )
+	endforeach()
 endmacro ()
 
 if( WIN32 )
