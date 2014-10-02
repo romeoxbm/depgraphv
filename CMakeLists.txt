@@ -56,6 +56,7 @@ set( Headers
 	src/aboutdialog.h
 	src/appconfig.h
 	src/checkablefilesystemmodel.h
+	src/comboboxitemdelegate.h
 	src/customtabwidget.h
 	src/depgraphv_pch.h
 	src/filesmodel.h
@@ -82,6 +83,7 @@ set( Sources
 	src/aboutdialog.cpp
 	src/appconfig.cpp
 	src/checkablefilesystemmodel.cpp
+	src/comboboxitemdelegate.cpp
 	src/customtabwidget.cpp
 	src/filesmodel.cpp
 	src/filterpage.cpp
