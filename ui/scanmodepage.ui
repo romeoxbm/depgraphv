@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>320</height>
+    <height>250</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>250</width>
-    <height>320</height>
+    <height>250</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>320</height>
+    <height>250</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -129,7 +129,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="selectionCount">
         <property name="text">
          <string>Current selection: 0 item(s)</string>
         </property>
