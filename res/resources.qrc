@@ -4,7 +4,6 @@
         <file alias="TODO">../TODO</file>
         <file alias="Changelog">../ChangeLog</file>
         <file alias="COPYING">../COPYING</file>
-        <file>db-structure.sql</file>
     </qresource>
     <qresource prefix="/icons">
         <file>dep-graphV.ico</file>
@@ -36,5 +35,6 @@
         <file>new-project_48x48.png</file>
         <file>new-graph_48x48.png</file>
         <file>save_48x48.png</file>
+        <file>save-as_48x48.png</file>
     </qresource>
 </RCC>
