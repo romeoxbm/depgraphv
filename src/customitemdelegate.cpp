@@ -1,5 +1,5 @@
 /**
- * comboboxitemdelegate.cpp
+ * customitemdelegate.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -26,26 +26,32 @@
  * THE SOFTWARE.
  */
 #include "depgraphv_pch.h"
-#include "comboboxitemdelegate.h"
+#include "customitemdelegate.h"
+#include "binaryradiowidget.h"
 
 namespace depgraphV
 {
-	ComboBoxItemDelegate::ComboBoxItemDelegate( QObject* parent )
+	CustomItemDelegate::CustomItemDelegate( QObject* parent )
 		: QItemDelegate( parent )
 	{
 	}
 	//-------------------------------------------------------------------------
-	void ComboBoxItemDelegate::setEditorData( QWidget* editor,
+	void CustomItemDelegate::setEditorData( QWidget* editor,
 										  const QModelIndex& index ) const
 	{
+		if( _disableConnections )
+			_disconnect( editor );
+
 		QComboBox* combo = qobject_cast<QComboBox*>( editor );
 		if( combo )
 			combo->setCurrentIndex( combo->findText( index.data().toString() ) );
 		else
 			QItemDelegate::setEditorData( editor, index );
+
+		_connect( editor );
 	}
 	//-------------------------------------------------------------------------
-	void ComboBoxItemDelegate::setModelData( QWidget* editor,QAbstractItemModel* model,
+	void CustomItemDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
 										 const QModelIndex& index ) const
 	{
 		QComboBox* combo = qobject_cast<QComboBox*>( editor );
@@ -53,5 +59,55 @@ namespace depgraphV
 			model->setData( index, combo->currentText() );
 		else
 			QItemDelegate::setModelData( editor, model, index );
+	}
+	//-------------------------------------------------------------------------
+	void CustomItemDelegate::_connect( QWidget* widget ) const
+	{
+		if( widget->property( "editingStartedConnected" ).isValid() )
+			return;
+
+		bool ok = true;
+		if( QLineEdit* w = qobject_cast<QLineEdit*>( widget ) )
+		{
+			ok = connect( w, SIGNAL( textEdited( const QString& ) ),
+						  this, SIGNAL( editingStarted() )
+			);
+		}
+		else if( QAbstractSpinBox* w = qobject_cast<QAbstractSpinBox*>( widget ) )
+		{
+			ok = connect( w, SIGNAL( editingFinished() ),
+						  this, SIGNAL( editingStarted() )
+			);
+		}
+		else if( QComboBox* w = qobject_cast<QComboBox*>( widget ) )
+		{
+			ok = connect( w, SIGNAL( currentIndexChanged( int ) ),
+						  this, SIGNAL( editingStarted() )
+			);
+		}
+		else if( QCheckBox* w = qobject_cast<QCheckBox*>( widget ) )
+		{
+			ok = connect( w, SIGNAL( stateChanged( int ) ),
+						  this, SIGNAL( editingStarted() )
+			);
+		}
+		else if( BinaryRadioWidget* w = qobject_cast<BinaryRadioWidget*>( widget ) )
+		{
+			ok = connect( w, SIGNAL( toggled( bool ) ),
+						  this, SIGNAL( editingStarted() )
+			);
+		}
+
+		Q_ASSERT( ok );
+		widget->setProperty( "editingStartedConnected", true );
+	}
+	//-------------------------------------------------------------------------
+	void CustomItemDelegate::_disconnect( QWidget* widget ) const
+	{
+		if( !widget->property( "editingStartedConnected" ).isValid() )
+			return;
+
+		widget->disconnect( this, SIGNAL( editingStarted() ) );
+		widget->setProperty( "editingStartedConnected", QVariant() );
 	}
 }

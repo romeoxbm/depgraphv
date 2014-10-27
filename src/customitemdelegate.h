@@ -1,5 +1,5 @@
 /**
- * comboboxitemdelegate.h
+ * customitemdelegate.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
  * dependendencies via graphs.
@@ -25,20 +25,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef COMBOBOXITEMDELEGATE_H
-#define COMBOBOXITEMDELEGATE_H
+#ifndef CUSTOMITEMDELEGATE_H
+#define CUSTOMITEMDELEGATE_H
 
 namespace depgraphV
 {
-	class ComboBoxItemDelegate : public QItemDelegate
+	class CustomItemDelegate : public QItemDelegate
 	{
 		Q_OBJECT
 
 	public:
-		explicit ComboBoxItemDelegate( QObject* parent = 0 );
+		explicit CustomItemDelegate( QObject* parent = 0 );
 
 		void setEditorData( QWidget* editor, const QModelIndex& index ) const;
 		void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const;
+
+		void disableConnections( bool value ) { _disableConnections = value; }
+
+	signals:
+		void editingStarted() const;
+
+	private:
+		bool _disableConnections;
+
+		void _connect( QWidget* ) const;
+		void _disconnect( QWidget* ) const;
 	};
 }
-#endif // COMBOBOXITEMDELEGATE_H
+#endif // CUSTOMITEMDELEGATE_H
