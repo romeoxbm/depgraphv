@@ -59,6 +59,7 @@ namespace depgraphV
 		static void insertSeparator( QAbstractItemView* view );
 
 		static bool addExtension( QString& filename, const QString& ext );
+		static QString ucFirst( const QString& value );
 
 	private:
 		Helpers(){}

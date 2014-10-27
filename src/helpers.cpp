@@ -96,4 +96,16 @@ namespace depgraphV
 
 		return true;
 	}
+	//-------------------------------------------------------------------------
+	QString Helpers::ucFirst( const QString& value )
+	{
+		QStringList split = value.split( " " );
+		for( int i = 0; i < split.count(); ++i )
+		{
+			QString& s = split[ i ];
+			s[ 0 ] = s[ 0 ].toUpper();
+		}
+
+		return split.join( " " );
+	}
 }
