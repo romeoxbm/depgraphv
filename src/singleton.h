@@ -36,12 +36,14 @@ namespace depgraphV
 	public:
 		static T& instance()
 		{
+			static_assert( std::is_base_of<Singleton<T>, T>::value, "Invalid singleton usage!" );
 			Q_ASSERT( _instance );
-			return *Singleton<T>::instancePtr();
+			return *_instance;
 		}
 
 		static T* instancePtr()
 		{
+			static_assert( std::is_base_of<Singleton<T>, T>::value, "Invalid singleton usage!" );
 			return _instance;
 		}
 
