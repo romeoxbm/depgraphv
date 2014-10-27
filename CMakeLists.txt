@@ -55,13 +55,15 @@ project( ${ProjectName} )
 set( Headers
 	src/aboutdialog.h
 	src/appconfig.h
+	src/binaryradiowidget.h
 	src/checkablefilesystemmodel.h
-	src/comboboxitemdelegate.h
+	src/customitemdelegate.h
 	src/customtabwidget.h
 	src/depgraphv_pch.h
 	src/filesmodel.h
 	src/filterpage.h
 	src/foldersmodel.h
+	src/generalpage.h
 	src/graph.h
 	src/graphpage.h
 	src/handlerootsdialog.h
@@ -82,12 +84,14 @@ set( Headers
 set( Sources
 	src/aboutdialog.cpp
 	src/appconfig.cpp
+	src/binaryradiowidget.cpp
 	src/checkablefilesystemmodel.cpp
-	src/comboboxitemdelegate.cpp
+	src/customitemdelegate.cpp
 	src/customtabwidget.cpp
 	src/filesmodel.cpp
 	src/filterpage.cpp
 	src/foldersmodel.cpp
+	src/generalpage.cpp
 	src/graph.cpp
 	src/graphpage.cpp
 	src/handlerootsdialog.cpp
@@ -106,6 +110,7 @@ set( Sources
 set( Sources_ui
 	ui/aboutdialog.ui
 	ui/filterpage.ui
+	ui/generalpage.ui
 	ui/graphpage.ui
 	ui/handlerootsdialog.ui
 	ui/mainwindow.ui
@@ -191,14 +196,14 @@ endif()
 
 #Include right file depending on selected Qt version.
 if( DEPGRAPHV_USE_QT5 )
-	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network;Sql" )
+	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
 
 	if( DEPGRAPHV_USE_OPENGL )
 		set( qt5Modules "${qt5Modules};OpenGL" )
 	endif( DEPGRAPHV_USE_OPENGL )
 	include( buildQt5 )
 else()
-	set( qt4Modules "QtCore;QtSvg;QtNetwork;QtSql" )
+	set( qt4Modules "QtCore;QtSvg;QtNetwork" )
 
 	if( DEPGRAPHV_USE_OPENGL )
 		set( qt4Modules "${qt4Modules};QtOpenGL" )
