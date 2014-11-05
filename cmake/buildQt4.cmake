@@ -129,8 +129,8 @@ endif()
 
 include( ${QT_USE_FILE} )
 
-if( DEFINED Sources_Moc )
-	custom_qt4_wrap_cpp( Mocs ${Sources_Moc} )
+if( DEFINED Sources_moc )
+        custom_qt4_wrap_cpp( Mocs ${Sources_moc} )
 endif()
 
 if( DEFINED Sources_ui )

@@ -46,7 +46,7 @@ else()
 	
 	#Force CMAKE_BUILD_TYPE to DEBUG on Linux when is not defined
 	if( "${CMAKE_BUILD_TYPE}" STREQUAL "" )
-		set( CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE )
+		set( CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." )
 	endif()
 endif()
 
@@ -119,7 +119,7 @@ set( Sources_ui
 	ui/settingsdialog.ui
 )
 
-set( Ignored_Moc
+set( Ignored_moc
 	src/depgraphv_pch.h
 	src/helpers.h
 	src/iserializableobject.h
@@ -151,9 +151,9 @@ set( DOCS
 	TODO
 )
 
-#Create Sources_Moc list by diff
-set( Sources_Moc ${Headers} )
-list( REMOVE_ITEM Sources_Moc ${Ignored_Moc} )
+#Create Sources_moc list by diff
+set( Sources_moc ${Headers} )
+list( REMOVE_ITEM Sources_moc ${Ignored_moc} )
 
 foreach( t ${AvailableLanguages} )
 	string( REPLACE "i18n" ${CMAKE_CURRENT_BINARY_DIR} newT ${i18n_${t}} )
@@ -161,11 +161,17 @@ foreach( t ${AvailableLanguages} )
 	list( APPEND Translations_rel ${newT} )
 endforeach()
 
+#Options
 option( DEPGRAPHV_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( DEPGRAPHV_USE_OPENGL FALSE )
 option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS FALSE )
 option( DEPGRAPHV_ENABLE_PCH_SUPPORT TRUE )
 
+if( UNIX )
+    set( DEPGRAPHV_PREFERRED_PACKAGE "DEB" CACHE STRING "Choose the type of generated package. Valid options are RPM or DEB." )
+endif()
+
+#Detecting if we're on x86 system (or not) when using gnu compiler
 if( CMAKE_COMPILER_IS_GNUCXX )
 	if( ${CMAKE_SIZEOF_VOID_P} STREQUAL "8" )
 		set( DEF_X86 FALSE )

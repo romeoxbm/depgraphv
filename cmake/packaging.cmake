@@ -28,6 +28,26 @@
 #####################################################################################
 #CPack settings
 
+#Checking prerequisites for UNIX systems
+if( UNIX )
+    #First of all, we need to check for valid DEPGRAPHV_PREFERRED_PACKAGE value
+    if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
+	   find_program( DPKG_SHLIBDEPS_FOUND NAMES dpkg-shlibdeps DOC "path to the dpkg-shlibdeps script." )
+	   if( NOT DPKG_SHLIBDEPS_FOUND )
+		  message( WARNING "dpkg-shlibdeps must be installed in order to create a .deb package! (package name: dpkg-dev)" )
+		  return()
+	   endif()
+
+    elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
+	   #TODO Check for rpmbuild for rpm package
+	   message( WARNING "At this time, it is not possibile to build an .rpm package.\nThis feature will be soon available." )
+	   return()
+
+    else()
+	   message( SEND_ERROR "${DEPGRAPHV_PREFERRED_PACKAGE} is an invalid value for DEPGRAPHV_PREFERRED_PACKAGE option!" )
+    endif()
+endif( UNIX )
+
 set( CPACK_PACKAGE_VENDOR "Guastella Francesco" )
 set( VENDOR_EMAIL "guastella.francesco@gmail.com" )
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${ProjectName} - Header dependencies analizer\n" )
@@ -54,105 +74,14 @@ else()
 endif( DEPGRAPHV_USE_OPENGL )
 
 if( WIN32 )
-	set( CPACK_MODULE_PATH "${CMAKE_TEMPLATES_PATH}" )
-	set( CPACK_GENERATOR "NSIS" )
-
-	set( CPACK_NSIS_PROJECT_NAME ${ProjectName} )
-	set( CPACK_NSIS_BIN_PATH ${BIN_INSTALL_PATH} )
-	set( CPACK_NSIS_MODIFY_PATH ON )
-	set( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON )
-	set( CPACK_NSIS_MUI_FINISHPAGE_RUN "${ProjectName}.exe" )
-	set( CPACK_NSIS_CONTACT ${VENDOR_EMAIL} )
-	set( CPACK_NSIS_HELP_LINK "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraphv\\\\support" )
-	set( CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\sourceforge.net\\\\projects\\\\depgraphv" )
-	set( CPACK_NSIS_URL_LINK_NAME "${CPACK_NSIS_PROJECT_NAME}'s project page at SourceForge.net" )
-	
-	set( CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-install.ico" )
-	set( CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall.ico" )
-	set( CPACK_NSIS_MUI_HEADER "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange_header.bmp" )
-	set( CPACK_NSIS_MUI_UNIHEADER "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall_header.bmp" )
-	set( CPACK_NSIS_MUI_WIZARD "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange_wizard.bmp" )
-	set( CPACK_NSIS_MUI_UNIWIZARD "${CMAKE_CURRENT_SOURCE_DIR}\\\\res\\\\NSIS_Theme\\\\orange-uninstall_wizard.bmp" )
-	
-	if( MSVC_IDE )
-		set( CPACK_NSIS_MSVC_REDIST ON )
-
-		if( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
-			set( REDIS_ARCH "x64" )
-		
-			if( MSVC11 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/1/3/2/13297EFB-ED35-46B5-BD9A-F32CF7CC2CFF/VSU3/vcredist_x64.exe" )
-				set( MSC_VER "2012" )
-			elseif( MSVC10 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/3/2/2/3224B87F-CFA0-4E70-BDA3-3DE650EFEBA5/vcredist_x64.exe" )
-				set( MSC_VER "2010" )
-			elseif( MSVC90 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/a/9/8/a989ab72-1d46-4e59-9515-7970f9c07e7a/vcredist_x64.exe" )
-				set( MSC_VER "2008" )
-			elseif( MSVC80 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/1/b/b/1bbd848c-8e66-49ab-8592-aebad761d8f0/vcredist_x64.exe" )
-				set( MSC_VER "2005" )
-			endif()
-			
-		else( "${CMAKE_SIZEOF_VOID_P}" EQUAL "8" )
-			set( REDIS_ARCH "x86" )
-		
-			if( MSVC11 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/1/3/2/13297EFB-ED35-46B5-BD9A-F32CF7CC2CFF/VSU3/vcredist_x86.exe" )
-				set( MSC_VER "2012" )
-			elseif( MSVC10 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe" )
-				set( MSC_VER "2010" )
-			elseif( MSVC90 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/f/8/7/f874831f-2dbf-45cf-8d8c-c1a442b2fbbb/vcredist_x86.exe" )
-				set( MSC_VER "2008" )
-			elseif( MSVC80 )
-				set( CPACK_NSIS_MSVC_REDIST_LINK "http://download.microsoft.com/download/7/4/5/74560780-2c53-4d08-b746-a85090201d33/vcredist_x86.exe" )
-				set( MSC_VER "2005" )
-			endif()
-		endif()
-
-		set( CPACK_NSIS_MSVC_REDIST_MSG "Microsoft Visual C++ ${MSC_VER} Redistributable package (${REDIS_ARCH}) is required. Installer will now download and install it. If you already installed it, just skip the redistributable package installation." )
-
-	endif( MSVC_IDE )
-	
-	set( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "DeleteRegKey HKCU \\\"Software\\\\${CPACK_PACKAGE_VENDOR}\\\"" )
-	
+    include( pack_nsis )
 else()
-	set( CPACK_GENERATOR "DEB" )
-	
-	#Architecture suffix
-	if( BUILD_32 )
-		set( CPACK_SYSTEM_NAME "${CPACK_SYSTEM_NAME}i386" )
-	else()
-		set( CPACK_SYSTEM_NAME "${CPACK_SYSTEM_NAME}amd64" )
-	endif( BUILD_32 )
+    if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
+	   include( pack_deb )
 
-	#Conflicts
-	if( DEPGRAPHV_USE_QT5 )
-		if( DEPGRAPHV_USE_OPENGL )
-			set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-nogl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
-		else()
-			set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-gl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
-		endif( DEPGRAPHV_USE_OPENGL )
-	else()
-		if( DEPGRAPHV_USE_OPENGL )
-			set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt4-nogl, dep-graphv-qt5-gl, dep-graphv-qt5-nogl" )
-		else()
-			set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt4-gl, dep-graphv-qt5-gl, dep-graphv-qt5-nogl" )
-		endif( DEPGRAPHV_USE_OPENGL )
-	endif( DEPGRAPHV_USE_QT5 )
-	
-	#deb settings
-	set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <${VENDOR_EMAIL}>" )
-	set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://sourceforge.net/projects/depgraphv/" )
-	
-	find_program( DPKG_SHLIBDEPS_FOUND NAMES dpkg-shlibdeps DOC "path to the dpkg-shlibdeps script." )
-	if( DPKG_SHLIBDEPS_FOUND )
-		set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
-	else()
-		message( SEND_ERROR "dpkg-shlibdeps must be installed on build system! (package: dpkg-dev)" )
-	endif()
+    elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
+	   include( pack_rpm )
+
 endif( WIN32 )
 
 #Resources
