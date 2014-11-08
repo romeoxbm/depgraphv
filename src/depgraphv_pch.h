@@ -36,6 +36,7 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDataWidgetMapper>
 #include <QDebug>
@@ -43,6 +44,7 @@
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
+#include <QDoubleSpinBox>
 #include <QEvent>
 #include <QFile>
 #include <QFileDialog>
@@ -65,15 +67,14 @@
 #include <QMetaProperty>
 #include <QModelIndex>
 #include <QNetworkReply>
+#include <QObject>
 #include <QPlainTextEdit>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QSettings>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlRecord>
-#include <QSqlField>
-#include <QSqlTableModel>
+#include <QSpinBox>
+#include <QStandardItemModel>
 #include <QStringList>
 #include <QSvgRenderer>
 #include <QTabBar>
@@ -123,6 +124,8 @@
 #	include <windows.h>
 #endif
 
+#include <type_traits>
 #include <functional>
+#include <sstream>
 
 #endif // DEPGRAPHV_PCH_H
