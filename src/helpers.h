@@ -61,6 +61,51 @@ namespace depgraphV
 		static bool addExtension( QString& filename, const QString& ext );
 		static QString ucFirst( const QString& value );
 
+		template<typename T>
+		static bool QStringToType( const QString& s, T* value, typename std::enable_if<!std::is_same<bool, T>::value, T>::type* = 0 )
+		{
+			static_assert( !std::is_same<QString, T>::value, "Converting from QString to QString is pointless!" );
+			Q_ASSERT( !s.isEmpty() );
+
+			std::istringstream is( s.toStdString() );
+			return !( is >> *value ).fail();
+		}
+
+		template<typename T>
+		static bool QStringToType( const QString& s, T* value, typename std::enable_if<std::is_same<bool, T>::value, T>::type* = 0 )
+		{
+			if( !s.isEmpty() )
+			{
+				QString lCaseVal = s.toLower();
+
+				if( lCaseVal == "true" || lCaseVal == "yes" || lCaseVal == "1" )
+				{
+					*value = true;
+					return true;
+				}
+
+				else if( lCaseVal == "false" || lCaseVal == "no" || lCaseVal == "0" )
+				{
+					*value = false;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		template<typename T>
+		static T* fromQVariant( const QVariant& v )
+		{
+			return static_cast<T*>( v.value<void*>() );
+		}
+
+		template<typename T>
+		static QVariant toQVariant( T* value )
+		{
+			return qVariantFromValue( static_cast<void*>( value ) );
+		}
+
 	private:
 		Helpers(){}
 		~Helpers(){}

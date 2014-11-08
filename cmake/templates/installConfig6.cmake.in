@@ -32,5 +32,6 @@ set( dest "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@" )
 file( COPY "@GraphViz_INSTALL_DIRS@/bin/dot.exe" DESTINATION "${dest}" )
 execute_process( COMMAND "${dest}/dot.exe" -c )
 file( REMOVE "${dest}/dot.exe" )
+#TODO dot chrashes cause it's being copied without its dependencies...
 
 file( INSTALL DESTINATION "${dest}" TYPE FILE FILES "${dest}/config6" )

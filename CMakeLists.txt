@@ -71,7 +71,6 @@ set( Headers
 	src/iserializableobject.h
 	src/mainwindow.h
 	src/memento.h
-	src/packedparameters.h
 	src/project.h
 	src/scanmodepage.h
 	src/selectfilesdialog.h
@@ -98,7 +97,6 @@ set( Sources
 	src/helpers.cpp
 	src/main.cpp
 	src/mainwindow.cpp
-	src/packedparameters.cpp
 	src/project.cpp
 	src/scanmodepage.cpp
 	src/selectfilesdialog.cpp
@@ -124,7 +122,6 @@ set( Ignored_moc
 	src/helpers.h
 	src/iserializableobject.h
 	src/memento.h
-	src/packedparameters.h
 	src/singleton.h
 )
 
@@ -209,7 +206,7 @@ if( DEPGRAPHV_USE_QT5 )
 	endif( DEPGRAPHV_USE_OPENGL )
 	include( buildQt5 )
 else()
-	set( qt4Modules "QtCore;QtSvg;QtNetwork" )
+	set( qt4Modules "QtCore;QtGui;QtSvg;QtNetwork" )
 
 	if( DEPGRAPHV_USE_OPENGL )
 		set( qt4Modules "${qt4Modules};QtOpenGL" )
