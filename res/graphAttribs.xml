@@ -1,0 +1,73 @@
+<graphAttribs>
+	<attribute name="splines" group="graph" link="d:splines">
+		<content type="QComboBox" default="none">none,line,polyline,curved,ortho,spline</content>
+		<tooltips>
+			<en>
+				<![CDATA[
+				<p>Controls how, and if, edges are represented.</p>
+				<p>If spline, edges are drawn as splines routed around nodes;<br>
+				if line, edges are drawn as line segments.<br>
+				If set to none, no edges are drawn at all.</p>
+				]]>
+			</en>
+			<it>
+				<![CDATA[
+				<p>Controlla come, e se, gli archi sono rappresentati.</p>
+				<p>Se spline, gli archi sono disegnati come splines orientate tra i vertici;<br>
+				Se line, gli archi sono disegnati come segmenti di linea.<br>
+				Se none, nessun arco sarà disegnato.</p>
+				]]>
+			</it>
+		</tooltips>
+	</attribute>
+
+	<attribute name="nodesep" group="graph" link="d:nodesep">
+		<content type="QDoubleSpinBox" default="0.4">min=0.02,max=100,step=0.01</content>
+		<tooltips>
+			<en>
+				<![CDATA[
+				<p>In dot, this specifies the minimum space between two adjacent nodes in the same rank, in inches.</p>
+				<p>For other layouts, this affects the spacing between loops on a single node, or multiedges between a pair of nodes.</p>
+				]]>
+			</en>
+			<it>
+				<![CDATA[
+				<p>Con dot, questo specifica il minimo spazio tra due vertici adiacenti dello stesso rango, in pollici.</p>
+				<p>Per altri layout, questo controlla la spaziatura tra loop su un singolo vertice, o multi-archi tra una coppia di vertici.</p>
+				]]>
+			</it>
+		</tooltips>
+	</attribute>
+
+	<attribute name="shape" group="vertex" link="d:shape">
+		<content type="QComboBox" default="box">box,polygon,ellipse,oval,circle,egg,triangle,plaintext,diamond,trapezium,parallelogram,house,pentagon,hexagon,septagon,octagon,invtriangle,invtrapezium,invhouse,rect,rectangle,square,star,none,underline,note,tab,folder,box3d,component,cds</content>
+		<tooltips>
+			<en>Set the shape of a vertex.</en>
+			<it>Controlla la forma dei vertici.</it>
+		</tooltips>
+	</attribute>
+
+	<attribute name="style" group="vertex" link="d:style">
+		<content type="QComboBox" default="rounded">solid,dashed,dotted,bold,rounded,diagonals,filled</content>
+		<tooltips>
+			<en>Set style information for vertices of the graph.</en>
+			<it>Controlla lo stile dei vertici del grafo.</it>
+		</tooltips>
+	</attribute>
+
+	<attribute name="minlen" group="edge" link="d:minlen">
+		<content type="QSpinBox" default="3">min=0,max=100,step=1</content>
+		<tooltips>
+			<en>Minimum edge length (rank difference between head and tail).</en>
+			<it>Lunghezza minima per gli archi (differenza di rango tra testa e coda).</it>
+		</tooltips>
+	</attribute>
+
+	<attribute name="style" group="edge" link="d:style">
+		<content type="QComboBox" default="solid">solid,dashed,dotted,bold</content>
+		<tooltips>
+			<en>Set style information for edges of the graph.</en>
+			<it>Controlla lo stile degli archi del grafo.</it>
+		</tooltips>
+	</attribute>
+</graphAttribs>
