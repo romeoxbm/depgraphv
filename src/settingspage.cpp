@@ -31,12 +31,37 @@
 
 namespace depgraphV
 {
-	SettingsPage::SettingsPage( SettingsDialog* parent )
+	SettingsPage::SettingsPage( MainWindow* w, SettingsDialog* parent )
 		: QWidget( parent )
 	{
+		Q_ASSERT( w );
+		connect( w, SIGNAL( projectOpened() ),
+				 this, SLOT( onProjectOpened() )
+		);
+		connect( w, SIGNAL( projectLoaded() ),
+				 this, SLOT( onProjectLoaded() )
+		);
+		connect( w, SIGNAL( projectClosed() ),
+				 this, SLOT( onProjectClosed() )
+		);
 	}
-
+	//-------------------------------------------------------------------------
 	SettingsPage::~SettingsPage()
+	{
+	}
+	//-------------------------------------------------------------------------
+	void SettingsPage::onProjectOpened()
+	{
+		Project* p = Singleton<Project>::instancePtr();
+		p->setCurrentMapper( "settingsMapper" );
+	}
+	//-------------------------------------------------------------------------
+	void SettingsPage::onProjectLoaded()
+	{
+
+	}
+	//-------------------------------------------------------------------------
+	void SettingsPage::onProjectClosed()
 	{
 	}
 }

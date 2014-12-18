@@ -28,6 +28,10 @@
 #ifndef SETTINGSPAGE_H
 #define SETTINGSPAGE_H
 
+#ifndef MAINWINDOW_H
+#	include "mainwindow.h"
+#endif
+
 namespace depgraphV
 {
 	class SettingsDialog;
@@ -40,8 +44,16 @@ namespace depgraphV
 		virtual ~SettingsPage() = 0;
 		virtual QString iconPath() const = 0;
 
+		virtual void commitChanges() {}
+		virtual void revertChanges() {}
+
 	protected:
-		explicit SettingsPage( SettingsDialog* parent = 0 );
+		explicit SettingsPage( MainWindow* w, SettingsDialog* parent = 0 );
+
+	protected slots:
+		virtual void onProjectOpened();
+		virtual void onProjectLoaded();
+		virtual void onProjectClosed();
 	};
 }
 #endif // SETTINGSPAGE_H
