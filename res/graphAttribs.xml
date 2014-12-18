@@ -1,6 +1,6 @@
 <graphAttribs>
 	<attribute name="splines" group="graph" link="d:splines">
-		<content type="QComboBox" default="none">none,line,polyline,curved,ortho,spline</content>
+		<content type="QComboBox" default="spline">none,line,polyline,curved,ortho,spline</content>
 		<tooltips>
 			<en>
 				<![CDATA[
