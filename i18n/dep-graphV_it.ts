@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<TS version="2.1" language="it_IT">
 <context>
     <name>depgraphV::AboutDialog</name>
     <message>
@@ -518,7 +518,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
     <message>
         <location filename="../ui/graphpage.ui" line="170"/>
         <source>Vertices Attributes</source>
-        <translation>Attributi sui Vertici</translation>
+        <translation>Attributi dei Vertici</translation>
     </message>
     <message>
         <location filename="../ui/graphpage.ui" line="186"/>
@@ -534,7 +534,7 @@ For other layouts, this affects the spacing between loops on a single node, or m
     <message>
         <location filename="../ui/graphpage.ui" line="403"/>
         <source>Edges Attributes</source>
-        <translation>Attributi sugli Archi</translation>
+        <translation>Attributi degli Archi</translation>
     </message>
     <message>
         <location filename="../ui/graphpage.ui" line="456"/>
