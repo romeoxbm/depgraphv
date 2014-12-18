@@ -30,7 +30,7 @@
 
 namespace depgraphV
 {
-	BinaryRadioWidget::BinaryRadioWidget( QRadioButton* radios[ 2 ] , bool defaultValue )
+	BinaryRadioWidget::BinaryRadioWidget( QRadioButton* radios[ 2 ] )
 		: QWidget( radios[ 0 ] ),
 		  _trueButton( radios[ 0 ] ),
 		  _falseButton( radios[ 1 ] )
@@ -38,7 +38,6 @@ namespace depgraphV
 		connect( _trueButton, SIGNAL( toggled( bool ) ),
 				 this, SIGNAL( toggled( bool ) )
 		);
-		setValue( defaultValue );
 	}
 	//-------------------------------------------------------------------------
 	bool BinaryRadioWidget::value() const

@@ -36,7 +36,7 @@ namespace depgraphV
 		Q_PROPERTY( bool value READ value WRITE setValue USER true )
 
 	public:
-		BinaryRadioWidget( QRadioButton* radios[ 2 ], bool defaultValue = true );
+		BinaryRadioWidget( QRadioButton* radios[ 2 ] );
 
 		bool value() const;
 		void setValue( bool value );
