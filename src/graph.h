@@ -41,17 +41,11 @@ namespace depgraphV
 	{
 		Q_OBJECT
 		Q_PROPERTY( RendererType rendererType READ renderer WRITE setRenderer )
-		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAntialiasing )
+		Q_PROPERTY( bool highQualityAA READ highQualityAA WRITE setHighQualityAA )
 		Q_PROPERTY( QString layoutAlgorithm READ layoutAlgorithm WRITE setLayoutAlgorithm )
-		Q_PROPERTY( NameValuePair graphAttributes READ graphAttributes )
-		Q_PROPERTY( NameValuePair verticesAttributes READ verticesAttributes )
-		Q_PROPERTY( NameValuePair edgesAttributes READ edgesAttributes )
-
 		Q_ENUMS( RendererType )
 
 	public:
-		typedef QMap<QString, QString> NameValuePair;
-
 		/**
 		 * @brief The RendererType enum which is used to set the render method used by Graph
 		 */
@@ -62,10 +56,11 @@ namespace depgraphV
 		};
 
 		/**
-		 * @brief Graph contructor
-		 * @param parent The parent widget (default NULL)
+		 * @brief Graph contructor.
+		 * @param graphIndex Index of this graph.
+		 * @param parent The parent widget (default NULL).
 		 */
-		Graph( QWidget* parent = 0 );
+		Graph( int graphIndex, QWidget* parent = 0 );
 
 		/**
 		 * @brief Graph Destructor.
@@ -79,17 +74,55 @@ namespace depgraphV
 		RendererType renderer() const { return _renderer; }
 
 		/**
+		 * @brief Return the default value for renderer property (Native).
+		 */
+		static RendererType defaultRenderer() { return Graph::Native; }
+
+		/**
+		 * @brief Return the default value for renderer property (Native) as QString.
+		 */
+		static QString defaultRendererString() { return "Native"; }
+
+		/**
 		 * @return True if high quality antialiasing is enabled, false otherwise.
 		 */
 		bool highQualityAA() const;
 
-		const QString& layoutAlgorithm() const { return _layoutAlgorithm; }
+		/**
+		 * @brief Return the default value for highQualityAA property (false).
+		 */
+		static bool defaultHighQualityAA() { return false; }
 
-		const NameValuePair& graphAttributes() const { return _graphAttributes; }
+		/**
+		 * @brief Return the currently in use layout algorithm.
+		 */
+		const QString& layoutAlgorithm() const;
 
-		const NameValuePair& verticesAttributes() const { return _verticesAttributes; }
+		/**
+		 * @brief Return the default value for layoutAlgorithm property (dot).
+		 */
+		static QString defaultLayoutAlgorithm() { return "dot"; }
 
-		const NameValuePair& edgesAttributes() const { return _edgesAttributes; }
+		/**
+		 * @brief Return the graph attribute value.
+		 * @param name The name of the graph attribute.
+		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 */
+		QString graphAttribute( const QString& name ) const;
+
+		/**
+		 * @brief Return the vertices attribute value.
+		 * @param name The name of the vertices attribute.
+		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 */
+		QString verticesAttribute( const QString& name ) const;
+
+		/**
+		 * @brief Return the edges attribute value.
+		 * @param name The name of the edges attribute.
+		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 */
+		QString edgesAttribute( const QString& name ) const;
 
 		/**
 		 * @brief Create a new graph vertex.
@@ -133,7 +166,7 @@ namespace depgraphV
 		 */
 		bool drawn() const { return _drawn; }
 
-		FoldersModel* model() const { return _folderModel; }
+		FoldersModel* model() const { return _foldersModel; }
 
 		/**
 		 * @brief Save the graph as image.
@@ -159,6 +192,9 @@ namespace depgraphV
 		 */
 		static QStringList* pluginsListByKind( const QString& kind );
 
+		inline friend QDataStream& operator << ( QDataStream& out, const Graph& object );
+		inline friend QDataStream& operator >> ( QDataStream& in, Graph& object );
+
 	signals:
 		void vertexCreated( Agnode_t* );
 		void edgeCreated( Agedge_t* );
@@ -177,13 +213,9 @@ namespace depgraphV
 		 * @brief Enable (or disable) high quality antialiasing.
 		 * @param highQualityAntialiasing the new value of antialiasing property.
 		 */
-		void setHighQualityAntialiasing( bool highQualityAA );
+		void setHighQualityAA( bool highQualityAA );
 
-		void setAttributes( const QSqlRecord& r );
-
-		void setDefaultAttributes( QSqlRecord* = 0 );
-
-		void setLayoutAlgorithm( const QString& value ) { _layoutAlgorithm = value; }
+		void setLayoutAlgorithm( const QString& value );
 
 		/**
 		 * @brief Change value of a graph attribute by name.
@@ -217,6 +249,7 @@ namespace depgraphV
 		virtual void wheelEvent( QWheelEvent* event );
 
 	private:
+		int _graphIndex;
 		RendererType _renderer;
 		QString _layoutAlgorithm;
 
@@ -230,12 +263,13 @@ namespace depgraphV
 		static QMap<QString, QStringList*> _availablePlugins;
 		static QMap<QString, QStringList*> _parsedFiles;
 
+		typedef QMap<QString, QString> NameValuePair;
 		NameValuePair _graphAttributes;
 		NameValuePair _verticesAttributes;
 		NameValuePair _edgesAttributes;
 
 		bool _drawn;
-		FoldersModel* _folderModel;
+		FoldersModel* _foldersModel;
 
 		/**
 		 * @brief Create a new edge between two vertices.
@@ -259,6 +293,8 @@ namespace depgraphV
 		 * @brief This method restore all attributes after clearing this graph.
 		 */
 		void _restoreAttributes();
+
+		void _setDefaultAttributes();
 
 		static void _lookForAvailablePlugins();
 		static bool _isPluginAvailable( const QString& format, const QString& kind = "" );

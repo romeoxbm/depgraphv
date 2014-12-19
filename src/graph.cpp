@@ -25,18 +25,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "graph.h"
 #include "helpers.h"
-#include <QSvgRenderer>
-#include <QTextStream>
-#include <QXmlStreamReader>
-#include <QMessageBox>
-#include <QDebug>
-#include <qmath.h>
-
-#ifdef QT_USE_OPENGL
-#	include <QGLWidget>
-#endif
 
 #define G_STR( str ) str.toUtf8().data()
 
@@ -54,24 +45,26 @@ namespace depgraphV
 
 	unsigned short Graph::_instances = 0;
 
-	Graph::Graph( QWidget* parent )
+	Graph::Graph( int graphIndex, QWidget* parent )
 		: QGraphicsView( parent ),
-		  _layoutAlgorithm( "dot" ),
-		_svgItem( 0 ),
-		_drawn( false )
+		  _graphIndex( graphIndex ),
+		  _svgItem( 0 ),
+		  _drawn( false ),
+		  _foldersModel( new FoldersModel( this ) )
 	{
 		_instances++;
 
 		if( !_context )
 			_context = gvContext();
 
-		qRegisterMetaType<NameValuePair>( "NameValuePair" );
-		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );
+		//TODO After last changes, Do I still need these following two lines?
+		/*qRegisterMetaType<NameValuePair>( "NameValuePair" );
+		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );*/
 
 		NEW_GRAPH();
 
 		setScene( new QGraphicsScene( this ) );
-		setRenderer( Native );
+		_setDefaultAttributes();
 
 		//TODO Following code line needs to be tested
 		setResizeAnchor( QGraphicsView::AnchorUnderMouse );
@@ -80,7 +73,7 @@ namespace depgraphV
 	Graph::~Graph()
 	{
 		_instances--;
-		this->clearGraph();
+		clearGraph();
 
 		_graphAttributes.clear();
 		_verticesAttributes.clear();
@@ -89,6 +82,9 @@ namespace depgraphV
 		if( !_instances )
 		{
 			foreach( QStringList* l, _availablePlugins )
+				delete l;
+
+			foreach( QStringList* l, _parsedFiles )
 				delete l;
 
 			_availablePlugins.clear();
@@ -107,7 +103,7 @@ namespace depgraphV
 
 		if( _renderer == OpenGL )
 		{
-#ifdef QT_USE_OPENGL
+#ifdef DEPGRAPHV_USE_OPENGL
 			setViewport( new QGLWidget( QGLFormat( QGL::SampleBuffers ) ) );
 #endif
 		}
@@ -117,7 +113,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool Graph::highQualityAA() const
 	{
-#ifdef QT_USE_OPENGL
+#ifdef DEPGRAPHV_USE_OPENGL
 		return ( renderHints() & QPainter::HighQualityAntialiasing ) ==
 				QPainter::HighQualityAntialiasing;
 #else
@@ -125,66 +121,91 @@ namespace depgraphV
 #endif
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setHighQualityAntialiasing( bool highQualityAntialiasing )
+	void Graph::setHighQualityAA( bool highQualityAntialiasing )
 	{
-#ifdef QT_USE_OPENGL
+#ifdef DEPGRAPHV_USE_OPENGL
 		setRenderHint( QPainter::HighQualityAntialiasing, highQualityAntialiasing );
 #else
 		Q_UNUSED( highQualityAntialiasing );
 #endif
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setAttributes( const QSqlRecord& r )
+	const QString& Graph::layoutAlgorithm() const
 	{
-		setLayoutAlgorithm( r.value( "layoutAlgorithm" ).toString() );
-
-		setGraphAttribute( "splines", r.value( "splines" ).toString() );
-		setGraphAttribute( "nodesep", r.value( "nodesep" ).toString() );
-
-		setVerticesAttribute( "shape", r.value( "shape" ).toString() );
-		setVerticesAttribute( "style", r.value( "vert_style" ).toString() );
-
-		setEdgesAttribute( "minlen", r.value( "minlen" ).toString() );
-		setEdgesAttribute( "style", r.value( "edge_style" ).toString() );
+		return _layoutAlgorithm;
 	}
 	//-------------------------------------------------------------------------
-	void Graph::setDefaultAttributes( QSqlRecord* r )
+	void Graph::setLayoutAlgorithm( const QString& value )
 	{
-		setLayoutAlgorithm( "dot" );
+		_layoutAlgorithm = value;
+	}
+	//-------------------------------------------------------------------------
+	QString Graph::graphAttribute( const QString& name ) const
+	{
+		if( _graphAttributes.contains( name ) )
+			return _graphAttributes[ name ];
 
-		//Setting default graph attributes
-		setGraphAttribute( "splines", "spline" );
-		setGraphAttribute( "nodesep", "0.4" );
+		return "";
+	}
+	//-------------------------------------------------------------------------
+	QString Graph::verticesAttribute( const QString& name ) const
+	{
+		if( _verticesAttributes.contains( name ) )
+			return _verticesAttributes[ name ];
 
-		setVerticesAttribute( "shape", "box" );
-		setVerticesAttribute( "style", "rounded" );
+		return "";
+	}
+	//-------------------------------------------------------------------------
+	QString Graph::edgesAttribute( const QString& name ) const
+	{
+		if( _edgesAttributes.contains( name ) )
+			return _edgesAttributes[ name ];
 
-		setEdgesAttribute( "minlen", "3" );
-		setEdgesAttribute( "style", "3" );
+		return "";
+	}
+	//-------------------------------------------------------------------------
+	void Graph::setGraphAttribute( const QString& name, const QString& value )
+	{
+		Q_ASSERT( !name.isEmpty() && "Attribute name is empty!" );
+		Q_ASSERT( !value.isEmpty() && "Attribute value is empty!" );
+		_graphAttributes[ name ] = value;
 
-		if( r )
-		{
-			r->setValue( "layoutAlgorithm", "dot" );
-			r->setValue( "splines", "spline" );
-			r->setValue( "nodesep", "0.4" );
-			r->setValue( "shape", "box" );
-			r->setValue( "vert_style", "rounded" );
-			r->setValue( "minlen", "3" );
-			r->setValue( "edge_style", "solid" );
+#ifdef GraphViz_USE_CGRAPH
+		agattr( _graph, AGRAPH, G_STR( name ), G_STR( value ) );
+#else
+		agraphattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
+	}
+	//-------------------------------------------------------------------------
+	void Graph::setVerticesAttribute( const QString& name, const QString& value )
+	{
+		Q_ASSERT( !name.isEmpty() && "Attribute name is empty!" );
+		Q_ASSERT( !value.isEmpty() && "Attribute value is empty!" );
+		_verticesAttributes[ name ] = value;
 
-			QString rType = Helpers::EnumToQString(
-								Graph::staticMetaObject,
-								"RendererType",
-								_renderer
-			);
-			r->setValue( "RendererType", rType );
-			r->setValue( "highQualityAA", highQualityAA() ? "true" : "false" );
-		}
+#ifdef GraphViz_USE_CGRAPH
+		agattr( _graph, AGNODE, G_STR( name ), G_STR( value ) );
+#else
+		agnodeattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
+	}
+	//-------------------------------------------------------------------------
+	void Graph::setEdgesAttribute( const QString& name, const QString& value )
+	{
+		Q_ASSERT( !name.isEmpty() && "Attribute name is empty!" );
+		Q_ASSERT( !value.isEmpty() && "Attribute value is empty!" );
+		_edgesAttributes[ name ] = value;
+
+#ifdef GraphViz_USE_CGRAPH
+		agattr( _graph, AGEDGE, G_STR( name ), G_STR( value ) );
+#else
+		agedgeattr( _graph, G_STR( name ), G_STR( value ) );
+#endif
 	}
 	//-------------------------------------------------------------------------
 	Agnode_t* Graph::createVertex( const QString& label )
 	{
-		Q_ASSERT( !label.isEmpty() );
+		Q_ASSERT( !label.isEmpty() && "Label cannot be empty!" );
 #ifdef GraphViz_USE_CGRAPH
 		Agnode_t* v = agnode( _graph, G_STR( label ), TRUE );
 #else
@@ -211,7 +232,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Agnode_t* Graph::vertex( const QString& label )
 	{
-		Q_ASSERT( !label.isEmpty() );
+		Q_ASSERT( !label.isEmpty() && "Label cannot be empty!" );
 		if( _vertices.contains( label ) )
 			return _vertices[ label ];
 
@@ -220,9 +241,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void Graph::createEdges( const QString& absPath, const QString& vertexLabel )
 	{
-		Q_ASSERT( !absPath.isEmpty() );
+		Q_ASSERT( !absPath.isEmpty() && "Path is empty!" );
 		QString absFilePath = QString( "%1/%2" ).arg( absPath, vertexLabel );
 
+		//TODO By doing this way, any future change in already parsed files
+		//will be undetectable.
 		if( !_parsedFiles.contains( absFilePath ) )
 		{
 			QFile f( absFilePath );
@@ -303,7 +326,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const
 	{
-		Q_ASSERT( !filename.isEmpty() && !format.isEmpty() );
+		Q_ASSERT( !filename.isEmpty() && "filename cannot be empty!" );
+		Q_ASSERT( !format.isEmpty() && "format cannot be empty!" );
 		bool result = false;
 
 		if( _isPluginAvailable( format, "loadimage" ) )
@@ -349,55 +373,13 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QStringList* Graph::pluginsListByKind( const QString& kind )
 	{
-		Q_ASSERT( !kind.isEmpty() );
+		Q_ASSERT( !kind.isEmpty() && "Empty plugin kind!" );
 		_lookForAvailablePlugins();
 
 		if( _availablePlugins.contains( kind ) )
 			return _availablePlugins[ kind ];
 
 		return 0;
-	}
-	//-------------------------------------------------------------------------
-	void Graph::setGraphAttribute( const QString& name, const QString& value )
-	{
-		if( _graphAttributes.contains( name ) )
-			_graphAttributes[ name ] = value;
-		else
-			_graphAttributes.insert( name, value );
-
-#ifdef GraphViz_USE_CGRAPH
-		agattr( _graph, AGRAPH, G_STR( name ), G_STR( value ) );
-#else
-		agraphattr( _graph, G_STR( name ), G_STR( value ) );
-#endif
-	}
-	//-------------------------------------------------------------------------
-	void Graph::setVerticesAttribute( const QString& name, const QString& value )
-	{
-		if( _verticesAttributes.contains( name ) )
-			_verticesAttributes[ name ] = value;
-		else
-			_verticesAttributes.insert( name, value );
-
-#ifdef GraphViz_USE_CGRAPH
-		agattr( _graph, AGNODE, G_STR( name ), G_STR( value ) );
-#else
-		agnodeattr( _graph, G_STR( name ), G_STR( value ) );
-#endif
-	}
-	//-------------------------------------------------------------------------
-	void Graph::setEdgesAttribute( const QString& name, const QString& value )
-	{
-		if( _edgesAttributes.contains( name ) )
-			_edgesAttributes[ name ] = value;
-		else
-			_edgesAttributes.insert( name, value );
-
-#ifdef GraphViz_USE_CGRAPH
-		agattr( _graph, AGEDGE, G_STR( name ), G_STR( value ) );
-#else
-		agedgeattr( _graph, G_STR( name ), G_STR( value ) );
-#endif
 	}
 	//-------------------------------------------------------------------------
 	void Graph::clearLayout()
@@ -431,7 +413,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
 	{
-		Q_ASSERT( src && dest );
+		Q_ASSERT( src && dest && "src and dst vertices cannot be null!" );
 #ifdef GraphViz_USE_CGRAPH
 		Agedge_t* e = agedge( _graph, src, dest, G_STR( label ), TRUE );
 #else
@@ -479,6 +461,27 @@ namespace depgraphV
 		i = _edgesAttributes.begin();
 		for( ; i != _edgesAttributes.end(); i++ )
 			setEdgesAttribute( i.key(), i.value() );
+	}
+	//-------------------------------------------------------------------------
+	void Graph::_setDefaultAttributes()
+	{
+		_graphAttributes.clear();
+		_verticesAttributes.clear();
+		_edgesAttributes.clear();
+
+		setHighQualityAA( Graph::defaultHighQualityAA() );
+		setRenderer( Graph::defaultRenderer() );
+		setLayoutAlgorithm( Graph::defaultLayoutAlgorithm() );
+
+		//Setting default graph attributes
+		setGraphAttribute( "splines", "spline" );
+		setGraphAttribute( "nodesep", "0.4" );
+
+		setVerticesAttribute( "shape", "box" );
+		setVerticesAttribute( "style", "rounded" );
+
+		setEdgesAttribute( "minlen", "3" );
+		setEdgesAttribute( "style", "solid" );
 	}
 	//-------------------------------------------------------------------------
 	void Graph::_lookForAvailablePlugins()
@@ -561,5 +564,39 @@ namespace depgraphV
 			return _availablePlugins[ kind ]->contains( format );
 
 		return false;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator << ( QDataStream& out, const Graph& object )
+	{
+		out << static_cast<short>( object.renderer() );
+		out << object.layoutAlgorithm();
+
+		out << object.highQualityAA();
+		out << object._graphAttributes;
+		out << object._verticesAttributes;
+		out << object._edgesAttributes;
+		out << *object._foldersModel;
+
+		return out;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator >> ( QDataStream& in, Graph& object )
+	{
+		short r;
+		in >> r;
+		object.setRenderer( static_cast<Graph::RendererType>( r ) );
+
+		in >> object._layoutAlgorithm;
+
+		bool aa;
+		in >> aa;
+		object.setHighQualityAA( aa );
+
+		in >> object._graphAttributes;
+		in >> object._verticesAttributes;
+		in >> object._edgesAttributes;
+		in >> *object._foldersModel;
+
+		return in;
 	}
 } // end of depgraphV namespace
