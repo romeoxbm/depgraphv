@@ -76,7 +76,7 @@
             </font>
            </property>
            <property name="text">
-            <string>When enabled, everytime you remove a graph by clicking on a tab, you'll be noticed.</string>
+            <string>When enabled, you'll be noticed everytime you remove a graph by clicking on a tab.</string>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
