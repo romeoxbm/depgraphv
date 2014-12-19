@@ -32,10 +32,6 @@
 #	include "settingspage.h"
 #endif
 
-#ifndef PROJECT_H
-#	include "project.h"
-#endif
-
 namespace depgraphV
 {
 	namespace Ui
@@ -50,9 +46,10 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief GraphPage constructor.
+		 * @param w MainWindow pointer
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit GraphPage( SettingsDialog* parent );
+		explicit GraphPage( MainWindow* w, SettingsDialog* parent = 0 );
 
 		/**
 		 * @brief GraphPage destructor.
@@ -60,28 +57,31 @@ namespace depgraphV
 		~GraphPage();
 
 		virtual QString iconPath() const;
-		bool mapData();
+		virtual void commitChanges();
+		virtual void revertChanges();
 
 	protected:
 		virtual void changeEvent( QEvent* evt );
 
 	private slots:
-		void onDataChanged( QModelIndex, QModelIndex );
+		virtual void onProjectOpened();
+		virtual void onProjectClosed();
+
+		void _onHelpRequested() const;
+		void _onValueChanged();
 
 	private:
 		Ui::GraphPage* _ui;
-	};
+		void _retranslate();
 
-	//TODO Maybe it should be better to move this class in a separate file
-	class ComboBoxItemDelegate : public QItemDelegate
-	{
-		Q_OBJECT
+		QVector<QWidget*> _runtimeWidgets;
+		QMap<Graph*, QList<QWidget*> > _uncommittedChanges;
 
-	public:
-		explicit ComboBoxItemDelegate( QObject* parent = 0 );
+		void _parseAttributeTag( const QXmlStreamReader& xml, QString* name, QString* group, QString* link ) const;
+		QWidget* _parseWidget( QXmlStreamReader& xml ) const;
 
-		void setEditorData( QWidget* editor, const QModelIndex& index ) const;
-		void setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const;
+		template<typename T>
+		QMap<QString, T> _toNameValuePairs( const QStringList& data ) const;
 	};
 }
 
