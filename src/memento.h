@@ -70,9 +70,13 @@ namespace depgraphV
 			return const_cast<T&>( _state );
 		}
 
-		void setState( const T& s )
+		bool setState( const T& s, bool commitState = true )
 		{
 			_state = s;
+			if( commitState )
+				return commit();
+
+			return true;
 		}
 
 	private:
