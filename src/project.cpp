@@ -362,8 +362,6 @@ namespace depgraphV
 		int rows;
 		stream >> rows;
 
-		_model->setRowCount( rows );
-
 		for( int r = 0; r < rows; r++ )
 		{
 			for( int c = 0; c < _model->columnCount(); c++ )
