@@ -50,25 +50,8 @@ namespace depgraphV
 		Q_OBJECT
 		Q_PROPERTY( QStringList recentDocuments READ recentDocuments WRITE setRecentDocuments )
 		Q_PROPERTY( QString language READ language WRITE setLanguage )
-		Q_PROPERTY( bool scanByFolders READ scanByFolders WRITE setScanByFolders )
-		Q_PROPERTY( bool isRecursiveScanEnabled READ isRecursiveScanEnabled WRITE setRecursiveScanEnabled )
-		Q_PROPERTY( bool hiddenFoldersIncluded READ hiddenFoldersIncluded WRITE setHiddenFoldersIncluded )
-		Q_PROPERTY( QStringList selectedFolders READ selectedFolders WRITE setSelectedFolders )
 		Q_PROPERTY( bool showDonateOnExit READ showDonateOnExit WRITE setShowDonateOnExit )
-
-		Q_PROPERTY( QString rootFolder READ rootFolder WRITE setRootFolder )
-
-		//Header Filters
-		Q_PROPERTY( bool hdr_parseEnabled READ hdr_parseEnabled WRITE hdr_setParseEnabled )
-		Q_PROPERTY( bool hdr_standardFiltersEnabled READ hdr_standardFiltersEnabled WRITE hdr_setStandardFiltersEnabled )
-		Q_PROPERTY( QString hdr_currentStandardFilter READ hdr_currentStandardFilter WRITE hdr_setCurrentStandardFilter )
-		Q_PROPERTY( QString hdr_customFilters READ hdr_customFilters WRITE hdr_setCustomFilters )
-
-		//Source Filters
-		Q_PROPERTY( bool src_parseEnabled READ src_parseEnabled WRITE src_setParseEnabled )
-		Q_PROPERTY( bool src_standardFiltersEnabled READ src_standardFiltersEnabled WRITE src_setStandardFiltersEnabled )
-		Q_PROPERTY( QString src_currentStandardFilter READ src_currentStandardFilter WRITE src_setCurrentStandardFilter )
-		Q_PROPERTY( QString src_customFilters READ src_customFilters WRITE src_setCustomFilters )
+		Q_PROPERTY( bool warnOnGraphRemoval READ warnOnGraphRemoval WRITE setWarnOnGraphRemoval )
 
 	public:
 		/**
@@ -126,66 +109,16 @@ namespace depgraphV
 		 */
 		const QString& language() const { return _language; }
 
-		bool scanByFolders() const{ return _scanByFolders; }
-
-		QStringList& selectedFolders() const { return _selectedFolders->state(); }
-		Memento<QStringList>* selectedFoldersMemento() const { return _selectedFolders; }
-
-		/**
-		 * @return True if recursive scan is enabled, false otherwise.
-		 */
-		bool isRecursiveScanEnabled() const { return _recursiveScan; }
-
-		/**
-		 * @brief hiddenFoldersIncluded
-		 * @return
-		 */
-		bool hiddenFoldersIncluded() const { return _hiddenFolders; }
-
 		/**
 		 * @return True if the donation tab page will be shown when closing this application, false otherwise.
 		 */
 		bool showDonateOnExit() const { return _showDonateOnExit; }
 
-		/**
-		 * @brief The root folder used by both SelectFilesDialog and HandleRootsDialog
-		 */
-		const QString& rootFolder() const { return _rootFolder; }
-
-		//Header Filters
-		bool hdr_parseEnabled() const						{ return _hdrParseEnabled; }
-		bool hdr_standardFiltersEnabled() const				{ return _hdrStandardFiltersEnabled; }
-		const QString& hdr_currentStandardFilter() const	{ return _hdrCurrentStandardFilter; }
-		const QString& hdr_customFilters() const			{ return _hdrCustomFilters; }
-
-		const QStringList& headerNameFilters();
-
-		//Source Filters
-		bool src_parseEnabled() const						{ return _srcParseEnabled; }
-		bool src_standardFiltersEnabled() const				{ return _srcStandardFiltersEnabled; }
-		const QString& src_currentStandardFilter() const	{ return _srcCurrentStandardFilter; }
-		const QString& src_customFilters() const			{ return _srcCustomFilters; }
-
-		const QStringList& sourceNameFilters();
+		bool warnOnGraphRemoval() const { return _warnOnGraphRemoval; }
 
 	public slots:
 		void setRecentDocuments( const QStringList& value ) { _recentDocs = value; }
 		void setLanguage( const QString& value );
-
-		void setScanByFolders( bool value ) { _scanByFolders = value; }
-
-		void setSelectedFolders( const QStringList& folders );
-
-		/**
-		 * @param Set recursive scan option checked state to "value".
-		 */
-		void setRecursiveScanEnabled( bool value ) { _recursiveScan = value; }
-
-		/**
-		 * @brief setHiddenFoldersIncluded
-		 * @param value
-		 */
-		void setHiddenFoldersIncluded( bool value ) { _hiddenFolders = value; }
 
 		/**
 		 * @brief This method change the on-closing policy concerning donation tab page visibility.
@@ -193,30 +126,11 @@ namespace depgraphV
 		 */
 		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
 
-		void setRootFolder( const QString& value );
-
-		//Header Filters
-		void hdr_setParseEnabled( bool value );
-		void hdr_setStandardFiltersEnabled( bool value );
-		void hdr_setCurrentStandardFilter( const QString& value );
-		void hdr_setCustomFilters( const QString& value );
-
-		//Source Filters
-		void src_setParseEnabled( bool value );
-		void src_setStandardFiltersEnabled( bool value );
-		void src_setCurrentStandardFilter( const QString& value );
-		void src_setCustomFilters( const QString& value );
+		void setWarnOnGraphRemoval( bool value ) { _warnOnGraphRemoval = value; }
 
 	signals:
 		void configSaved();
 		void configRestored();
-
-		void headerNameFiltersChanging( bool& accept );
-		void sourceNameFiltersChanging( bool& accept );
-
-		void headerNameFiltersChanged();
-		void sourceNameFiltersChanged();
-
 		void translationFound( QString lang, QString path );
 
 	private:
@@ -246,32 +160,8 @@ namespace depgraphV
 		//lang, path
 		QMap<QString, QString> _availableTranslations;
 
-		bool _scanByFolders;
-		Memento<QStringList>* _selectedFolders;
-		bool _recursiveScan;
-		bool _hiddenFolders;
 		bool _showDonateOnExit;
-
-		QString _rootFolder;
-
-		//Header Filters
-		bool _hdrParseEnabled;
-		bool _hdrStandardFiltersEnabled;
-		QString _hdrCurrentStandardFilter;
-		QString _hdrCustomFilters;
-
-		//Source Filters
-		bool _srcParseEnabled;
-		bool _srcStandardFiltersEnabled;
-		QString _srcCurrentStandardFilter;
-		QString _srcCustomFilters;
-
-		//Name filters
-		QStringList _hdrNameFilters;
-		bool _hdrNameFiltersDirty;
-
-		QStringList _srcNameFilters;
-		bool _srcNameFiltersDirty;
+		bool _warnOnGraphRemoval;
 	};
 }
 

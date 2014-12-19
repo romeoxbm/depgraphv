@@ -35,17 +35,8 @@ namespace depgraphV
 		  Singleton<AppConfig>(),
 		  _settings( APP_VENDOR, APP_NAME ),
 		  _language( "en" ),
-		  _scanByFolders( true ),
-		  _selectedFolders( new Memento<QStringList>() ),
-		  _recursiveScan( true ),
 		  _showDonateOnExit( true ),
-		  _rootFolder( QDir::homePath() ),
-		  _hdrParseEnabled( true ),
-		  _hdrStandardFiltersEnabled( true ),
-		  _srcParseEnabled( true ),
-		  _srcStandardFiltersEnabled( true ),
-		  _hdrNameFiltersDirty( true ),
-		  _srcNameFiltersDirty( true )
+		  _warnOnGraphRemoval( true )
 	{
 		registerSerializable( this );
 		_availableTranslations.insert( "en", "" );
@@ -53,7 +44,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	AppConfig::~AppConfig()
 	{
-		delete _selectedFolders;
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::save()
@@ -144,63 +134,10 @@ namespace depgraphV
 		QList<const char*> props;
 		props 	 << "recentDocuments"
 				 << "language"
-				 << "scanByFolders"
-				 << "isRecursiveScanEnabled"
-				 << "hiddenFoldersIncluded"
-				 << "selectedFolders"
 				 << "showDonateOnExit"
-
-				 << "rootFolder"
-
-				 << "hdr_parseEnabled"
-				 << "hdr_standardFiltersEnabled"
-				 << "hdr_currentStandardFilter"
-				 << "hdr_customFilters"
-
-				 << "src_parseEnabled"
-				 << "src_standardFiltersEnabled"
-				 << "src_currentStandardFilter"
-				 << "src_customFilters";
+				 << "warnOnGraphRemoval";
 
 		return props;
-	}
-	//-------------------------------------------------------------------------
-	const QStringList& AppConfig::headerNameFilters()
-	{
-		if( _hdrNameFiltersDirty )
-		{
-			_hdrNameFilters.clear();
-			_hdrNameFiltersDirty = false;
-
-			if( _hdrParseEnabled )
-			{
-				if( _hdrStandardFiltersEnabled )
-					_hdrNameFilters << _hdrCurrentStandardFilter;
-				else
-					_hdrNameFilters = _hdrCustomFilters.replace( ' ', "" ).split( ";" );
-			}
-		}
-
-		return _hdrNameFilters;
-	}
-	//-------------------------------------------------------------------------
-	const QStringList& AppConfig::sourceNameFilters()
-	{
-		if( _srcNameFiltersDirty )
-		{
-			_srcNameFilters.clear();
-			_srcNameFiltersDirty = false;
-
-			if( _srcParseEnabled )
-			{
-				if( _srcStandardFiltersEnabled )
-					_srcNameFilters << _srcCurrentStandardFilter;
-				else
-					_srcNameFilters = _srcCustomFilters.replace( ' ', "" ).split( ";" );
-			}
-		}
-
-		return _srcNameFilters;
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::setLanguage( const QString& value )
@@ -229,143 +166,6 @@ namespace depgraphV
 
 		//Changing locale
 		QLocale::setDefault( QLocale( _language ) );
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::setRootFolder( const QString& value )
-	{
-		if( value.isEmpty() )
-			_rootFolder = QDir::homePath();
-		else
-		{
-			QDir d( value );
-			_rootFolder = d.exists() ? value : QDir::homePath();
-		}
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::setSelectedFolders( const QStringList& folders )
-	{
-		_selectedFolders->setState( folders );
-		_selectedFolders->commit();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setParseEnabled( bool value )
-	{
-		if( value == _hdrParseEnabled )
-			return;
-
-		bool accept = true;
-		emit headerNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_hdrParseEnabled = value;
-		_hdrNameFiltersDirty = true;
-		emit headerNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setStandardFiltersEnabled( bool value )
-	{
-		if( value == _hdrStandardFiltersEnabled )
-			return;
-
-		bool accept = true;
-		emit headerNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_hdrStandardFiltersEnabled = value;
-		_hdrNameFiltersDirty = true;
-		emit headerNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setCurrentStandardFilter( const QString& value )
-	{
-		if( value.isEmpty() || value == _hdrCurrentStandardFilter )
-			return;
-
-		bool accept = true;
-		emit headerNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_hdrCurrentStandardFilter = value;
-		_hdrNameFiltersDirty = true;
-		emit headerNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::hdr_setCustomFilters( const QString& value )
-	{
-		if( value.isEmpty() || value == _hdrCustomFilters )
-			return;
-
-		bool accept = true;
-		emit headerNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_hdrCustomFilters = value;
-		_hdrNameFiltersDirty = true;
-		emit headerNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::src_setParseEnabled( bool value )
-	{
-		if( value == _srcParseEnabled )
-			return;
-
-		bool accept = true;
-		emit sourceNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_srcParseEnabled = value;
-		_srcNameFiltersDirty = true;
-		emit sourceNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::src_setStandardFiltersEnabled( bool value )
-	{
-		if( value == _srcStandardFiltersEnabled )
-			return;
-
-		bool accept = true;
-		emit sourceNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_srcStandardFiltersEnabled = value;
-		_srcNameFiltersDirty = true;
-		emit sourceNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::src_setCurrentStandardFilter( const QString& value )
-	{
-		if( value == _srcCurrentStandardFilter )
-			return;
-
-		bool accept = true;
-		emit sourceNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_srcCurrentStandardFilter = value;
-		_srcNameFiltersDirty = true;
-		emit sourceNameFiltersChanged();
-	}
-	//-------------------------------------------------------------------------
-	void AppConfig::src_setCustomFilters( const QString& value )
-	{
-		if( value.isEmpty() || value == _srcCustomFilters )
-			return;
-
-		bool accept = true;
-		emit sourceNameFiltersChanging( accept );
-		if( !accept )
-			return;
-
-		_srcCustomFilters = value;
-		_srcNameFiltersDirty = true;
-		emit sourceNameFiltersChanged();
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::_doSaveRestore( bool save, bool def )
