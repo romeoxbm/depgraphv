@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * scanmodepage.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,30 +38,16 @@
 #include "depgraphv_pch.h"
 #include "scanmodepage.h"
 #include "ui_scanmodepage.h"
-#include "appconfig.h"
 #include "handlerootsdialog.h"
 #include "selectfilesdialog.h"
 
 namespace depgraphV
 {
 	ScanModePage::ScanModePage( MainWindow* w, SettingsDialog* parent )
-		: SettingsPage( parent ),
-		_ui( new Ui::ScanModePage ),
-		_mainW( w )
+		: SettingsPage( w, parent ),
+		_ui( new Ui::ScanModePage )
 	{
 		_ui->setupUi( this );
-
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
-
-		connect( _ui->selectRootFoldersRadio, SIGNAL( toggled( bool ) ),
-				 c, SLOT( setScanByFolders( bool ) ) );
-
-		connect( _ui->recursiveScanCheckBox, SIGNAL( toggled( bool ) ),
-				 c, SLOT( setRecursiveScanEnabled( bool ) ) );
-
-		connect( _ui->hiddenFoldersCheckbox, SIGNAL( toggled( bool ) ),
-				 c, SLOT( setHiddenFoldersIncluded( bool ) ) );
 	}
 	//-------------------------------------------------------------------------
 	ScanModePage::~ScanModePage()
@@ -64,33 +60,53 @@ namespace depgraphV
 		return ":/settingsDlgIcons/folder-scan_96x96.png";
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::changeEvent( QEvent* evt )
+	bool ScanModePage::event( QEvent* evt )
 	{
-		if( evt && evt->type() == QEvent::LanguageChange )
-			_ui->retranslateUi( this );
+		if( evt )
+		{
+			if( evt->type() == QEvent::LanguageChange )
+				_ui->retranslateUi( this );
 
-		QWidget::changeEvent( evt );
+			if( evt->type() == QEvent::Show )
+				_updateSelectionCount();
+		}
+
+		return QWidget::event( evt );
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::on_modifySelectionButton_clicked()
+	void ScanModePage::_modifySelection()
 	{
 		if( _ui->selectRootFoldersRadio->isChecked() )
 			Singleton<HandleRootsDialog>::instancePtr()->exec();
 		else
 		{
-			Singleton<SelectFilesDialog>::instancePtr()->exec(
-						_mainW->currentGraph()->model()
-			);
+			Project* p = Singleton<Project>::instancePtr();
+			FoldersModel* model = p->currentGraph( "settingsMapper" )->model();
+			Singleton<SelectFilesDialog>::instancePtr()->exec( model );
 		}
+
+		_updateSelectionCount();
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::onConfigRestored()
+	void ScanModePage::_updateSelectionCount( bool )
 	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		QRadioButton* radio = c->scanByFolders() ?
-							  _ui->selectRootFoldersRadio : _ui->selectFilesRadio;
-		radio->setChecked( true );
-		_ui->recursiveScanCheckBox->setChecked( c->isRecursiveScanEnabled() );
-		_ui->hiddenFoldersCheckbox->setChecked( c->hiddenFoldersIncluded() );
+		int c;
+		if( _ui->selectRootFoldersRadio->isChecked() )
+			c = 15; //TODO
+		else
+			c = 27; //TODO
+
+		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
+	}
+	//-------------------------------------------------------------------------
+	void ScanModePage::onProjectOpened()
+	{
+		SettingsPage::onProjectOpened();
+		Project* p = Singleton<Project>::instancePtr();
+
+		QRadioButton* radios[] = { _ui->selectRootFoldersRadio, _ui->selectFilesRadio };
+		p->addMapping( radios, "scanByFolders" );
+		p->addMapping( _ui->recursiveScanCheckBox, "scanRecursively" );
+		p->addMapping( _ui->hiddenFoldersCheckbox, "includeHiddenFolders" );
 	}
 } // end of depgraphV namespace

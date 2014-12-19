@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * scanmodepage.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,8 +38,8 @@
 #ifndef SCANMODEPAGE_H
 #define SCANMODEPAGE_H
 
-#ifndef MAINWINDOW_H
-#	include "mainwindow.h"
+#ifndef SETTINGSPAGE_H
+#	include "settingspage.h"
 #endif
 
 namespace depgraphV
@@ -46,9 +56,10 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief ScanModePage constructor.
-		 * @param parent The parent widget (default NULL)
+		 * @param w MainWindow pointer.
+		 * @param parent The parent widget (default NULL).
 		 */
-		explicit ScanModePage( MainWindow* w, SettingsDialog* parent );
+		explicit ScanModePage( MainWindow* w, SettingsDialog* parent = 0 );
 
 		/**
 		 * @brief ScanModePage destructor.
@@ -58,19 +69,20 @@ namespace depgraphV
 		virtual QString iconPath() const;
 
 	protected:
-		virtual void changeEvent( QEvent* evt );
+		virtual bool event( QEvent* evt );
 
 	signals:
 
 	public slots:
 
 	private slots:
-		void on_modifySelectionButton_clicked();
-		void onConfigRestored();
+		void _modifySelection();
+		void _updateSelectionCount( bool = true );
+
+		virtual void onProjectOpened();
 
 	private:
 		Ui::ScanModePage* _ui;
-		MainWindow* _mainW;
 	};
 }
 
