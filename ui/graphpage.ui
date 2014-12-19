@@ -38,7 +38,16 @@
       <property name="spacing">
        <number>6</number>
       </property>
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -159,8 +168,57 @@
   <tabstop>layoutAlgorithm</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>layoutAlgorithm</sender>
+   <signal>activated(int)</signal>
+   <receiver>depgraphV::GraphPage</receiver>
+   <slot>_onValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>181</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>highQualityAA</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>depgraphV::GraphPage</receiver>
+   <slot>_onValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rendererType</sender>
+   <signal>activated(int)</signal>
+   <receiver>depgraphV::GraphPage</receiver>
+   <slot>_onValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>177</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
-  <slot>onApplyCancel(QAbstractButton*)</slot>
+  <slot>_onValueChanged()</slot>
  </slots>
 </ui>
