@@ -211,7 +211,7 @@ namespace depgraphV
 
 		/**
 		 * @brief Enable (or disable) high quality antialiasing.
-		 * @param highQualityAntialiasing the new value of antialiasing property.
+		 * @param highQualityAA The new value for high quality antialiasing property.
 		 */
 		void setHighQualityAA( bool highQualityAA );
 
