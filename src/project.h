@@ -32,6 +32,18 @@
 #	include "singleton.h"
 #endif
 
+#ifndef CUSTOMITEMDELEGATE_H
+#	include "customitemdelegate.h"
+#endif
+
+#ifndef BINARYRADIOWIDGET_H
+#	include "binaryradiowidget.h"
+#endif
+
+#ifndef GRAPH_H
+#	include "graph.h"
+#endif
+
 namespace depgraphV
 {
 	class Project : public QObject, public Singleton<Project>
@@ -39,8 +51,8 @@ namespace depgraphV
 		Q_OBJECT
 
 	public:
-		static Project* createNew( const QString& filePath, QObject* parent = 0 );
-		static Project* open( const QString& filePath, QObject* parent = 0 );
+		static Project* create( QObject* parent = 0 );
+		static Project* open( QObject* parent = 0, const QString& fileName = "" );
 
 		~Project();
 
@@ -48,35 +60,130 @@ namespace depgraphV
 		const QString& path() const { return _path; }
 		const QString& fullPath() const { return _fullPath; }
 
-		QSqlTableModel* tableModel( const QString& table, const QString& filter = "" );
+		bool isModified() const { return _modified; }
+		bool hasUnsubmittedChanges() const { return _hasUnsubmittedChanges; }
 
-		bool applyChanges( QSqlTableModel* model );
-		bool applyChanges( const QString& table );
+		QStandardItemModel* tableModel() const { return _model; }
 
-		void revertAll( const QString& table );
+		void addMapping( QWidget* w, const QString& fieldName, const QString& prefix = "",
+						 const QVariant& defaultValue = QVariant() );
 
-		bool hasPendingChanges( const QString& table = "" ) const;
-		bool hasPendingChanges( QSqlTableModel* model ) const;
+		void addMapping( QWidget* w, int fieldIndex, const QVariant& defaultValue = QVariant() );
+
+		void addMapping( QRadioButton* radios[ 2 ], const QString& fieldName, const QString& prefix = "",
+						 bool defaultValue = true );
+
+		void addMapping( QRadioButton* radios[ 2 ], int fieldIndex, bool defaultValue = true );
+
+		/**
+		 * @brief Return the index of the field \a "prefix + fieldName", or -1 if not found.
+		 * @param fieldName The field name.
+		 * @param prefix The field name prefix. The default value is an empty string.
+		 */
+		int fieldIndex( const QString& fieldName, const QString& prefix = "" ) const;
+
+		/**
+		 * @brief Return the value of the field specified by \a "prefix + fieldName" at \a recordIndex.
+		 * @param recordIndex Index of the record (row).
+		 * @param fieldName The field name.
+		 * @param prefix The field name prefix. The default value is an empty string.
+		 */
+		QVariant value( int recordIndex, const QString& fieldName, const QString& prefix = "" ) const;
+
+		/**
+		 * @brief Return the value of the field specified by \a fieldIndex at \a recordIndex.
+		 * @param recordIndex Index of the record (row).
+		 * @param fieldIndex Field index.
+		 */
+		QVariant value( int recordIndex, int fieldIndex ) const;
+
+		void setValue( const QVariant& value, int recordIndex, const QString& fieldName, const QString& prefix = "" );
+		void setValue( const QVariant& value, int recordIndex, int fieldIndex );
+
+		/**
+		 * @brief Return the value of the field specified by \a "prefix + fieldName" at
+		 * the index of the current shown graph.
+		 * @param fieldName The field name.
+		 * @param prefix The field name prefix. The default value is an empty string.
+		 */
+		QVariant currentValue( const QString& fieldName, const QString& prefix = "" ) const;
+
+		/**
+		 * @brief Return the value of the field specified by \a fieldIndex at
+		 * the index of the current shown graph.
+		 * @param fieldIndex Field index.
+		 */
+		QVariant currentValue( int fieldIndex ) const;
+
+		void setCurrentValue( const QVariant& value, const QString& fieldName, const QString& prefix = "" );
+		void setCurrentValue( const QVariant& value, int fieldIndex );
+
+		int recordCount() const;
+
+		//Mapper methods
+		QDataWidgetMapper* createOrRetrieveMapper( const QString& name, bool setCurrent = false );
+		QDataWidgetMapper* mapper( const QString& name ) const;
+
+		void setCurrentMapper( const QString& name );
+		void setCurrentMapper( QDataWidgetMapper* mapper );
+
+		Graph* currentGraph( const QString& mapperName = "tabMapper" ) const;
+		Graph* currentGraph( QDataWidgetMapper* mapper ) const;
+
+		bool load();
+		bool save();
+		bool saveAs( const QString& filePath = "" );
+
+		QStringList nameFilters( FilesModel::FileGroup g = FilesModel::All );
 
 	signals:
-		void pendingChanges( bool );
+		void modified( bool );
+		void unsubmittedChanges( bool );
+
+		void graphCreated( const QString& name, Graph* );
+		void graphRemoved( int index );
+		void graphRenamed( int index, const QString& newName );
+		void graphCountChanged( int count );
 
 	public slots:
-		bool applyAllChanges();
+		void createGraph();
+		void removeGraph( int index );
+		void renameGraph( int index, const QString& newName );
+
+		void submitChanges();
+		void revertChanges();
 
 	private slots:
-		void onDataChanged( QModelIndex, QModelIndex );
+		void _onDataChanged();
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );
-		QSqlDatabase _db;
+		void _updateProjectProperties();
+		void _triggerModified( bool );
+		void _triggerUnsubmittedChanges( bool );
+		void _newGraph( QStandardItem* = 0 );
+
+		static const QString _defaultExtension;
+
 		QString _name;
 		QString _path;
 		QString _fullPath;
-		QMap<QString, QSqlTableModel*> _models;
-		QVector<QSqlTableModel*> _modifiedModels;
+		unsigned short _version;
+		unsigned short _newGraphCount;
 
-		void _error( const QString& dlgTitle, QSqlTableModel* model = 0 );
+		QHash<QString, int> _fields;
+		QHash<int, QVariant> _defaultValues;
+
+		QStandardItemModel* _model;
+		CustomItemDelegate* _delegate;
+
+		QDataWidgetMapper* _currentMapper;
+		QHash<QString, QDataWidgetMapper*> _mappers;
+
+		QVector<Graph*> _graphs;
+
+		bool _hasUnsubmittedChanges;
+		bool _modified;
 	};
 }
 
