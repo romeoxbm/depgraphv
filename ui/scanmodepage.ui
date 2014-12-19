@@ -174,8 +174,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>modifySelectionButton</sender>
+   <signal>clicked()</signal>
+   <receiver>depgraphV::ScanModePage</receiver>
+   <slot>_modifySelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
-  <slot>_updateEnabledFlags()</slot>
+  <slot>_modifySelection()</slot>
  </slots>
 </ui>
