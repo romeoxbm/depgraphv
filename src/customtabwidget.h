@@ -28,8 +28,12 @@
 #ifndef CUSTOMTABWIDGET_H
 #define CUSTOMTABWIDGET_H
 
-#ifndef GRAPH_H
-#	include "graph.h"
+#ifndef MAINWINDOW_H
+#	include "mainwindow.h"
+#endif
+
+#ifndef PROJECT_H
+#	include "project.h"
 #endif
 
 namespace depgraphV
@@ -41,28 +45,29 @@ namespace depgraphV
 	public:
 		explicit CustomTabWidget( QWidget* parent = 0 );
 
-		Graph* currentGraph() const;
-		Graph* graph( int index ) const;
-
-		bool loadTabs();
-		void closeAllTabs();
-
-	protected:
-		bool eventFilter( QObject* o, QEvent* evt );
+		void setMainWindow( MainWindow* w );
 
 	public slots:
-		void newGraph();
+
+	protected:
+		bool event( QEvent* evt );
+		bool eventFilter( QObject* o, QEvent* evt );
 
 	private slots:
-		void closeTab( int index );
-		void closeAllButCurrentTab();
-		void renameTab( int index );
+		void _newGraph( const QString& newName, Graph* g );
+		void _closeTab( int index );
+		void _closeAllButCurrentTab();
+		void _renameTab( int index );
 
-		void onDataChanged( QModelIndex, QModelIndex );
+		void _onProjectOpened();
+		void _onProjectClosed();
+		void _closeAllTabs();
 
 	private:
-		unsigned short _newGraphCount;
-		bool _dataConnected;
+		MainWindow* _mainW;
+		bool _disableCloseTabQuestion;
+
+		void _retranslate();
 	};
 }
 #endif // CUSTOMTABWIDGET_H

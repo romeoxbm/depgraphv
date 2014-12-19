@@ -27,228 +27,241 @@
  */
 #include "depgraphv_pch.h"
 #include "customtabwidget.h"
-#include "project.h"
 #include "helpers.h"
 
 namespace depgraphV
 {
 	CustomTabWidget::CustomTabWidget( QWidget* parent )
 		: QTabWidget( parent ),
-		  _newGraphCount( 0 ),
-		  _dataConnected( false )
+		  _mainW( 0 ),
+		  _disableCloseTabQuestion( false )
 	{
-		connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
-
 		tabBar()->installEventFilter( this );
-
 		tabBar()->setContextMenuPolicy( Qt::ActionsContextMenu );
+
 		QAction* closeButCurrent = new QAction( this );
-		closeButCurrent->setText( tr( "Close all but current selected" ) );
 		tabBar()->addAction( closeButCurrent );
 
+		QAction* closeAll = new QAction( this );
+		tabBar()->addAction( closeAll );
+
+		_retranslate();
+
 		connect( closeButCurrent, SIGNAL( triggered() ),
-				 this, SLOT( closeAllButCurrentTab() )
+				 this, SLOT( _closeAllButCurrentTab() )
+		);
+		connect( closeAll, SIGNAL( triggered() ),
+				 this, SLOT( _closeAllTabs() )
+		);
+		connect( this, SIGNAL( tabCloseRequested( int ) ),
+				 this, SLOT( _closeTab( int ) )
 		);
 	}
 	//-------------------------------------------------------------------------
-	Graph* CustomTabWidget::currentGraph() const
+	void CustomTabWidget::setMainWindow( MainWindow* w )
 	{
-		return graph( currentIndex() );
+		Q_ASSERT( w && !_mainW );
+		_mainW = w;
+
+		connect( _mainW, SIGNAL( projectOpened() ),
+				 this, SLOT( _onProjectOpened() )
+		);
+		connect( _mainW, SIGNAL( projectClosed() ),
+				 this, SLOT( _onProjectClosed() )
+		);
 	}
 	//-------------------------------------------------------------------------
-	Graph* CustomTabWidget::graph( int index ) const
+	bool CustomTabWidget::event( QEvent* evt )
 	{
-		Q_ASSERT( index >= 0 && index < count() );
-		return static_cast<Graph*>( widget( index ) );
-	}
-	//-------------------------------------------------------------------------
-	bool CustomTabWidget::loadTabs()
-	{
-		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* m = p->tableModel( "graphSettings" );
-		if( !m )
-			return false;
+		if( evt && evt->type() == QEvent::LanguageChange )
+			_retranslate();
 
-		for( int i = 0; i < m->rowCount(); i ++ )
-		{
-			QSqlRecord r = m->record( i );
-			Graph* g = new Graph( this );
-			g->setAttributes( r );
-			addTab( g, r.value( "name" ).toString() );
-		}
-
-		if( !_dataConnected )
-		{
-			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
-					 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
-			);
-			_dataConnected = true;
-		}
-
-		return true;
-	}
-	//-------------------------------------------------------------------------
-	void CustomTabWidget::closeAllTabs()
-	{
-		//TODO Should I call closeTab( int ) instead of directly removing tabs?
-		while( tabBar()->count() > 0 )
-			delete widget( 0 );
+		return QTabWidget::event( evt );
 	}
 	//-------------------------------------------------------------------------
 	bool CustomTabWidget::eventFilter( QObject* o, QEvent* evt )
 	{
 		bool result = QTabWidget::eventFilter( o, evt );
 
-		if( o == tabBar() && evt->type() == QEvent::MouseButtonDblClick )
+		if( o == tabBar() && evt )
 		{
-			QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
-			if( mouseEvt->buttons() & Qt::LeftButton )
+			if( evt->type() == QEvent::MouseButtonDblClick )
 			{
-				int index = tabBar()->tabAt( mouseEvt->pos() );
-				if( index == -1 )
-					return result;
+				QMouseEvent* mouseEvt = static_cast<QMouseEvent*>( evt );
+				if( mouseEvt->buttons() & Qt::LeftButton )
+				{
+					int index = tabBar()->tabAt( mouseEvt->pos() );
+					if( index == -1 )
+						return result;
 
-				renameTab( index );
-				return true;
+					_renameTab( index );
+					return true;
+				}
 			}
+
+			else if( evt->type() == QEvent::ContextMenu )
+				tabBar()->actions()[ 0 ]->setEnabled( tabBar()->count() > 1 );
 		}
 
 		return result;
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::newGraph()
+	void CustomTabWidget::_closeAllTabs()
 	{
-		QString graphName = "New Graph " + QString::number( ++_newGraphCount );
+		/*QAction* a = qobject_cast<QAction*>( sender() );
+		if( a )
+		{*/
+			AppConfig* c = Singleton<AppConfig>::instancePtr();
+			if( !_disableCloseTabQuestion && c->warnOnGraphRemoval() )
+			{
+				QMessageBox::StandardButton answer = QMessageBox::question(
+					this,
+					tr( "Close all tabs" ),
+					tr( "Are you sure?" ),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::No
+				);
 
-		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* m = p->tableModel( "graphSettings" );
+				if( answer == QMessageBox::No )
+					return;
+			}
 
-		//The new tab must be created before inserting the new row
-		//in the project file, or connected dataChanged slots will crash
-		Graph* g = new Graph( this );
-		QSqlRecord r = m->record();
-		g->setDefaultAttributes( &r );
-		int index = addTab( g, graphName );
-		r.setValue( "name", graphName );
-		if( !m->insertRecord( -1, r ) )
+			_disableCloseTabQuestion = true;
+
+			while( tabBar()->count() > 0 )
+				_closeTab( 0 );
+
+			_disableCloseTabQuestion = false;
+		/*}
+		else
 		{
-			QMessageBox::critical(
-						this,
-						tr( "New Graph" ),
-						tr( "Unable to add a new graph:\n"
-							"There's something wrong with your project file." )
-			);
-
-			delete widget( index );
-			return;
+			while( tabBar()->count() > 0 )
+			{
+				delete widget( 0 );
+				emit graphRemoved( 0 );
+			}
 		}
 
-		if( !_dataConnected )
-		{
-			connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
-					 this, SLOT( onDataChanged( QModelIndex, QModelIndex ) )
-			);
-			_dataConnected = true;
-		}
+		emit graphCountChanged( 0 );*/
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::closeTab( int index )
+	void CustomTabWidget::_newGraph( const QString& newName, Graph* g )
 	{
-		Project* p = Singleton<Project>::instancePtr();
-		QSqlTableModel* model = p->tableModel( "graphSettings" );
-
-		//TODO removeRow works properly with Qt5, but not with Qt4.
-		//In fact, onDataChanged signal isn't being fired and no
-		//row has been removed after executing following code line
-		if( !( model && model->removeRow( index ) ) )
+		//Graph* g = new Graph( count(), this );
+		addTab( g, newName );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_closeTab( int index )
+	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		if( !_disableCloseTabQuestion && c->warnOnGraphRemoval() )
 		{
-			QMessageBox::critical(
+			QMessageBox::StandardButton answer = QMessageBox::question(
 						this,
 						tr( "Remove Graph" ),
-						tr( "Unable to remove selected graph:\n"
-							"There's something wrong with your project file." )
+						tr( "Closing this tab, you will also remove this graph from your project\n"
+							"Would you like to continue?" ),
+						QMessageBox::Yes | QMessageBox::No,
+						QMessageBox::No
 			);
-			return;
+
+			if( answer == QMessageBox::No )
+				return;
 		}
 
 		delete widget( index );
+		Project* p = Singleton<Project>::instancePtr();
+		if( p )
+			p->removeGraph( index );
+
+		//TODO Remove following code
+		/*if( !( _model && _model->removeRow( p->indexOfRecord( _model, index ) ) ) )
+		{
+			p->showLastError( tr( "Remove Graph" ), _model );
+			return;
+		}*/
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::closeAllButCurrentTab()
+	void CustomTabWidget::_closeAllButCurrentTab()
 	{
-		QMessageBox::StandardButton answer = QMessageBox::question(
-			this,
-			tr( "Close all tabs but selected" ),
-			tr( "Are you sure?" ),
-			QMessageBox::Yes | QMessageBox::No,
-			QMessageBox::No
-		);
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		if( c->warnOnGraphRemoval() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Close all tabs but current one" ),
+				tr( "Are you sure?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
 
-		if( answer == QMessageBox::No )
-			return;
+			if( answer == QMessageBox::No )
+				return;
+		}
+
+		_disableCloseTabQuestion = true;
 
 		//Close all tabs *after* current selected
 		for( int i = tabBar()->count() - 1; i > currentIndex(); i-- )
-			closeTab( i );
+			_closeTab( i );
 
 		//Now remove all tabs *before*
 		while( tabBar()->count() > 1 )
-			closeTab( 0 );
+			_closeTab( 0 );
+
+		_disableCloseTabQuestion = false;
+		//emit graphCountChanged( 1 );
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::renameTab( int index )
+	void CustomTabWidget::_renameTab( int index )
 	{
 		bool ok;
+		QString oldName = tabText( index );
 		QString newName = QInputDialog::getText(
 							  this,
-							  tr( "Change graph name" ),
+							  tr( "Rename Graph \"%1\"" ).arg( oldName ),
 							  tr( "Type a new graph name" ),
 							  QLineEdit::Normal,
-							  tabText( index ),
+							  oldName,
 							  &ok
 		);
 
 		if( ok && !newName.isEmpty() )
 		{
 			Project* p = Singleton<Project>::instancePtr();
-			QSqlTableModel* model = p->tableModel( "graphSettings" );
-			QSqlRecord r = model->record( index );
-			r.setValue( "name", newName );
-			if( !model->setRecord( index, r ) )
-			{
-				QMessageBox::critical(
-							this,
-							tr( "Rename Graph" ),
-							tr( "Unable to rename selected graph:\n"
-								"There's something wrong with your project file." )
-				);
-				return;
-			}
-
+			p->renameGraph( index, newName );
 			setTabText( index, newName );
 		}
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::onDataChanged( QModelIndex i, QModelIndex )
+	void CustomTabWidget::_onProjectOpened()
 	{
-		QSqlTableModel* m = static_cast<QSqlTableModel*>( sender() );
-		QSqlRecord r = m->record( i.row() );
-		Graph* g = graph( i.row() );
-		QString fieldName = r.fieldName( i.column() );
+		Project* p = Singleton<Project>::instancePtr();
+		QDataWidgetMapper* m = p->createOrRetrieveMapper( "tabMapper", true );
 
-		if( fieldName == "RendererType" )
-		{
-			Graph::RendererType rType = Helpers::QStringToEnum<Graph::RendererType>(
-											Graph::staticMetaObject,
-											"RendererType",
-											r.value( "RendererType" ).toString()
-			);
-			g->setRenderer( rType );
-		}
-		else if( fieldName == "highQualityAA" )
-			g->setHighQualityAntialiasing( r.value( "highQualityAA" ).toBool() );
+		connect( p, SIGNAL( graphCreated( QString, Graph* ) ),
+				 this, SLOT( _newGraph( QString, Graph* ) )
+		);
 
-		else
-			g->setAttributes( r );
+		//TODO What about the connections in CustomItemDelegate?
+		connect( this, SIGNAL( currentChanged( int ) ),
+				 m, SLOT( setCurrentIndex( int ) )
+		);
+
+		//TODO
+		//p->addMapping( this, "graphSettings" );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_onProjectClosed()
+	{
+		_disableCloseTabQuestion = true;
+		_closeAllTabs();
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_retranslate()
+	{
+		QList<QAction*> l = tabBar()->actions();
+		l[ 0 ]->setText( tr( "Close all tabs but current selected" ) );
+		l[ 1 ]->setText( tr( "Close all tabs" ) );
 	}
 }
