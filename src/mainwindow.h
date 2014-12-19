@@ -32,10 +32,6 @@
 #	include "aboutdialog.h"
 #endif
 
-#ifndef SETTINGSDIALOG_H
-#	include "settingsdialog.h"
-#endif
-
 #ifndef HANDLEROOTSDIALOG_H
 #	include "handlerootsdialog.h"
 #endif
@@ -55,7 +51,7 @@ namespace depgraphV
 		class MainWindow;
 	}
 
-	class AppConfig;
+	class SettingsDialog;
 
 	class MainWindow : public QMainWindow, public ISerializableObject
 	{
@@ -79,14 +75,17 @@ namespace depgraphV
 
 		virtual QList<const char*> propList() const;
 
-		Graph* currentGraph() const;
-
 		QByteArray windowState() const;
 		QByteArray geometryState() const;
 
 	public slots:
 		void setWindowState( const QByteArray& value );
 		void setGeometryState( const QByteArray& value );
+
+	signals:
+		void projectOpened();
+		void projectLoaded();
+		void projectClosed();
 
 	protected:
 		virtual void changeEvent( QEvent* );
@@ -97,15 +96,22 @@ namespace depgraphV
 		void newProject();
 		void openProject();
 		void saveProject();
+		void saveAsProject();
+		void closeProject();
+
 		void saveAsDot();
 		void saveAsImage();
-		void closeProject();
+
 		void clearRecentDocs();
 
 		void onDraw();
 		void onClear();
 		void onConfigRestored();
+
+		//Tabwidget slots
 		void onCurrentTabChanged( int = -1 );
+		void onGraphCountChanged( int count );
+
 		void about();
 		void settings();
 		void restoreDefaultSettings();
@@ -138,25 +144,32 @@ namespace depgraphV
 		QActionGroup* _langGroup;
 
 		QAction* _actionClearRecentList;
+		QAction* _currentRecentDocument;
 
 		bool _imageFiltersUpdated;
 		QString _imageFilters;
 		QMap<QString, QAction*> _langActions;
 		QMap<QString, QString> _imageFiltersByExt;
 
-		QAction* _newRecentDocument( const QString& filePath );
+		void _doSaveProject( bool saveAs );
 		void _scanFolder( const QFlags<QDir::Filter>& flags, QStringList* filesList, QFileInfo& dirInfo );
 		void _scanFolders() const;
 		void _scanFiles( const QStringList& files ) const;
 		bool _applyGraphLayout() const;
 		void _doClearGraph() const;
-		void _onLoadProject( const QString& message );
+		void _onProjectOpened( const QString& statusBarMessage );
 		bool _lookForRequiredImageFormats();
+
+		QAction* _newRecentDocument( const QString& filePath );
+		void _updateRecentDocumentsList();
+
+		void _updateWindowTitle( bool closingProject = true );
+
+		bool _discardProjectChanges();
 
 		void _startSlowOperation( const QString& message, int maxValue ) const;
 
 		void _showAboutDialog( bool showDonations );
-		QString _ucFirst( const QString& value ) const;
 
 		//Post request data
 		static QByteArray _postData();

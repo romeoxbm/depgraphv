@@ -29,8 +29,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "appconfig.h"
+#include "helpers.h"
+#include "project.h"
 
 //Settings Dialog pages
+#include "generalpage.h"
 #include "scanmodepage.h"
 #include "filterpage.h"
 #include "graphpage.h"
@@ -43,10 +46,12 @@ namespace depgraphV
 		_project( 0 ),
 		_progressBar( new QProgressBar( this ) ),
 		_netManager( new QNetworkAccessManager() ),
+		_currentRecentDocument( 0 ),
 		_imageFiltersUpdated( false )
 	{
 		_ui->setupUi( this );
-		this->setWindowTitle( APP_NAME );
+		_ui->tabWidget->setMainWindow( this );
+		_updateWindowTitle();
 
 		//Title bar progress bar
 		_progressBar->setMaximumHeight( 16 );
@@ -85,26 +90,31 @@ namespace depgraphV
 		onTranslationFound( "en", "" );
 
 		connect( _config, SIGNAL( translationFound( QString, QString ) ),
-				 this, SLOT( onTranslationFound( QString, QString ) ) );
+				 this, SLOT( onTranslationFound( QString, QString ) )
+		);
 
 		_config->lookForTranslations();
 
 		//Settings dialog pages
+		_settingsDlg->addPage(
+					"General Settings",
+					new GeneralPage( this, _settingsDlg )
+		);
 		_settingsDlg->addPage(
 					"Scan Mode",
 					new ScanModePage( this, _settingsDlg )
 		);
 		_settingsDlg->addPage(
 					"Header Filters",
-					new FilterPage( _settingsDlg )
+					new FilterPage( this, _settingsDlg )
 		);
 		_settingsDlg->addPage(
 					"Source Filters",
-					new FilterPage( _settingsDlg, false )
+					new FilterPage( this, _settingsDlg, false )
 		);
 		_settingsDlg->addPage(
 					"Graph Settings",
-					new GraphPage( _settingsDlg )
+					new GraphPage( this, _settingsDlg )
 		);
 
 		//Register serializable objects
@@ -153,9 +163,9 @@ namespace depgraphV
 			QFile f( fileName );
 			if( f.exists() )
 			{
-				_project = Project::open( fileName, this );
+				_project = Project::open( this, fileName );
 				if( _project )
-					_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
+					_onProjectOpened( tr( "Project \"%1\" successfully opened." ) );
 			}
 			else
 				QMessageBox::critical( this, tr( "Open Project" ), tr( "File doesn't exist!" ) );
@@ -180,21 +190,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
-		if( _project && _project->hasPendingChanges() )
+		if( !_discardProjectChanges() )
 		{
-			QMessageBox::StandardButton answer = QMessageBox::question(
-				this,
-				tr( "Exit" ),
-				tr( "Would you like to exit discarding changes?" ),
-				QMessageBox::Yes | QMessageBox::No,
-				QMessageBox::No
-			);
-
-			if( answer == QMessageBox::No )
-			{
-				event->ignore();
-				return;
-			}
+			event->ignore();
+			return;
 		}
 
 		_showAboutDialog( true );
@@ -208,24 +207,12 @@ namespace depgraphV
 		//Close open project first( if open )
 		closeProject();
 
-		QString filter = tr( "Projects (*.dProj)" );
-		QString file = QFileDialog::getSaveFileName(
-						   this,
-						   tr( "Create a new project..." ),
-						   QDir::homePath(),
-						   filter,
-						   &filter
-		);
-
-		if( file.isEmpty() )
+		if( _project )
 			return;
 
-		if( !file.endsWith( ".dProj" ) )
-			file += ".dProj";
-
-		_project = Project::createNew( file, this );
+		_project = Project::create( this );
 		if( _project )
-			_onLoadProject( tr( "Project \"%1\" successfully created." ) );
+			_onProjectOpened( tr( "Project \"%1\" successfully created." ) );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::openProject()
@@ -233,32 +220,61 @@ namespace depgraphV
 		//Close open project first( if open )
 		closeProject();
 
-		QString filter = tr( "Projects (*.dProj)" );
-		QString file = QFileDialog::getOpenFileName(
-						   this,
-						   tr( "Open project..." ),
-						   QDir::homePath(),
-						   filter,
-						   &filter
-		);
-
-		if( file.isEmpty() )
+		if( _project )
 			return;
 
-		_project = Project::open( file, this );
+		_project = Project::open( this );
 		if( _project )
-			_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
+		{
+			_onProjectOpened( tr( "Project \"%1\" successfully opened." ) );
+			if( _project->load() )
+				emit projectLoaded();
+		}
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::saveProject()
 	{
-		Q_ASSERT( _project );
-		if( _project->applyAllChanges() )
+		_doSaveProject( false );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::saveAsProject()
+	{
+		_doSaveProject( true );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::closeProject()
+	{
+		if( !_project )
+			return;
+
+		//Check for unsaved chages
+		if( !_discardProjectChanges() )
+			return;
+
+		QString pName = _project->name();
+
+		//prevent onCurrentTabChanged slot from being called
+		_ui->tabWidget->blockSignals( true );
+		delete _project;
+		_project = 0;
+
+		_ui->actionNew_Graph->setEnabled( false );
+		_ui->menuProject->setEnabled( false );
+		_ui->actionClose->setEnabled( false );
+		_ui->actionSave_As->setEnabled( false );
+		_ui->statusBar->showMessage(
+					tr( "Project \"%1\" has been closed." ).arg( pName )
+		);
+
+		if( _currentRecentDocument )
 		{
-			_ui->statusBar->showMessage(
-						tr( "Project \"%1\" saved." ).arg( _project->name() )
-			);
+			_currentRecentDocument->setEnabled( true );
+			_currentRecentDocument = 0;
 		}
+
+		_updateWindowTitle();
+		emit projectClosed();
+		_ui->tabWidget->blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::saveAsDot()
@@ -270,16 +286,10 @@ namespace depgraphV
 						   "DOT (*.dot)"
 		);
 
-		if( path.isEmpty() )
+		if( !Helpers::addExtension( path, ".dot" ) )
 			return;
 
-		QFileInfo info( path );
-		QString format = info.suffix();
-
-		if( format.isEmpty() )
-			path += ".dot";
-
-		if( currentGraph()->saveDot( path ) )
+		if( _project->currentGraph()->saveDot( path ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 		else
 			QMessageBox::critical( this, tr( "Save as dot" ), tr( "Unable to save file" ) );
@@ -319,38 +329,12 @@ namespace depgraphV
 			tr( "Select path and name of the image file" ),
 			QDir::currentPath(), _imageFilters, &selectedFilter );
 
-		if( path.isEmpty() )
+		QString format = _imageFiltersByExt[ selectedFilter ];
+		if( !Helpers::addExtension( path, format ) )
 			return;
 
-		QFileInfo info( path );
-		QString format = info.suffix();
-
-		if( format.isEmpty() )
-		{
-			format = _imageFiltersByExt[ selectedFilter ];
-			path += "." + format;
-		}
-
-		if( currentGraph()->saveImage( path, format ) )
+		if( _project->currentGraph()->saveImage( path, format ) )
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
-	}
-	//-------------------------------------------------------------------------
-	void MainWindow::closeProject()
-	{
-		if( !_project )
-			return;
-
-		QString pName = _project->name();
-		delete _project;
-		_project = 0;
-		_ui->tabWidget->closeAllTabs();
-		_ui->toolBar->setEnabled( false );
-		_ui->actionClose->setEnabled( false );
-		_ui->actionSettings->setEnabled( false );
-		_ui->statusBar->showMessage(
-					tr( "Project \"%1\" has been closed." ).arg( pName )
-		);
-		this->setWindowTitle( APP_NAME );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::clearRecentDocs()
@@ -379,13 +363,13 @@ namespace depgraphV
 		_ui->toolBar->setEnabled( false );
 		_ui->menuBar->setEnabled( false );
 
-		if( _config->scanByFolders() )
+		if( _project->currentValue( "scanByFolders" ).toBool() )
 			_scanFolders();
 		else
-			_scanFiles( currentGraph()->model()->checkedFiles() );
+			_scanFiles( _project->currentGraph()->model()->checkedFiles() );
 
 		if( !_applyGraphLayout() )
-			currentGraph()->clearGraph();
+			_project->currentGraph()->clearGraph();
 
 		_ui->toolBar->setEnabled( true );
 		_ui->menuBar->setEnabled( true );
@@ -408,7 +392,7 @@ namespace depgraphV
 		if( answer == QMessageBox::No )
 			return;
 
-		currentGraph()->clearGraph();
+		_project->currentGraph()->clearGraph();
 		//Force toolbar buttons update
 		onCurrentTabChanged();
 		//_doClearGraph();
@@ -422,7 +406,13 @@ namespace depgraphV
 		if( !_config->recentDocuments().isEmpty() )
 		{
 			foreach( QString doc, _config->recentDocuments() )
-				_ui->menuOpen_Recent->addAction( _newRecentDocument( doc ) );
+			{
+				int c = _ui->menuOpen_Recent->actions().count();
+				QAction* aDoc = _newRecentDocument( doc );
+				QString shortcut = QString( "CTRL+%1" ).arg( c );
+				aDoc->setShortcut( QKeySequence( shortcut ) );
+				_ui->menuOpen_Recent->addAction( aDoc );
+			}
 
 			_ui->menuOpen_Recent->addSeparator();
 		}
@@ -434,9 +424,12 @@ namespace depgraphV
 		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onCurrentTabChanged( int )
+	void MainWindow::onCurrentTabChanged( int idx )
 	{
-		Graph* g = currentGraph();
+		if( idx == -1 )
+			return;
+
+		Graph* g = _project->currentGraph();
 
 		_ui->actionDraw->setEnabled( !g->drawn() );
 		_ui->actionClear->setEnabled( g->drawn() );
@@ -444,18 +437,28 @@ namespace depgraphV
 		_ui->actionSave_as_Image->setEnabled( g->drawn() );
 	}
 	//-------------------------------------------------------------------------
-	QAction* MainWindow::_newRecentDocument( const QString& filePath )
+	void MainWindow::onGraphCountChanged( int count )
 	{
-		QFileInfo f( filePath );
-		QAction* aDoc = new QAction( this );
-		aDoc->setData( filePath );
-		aDoc->setText( f.fileName() );
+		Graph* g = _project->currentGraph();
+		_ui->actionDraw->setEnabled( g && !g->drawn() );
 
-		connect( aDoc, SIGNAL( triggered() ),
-				 this, SLOT( onRecentDocumentTriggered() )
-		);
+		_ui->actionSelect_FilesFolders->setEnabled( count > 0 );
+		_ui->actionSettings->setEnabled( count > 0 );
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_doSaveProject( bool saveAs )
+	{
+		Q_ASSERT( _project );
+		bool saveRes = saveAs ? _project->saveAs() : _project->save();
+		if( saveRes )
+		{
+			_ui->statusBar->showMessage(
+						tr( "Project \"%1\" saved." ).arg( _project->name() )
+			);
+		}
 
-		return aDoc;
+		_updateRecentDocumentsList();
+		_updateWindowTitle( false );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolder( const QFlags<QDir::Filter>& flags,
@@ -467,8 +470,7 @@ namespace depgraphV
 
 		QStack<QFileInfo> stack;
 		stack.push( dirInfo );
-		QStringList nameFilters = _config->headerNameFilters() +
-								  _config->sourceNameFilters();
+		QStringList nameFilters = _project->nameFilters();
 
 		while( !stack.isEmpty() )
 		{
@@ -492,14 +494,15 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolders() const
 	{
-		QStringList filesList;
+		//TODO MISSING selectedFolders
+		/*QStringList filesList;
 		_startSlowOperation(
 					tr( "Scanning folders..." ),
 					_config->selectedFolders().count()
 		);
 		QFlags<QDir::Filter> flags = QDir::NoDotAndDotDot | QDir::Dirs;
 
-		if( _config->hiddenFoldersIncluded() )
+		if( _project->currentValue( "includeHiddenFolders" ).toBool() )
 			flags |= QDir::Hidden;
 
 		QStringList::const_iterator it = _config->selectedFolders().begin();
@@ -519,7 +522,7 @@ namespace depgraphV
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
 
-		_scanFiles( filesList );
+		_scanFiles( filesList );*/
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFiles( const QStringList& files ) const
@@ -530,7 +533,7 @@ namespace depgraphV
 		foreach( QString path, files )
 		{
 			QFileInfo f( path );
-			currentGraph()->createEdges( f.absolutePath(), f.fileName() );
+			_project->currentGraph()->createEdges( f.absolutePath(), f.fileName() );
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
 	}
@@ -539,7 +542,7 @@ namespace depgraphV
 	{
 		//TODO
 		_startSlowOperation( tr( "Applying layout..." ), 0 );
-		return currentGraph()->applyLayout();
+		return _project->currentGraph()->applyLayout();
 			//qDebug() << "Unable to render; Plugin not found.";
 	}
 	//-------------------------------------------------------------------------
@@ -655,53 +658,27 @@ namespace depgraphV
 		_ui->actionSave_as_Image->setEnabled( value );
 	}*/
 	//-------------------------------------------------------------------------
-	void MainWindow::_onLoadProject( const QString& message )
+	void MainWindow::_onProjectOpened( const QString& statusBarMessage )
 	{
-		//Ensure everything is ok
-		GraphPage* gP = static_cast<GraphPage*>( _settingsDlg->page( "Graph Settings" ) );
-		if( !( gP->mapData() && _ui->tabWidget->loadTabs() ) )
-		{
-			delete _project;
-			_project = 0;
-			return;
-		}
-
-		_ui->toolBar->setEnabled( true );
+		emit projectOpened();
+		_ui->actionNew_Graph->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
-		_ui->actionSettings->setEnabled( true );
-		this->setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+		_ui->actionSave_As->setEnabled( true );
+		_ui->menuProject->setEnabled( true );
+		_updateWindowTitle( false );
 
-		connect( _ui->actionSave, SIGNAL( triggered() ),
-				 this, SLOT( saveProject() )
+		connect( _ui->actionNew_Graph, SIGNAL( triggered() ),
+				 _project, SLOT( createGraph() )
 		);
-		connect( _project, SIGNAL( pendingChanges( bool ) ),
+		connect( _project, SIGNAL( modified( bool ) ),
 				 _ui->actionSave, SLOT( setEnabled( bool ) )
 		);
+		connect( _project, SIGNAL( graphCountChanged( int ) ),
+				 this, SLOT( onGraphCountChanged( int ) )
+		);
 
-		_ui->statusBar->showMessage( message.arg( _project->name() ) );
-
-		if( !_config->recentDocuments().contains( _project->fullPath() ) )
-		{
-			QAction* before = _actionClearRecentList;
-			int actionCount = _ui->menuOpen_Recent->actions().count();
-			if( actionCount == 1 )
-			{
-				before = _ui->menuOpen_Recent->insertSeparator( before );
-				_actionClearRecentList->setEnabled( true );
-				_actionClearRecentList->setText( tr( "Clear list" ) );
-			}
-			else
-				before = _ui->menuOpen_Recent->actions()[ actionCount - 2 ];
-
-			_ui->menuOpen_Recent->insertAction(
-						before,
-						_newRecentDocument( _project->fullPath() )
-			);
-
-			QStringList d = _config->recentDocuments();
-			d << _project->fullPath();
-			_config->setRecentDocuments( d );
-		}
+		_ui->statusBar->showMessage( statusBarMessage.arg( _project->name() ) );
+		_updateRecentDocumentsList();
 	}
 	//-------------------------------------------------------------------------
 	QList<const char*> MainWindow::propList() const
@@ -711,11 +688,6 @@ namespace depgraphV
 			  << "geometryState";
 
 		return props;
-	}
-	//-------------------------------------------------------------------------
-	Graph* MainWindow::currentGraph() const
-	{
-		return _ui->tabWidget->currentGraph();
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::windowState() const
@@ -762,6 +734,106 @@ namespace depgraphV
 		return true;
 	}
 	//-------------------------------------------------------------------------
+	QAction* MainWindow::_newRecentDocument( const QString& filePath )
+	{
+		QFileInfo f( filePath );
+		QAction* aDoc = new QAction( this );
+		aDoc->setData( filePath );
+		aDoc->setText( f.fileName() );
+		if( _project && filePath == _project->fullPath() )
+			aDoc->setEnabled( false );
+
+		connect( aDoc, SIGNAL( triggered() ),
+				 this, SLOT( onRecentDocumentTriggered() )
+		);
+
+		return aDoc;
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_updateRecentDocumentsList()
+	{
+		if( _project->fullPath().isEmpty() )
+			return;
+
+		if( !_config->recentDocuments().contains( _project->fullPath() ) )
+		{
+			QList<QAction*> actionList = _ui->menuOpen_Recent->actions();
+			QAction* before = actionList.first();
+			if( actionList.count() == 1 )
+			{
+				before = _ui->menuOpen_Recent->insertSeparator( before );
+				_actionClearRecentList->setEnabled( true );
+				_actionClearRecentList->setText( tr( "Clear list" ) );
+			}
+
+			_currentRecentDocument = _newRecentDocument( _project->fullPath() );
+			_ui->menuOpen_Recent->insertAction(
+						before,
+						_currentRecentDocument
+			);
+
+			QStringList d = _config->recentDocuments();
+			d.insert( 0, _project->fullPath() );
+			if( d.count() > 10 )
+			{
+				d.removeLast();
+				QAction* removedAction = actionList[ actionList.count() - 3 ];
+				_ui->menuOpen_Recent->removeAction( removedAction );
+			}
+			_config->setRecentDocuments( d );
+			actionList = _ui->menuOpen_Recent->actions();
+
+			//Update shortcuts
+			for( int i = 0; i < 10 && i < actionList.count() - 2; i++ )
+			{
+				QString shortcut = QString( "CTRL+%1" ).arg( i );
+				actionList[ i ]->setShortcut( QKeySequence( shortcut ) );
+			}
+		}
+		else if( !_currentRecentDocument )
+		{
+			foreach( QAction* a, _ui->menuOpen_Recent->actions() )
+			{
+				if( a->data().toString() == _project->fullPath() )
+				{
+					_currentRecentDocument = a;
+					_currentRecentDocument->setEnabled( false );
+				}
+			}
+		}
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_updateWindowTitle( bool closingProject )
+	{
+		if( closingProject )
+			setWindowTitle( APP_NAME );
+		else
+		{
+			Q_ASSERT( _project );
+			setWindowTitle( "[" + _project->name() + "] - " + APP_NAME );
+		}
+	}
+	//-------------------------------------------------------------------------
+	bool MainWindow::_discardProjectChanges()
+	{
+		if( _project && _project->isModified() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Modified project" ),
+				tr( "Would you like to discard unsaved changes?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
+
+			bool result = answer == QMessageBox::Yes;
+			_ui->actionSave->setEnabled( !result );
+			return result;
+		}
+
+		return true;
+	}
+	//-------------------------------------------------------------------------
 	void MainWindow::_startSlowOperation( const QString& message, int maxValue ) const
 	{
 		_ui->statusBar->showMessage( message );
@@ -781,10 +853,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::onSelectFilesOrFolders()
 	{
-		if( _config->scanByFolders() )
+		_project->setCurrentMapper( "tabMapper" );
+		if( _project->currentValue( "scanByFolders" ).toBool() )
 			_rootsDlg->exec();
 		else
-			_filesDlg->exec( currentGraph()->model() );
+			_filesDlg->exec( _project->currentGraph()->model() );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::onLanguageActionTriggered( QAction* action )
@@ -802,7 +875,7 @@ namespace depgraphV
 		//Create a new QAction for lang
 		QAction* newLang = new QAction( this );
 		newLang->setObjectName( path );
-		newLang->setText( _ucFirst( QLocale( lang ).nativeLanguageName() ) );
+		newLang->setText( Helpers::ucFirst( QLocale( lang ).nativeLanguageName() ) );
 		newLang->setData( lang );
 		newLang->setCheckable( true );
 		newLang->setIcon( QIcon( ":/flags/" + lang ) );
@@ -829,23 +902,20 @@ namespace depgraphV
 		//Close open project first( if open )
 		closeProject();
 
+		if( _project )
+			return;
+
 		QAction* s = qobject_cast<QAction*>( sender () );
-		_project = Project::open( s->data().toString(), this );
+		_project = Project::open( this, s->data().toString() );
 
 		if( _project )
-			_onLoadProject( tr( "Project \"%1\" successfully opened." ) );
-	}
-	//-------------------------------------------------------------------------
-	QString MainWindow::_ucFirst( const QString& value ) const
-	{
-		QStringList split = value.split( " " );
-		for( int i = 0; i < split.count(); ++i )
 		{
-			QString& s = split[ i ];
-			s[ 0 ] = s[ 0 ].toUpper();
+			_currentRecentDocument = s;
+			_currentRecentDocument->setEnabled( false );
+			_onProjectOpened( tr( "Project \"%1\" successfully opened." ) );
+			if( _project->load() )
+				emit projectLoaded();
 		}
-
-		return split.join( " " );
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::_postData()
