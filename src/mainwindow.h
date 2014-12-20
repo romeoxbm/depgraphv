@@ -93,8 +93,8 @@ namespace depgraphV
 		void setGeometryState( const QByteArray& value );
 
 	signals:
-		void projectOpened();
-		void projectLoaded();
+		void projectOpened( Project* );
+		void projectLoaded( Project* );
 		void projectClosed();
 
 	protected:

@@ -238,7 +238,7 @@ namespace depgraphV
 		{
 			_onProjectOpened( tr( "Project \"%1\" successfully opened." ) );
 			if( _project->load() )
-				emit projectLoaded();
+				emit projectLoaded( _project );
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -670,7 +670,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_onProjectOpened( const QString& statusBarMessage )
 	{
-		emit projectOpened();
+		emit projectOpened( _project );
 		_ui->actionNew_Graph->setEnabled( true );
 		_ui->actionClose->setEnabled( true );
 		_ui->actionSave_As->setEnabled( true );
@@ -924,7 +924,7 @@ namespace depgraphV
 			_currentRecentDocument->setEnabled( false );
 			_onProjectOpened( tr( "Project \"%1\" successfully opened." ) );
 			if( _project->load() )
-				emit projectLoaded();
+				emit projectLoaded( _project );
 		}
 	}
 	//-------------------------------------------------------------------------
