@@ -64,7 +64,7 @@ namespace depgraphV
 		f	<< "name"
 
 			//HandleRootsDialog-specific column
-			<< "selectdFolders"
+			<< "selectedFolders"
 
 			//Root folder being used by both SelectFilesDialog and HandleRootsDialog
 			<< "rootFolder"
