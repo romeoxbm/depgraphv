@@ -107,38 +107,38 @@ namespace depgraphV
 
 	private slots:
 		//File Menu
-		void newProject();
-		void openProject();
-		void saveProject();
-		void saveAsProject();
-		void closeProject();
+		void _newProject();
+		void _openProject();
+		void _saveProject();
+		void _saveAsProject();
+		void _closeProject();
 
-		void saveAsDot();
-		void saveAsImage();
+		void _saveAsDot();
+		void _saveAsImage();
 
-		void clearRecentDocs();
+		void _clearRecentDocs();
 
-		void onDraw();
-		void onClear();
-		void onConfigRestored();
+		void _onDraw();
+		void _onClear();
+		void _onConfigRestored();
 
 		//Tabwidget slots
-		void onCurrentTabChanged( int = -1 );
-		void onGraphCountChanged( int count );
+		void _onCurrentTabChanged( int = -1 );
+		void _onGraphCountChanged( int count );
 
-		void about();
-		void settings();
-		void restoreDefaultSettings();
+		void _about();
+		void _showSettings();
+		void _restoreDefaultSettings();
 
-		void checkForUpdates() const;
-		void onUpdateReplyProgress( qint64, qint64 );
-		void onUpdateReply( QNetworkReply* );
+		void _checkForUpdates() const;
+		void _onUpdateReplyProgress( qint64, qint64 );
+		void _onUpdateReply( QNetworkReply* );
 
-		void onSelectFilesOrFolders();
-		void onLanguageActionTriggered( QAction* action );
-		void onTranslationFound( QString lang, QString path );
+		void _onSelectFilesOrFolders();
+		void _onLanguageActionTriggered( QAction* action );
+		void _onTranslationFound( QString lang, QString path );
 
-		void onRecentDocumentTriggered();
+		void _onRecentDocumentTriggered();
 
 	private:
 		Ui::MainWindow* _ui;

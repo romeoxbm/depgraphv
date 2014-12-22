@@ -454,7 +454,7 @@
    <sender>actionSave_as_Image</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>saveAsImage()</slot>
+   <slot>_saveAsImage()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -470,7 +470,7 @@
    <sender>actionSave_as_dot</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>saveAsDot()</slot>
+   <slot>_saveAsDot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -502,7 +502,7 @@
    <sender>actionAbout</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>about()</slot>
+   <slot>_about()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -518,7 +518,7 @@
    <sender>actionRestore</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>restoreDefaultSettings()</slot>
+   <slot>_restoreDefaultSettings()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -534,7 +534,7 @@
    <sender>actionSettings</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>settings()</slot>
+   <slot>_showSettings()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -550,7 +550,7 @@
    <sender>actionDraw</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>onDraw()</slot>
+   <slot>_onDraw()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -566,7 +566,7 @@
    <sender>actionClear</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>onClear()</slot>
+   <slot>_onClear()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -582,7 +582,7 @@
    <sender>actionSelect_FilesFolders</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>onSelectFilesOrFolders()</slot>
+   <slot>_onSelectFilesOrFolders()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -598,7 +598,7 @@
    <sender>action_Check_for_updates</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>checkForUpdates()</slot>
+   <slot>_checkForUpdates()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -614,7 +614,7 @@
    <sender>actionNew</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>newProject()</slot>
+   <slot>_newProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -630,7 +630,7 @@
    <sender>actionOpen</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>openProject()</slot>
+   <slot>_openProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -646,7 +646,7 @@
    <sender>actionClose</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>closeProject()</slot>
+   <slot>_closeProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -662,7 +662,7 @@
    <sender>tabWidget</sender>
    <signal>currentChanged(int)</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>onCurrentTabChanged(int)</slot>
+   <slot>_onCurrentTabChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>279</x>
@@ -678,7 +678,7 @@
    <sender>actionSave</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>saveProject()</slot>
+   <slot>_saveProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -694,7 +694,7 @@
    <sender>actionSave_As</sender>
    <signal>triggered()</signal>
    <receiver>depgraphV::MainWindow</receiver>
-   <slot>saveAsProject()</slot>
+   <slot>_saveAsProject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -708,22 +708,20 @@
   </connection>
  </connections>
  <slots>
-  <slot>saveAsImage()</slot>
-  <slot>saveAsDot()</slot>
-  <slot>about()</slot>
-  <slot>restoreDefaultSettings()</slot>
-  <slot>settings()</slot>
-  <slot>onDraw()</slot>
-  <slot>onClear()</slot>
-  <slot>onSelectFilesOrFolders()</slot>
-  <slot>checkForUpdates()</slot>
-  <slot>newGraph()</slot>
-  <slot>closeTab(int)</slot>
-  <slot>newProject()</slot>
-  <slot>openProject()</slot>
-  <slot>closeProject()</slot>
-  <slot>onCurrentTabChanged(int)</slot>
-  <slot>saveProject()</slot>
-  <slot>saveAsProject()</slot>
+  <slot>_newProject()</slot>
+  <slot>_openProject()</slot>
+  <slot>_saveProject()</slot>
+  <slot>_saveAsProject()</slot>
+  <slot>_closeProject()</slot>
+  <slot>_saveAsDot()</slot>
+  <slot>_saveAsImage()</slot>
+  <slot>_onDraw()</slot>
+  <slot>_onClear()</slot>
+  <slot>_onCurrentTabChanged(int)</slot>
+  <slot>_about()</slot>
+  <slot>_showSettings()</slot>
+  <slot>_restoreDefaultSettings()</slot>
+  <slot>_checkForUpdates()</slot>
+  <slot>_onSelectFilesOrFolders()</slot>
  </slots>
 </ui>

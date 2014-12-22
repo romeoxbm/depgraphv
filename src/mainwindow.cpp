@@ -83,7 +83,7 @@ namespace depgraphV
 		_actionClearRecentList = new QAction( this );
 		_actionClearRecentList->setText( tr( "Clear list" ) );
 		connect( _actionClearRecentList, SIGNAL( triggered() ),
-				 this, SLOT( clearRecentDocs() )
+				 this, SLOT( _clearRecentDocs() )
 		);
 
 		//Check for available image formats
@@ -97,10 +97,10 @@ namespace depgraphV
 		_langGroup = new QActionGroup( _ui->menu_Language );
 		_ui->actionSystem_language->setData( QLocale::system().name().mid( 0, 2 ) );
 		_langGroup->addAction( _ui->actionSystem_language );
-		onTranslationFound( "en", "" );
+		_onTranslationFound( "en", "" );
 
 		connect( _config, SIGNAL( translationFound( QString, QString ) ),
-				 this, SLOT( onTranslationFound( QString, QString ) )
+				 this, SLOT( _onTranslationFound( QString, QString ) )
 		);
 
 		_config->lookForTranslations();
@@ -132,13 +132,16 @@ namespace depgraphV
 
 		//Connect other signals and slots
 		connect( _langGroup, SIGNAL( triggered( QAction* ) ),
-				 this, SLOT( onLanguageActionTriggered( QAction* ) )
+				 this, SLOT( _onLanguageActionTriggered( QAction* ) )
 		);
 		connect( _ui->actionAbout_Qt, SIGNAL( triggered() ),
 				 qApp, SLOT( aboutQt() )
 		);
 		connect( _config, SIGNAL( configRestored() ),
-				 this, SLOT( onConfigRestored() )
+				 this, SLOT( _onConfigRestored() )
+		);
+		connect( _netManager, SIGNAL( finished( QNetworkReply* ) ),
+				 this, SLOT( _onUpdateReply( QNetworkReply* ) )
 		);
 
 		//Save default settings, if this is the first time we launch this application
@@ -148,10 +151,6 @@ namespace depgraphV
 		_config->restore();
 
 		_ui->statusBar->showMessage( QString( "%1 %2" ).arg( APP_NAME, tr( "ready" ) ) );
-
-		QObject::connect( _netManager, SIGNAL( finished( QNetworkReply* ) ),
-						  this, SLOT( onUpdateReply( QNetworkReply* ) )
-		);
 	}
 	//-------------------------------------------------------------------------
 	MainWindow::~MainWindow()
@@ -212,10 +211,10 @@ namespace depgraphV
 		qApp->quit();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::newProject()
+	void MainWindow::_newProject()
 	{
 		//Close open project first( if open )
-		closeProject();
+		_closeProject();
 
 		if( _project )
 			return;
@@ -225,10 +224,10 @@ namespace depgraphV
 			_onProjectOpened( tr( "Project \"%1\" successfully created." ) );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::openProject()
+	void MainWindow::_openProject()
 	{
 		//Close open project first( if open )
-		closeProject();
+		_closeProject();
 
 		if( _project )
 			return;
@@ -242,17 +241,17 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveProject()
+	void MainWindow::_saveProject()
 	{
 		_doSaveProject( false );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveAsProject()
+	void MainWindow::_saveAsProject()
 	{
 		_doSaveProject( true );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::closeProject()
+	void MainWindow::_closeProject()
 	{
 		if( !_project )
 			return;
@@ -287,7 +286,7 @@ namespace depgraphV
 		_ui->tabWidget->blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveAsDot()
+	void MainWindow::_saveAsDot()
 	{
 		QString path = QFileDialog::getSaveFileName(
 						   this,
@@ -305,7 +304,7 @@ namespace depgraphV
 			QMessageBox::critical( this, tr( "Save as dot" ), tr( "Unable to save file" ) );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::saveAsImage()
+	void MainWindow::_saveAsImage()
 	{
 		if( !_imageFiltersUpdated )
 		{
@@ -347,7 +346,7 @@ namespace depgraphV
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::clearRecentDocs()
+	void MainWindow::_clearRecentDocs()
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
 			this,
@@ -367,7 +366,7 @@ namespace depgraphV
 		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onDraw()
+	void MainWindow::_onDraw()
 	{
 		//TODO Warn when no file/folder has been selected
 		_ui->toolBar->setEnabled( false );
@@ -386,10 +385,10 @@ namespace depgraphV
 		_progressBar->setVisible( false );
 		_ui->statusBar->showMessage( tr( "All done" ) );
 		//Force toolbar buttons update
-		onCurrentTabChanged();
+		_onCurrentTabChanged();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onClear()
+	void MainWindow::_onClear()
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
 			this,
@@ -404,11 +403,11 @@ namespace depgraphV
 
 		_project->currentGraph()->clearGraph();
 		//Force toolbar buttons update
-		onCurrentTabChanged();
+		_onCurrentTabChanged();
 		//_doClearGraph();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onConfigRestored()
+	void MainWindow::_onConfigRestored()
 	{
 		_langActions[ _config->language() ]->setChecked( true );
 
@@ -434,7 +433,7 @@ namespace depgraphV
 		_ui->menuOpen_Recent->addAction( _actionClearRecentList ) ;
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onCurrentTabChanged( int idx )
+	void MainWindow::_onCurrentTabChanged( int idx )
 	{
 		if( idx == -1 )
 			return;
@@ -447,7 +446,7 @@ namespace depgraphV
 		_ui->actionSave_as_Image->setEnabled( g->drawn() );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onGraphCountChanged( int count )
+	void MainWindow::_onGraphCountChanged( int count )
 	{
 		Graph* g = _project->currentGraph();
 		_ui->actionDraw->setEnabled( g && !g->drawn() );
@@ -563,18 +562,18 @@ namespace depgraphV
 		//_setButtonsAndActionsEnabled( false );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::about()
+	void MainWindow::_about()
 	{
 		_showAboutDialog( false );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::settings()
+	void MainWindow::_showSettings()
 	{
 		_settingsDlg->move( geometry().center() - _settingsDlg->rect().center() );
 		_settingsDlg->exec();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::restoreDefaultSettings()
+	void MainWindow::_restoreDefaultSettings()
 	{
 		QMessageBox::StandardButton answer = QMessageBox::question(
 			0,
@@ -590,7 +589,7 @@ namespace depgraphV
 		_config->restoreDefault();
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::checkForUpdates() const
+	void MainWindow::_checkForUpdates() const
 	{
 		QNetworkRequest request(
 					QUrl( "http://depgraphv.sourceforge.net/update.php" )
@@ -605,19 +604,19 @@ namespace depgraphV
 		QNetworkReply* reply = _netManager->post( request, _postData() );
 
 		connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
-					this, SLOT( onUpdateReplyProgress( qint64, qint64 ) ) );
+					this, SLOT( _onUpdateReplyProgress( qint64, qint64 ) ) );
 
 		_startSlowOperation( tr( "Downloading response..." ), 0 );
 		_ui->action_Check_for_updates->setEnabled( false );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onUpdateReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+	void MainWindow::_onUpdateReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 	{
 		_progressBar->setMaximum( bytesTotal );
 		_progressBar->setValue( bytesReceived );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onUpdateReply( QNetworkReply* reply )
+	void MainWindow::_onUpdateReply( QNetworkReply* reply )
 	{
 		_ui->statusBar->showMessage( tr( "Response received" ) );
 		_progressBar->setMaximum( 0 );
@@ -685,7 +684,7 @@ namespace depgraphV
 				 _ui->actionSave, SLOT( setEnabled( bool ) )
 		);
 		connect( _project, SIGNAL( graphCountChanged( int ) ),
-				 this, SLOT( onGraphCountChanged( int ) )
+				 this, SLOT( _onGraphCountChanged( int ) )
 		);
 
 		_ui->statusBar->showMessage( statusBarMessage.arg( _project->name() ) );
@@ -755,7 +754,7 @@ namespace depgraphV
 			aDoc->setEnabled( false );
 
 		connect( aDoc, SIGNAL( triggered() ),
-				 this, SLOT( onRecentDocumentTriggered() )
+				 this, SLOT( _onRecentDocumentTriggered() )
 		);
 
 		return aDoc;
@@ -862,7 +861,7 @@ namespace depgraphV
 		_aboutDlg->exec( showDonations );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onSelectFilesOrFolders()
+	void MainWindow::_onSelectFilesOrFolders()
 	{
 		_project->setCurrentMapper( "tabMapper" );
 		if( _project->currentValue( "scanByFolders" ).toBool() )
@@ -871,13 +870,13 @@ namespace depgraphV
 			_filesDlg->exec( _project->currentGraph()->model() );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onLanguageActionTriggered( QAction* action )
+	void MainWindow::_onLanguageActionTriggered( QAction* action )
 	{
 		_config->setLanguage( action->data().toString() );
 		action->setChecked( true );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onTranslationFound( QString lang, QString path )
+	void MainWindow::_onTranslationFound( QString lang, QString path )
 	{
 		//Double tab check
 		if( _langActions.contains( lang ) )
@@ -908,10 +907,10 @@ namespace depgraphV
 		_langActions.insert( lang, newLang );
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::onRecentDocumentTriggered()
+	void MainWindow::_onRecentDocumentTriggered()
 	{
 		//Close open project first( if open )
-		closeProject();
+		_closeProject();
 
 		if( _project )
 			return;
