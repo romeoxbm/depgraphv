@@ -38,12 +38,15 @@
 #ifndef HANDLEROOTSDIALOG_H
 #define HANDLEROOTSDIALOG_H
 
-#ifndef APPCONFIG_H
-#	include "appconfig.h"
+#ifndef SINGLETON_H
+#	include "singleton.h"
 #endif
 
 namespace depgraphV
 {
+	//Forward declaration
+	class MainWindow;
+
 	namespace Ui
 	{
 		class HandleRootsDialog;
@@ -55,34 +58,31 @@ namespace depgraphV
 
 	public:
 		/**
-		 * @brief HandleRootsDialog constructor.
-		 * @param parent The parent widget (default NULL)
+		 * @brief \a HandleRootsDialog constructor.
+		 * @param parent The parent widget (default \a NULL)
 		 */
-		HandleRootsDialog( QWidget* parent = 0 );
+		HandleRootsDialog( MainWindow* parent = 0 );
 
 		/**
-		 * @brief HandleRootsDialog destructor.
+		 * @brief \a HandleRootsDialog destructor.
 		 */
 		~HandleRootsDialog();
+
+		int exec( const QString& mapper );
 
 	protected:
 		virtual bool event( QEvent* evt );
 		virtual bool eventFilter( QObject* obj, QEvent* evt );
 
-	signals:
-
-	public slots:
-
 	private slots:
 		void _invertSelection();
-		void on_actionAdd_triggered();
-		void on_actionRemove_Selection_triggered();
-		void onClose( int );
-		void onConfigRestored();
+		void _onRootFolderAdded();
+		void _onRemoveSelection();
+		void _onClose( int );
 
 	private:
 		Ui::HandleRootsDialog* _ui;
-		QStringList* _selectedFolders;
+		QString _mapperName;
 
 		void _updateEnabledFlags();
 	};

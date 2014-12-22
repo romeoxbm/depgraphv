@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * handlerootsdialog.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -29,16 +39,17 @@
 #include "handlerootsdialog.h"
 #include "ui_handlerootsdialog.h"
 #include "helpers.h"
+#include "mainwindow.h"
 
 namespace depgraphV
 {
-	HandleRootsDialog::HandleRootsDialog( QWidget* parent )
+	HandleRootsDialog::HandleRootsDialog( MainWindow* parent )
 		: QDialog( parent ),
-		_ui( new Ui::HandleRootsDialog ),
-		_selectedFolders( 0 )
+		_ui( new Ui::HandleRootsDialog )
 	{
 		_ui->setupUi( this );
 
+		//Finishing ui setup
 		_ui->rootFolders->addAction( _ui->actionSelect_All );
 		_ui->rootFolders->addAction( _ui->actionSelect_None );
 		_ui->rootFolders->addAction( _ui->actionInvert_Selection );
@@ -46,14 +57,24 @@ namespace depgraphV
 		_ui->rootFolders->addAction( _ui->actionAdd );
 		_ui->rootFolders->addAction( _ui->actionRemove_Selection );
 		_ui->rootFolders->viewport()->installEventFilter( this );
-
-		connect( Singleton<AppConfig>::instancePtr(), SIGNAL( configRestored() ),
-				 this, SLOT( onConfigRestored() ) );
 	}
 	//-------------------------------------------------------------------------
 	HandleRootsDialog::~HandleRootsDialog()
 	{
 		delete _ui;
+	}
+	//-------------------------------------------------------------------------
+	int HandleRootsDialog::exec( const QString& mapper )
+	{
+		Q_ASSERT( !mapper.isEmpty() && "mapper cannot be empty!" );
+		_mapperName = mapper;
+
+		Project* p = Singleton<Project>::instancePtr();
+		p->setCurrentMapper( mapper );
+		p->addMapping( _ui->rootFolders, "selectedFolders" );
+		p->updateMapper( mapper );
+
+		return QDialog::exec();
 	}
 	//-------------------------------------------------------------------------
 	bool HandleRootsDialog::event( QEvent* evt )
@@ -74,19 +95,17 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void HandleRootsDialog::_invertSelection()
 	{
-		_ui->rootFolders->blockSignals( true );
-		for( int i = 0; i < _selectedFolders->count(); i++ )
+		for( int i = 0; i < _ui->rootFolders->count(); i++ )
 		{
 			QListWidgetItem* item = _ui->rootFolders->item( i );
 			item->setSelected( !item->isSelected() );
 		}
-		_ui->rootFolders->blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
 	void HandleRootsDialog::_updateEnabledFlags()
 	{
 		int selectedCount = _ui->rootFolders->selectedItems().count();
-		int count = _selectedFolders->count();
+		int count = _ui->rootFolders->count();
 
 		_ui->actionSelect_All->setEnabled( count && selectedCount < count );
 		_ui->actionSelect_None->setEnabled( count && selectedCount );
@@ -95,13 +114,15 @@ namespace depgraphV
 		_ui->actionRemove_Selection->setEnabled( selectedCount );
 	}
 	//-------------------------------------------------------------------------
-	void HandleRootsDialog::on_actionAdd_triggered()
+	void HandleRootsDialog::_onRootFolderAdded()
 	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		Project* p = Singleton<Project>::instancePtr();
+		p->setCurrentMapper( _mapperName );
+
 		QString root = QFileDialog::getExistingDirectory(
 					_ui->rootFolders,
 					tr( "Add root folder" ),
-					c->rootFolder()
+					p->currentValue( "rootFolder" ).toString()
 		);
 
 		if( root.isNull() )
@@ -109,59 +130,36 @@ namespace depgraphV
 
 		//TODO Check if root is a subfolder of an already added folder
 		//and if recursive scan is enabled; If so, do not add root.
-		if( c->isRecursiveScanEnabled() )
+		if( p->currentValue( "scanRecursively" ).toBool() )
 		{
-
 		}
-		_selectedFolders->append( root );
+
 		_ui->rootFolders->addItem( root );
 	}
 	//-------------------------------------------------------------------------
-	void HandleRootsDialog::on_actionRemove_Selection_triggered()
+	void HandleRootsDialog::_onRemoveSelection()
 	{
 		QString count = QString::number( _ui->rootFolders->selectedItems().count() );
 
 		QMessageBox::StandardButton answer = QMessageBox::question(
-			0,
+			parentWidget(),
 			tr( "Remove selected root folders" ),
-			tr( "Are you sure you want to remove " )
-												 + count
-												 + tr( " selected folders?" ),
+			tr( "Are you sure you want to remove %1 selected folders?" ).arg( count ),
 			QMessageBox::Yes | QMessageBox::No,
 			QMessageBox::No
 		);
 
-		if( answer == QMessageBox::No )
-			return;
-
-		foreach( QListWidgetItem* i, _ui->rootFolders->selectedItems() )
-			_selectedFolders->removeAll( i->text() );
-
-		_ui->rootFolders->clear();
-		_ui->rootFolders->addItems( *_selectedFolders );
+		if( answer != QMessageBox::No )
+			qDeleteAll( _ui->rootFolders->selectedItems() );
 	}
 	//-------------------------------------------------------------------------
-	void HandleRootsDialog::onClose( int result )
+	void HandleRootsDialog::_onClose( int result )
 	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		Memento<QStringList>* m = c->selectedFoldersMemento();
-
+		Project* p = Singleton<Project>::instancePtr();
+		p->setCurrentMapper( _mapperName );
 		if( result )
-			m->commit();
+			p->submitChanges();
 		else
-		{
-			m->revert();
-			_ui->rootFolders->clear();
-			_ui->rootFolders->addItems( m->state() );
-		}
-	}
-	//-------------------------------------------------------------------------
-	void HandleRootsDialog::onConfigRestored()
-	{
-		if( !_selectedFolders )
-			_selectedFolders = &Singleton<AppConfig>::instance().selectedFolders();
-
-		_ui->rootFolders->clear();
-		_ui->rootFolders->addItems( *_selectedFolders );
+			p->revertChanges();
 	}
 }
