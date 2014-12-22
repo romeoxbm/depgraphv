@@ -73,8 +73,8 @@ namespace depgraphV
 		Q_ASSERT( w && !_mainW );
 		_mainW = w;
 
-		connect( _mainW, SIGNAL( projectOpened() ),
-				 this, SLOT( _onProjectOpened() )
+		connect( _mainW, SIGNAL( projectOpened( Project* ) ),
+				 this, SLOT( _onProjectOpened( Project* ) )
 		);
 		connect( _mainW, SIGNAL( projectClosed() ),
 				 this, SLOT( _onProjectClosed() )
@@ -244,9 +244,8 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::_onProjectOpened()
+	void CustomTabWidget::_onProjectOpened( Project* p )
 	{
-		Project* p = Singleton<Project>::instancePtr();
 		QDataWidgetMapper* m = p->createOrRetrieveMapper( "tabMapper", true );
 
 		connect( p, SIGNAL( graphCreated( QString, Graph* ) ),
@@ -257,9 +256,6 @@ namespace depgraphV
 		connect( this, SIGNAL( currentChanged( int ) ),
 				 m, SLOT( setCurrentIndex( int ) )
 		);
-
-		//TODO
-		//p->addMapping( this, "graphSettings" );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_onProjectClosed()

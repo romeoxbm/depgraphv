@@ -69,7 +69,7 @@ namespace depgraphV
 		void _closeAllButCurrentTab();
 		void _renameTab( int index );
 
-		void _onProjectOpened();
+		void _onProjectOpened( Project* );
 		void _onProjectClosed();
 		void _closeAllTabs();
 
