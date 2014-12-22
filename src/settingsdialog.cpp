@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * settingsdialog.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -29,14 +39,21 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 #include "helpers.h"
+#include "mainwindow.h"
+#include "project.h"
 
 namespace depgraphV
 {
-	SettingsDialog::SettingsDialog( QWidget* parent )
-		: QDialog( parent ),
-		_ui( new Ui::SettingsDialog )
+	SettingsDialog::SettingsDialog( MainWindow* w )
+		: QDialog( w ),
+		_ui( new Ui::SettingsDialog ),
+		_currentPage( 0 )
 	{
 		_ui->setupUi( this );
+
+		connect( w, SIGNAL( projectOpened( Project* ) ),
+				 this, SLOT( _onProjectOpened( Project* ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	SettingsDialog::~SettingsDialog()
@@ -50,7 +67,7 @@ namespace depgraphV
 		Q_ASSERT( !key.isEmpty() && page );
 		if( _pages.contains( key ) )
 			return false;
-		
+
 		QListWidgetItem* button = new QListWidgetItem( _ui->listWidget );
 		button->setIcon( QIcon( page->iconPath() ) );
 		button->setText( page->windowTitle() );
@@ -59,6 +76,9 @@ namespace depgraphV
 
 		_ui->stackedWidget->addWidget( page );
 		_pages.insert( key, page );
+
+		if( !_currentPage )
+			_currentPage = page;
 
 		return true;
 	}
@@ -77,6 +97,8 @@ namespace depgraphV
 		{
 			_ui->retranslateUi( this );
 			_ui->pageLabel->setText( _ui->stackedWidget->currentWidget()->windowTitle() );
+
+			//Update listwidget
 			for( int i = 0; i < _ui->listWidget->count(); i++ )
 			{
 				QListWidgetItem* it = _ui->listWidget->item( i );
@@ -87,7 +109,7 @@ namespace depgraphV
 		QDialog::changeEvent( event );
 	}
 	//-------------------------------------------------------------------------
-	void SettingsDialog::changePage( QListWidgetItem* current,
+	void SettingsDialog::_changePage( QListWidgetItem* current,
 									 QListWidgetItem* previous )
 	{
 		if( !current )
@@ -96,19 +118,55 @@ namespace depgraphV
 		SettingsPage* nextPage = static_cast<SettingsPage*>(
 					_ui->stackedWidget->widget( _ui->listWidget->row( current ) )
 		);
-		SettingsPage* currentPage = static_cast<SettingsPage*>(
-					_ui->stackedWidget->widget( _ui->listWidget->row( previous ) )
-		);
 
 		bool accept = true;
-		pageChanging( currentPage, nextPage, accept );
+		emit pageChanging( _currentPage, nextPage, accept );
 		if( accept )
 		{
 			_ui->stackedWidget->setCurrentWidget( nextPage );
 			_ui->pageLabel->setText( nextPage->windowTitle() );
+			_currentPage = nextPage;
 			emit pageChanged( nextPage );
 		}
 		else
 			_ui->listWidget->setCurrentItem( previous );
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_onProjectOpened( Project* p )
+	{
+		_ui->graphName->setModelColumn( p->fieldIndex( "name" ) );
+		_ui->graphName->setModel( p->tableModel() );
+
+		QDataWidgetMapper* m = p->createOrRetrieveMapper( "settingsMapper" );
+
+		//TODO What about the connections in CustomItemDelegate?
+		connect( _ui->graphName, SIGNAL( activated( int ) ),
+				 m, SLOT( setCurrentIndex( int ) )
+		);
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_onButtonClicked( QAbstractButton* button )
+	{
+		Project* p = Singleton<Project>::instancePtr();
+		p->setCurrentMapper( "settingsMapper" );
+
+		QDialogButtonBox::ButtonRole r = _ui->buttonBox->buttonRole( button );
+		if( r == QDialogButtonBox::ApplyRole || r == QDialogButtonBox::RejectRole )
+		{
+			p->submitChanges();
+			foreach( SettingsPage* page, _pages )
+				page->commitChanges();
+
+			if( r == QDialogButtonBox::RejectRole )
+				accept();
+		}
+		else if( r == QDialogButtonBox::DestructiveRole )
+		{
+			p->revertChanges();
+			foreach( SettingsPage* page, _pages )
+				page->revertChanges();
+
+			reject();
+		}
 	}
 }

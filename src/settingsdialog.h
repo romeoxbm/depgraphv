@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * settingsdialog.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -39,19 +49,21 @@ namespace depgraphV
 		class SettingsDialog;
 	}
 
+	class MainWindow;
+
 	class SettingsDialog : public QDialog
 	{
 		Q_OBJECT
 
 	public:
 		/**
-		 * @brief SettingsDialog constructor.
-		 * @param parent The parent widget (default NULL)
+		 * @brief \a SettingsDialog constructor.
+		 * @param parent The parent \a MainWindow
 		 */
-		explicit SettingsDialog( QWidget* parent = 0 );
+		explicit SettingsDialog( MainWindow* parent );
 
 		/**
-		 * @brief SettingsDialog destructor.
+		 * @brief \a SettingsDialog destructor.
 		 */
 		~SettingsDialog();
 
@@ -66,10 +78,13 @@ namespace depgraphV
 		void pageChanged( SettingsPage* nextPage );
 
 	private slots:
-		void changePage( QListWidgetItem* current, QListWidgetItem* previous );
+		void _changePage( QListWidgetItem* current, QListWidgetItem* previous );
+		void _onProjectOpened( Project* );
+		void _onButtonClicked( QAbstractButton* );
 
 	private:
 		Ui::SettingsDialog* _ui;
+		SettingsPage* _currentPage;
 		QMap<QString, SettingsPage*> _pages;
 	};
 }
