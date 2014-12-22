@@ -146,7 +146,7 @@
    <sender>depgraphV::HandleRootsDialog</sender>
    <signal>finished(int)</signal>
    <receiver>depgraphV::HandleRootsDialog</receiver>
-   <slot>onClose(int)</slot>
+   <slot>_onClose(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>199</x>
@@ -158,10 +158,60 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionAdd</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>_onRootFolderAdded()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRemove_Selection</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>_onRemoveSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionInvert_Selection</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::HandleRootsDialog</receiver>
+   <slot>_invertSelection()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>_updateEnabledFlags()</slot>
   <slot>_invertSelection()</slot>
-  <slot>onClose(int)</slot>
+  <slot>_onClose(int)</slot>
+  <slot>_onRootFolderAdded()</slot>
+  <slot>_onRemoveSelection()</slot>
  </slots>
 </ui>
