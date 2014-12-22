@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * customitemdelegate.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -48,8 +58,9 @@ namespace depgraphV
 	private:
 		bool _disableConnections;
 
+		void _connect( QComboBox* ) const;
+		void _connect( QListWidget* ) const;
 		void _connect( QWidget* ) const;
-		void _disconnect( QWidget* ) const;
 	};
 }
 #endif // CUSTOMITEMDELEGATE_H
