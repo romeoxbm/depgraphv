@@ -54,6 +54,10 @@
 #	include "project.h"
 #endif
 
+#ifndef APPCONFIG_H
+#	include "appconfig.h"
+#endif
+
 namespace depgraphV
 {
 	namespace Ui
@@ -72,7 +76,7 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief MainWindow constructor.
-		 * @param parent The parent widget (default NULL)
+		 * @param parent The parent widget (default \a NULL)
 		 */
 		explicit MainWindow( QWidget* parent = 0 );
 

@@ -504,19 +504,20 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolders() const
 	{
-		//TODO MISSING selectedFolders
-		/*QStringList filesList;
+		QString f = _project->currentValue( "selectedFolders" ).toString();
+		QStringList folders = f.split( ';', QString::SkipEmptyParts );
+		QStringList filesList;
 		_startSlowOperation(
 					tr( "Scanning folders..." ),
-					_config->selectedFolders().count()
+					folders.count()
 		);
 		QFlags<QDir::Filter> flags = QDir::NoDotAndDotDot | QDir::Dirs;
 
 		if( _project->currentValue( "includeHiddenFolders" ).toBool() )
 			flags |= QDir::Hidden;
 
-		QStringList::const_iterator it = _config->selectedFolders().begin();
-		for( ; it != _config->selectedFolders().end(); it++ )
+		QStringList::const_iterator it = folders.begin();
+		for( ; it != folders.end(); it++ )
 		{
 			QFileInfoList infos = QDir( *it ).entryInfoList( flags );
 			auto memberFuncPtr = std::bind(
@@ -532,7 +533,7 @@ namespace depgraphV
 			_progressBar->setValue( _progressBar->value() + 1 );
 		}
 
-		_scanFiles( filesList );*/
+		_scanFiles( filesList );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFiles( const QStringList& files ) const
@@ -865,7 +866,7 @@ namespace depgraphV
 	{
 		_project->setCurrentMapper( "tabMapper" );
 		if( _project->currentValue( "scanByFolders" ).toBool() )
-			_rootsDlg->exec();
+			_rootsDlg->exec( "tabMapper" );
 		else
 			_filesDlg->exec( _project->currentGraph()->model() );
 	}
