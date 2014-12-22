@@ -137,6 +137,18 @@ namespace depgraphV
 		void setCurrentMapper( const QString& name );
 		void setCurrentMapper( QDataWidgetMapper* mapper );
 
+		/**
+		 * @brief Force update for the data widget mapper called \a name.
+		 * @param name The name of the data widget mapper
+		 */
+		void updateMapper( const QString& name ) const;
+
+		/**
+		 * @brief Force update for \a mapper.
+		 * @param mapper The data widget mapper to update.
+		 */
+		void updateMapper( QDataWidgetMapper* mapper ) const;
+
 		Graph* currentGraph( const QString& mapperName = "tabMapper" ) const;
 		Graph* currentGraph( QDataWidgetMapper* mapper ) const;
 

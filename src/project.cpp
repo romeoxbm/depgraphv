@@ -280,6 +280,16 @@ namespace depgraphV
 		_currentMapper = mapper;
 	}
 	//-------------------------------------------------------------------------
+	void Project::updateMapper( const QString& name ) const
+	{
+		updateMapper( mapper( name ) );
+	}
+	//-------------------------------------------------------------------------
+	void Project::updateMapper( QDataWidgetMapper* mapper ) const
+	{
+		mapper->setCurrentIndex( mapper->currentIndex() );
+	}
+	//-------------------------------------------------------------------------
 	Graph* Project::currentGraph( const QString& mapperName ) const
 	{
 		return currentGraph( mapper( mapperName ) );
@@ -362,6 +372,7 @@ namespace depgraphV
 		int rows;
 		stream >> rows;
 
+		_delegate->disableConnections( true );
 		for( int r = 0; r < rows; r++ )
 		{
 			for( int c = 0; c < _model->columnCount(); c++ )
@@ -379,6 +390,7 @@ namespace depgraphV
 					_model->setItem( r, c, i );
 			}
 		}
+		_delegate->disableConnections( false );
 		emit graphCountChanged( rows );
 
 		return true;
@@ -480,6 +492,7 @@ namespace depgraphV
 		if( !_currentMapper->submit() )
 		{
 			//TODO WARNING MESSAGE
+			qDebug() << "Can't submit!";
 			return;
 		}
 

@@ -42,7 +42,7 @@ namespace depgraphV
 {
 	QMap<QString, QString> Helpers::_readTexts;
 
-	//TODO This method should be removed
+	//TODO This method should/could be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
 #ifdef DEPGRAPHV_USE_QT5S
