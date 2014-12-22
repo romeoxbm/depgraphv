@@ -55,14 +55,14 @@ namespace depgraphV
 
 	public:
 		/**
-		 * @brief ScanModePage constructor.
-		 * @param w MainWindow pointer.
-		 * @param parent The parent widget (default NULL).
+		 * @brief \a ScanModePage constructor.
+		 * @param w \a MainWindow pointer.
+		 * @param parent The parent widget (default \a NULL).
 		 */
 		explicit ScanModePage( MainWindow* w, SettingsDialog* parent = 0 );
 
 		/**
-		 * @brief ScanModePage destructor.
+		 * @brief \a ScanModePage destructor.
 		 */
 		~ScanModePage();
 
@@ -79,7 +79,7 @@ namespace depgraphV
 		void _modifySelection();
 		void _updateSelectionCount( bool = true );
 
-		virtual void onProjectOpened();
+		virtual void onProjectOpened( Project* p );
 
 	private:
 		Ui::ScanModePage* _ui;

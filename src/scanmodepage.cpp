@@ -77,7 +77,7 @@ namespace depgraphV
 	void ScanModePage::_modifySelection()
 	{
 		if( _ui->selectRootFoldersRadio->isChecked() )
-			Singleton<HandleRootsDialog>::instancePtr()->exec();
+			Singleton<HandleRootsDialog>::instancePtr()->exec( "settingsMapper" );
 		else
 		{
 			Project* p = Singleton<Project>::instancePtr();
@@ -99,10 +99,9 @@ namespace depgraphV
 		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::onProjectOpened()
+	void ScanModePage::onProjectOpened( Project* p )
 	{
-		SettingsPage::onProjectOpened();
-		Project* p = Singleton<Project>::instancePtr();
+		SettingsPage::onProjectOpened( p );
 
 		QRadioButton* radios[] = { _ui->selectRootFoldersRadio, _ui->selectFilesRadio };
 		p->addMapping( radios, "scanByFolders" );
