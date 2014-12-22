@@ -262,14 +262,25 @@ namespace depgraphV
 		QWidget::changeEvent( evt );
 	}
 	//-------------------------------------------------------------------------
-	void GraphPage::onProjectOpened()
+	void GraphPage::onProjectOpened( Project* p )
 	{
-		SettingsPage::onProjectOpened();
+		SettingsPage::onProjectOpened( p );
 
-		Project* p = Singleton<Project>::instancePtr();
-		p->addMapping( _ui->layoutAlgorithm, "layoutAlgorithm", "", Graph::defaultLayoutAlgorithm() );
-		p->addMapping( _ui->highQualityAA, "highQualityAA", "", Graph::defaultHighQualityAA() );
-		p->addMapping( _ui->rendererType, "rendererType", "", Graph::defaultRendererString() );
+		p->addMapping( _ui->layoutAlgorithm,
+					   "layoutAlgorithm",
+					   "",
+					   Graph::defaultLayoutAlgorithm()
+		);
+		p->addMapping( _ui->highQualityAA,
+					   "highQualityAA",
+					   "",
+					   Graph::defaultHighQualityAA()
+		);
+		p->addMapping( _ui->rendererType,
+					   "rendererType",
+					   "",
+					   Graph::defaultRendererString()
+		);
 
 		foreach( QWidget* w, _runtimeWidgets )
 		{

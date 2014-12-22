@@ -55,14 +55,14 @@ namespace depgraphV
 
 	public:
 		/**
-		 * @brief GraphPage constructor.
-		 * @param w MainWindow pointer
-		 * @param parent The parent widget (default NULL)
+		 * @brief \a GraphPage constructor.
+		 * @param w \a MainWindow pointer
+		 * @param parent The parent widget (default \a NULL)
 		 */
 		explicit GraphPage( MainWindow* w, SettingsDialog* parent = 0 );
 
 		/**
-		 * @brief GraphPage destructor.
+		 * @brief \a GraphPage destructor.
 		 */
 		~GraphPage();
 
@@ -74,7 +74,7 @@ namespace depgraphV
 		virtual void changeEvent( QEvent* evt );
 
 	private slots:
-		virtual void onProjectOpened();
+		virtual void onProjectOpened( Project* );
 		virtual void onProjectClosed();
 
 		void _onHelpRequested() const;
