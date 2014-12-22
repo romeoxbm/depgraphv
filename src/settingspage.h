@@ -61,8 +61,8 @@ namespace depgraphV
 		explicit SettingsPage( MainWindow* w, SettingsDialog* parent = 0 );
 
 	protected slots:
-		virtual void onProjectOpened();
-		virtual void onProjectLoaded();
+		virtual void onProjectOpened( Project* );
+		virtual void onProjectLoaded( Project* );
 		virtual void onProjectClosed();
 	};
 }

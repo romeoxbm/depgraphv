@@ -45,11 +45,11 @@ namespace depgraphV
 		: QWidget( parent )
 	{
 		Q_ASSERT( w );
-		connect( w, SIGNAL( projectOpened() ),
-				 this, SLOT( onProjectOpened() )
+		connect( w, SIGNAL( projectOpened( Project* ) ),
+				 this, SLOT( onProjectOpened( Project* ) )
 		);
-		connect( w, SIGNAL( projectLoaded() ),
-				 this, SLOT( onProjectLoaded() )
+		connect( w, SIGNAL( projectLoaded( Project* ) ),
+				 this, SLOT( onProjectLoaded( Project* ) )
 		);
 		connect( w, SIGNAL( projectClosed() ),
 				 this, SLOT( onProjectClosed() )
@@ -60,15 +60,14 @@ namespace depgraphV
 	{
 	}
 	//-------------------------------------------------------------------------
-	void SettingsPage::onProjectOpened()
+	void SettingsPage::onProjectOpened( Project* p )
 	{
-		Project* p = Singleton<Project>::instancePtr();
 		p->setCurrentMapper( "settingsMapper" );
 	}
 	//-------------------------------------------------------------------------
-	void SettingsPage::onProjectLoaded()
+	void SettingsPage::onProjectLoaded( Project* p )
 	{
-
+		Q_UNUSED( p );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsPage::onProjectClosed()
