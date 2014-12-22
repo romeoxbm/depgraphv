@@ -12,6 +12,7 @@
 		- Selectable layout algorithm;
 		- Multiple graphs can be created within a single work session;
 		- Create and handle project files;
+		- Projects handling;
 
 * Version 0.2
 	- User interface has been localized, so it's now possible to change the main window language at run-time;
