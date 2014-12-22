@@ -103,7 +103,7 @@ namespace depgraphV
 			QSettings s( regKey, QSettings::NativeFormat );
 			QFileInfo info( s.value( "UninstallString" ).toString() );
 			_instPrefix = info.absolutePath();
-#else
+#else //!WIN32
 #	ifndef NDEBUG
 			_instPrefix = ".";
 #	else
@@ -128,7 +128,7 @@ namespace depgraphV
 	void AppConfig::lookForTranslations()
 	{
 		_lookForTranslationsByPath( QApplication::applicationDirPath() );
-		_lookForTranslationsByPath( this->translationsPath() );
+		_lookForTranslationsByPath( translationsPath() );
 	}
 	//-------------------------------------------------------------------------
 	void AppConfig::registerSerializable( ISerializableObject* obj )

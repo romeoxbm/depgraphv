@@ -65,12 +65,13 @@ namespace depgraphV
 
 	public:
 		/**
-		 * @brief AppConfig constructor.
+		 * @brief \a AppConfig constructor.
+		 * @param parent The parent widget (default \a NULL)
 		 */
 		explicit AppConfig( QWidget* parent = 0 );
 
 		/**
-		 * @brief AppConfig destructor.
+		 * @brief \a AppConfig destructor.
 		 */
 		~AppConfig();
 
