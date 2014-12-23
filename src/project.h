@@ -134,6 +134,9 @@ namespace depgraphV
 		QDataWidgetMapper* createOrRetrieveMapper( const QString& name, bool setCurrent = false );
 		QDataWidgetMapper* mapper( const QString& name ) const;
 
+		QDataWidgetMapper* currentMapper() const { return _currentMapper; }
+		const QString& currentMapperName() const { return _currentMapperName; }
+
 		void setCurrentMapper( const QString& name );
 		void setCurrentMapper( QDataWidgetMapper* mapper );
 
@@ -148,6 +151,8 @@ namespace depgraphV
 		 * @param mapper The data widget mapper to update.
 		 */
 		void updateMapper( QDataWidgetMapper* mapper ) const;
+
+		Graph* graph( int index ) const;
 
 		Graph* currentGraph( const QString& mapperName = "tabMapper" ) const;
 		Graph* currentGraph( QDataWidgetMapper* mapper ) const;
@@ -200,6 +205,7 @@ namespace depgraphV
 		CustomItemDelegate* _delegate;
 
 		QDataWidgetMapper* _currentMapper;
+		QString _currentMapperName;
 		QHash<QString, QDataWidgetMapper*> _mappers;
 
 		QVector<Graph*> _graphs;

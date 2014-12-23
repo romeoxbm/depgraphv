@@ -278,6 +278,7 @@ namespace depgraphV
 	void Project::setCurrentMapper( QDataWidgetMapper* mapper )
 	{
 		_currentMapper = mapper;
+		_currentMapperName = _mappers.key( mapper );
 	}
 	//-------------------------------------------------------------------------
 	void Project::updateMapper( const QString& name ) const
@@ -288,6 +289,12 @@ namespace depgraphV
 	void Project::updateMapper( QDataWidgetMapper* mapper ) const
 	{
 		mapper->setCurrentIndex( mapper->currentIndex() );
+	}
+	//-------------------------------------------------------------------------
+	Graph* Project::graph( int index ) const
+	{
+		Q_ASSERT( index >= 0 && index < _graphs.count() && "Invalid graph index!" );
+		return _graphs[ index ];
 	}
 	//-------------------------------------------------------------------------
 	Graph* Project::currentGraph( const QString& mapperName ) const
@@ -541,7 +548,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void Project::_newGraph( QStandardItem* i )
 	{
-		Graph* g = new Graph( _graphs.count(), static_cast<QWidget*>( parent() ) );
+		Graph* g = new Graph( static_cast<QWidget*>( parent() ) );
 		_graphs << g;
 
 		QString graphName;

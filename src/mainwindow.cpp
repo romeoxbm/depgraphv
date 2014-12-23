@@ -56,6 +56,7 @@ namespace depgraphV
 		_project( 0 ),
 		_progressBar( new QProgressBar( this ) ),
 		_netManager( new QNetworkAccessManager() ),
+		_layoutWatcher( 0 ),
 		_currentRecentDocument( 0 ),
 		_imageFiltersUpdated( false )
 	{
@@ -199,7 +200,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::closeEvent( QCloseEvent* event )
 	{
-		if( !_discardProjectChanges() )
+		if( _layoutWatcher || !_discardProjectChanges() )
 		{
 			event->ignore();
 			return;
@@ -371,21 +372,24 @@ namespace depgraphV
 		//TODO Warn when no file/folder has been selected
 		_ui->toolBar->setEnabled( false );
 		_ui->menuBar->setEnabled( false );
+		_ui->tabWidget->setCurrentTabUnclosable();
 
+		_project->setCurrentMapper( "tabMapper" );
 		if( _project->currentValue( "scanByFolders" ).toBool() )
 			_scanFolders();
 		else
 			_scanFiles( _project->currentGraph()->model()->checkedFiles() );
 
-		if( !_applyGraphLayout() )
-			_project->currentGraph()->clearGraph();
-
-		_ui->toolBar->setEnabled( true );
-		_ui->menuBar->setEnabled( true );
-		_progressBar->setVisible( false );
-		_ui->statusBar->showMessage( tr( "All done" ) );
-		//Force toolbar buttons update
-		_onCurrentTabChanged();
+		//Start layouting...
+		_startSlowOperation( tr( "Applying layout (it could take a while)..." ), 0 );
+		_layoutWatcher = new QFutureWatcher<bool>();
+		_layoutWatcher->setFuture( QtConcurrent::run(
+							  _project->currentGraph(),
+							  &Graph::applyLayout )
+		);
+		connect( _layoutWatcher, SIGNAL( finished() ),
+				 this, SLOT( _onGraphLayoutApplied() )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_onClear()
@@ -403,7 +407,7 @@ namespace depgraphV
 
 		_project->currentGraph()->clearGraph();
 		//Force toolbar buttons update
-		_onCurrentTabChanged();
+		_onCurrentTabChanged( _ui->tabWidget->currentIndex() );
 		//_doClearGraph();
 	}
 	//-------------------------------------------------------------------------
@@ -438,7 +442,7 @@ namespace depgraphV
 		if( idx == -1 )
 			return;
 
-		Graph* g = _project->currentGraph();
+		Graph* g = _project->graph( idx );
 
 		_ui->actionDraw->setEnabled( !g->drawn() );
 		_ui->actionClear->setEnabled( g->drawn() );
@@ -519,6 +523,9 @@ namespace depgraphV
 		for( ; it != folders.end(); it++ )
 		{
 			QFileInfoList infos = QDir( *it ).entryInfoList( flags );
+			if( infos.isEmpty() )
+				continue;
+
 			auto memberFuncPtr = std::bind(
 									 &MainWindow::_scanFolder,
 									 const_cast<MainWindow*>( this ),
@@ -548,16 +555,9 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	bool MainWindow::_applyGraphLayout() const
-	{
-		//TODO
-		_startSlowOperation( tr( "Applying layout..." ), 0 );
-		return _project->currentGraph()->applyLayout();
-			//qDebug() << "Unable to render; Plugin not found.";
-	}
-	//-------------------------------------------------------------------------
 	void MainWindow::_doClearGraph() const
 	{
+		//TODO
 		//_ui->graph->clear();
 		//_setButtonsAndActionsEnabled( false );
 	}
@@ -606,7 +606,7 @@ namespace depgraphV
 		connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
 					this, SLOT( _onUpdateReplyProgress( qint64, qint64 ) ) );
 
-		_startSlowOperation( tr( "Downloading response..." ), 0 );
+		_startSlowOperation( tr( "Looking for updates..." ), 0 );
 		_ui->action_Check_for_updates->setEnabled( false );
 	}
 	//-------------------------------------------------------------------------
@@ -926,6 +926,22 @@ namespace depgraphV
 			if( _project->load() )
 				emit projectLoaded( _project );
 		}
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_onGraphLayoutApplied()
+	{
+		if( !_layoutWatcher->future().result() )
+			_project->currentGraph()->clearGraph();
+
+		_ui->toolBar->setEnabled( true );
+		_ui->menuBar->setEnabled( true );
+		_ui->tabWidget->resetUnclosableTab();
+		_progressBar->setVisible( false );
+		_ui->statusBar->showMessage( tr( "All done" ) );
+		//Force toolbar buttons update
+		_onCurrentTabChanged( _ui->tabWidget->currentIndex() );
+		delete _layoutWatcher;
+		_layoutWatcher = 0;
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::_postData()

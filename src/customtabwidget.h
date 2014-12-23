@@ -56,8 +56,8 @@ namespace depgraphV
 		explicit CustomTabWidget( QWidget* parent = 0 );
 
 		void setMainWindow( MainWindow* w );
-
-	public slots:
+		void setCurrentTabUnclosable();
+		void resetUnclosableTab();
 
 	protected:
 		bool event( QEvent* evt );
@@ -65,17 +65,19 @@ namespace depgraphV
 
 	private slots:
 		void _newGraph( const QString& newName, Graph* g );
+		void _renameTab( int index );
+
 		void _closeTab( int index );
 		void _closeAllButCurrentTab();
-		void _renameTab( int index );
+		void _closeAllTabs();
 
 		void _onProjectOpened( Project* );
 		void _onProjectClosed();
-		void _closeAllTabs();
 
 	private:
 		MainWindow* _mainW;
 		bool _disableCloseTabQuestion;
+		int _unclosableTabIndex;
 
 		void _retranslate();
 	};

@@ -55,9 +55,8 @@ namespace depgraphV
 
 	unsigned short Graph::_instances = 0;
 
-	Graph::Graph( int graphIndex, QWidget* parent )
+	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
-		  _graphIndex( graphIndex ),
 		  _svgItem( 0 ),
 		  _drawn( false ),
 		  _foldersModel( new FoldersModel( this ) )

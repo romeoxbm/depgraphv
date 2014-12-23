@@ -67,10 +67,9 @@ namespace depgraphV
 
 		/**
 		 * @brief Graph contructor.
-		 * @param graphIndex Index of this graph.
 		 * @param parent The parent widget (default NULL).
 		 */
-		Graph( int graphIndex, QWidget* parent = 0 );
+		Graph( QWidget* parent = 0 );
 
 		/**
 		 * @brief Graph Destructor.
@@ -259,7 +258,6 @@ namespace depgraphV
 		virtual void wheelEvent( QWheelEvent* event );
 
 	private:
-		int _graphIndex;
 		RendererType _renderer;
 		QString _layoutAlgorithm;
 

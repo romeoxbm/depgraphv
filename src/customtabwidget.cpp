@@ -44,7 +44,8 @@ namespace depgraphV
 	CustomTabWidget::CustomTabWidget( QWidget* parent )
 		: QTabWidget( parent ),
 		  _mainW( 0 ),
-		  _disableCloseTabQuestion( false )
+		  _disableCloseTabQuestion( false ),
+		  _unclosableTabIndex( -1 )
 	{
 		tabBar()->installEventFilter( this );
 		tabBar()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -79,6 +80,17 @@ namespace depgraphV
 		connect( _mainW, SIGNAL( projectClosed() ),
 				 this, SLOT( _onProjectClosed() )
 		);
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::setCurrentTabUnclosable()
+	{
+		_unclosableTabIndex = currentIndex();
+		qDebug() << _unclosableTabIndex << widget( _unclosableTabIndex );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::resetUnclosableTab()
+	{
+		_unclosableTabIndex = -1;
 	}
 	//-------------------------------------------------------------------------
 	bool CustomTabWidget::event( QEvent* evt )
@@ -116,53 +128,47 @@ namespace depgraphV
 		return result;
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::_closeAllTabs()
-	{
-		/*QAction* a = qobject_cast<QAction*>( sender() );
-		if( a )
-		{*/
-			AppConfig* c = Singleton<AppConfig>::instancePtr();
-			if( !_disableCloseTabQuestion && c->warnOnGraphRemoval() )
-			{
-				QMessageBox::StandardButton answer = QMessageBox::question(
-					this,
-					tr( "Close all tabs" ),
-					tr( "Are you sure?" ),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::No
-				);
-
-				if( answer == QMessageBox::No )
-					return;
-			}
-
-			_disableCloseTabQuestion = true;
-
-			while( tabBar()->count() > 0 )
-				_closeTab( 0 );
-
-			_disableCloseTabQuestion = false;
-		/*}
-		else
-		{
-			while( tabBar()->count() > 0 )
-			{
-				delete widget( 0 );
-				emit graphRemoved( 0 );
-			}
-		}
-
-		emit graphCountChanged( 0 );*/
-	}
-	//-------------------------------------------------------------------------
 	void CustomTabWidget::_newGraph( const QString& newName, Graph* g )
 	{
-		//Graph* g = new Graph( count(), this );
 		addTab( g, newName );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_renameTab( int index )
+	{
+		bool ok;
+		QString oldName = tabText( index );
+		QString newName = QInputDialog::getText(
+							  this,
+							  tr( "Rename Graph \"%1\"" ).arg( oldName ),
+							  tr( "Type a new graph name" ),
+							  QLineEdit::Normal,
+							  oldName,
+							  &ok
+		);
+
+		if( ok && !newName.isEmpty() )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			p->renameGraph( index, newName );
+			setTabText( index, newName );
+		}
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_closeTab( int index )
 	{
+		if( _unclosableTabIndex == index )
+		{
+			if( !_disableCloseTabQuestion )
+			{
+				QMessageBox::warning(
+							this,
+							tr( "Remove Graph" ),
+							tr( "This tab cannot be closed at this time." )
+				);
+			}
+			return;
+		}
+
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		if( !_disableCloseTabQuestion && c->warnOnGraphRemoval() )
 		{
@@ -183,13 +189,6 @@ namespace depgraphV
 		Project* p = Singleton<Project>::instancePtr();
 		if( p )
 			p->removeGraph( index );
-
-		//TODO Remove following code
-		/*if( !( _model && _model->removeRow( p->indexOfRecord( _model, index ) ) ) )
-		{
-			p->showLastError( tr( "Remove Graph" ), _model );
-			return;
-		}*/
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_closeAllButCurrentTab()
@@ -216,32 +215,58 @@ namespace depgraphV
 			_closeTab( i );
 
 		//Now remove all tabs *before*
-		while( tabBar()->count() > 1 )
-			_closeTab( 0 );
+		int count = 1;
+		if( _unclosableTabIndex >= 0 && currentIndex() != _unclosableTabIndex )
+			count = 2;
+
+		while( tabBar()->count() > count )
+		{
+			if( _unclosableTabIndex != 0 )
+			{
+				_closeTab( 0 );
+				if( _unclosableTabIndex > 0 )
+					_unclosableTabIndex--;
+			}
+			else
+				_closeTab( 1 );
+		}
 
 		_disableCloseTabQuestion = false;
-		//emit graphCountChanged( 1 );
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::_renameTab( int index )
+	void CustomTabWidget::_closeAllTabs()
 	{
-		bool ok;
-		QString oldName = tabText( index );
-		QString newName = QInputDialog::getText(
-							  this,
-							  tr( "Rename Graph \"%1\"" ).arg( oldName ),
-							  tr( "Type a new graph name" ),
-							  QLineEdit::Normal,
-							  oldName,
-							  &ok
-		);
-
-		if( ok && !newName.isEmpty() )
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+		if( !_disableCloseTabQuestion && c->warnOnGraphRemoval() )
 		{
-			Project* p = Singleton<Project>::instancePtr();
-			p->renameGraph( index, newName );
-			setTabText( index, newName );
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Close all tabs" ),
+				tr( "Are you sure?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
+
+			if( answer == QMessageBox::No )
+				return;
 		}
+
+		_disableCloseTabQuestion = true;
+
+		int count = _unclosableTabIndex >= 0 ? 1 : 0;
+		while( tabBar()->count() > count )
+		{
+			if( _unclosableTabIndex != 0 )
+			{
+				_closeTab( 0 );
+				if( _unclosableTabIndex > 0 )
+					_unclosableTabIndex--;
+			}
+			else
+				_closeTab( 1 );
+		}
+
+		_disableCloseTabQuestion = false;
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_onProjectOpened( Project* p )

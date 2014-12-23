@@ -123,8 +123,8 @@ namespace depgraphV
 		void _onConfigRestored();
 
 		//Tabwidget slots
-		void _onCurrentTabChanged( int = -1 );
-		void _onGraphCountChanged( int count );
+		void _onCurrentTabChanged( int );
+		void _onGraphCountChanged( int );
 
 		void _about();
 		void _showSettings();
@@ -140,6 +140,8 @@ namespace depgraphV
 
 		void _onRecentDocumentTriggered();
 
+		void _onGraphLayoutApplied();
+
 	private:
 		Ui::MainWindow* _ui;
 		Project* _project;
@@ -148,6 +150,8 @@ namespace depgraphV
 		AppConfig* _config;
 
 		QNetworkAccessManager* _netManager;
+
+		QFutureWatcher<bool>* _layoutWatcher;
 
 		//Dialogs
 		AboutDialog* _aboutDlg;
@@ -169,7 +173,6 @@ namespace depgraphV
 		void _scanFolder( const QFlags<QDir::Filter>& flags, QStringList* filesList, QFileInfo& dirInfo );
 		void _scanFolders() const;
 		void _scanFiles( const QStringList& files ) const;
-		bool _applyGraphLayout() const;
 		void _doClearGraph() const;
 		void _onProjectOpened( const QString& statusBarMessage );
 		bool _lookForRequiredImageFormats();
