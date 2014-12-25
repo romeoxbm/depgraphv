@@ -51,7 +51,6 @@ namespace depgraphV
 		  Singleton<Project>(),
 		  _fullPath( filePath ),
 		  _version( LATEST_VER ),
-		  _newGraphCount( 0 ),
 		  _model( new QStandardItemModel( this ) ),
 		  _delegate( new CustomItemDelegate( this ) ),
 		  _currentMapper( 0 ),
@@ -272,11 +271,17 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void Project::setCurrentMapper( const QString& name )
 	{
+		if( _currentMapperName == name )
+			return;
+
 		setCurrentMapper( mapper( name ) );
 	}
 	//-------------------------------------------------------------------------
 	void Project::setCurrentMapper( QDataWidgetMapper* mapper )
 	{
+		if( _currentMapper == mapper )
+			return;
+
 		_currentMapper = mapper;
 		_currentMapperName = _mappers.key( mapper );
 	}
@@ -556,7 +561,7 @@ namespace depgraphV
 
 		if( !i )
 		{
-			graphName = QString( tr( "New Graph %1" ) ).arg( QString::number( ++_newGraphCount ) );
+			graphName = QString( tr( "New Graph %1" ) ).arg( QString::number( _graphs.count() ) );
 			i = new QStandardItem( graphName );
 			triggerGraphCountChangedSignal = true;
 		}

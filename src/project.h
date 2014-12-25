@@ -196,7 +196,6 @@ namespace depgraphV
 		QString _path;
 		QString _fullPath;
 		unsigned short _version;
-		unsigned short _newGraphCount;
 
 		QHash<QString, int> _fields;
 		QHash<int, QVariant> _defaultValues;
