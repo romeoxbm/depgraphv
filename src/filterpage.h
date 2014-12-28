@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * filterpage.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -48,7 +58,7 @@ namespace depgraphV
 		 * @brief FilterPage constructor.
 		 * @param parent The parent widget (default NULL)
 		 */
-		explicit FilterPage( SettingsDialog* parent, bool worksWithHeaders = true );
+		explicit FilterPage( MainWindow* w, SettingsDialog* parent = 0, bool worksWithHeaders = true );
 
 		/**
 		 * @brief FilterPage destructor.
@@ -57,15 +67,17 @@ namespace depgraphV
 
 		virtual QString iconPath() const;
 
+		virtual bool dependsOnGraphs() const { return true; }
+
 	protected:
 		virtual void changeEvent( QEvent* );
 
 	private slots:
-		void onConfigRestored();
-		void onCustomFilterTextChanged( QString );
-		void onCustomFiltersEditFinished();
-		void onPageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
-		void onFiltersChanging( bool& accept );
+		void _onCustomFilterTextChanged( QString );
+		void _onPageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
+		void _onFiltersChanging( bool& accept );
+		virtual void onProjectOpened( Project* p );
+		virtual void onProjectClosed();
 
 	private:
 		Ui::FilterPage* _ui;

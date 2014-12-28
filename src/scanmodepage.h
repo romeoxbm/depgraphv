@@ -68,6 +68,8 @@ namespace depgraphV
 
 		virtual QString iconPath() const;
 
+		virtual bool dependsOnGraphs() const { return true; }
+
 	protected:
 		virtual bool event( QEvent* evt );
 

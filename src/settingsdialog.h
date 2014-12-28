@@ -58,7 +58,7 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief \a SettingsDialog constructor.
-		 * @param parent The parent \a MainWindow
+		 * @param parent The parent \a MainWindow.
 		 */
 		explicit SettingsDialog( MainWindow* parent );
 

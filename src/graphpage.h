@@ -70,6 +70,8 @@ namespace depgraphV
 		virtual void commitChanges();
 		virtual void revertChanges();
 
+		virtual bool dependsOnGraphs() const { return true; }
+
 	protected:
 		virtual void changeEvent( QEvent* evt );
 

@@ -54,6 +54,8 @@ namespace depgraphV
 		virtual ~SettingsPage() = 0;
 		virtual QString iconPath() const = 0;
 
+		virtual bool dependsOnGraphs() const = 0;
+
 		virtual void commitChanges() {}
 		virtual void revertChanges() {}
 

@@ -78,7 +78,12 @@ namespace depgraphV
 		_pages.insert( key, page );
 
 		if( !_currentPage )
+		{
 			_currentPage = page;
+			_ui->graphName->setEnabled( _currentPage->dependsOnGraphs() );
+			_ui->graphNameLabel->setEnabled( _currentPage->dependsOnGraphs() );
+			_ui->pageLabel->setText( _currentPage->windowTitle() );
+		}
 
 		return true;
 	}
@@ -126,6 +131,8 @@ namespace depgraphV
 			_ui->stackedWidget->setCurrentWidget( nextPage );
 			_ui->pageLabel->setText( nextPage->windowTitle() );
 			_currentPage = nextPage;
+			_ui->graphName->setEnabled( _currentPage->dependsOnGraphs() );
+			_ui->graphNameLabel->setEnabled( _currentPage->dependsOnGraphs() );
 			emit pageChanged( nextPage );
 		}
 		else
