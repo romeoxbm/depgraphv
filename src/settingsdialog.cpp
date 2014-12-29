@@ -54,6 +54,9 @@ namespace depgraphV
 		connect( w, SIGNAL( projectOpened( Project* ) ),
 				 this, SLOT( _onProjectOpened( Project* ) )
 		);
+		connect( w, SIGNAL( projectClosed() ),
+				 this, SLOT( _onProjectClosed() )
+		);
 	}
 	//-------------------------------------------------------------------------
 	SettingsDialog::~SettingsDialog()
@@ -144,18 +147,37 @@ namespace depgraphV
 		_ui->graphName->setModelColumn( p->fieldIndex( "name" ) );
 		_ui->graphName->setModel( p->tableModel() );
 
-		QDataWidgetMapper* m = p->createOrRetrieveMapper( "settingsMapper" );
-
-		//TODO What about the connections in CustomItemDelegate?
-		connect( _ui->graphName, SIGNAL( activated( int ) ),
-				 m, SLOT( setCurrentIndex( int ) )
-		);
+		//TODO What about connections in CustomItemDelegate?
+		_blockActivatedSignal( false );
+		_blockMapperCurrentIndexChangedSignal( p->mapper(), false );
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_onProjectClosed()
+	{
+		_blockActivatedSignal( true );
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_changeCurrentGraph( int index )
+	{
+		if( sender() == _ui->graphName )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			QDataWidgetMapper* m = p->mapper();
+			_blockMapperCurrentIndexChangedSignal( m, true );
+			m->setCurrentIndex( index );
+			_blockMapperCurrentIndexChangedSignal( m, false );
+		}
+		else
+		{
+			_blockActivatedSignal( true );
+			_ui->graphName->setCurrentIndex( index );
+			_blockActivatedSignal( false );
+		}
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_onButtonClicked( QAbstractButton* button )
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		p->setCurrentMapper( "settingsMapper" );
 
 		QDialogButtonBox::ButtonRole r = _ui->buttonBox->buttonRole( button );
 		if( r == QDialogButtonBox::ApplyRole || r == QDialogButtonBox::RejectRole )
@@ -174,6 +196,30 @@ namespace depgraphV
 				page->revertChanges();
 
 			reject();
+		}
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_blockActivatedSignal( bool block )
+	{
+		if( block )
+			_ui->graphName->disconnect( this, SLOT( _changeCurrentGraph( int ) ) );
+		else
+		{
+			connect( _ui->graphName, SIGNAL( activated( int ) ),
+					 this, SLOT( _changeCurrentGraph( int ) )
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_blockMapperCurrentIndexChangedSignal( QDataWidgetMapper* m, bool block )
+	{
+		if( block )
+			m->disconnect( this, SLOT( _changeCurrentGraph( int ) ) );
+		else
+		{
+			connect( m, SIGNAL( currentIndexChanged( int ) ),
+					 this, SLOT( _changeCurrentGraph( int ) )
+			);
 		}
 	}
 }

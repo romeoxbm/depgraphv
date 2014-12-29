@@ -81,13 +81,13 @@
         <property name="minimumSize">
          <size>
           <width>115</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>115</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="text">
@@ -100,13 +100,13 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="font">
@@ -124,14 +124,14 @@
        <widget class="QLabel" name="projectCopyRightsLabel">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>20</width>
           <height>15</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="text">
@@ -150,13 +150,13 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>15</height>
+          <height>20</height>
          </size>
         </property>
         <property name="text">

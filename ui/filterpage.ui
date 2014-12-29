@@ -112,6 +112,10 @@
        </widget>
       </item>
      </layout>
+     <zorder>standardFilters</zorder>
+     <zorder>customFilterRadio</zorder>
+     <zorder>customFilters</zorder>
+     <zorder>standardFiltersRadio</zorder>
     </widget>
    </item>
   </layout>
@@ -136,25 +140,9 @@
   </connection>
   <connection>
    <sender>customFilters</sender>
-   <signal>editingFinished()</signal>
-   <receiver>depgraphV::FilterPage</receiver>
-   <slot>onCustomFiltersEditFinished()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>20</x>
-     <y>184</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>customFilters</sender>
    <signal>textChanged(QString)</signal>
    <receiver>depgraphV::FilterPage</receiver>
-   <slot>onCustomFilterTextChanged(QString)</slot>
+   <slot>_onCustomFilterTextChanged(QString)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -174,7 +162,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>128</x>
-     <y>19</y>
+     <y>14</y>
     </hint>
     <hint type="destinationlabel">
      <x>128</x>
@@ -184,7 +172,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>onCustomFiltersEditFinished()</slot>
-  <slot>onCustomFilterTextChanged(QString)</slot>
+  <slot>_onCustomFilterTextChanged(QString)</slot>
  </slots>
 </ui>

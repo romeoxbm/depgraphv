@@ -23,11 +23,21 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QTreeView" name="treeView">
+      <property name="contextMenuPolicy">
+       <enum>Qt::ActionsContextMenu</enum>
+      </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::SingleSelection</enum>
       </property>
+      <attribute name="headerVisible">
+       <bool>false</bool>
+      </attribute>
      </widget>
-     <widget class="QListView" name="listView"/>
+     <widget class="QListView" name="listView">
+      <property name="contextMenuPolicy">
+       <enum>Qt::ActionsContextMenu</enum>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
@@ -38,6 +48,121 @@
     </widget>
    </item>
   </layout>
+  <action name="changeRoot">
+   <property name="text">
+    <string>Change Root...</string>
+   </property>
+   <property name="toolTip">
+    <string>Change root folder being inspected</string>
+   </property>
+  </action>
+  <action name="showHiddenFolders">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Hidden Folders</string>
+   </property>
+  </action>
+  <action name="expandAll">
+   <property name="text">
+    <string>Expand All</string>
+   </property>
+   <property name="toolTip">
+    <string>Expand all visible folders</string>
+   </property>
+  </action>
+  <action name="collapseAll">
+   <property name="text">
+    <string>Collapse All</string>
+   </property>
+   <property name="toolTip">
+    <string>Collapse all visible folders</string>
+   </property>
+  </action>
+  <action name="showAllFiles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show All Files</string>
+   </property>
+   <property name="toolTip">
+    <string>Show all files, including filtered ones</string>
+   </property>
+  </action>
+  <action name="selectAll">
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all valid files in this folder</string>
+   </property>
+  </action>
+  <action name="selectNone">
+   <property name="text">
+    <string>Select None</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Selection</string>
+   </property>
+  </action>
+  <action name="invertSelection">
+   <property name="text">
+    <string>Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert current files selection</string>
+   </property>
+  </action>
+  <action name="hdr_selectAll">
+   <property name="text">
+    <string>Select All Headers</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all headers in this folder</string>
+   </property>
+  </action>
+  <action name="hdr_selectNone">
+   <property name="text">
+    <string>Deselect All Headers</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear headers selection</string>
+   </property>
+  </action>
+  <action name="hdr_invertSelection">
+   <property name="text">
+    <string>Invert Headers Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert current headers selection</string>
+   </property>
+  </action>
+  <action name="src_selectAll">
+   <property name="text">
+    <string>Select All Sources</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all sources in this folder</string>
+   </property>
+  </action>
+  <action name="src_selectNone">
+   <property name="text">
+    <string>Deselect All Sources</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear sources selection</string>
+   </property>
+  </action>
+  <action name="src_invertSelection">
+   <property name="text">
+    <string>Invert Sources Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert Current sources selection</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
@@ -78,7 +203,7 @@
    <sender>depgraphV::SelectFilesDialog</sender>
    <signal>finished(int)</signal>
    <receiver>depgraphV::SelectFilesDialog</receiver>
-   <slot>onClose(int)</slot>
+   <slot>_onClose(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>370</x>
@@ -92,6 +217,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>onClose(int)</slot>
+  <slot>_onClose(int)</slot>
  </slots>
 </ui>

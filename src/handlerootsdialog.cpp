@@ -57,24 +57,15 @@ namespace depgraphV
 		_ui->rootFolders->addAction( _ui->actionAdd );
 		_ui->rootFolders->addAction( _ui->actionRemove_Selection );
 		_ui->rootFolders->viewport()->installEventFilter( this );
+
+		connect( parent, SIGNAL( projectOpened( Project* ) ),
+				 this, SLOT( _onProjectOpened( Project* ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	HandleRootsDialog::~HandleRootsDialog()
 	{
 		delete _ui;
-	}
-	//-------------------------------------------------------------------------
-	int HandleRootsDialog::exec( const QString& mapper )
-	{
-		Q_ASSERT( !mapper.isEmpty() && "mapper cannot be empty!" );
-		_mapperName = mapper;
-
-		Project* p = Singleton<Project>::instancePtr();
-		p->setCurrentMapper( mapper );
-		p->addMapping( _ui->rootFolders, "selectedFolders" );
-		p->updateMapper( mapper );
-
-		return QDialog::exec();
 	}
 	//-------------------------------------------------------------------------
 	bool HandleRootsDialog::event( QEvent* evt )
@@ -117,7 +108,6 @@ namespace depgraphV
 	void HandleRootsDialog::_onRootFolderAdded()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		p->setCurrentMapper( _mapperName );
 
 		QString root = QFileDialog::getExistingDirectory(
 					_ui->rootFolders,
@@ -156,10 +146,14 @@ namespace depgraphV
 	void HandleRootsDialog::_onClose( int result )
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		p->setCurrentMapper( _mapperName );
 		if( result )
 			p->submitChanges();
 		else
 			p->revertChanges();
+	}
+	//-------------------------------------------------------------------------
+	void HandleRootsDialog::_onProjectOpened( Project* p )
+	{
+		p->addMapping( _ui->rootFolders, "selectedFolders" );
 	}
 }

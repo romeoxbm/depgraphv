@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * foldersmodel.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -25,56 +35,84 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "foldersmodel.h"
-#include "buildsettings.h"
-#include "appconfig.h"
-#include <QFileDialog>
+#include "selectfilesdialog.h"
+#include "project.h"
 
 namespace depgraphV
 {
 	FoldersModel::FoldersModel( QObject* parent )
 		: CheckableFileSystemModel( parent ),
 		  _treeView( 0 ),
-		  _filesModel( new FilesModel( parent ) ),
-		  _changeRoot( 0 ),
-		  _showHiddenFolders( 0 ),
-		  _expandAll( 0 ),
-		  _collapseAll( 0 )
+		  _filesModel( new FilesModel( this, parent ) ),
+		  _viewConnected( false )
 	{
-		this->setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks );
+		setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks );
+		connect( _filesModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+				 this, SLOT( _onFilesModelDataChanged( QModelIndex, QModelIndex ) )
+		);
+
+		_lastPath = Singleton<Project>::instancePtr()->currentValue( "rootFolder" ).toString();
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::initialize( QTreeView* foldersView,
-								   QListView* filesView, const QString& rootPath )
+	void FoldersModel::initialize()
 	{
-		if( _initialized )
-			return;
+		Project* p = Singleton<Project>::instancePtr();
+		//TODO
+		/*_checkedFolders.setState(
+			p->currentBinaryValue<QMap<QString, Qt::CheckState> >( "checkedFolders" )
+		);*/
 
-		Q_ASSERT( foldersView && filesView && !rootPath.isNull() );
-
-		_filesModel->initialize( filesView );
-
-		_treeView = foldersView;
+		_filesModel->initialize();
 		_treeView->setModel( this );
-		_treeView->setRootIndex( this->setRootPath( rootPath ) );
-		_treeView->hideColumn( 1 );
-		_treeView->hideColumn( 2 );
-		_treeView->hideColumn( 3 );
+		_treeView->setRootIndex( setRootPath( _lastPath ) );
+		QModelIndex i = index( _lastPath );
+		_treeView->setCurrentIndex( i );
+		_updateSelection( i, QModelIndex() );
 
-		_createContextMenu();
-		_connectSignalsToSlots();
+		if( !_initialized )
+		{
+			_treeView->hideColumn( 1 );
+			_treeView->hideColumn( 2 );
+			_treeView->hideColumn( 3 );
+			_initialized = true;
+		}
+	}
+	//-------------------------------------------------------------------------
+	void FoldersModel::setView( QAbstractItemView* view )
+	{
+		//Sanity checks first of all: view cannot be null
+		Q_ASSERT( view );
+		SelectFilesDialog* d = Singleton<SelectFilesDialog>::instancePtr();
 
-		//Force treeview selection update
-		setSelectedFolderPath( _selectedFolderPath );
+		if( _treeView )
+		{
+			//setting the same view?
+			if( view == _treeView )
+				return;
 
-		_initialized = true;
+			_disconnectView();
+			d->removeEventFilter( view->model() );
+		}
+
+		d->installEventFilter( this );
+		_treeView = qobject_cast<QTreeView*>( view );
+
+		//Second sanity check: view MUST be a QTreeView*
+		Q_ASSERT( _treeView );
+	}
+	//-------------------------------------------------------------------------
+	void FoldersModel::setFilesView( QAbstractItemView* view )
+	{
+		_filesModel->setView( view );
 	}
 	//-------------------------------------------------------------------------
 	bool FoldersModel::hasChildren( const QModelIndex& parent ) const
 	{
-#ifdef QT_USE_QT5
+#ifdef DEPGRAPHV_USE_QT5
 		// return false if item can't have children
-		if( parent.flags() & Qt::ItemNeverHasChildren )
+		if( parent.flags().testFlag( Qt::ItemNeverHasChildren ) )
 			return false;
 #endif
 
@@ -90,51 +128,50 @@ namespace depgraphV
 		if( role == Qt::ToolTipRole )
 			return filePath( i );
 
-		return CheckableFileSystemModel::data( i, role );
-	}
-	//-------------------------------------------------------------------------
-	bool FoldersModel::setData( const QModelIndex& i, const QVariant& value, int role )
-	{
-		if( CheckableFileSystemModel::setData( i, value, role ) )
+		if( isCheckable( i, role ) )
 		{
-			Qt::CheckState c = (Qt::CheckState)value.toInt();
-			_updateSelection( i, QModelIndex() );
-			_filesModel->changeAllCheckStates(
-						_filesModel->view()->rootIndex(), c
-			);
-
-			emit folderCheckStateChanged( i, c );
-			return true;
+			QString p = filePath( i );
+			//QMap<QString, Qt::CheckState>& items = _checkedFolders.state();
+			return _checkedFolders.contains( p ) ? _checkedFolders[ p ] : Qt::Unchecked;
 		}
 
-		return false;
+		return QFileSystemModel::data( i, role );
+	}
+	//-------------------------------------------------------------------------
+	Qt::ItemFlags FoldersModel::flags( const QModelIndex& index ) const
+	{
+		Qt::ItemFlags f = QFileSystemModel::flags( index );
+		if( isCheckable( index, Qt::CheckStateRole ) )
+		{
+			f |= Qt::ItemIsUserCheckable;
+			f |= Qt::ItemIsTristate;
+		}
+
+		return f;
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::setFileNameFilters( const QStringList& filters )
 	{
-		this->clearSelection();
+		clearSelection();
 		_filesModel->setNameFilters( filters );
 	}
 	//-------------------------------------------------------------------------
-	QList<const char*> FoldersModel::propList() const
+	/*void FoldersModel::commitChanges()
 	{
-		QList<const char*> props = CheckableFileSystemModel::propList();
-		props << "selectedFolderPath";
-
-		return props;
-	}
-	//-------------------------------------------------------------------------
-	void FoldersModel::commitChanges()
-	{
-		CheckableFileSystemModel::commitChanges();
+		if( _checkedFolders.commit() )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			//TODO
+			//p->setCurrentBinaryValue( _checkedFolders.state(), "checkedFolders" );
+		}
 		_filesModel->commitChanges();
-	}
+	}*/
 	//-------------------------------------------------------------------------
-	void FoldersModel::revertChanges()
+	/*void FoldersModel::revertChanges()
 	{
-		CheckableFileSystemModel::revertChanges();
+		_checkedFolders.revert();
 		_filesModel->revertChanges();
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	bool FoldersModel::isCheckable( const QModelIndex& i, int role ) const
 	{
@@ -148,71 +185,135 @@ namespace depgraphV
 		).hasNext() && CheckableFileSystemModel::isCheckable( i, role );
 	}
 	//-------------------------------------------------------------------------
+	bool FoldersModel::eventFilter( QObject* obj, QEvent* evt )
+	{
+		SelectFilesDialog* d = Singleton<SelectFilesDialog>::instancePtr();
+		if( obj == d && evt->type() == QEvent::Show )
+			_connectView();
+
+		return QFileSystemModel::eventFilter( obj, evt );
+	}
+	//-------------------------------------------------------------------------
+	bool FoldersModel::setDataImpl( const QString& path, Qt::CheckState v )
+	{
+		if( sender() != _filesModel && v == Qt::PartiallyChecked )
+			v = Qt::Checked;
+
+		QMap<QString, Qt::CheckState>& l = _checkedFolders;
+		bool res = true;
+
+		if( v == Qt::Unchecked && l.contains( path ) )
+			l.remove( path );
+
+		else if( v != Qt::Unchecked )
+		{
+			if( l.contains( path ) )
+				l[ path ] = v;
+			else
+				l.insert( path, v );
+		}
+
+		else
+			res = false;
+
+		if( res )
+			_updateSelection( index( path ), QModelIndex() );
+
+		return res;
+	}
+	//-------------------------------------------------------------------------
 	void FoldersModel::clearSelection()
 	{
 		_filesModel->clearSelection();
-		CheckableFileSystemModel::clearSelection();
+		_checkedFolders.clear();
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::changeRoot( const QString& newRoot )
+	void FoldersModel::changeRoot()
 	{
-		if( newRoot.isNull() )
+		Project* p = Singleton<Project>::instancePtr();
+		QString root = QFileDialog::getExistingDirectory(
+					_treeView,
+					tr( "Change Root..." ),
+					p->currentValue( "rootFolder" ).toString()
+		);
+
+		if( root.isNull() )
 			return;
 
-		_treeView->setRootIndex( this->setRootPath( newRoot ) );
-		_filesModel->view()->setRootIndex( _filesModel->setRootPath( newRoot ) );
-		Singleton<AppConfig>::instancePtr()->setRootFolder( newRoot );
+		_treeView->setRootIndex( setRootPath( root ) );
+		_filesModel->view()->setRootIndex( _filesModel->setRootPath( root ) );
+		p->setCurrentValue( root, "rootFolder" );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::showHiddenFolders( bool show )
 	{
 		//TODO
 		//https://bugreports.qt-project.org/browse/QTBUG-12413
-		QDir::Filters f = this->filter();
+		QDir::Filters f = filter();
 
 		if( show )
 			f |= QDir::Hidden;
 		else
 			f &= ~QDir::Hidden;
 
-		this->setFilter( f );
+		setFilter( f );
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::setSelectedFolderPath( const QString& value )
+	void FoldersModel::expandAll()
 	{
-		if( _treeView )
-			_treeView->setCurrentIndex( index( value ) );
-		else
-			_selectedFolderPath = value;
-	}
-	//-------------------------------------------------------------------------
-	void FoldersModel::_on_expandAll()
-	{
-		if( !_treeView )
-			return;
-
 		_treeView->blockSignals( true );
 		_treeView->expandAll();
 		_treeView->resizeColumnToContents( 0 );
 		_treeView->blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::_on_collapseAll()
+	void FoldersModel::collapseAll()
 	{
-		if( !_treeView )
-			return;
-
 		_treeView->blockSignals( true );
 		_treeView->collapseAll();
 		_treeView->resizeColumnToContents( 0 );
 		_treeView->blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
+	void FoldersModel::_onFilesModelDataChanged( QModelIndex i, QModelIndex )
+	{
+		QModelIndex root = i.parent();
+		QString fPath = _filesModel->filePath( root );
+		int count = rowCount( root );
+		if( _filesModel->nameFilterDisables() )
+		{
+			for( int i = 0; i < count; i++ )
+			{
+				if( !_filesModel->belongsToFileGroup( root.child( i, 0 ), FilesModel::All ) )
+				{
+					//Decrementing just one time is enough to achieve
+					//the goal; doing so, the best case is O(1).
+					count--;
+					break;
+				}
+			}
+		}
+
+		Qt::CheckState fState = Qt::Checked;
+		int selectedCount = _filesModel->selectedCount( fPath );
+		if( selectedCount == 0 )
+			fState = Qt::Unchecked;
+
+		else if( selectedCount < count )
+			fState = Qt::PartiallyChecked;
+
+		_filesModel->setListeningFoldersModelDataChanged( false );
+		setData( index( fPath ), fState, Qt::CheckStateRole );
+		_filesModel->setListeningFoldersModelDataChanged( true );
+	}
+	//-------------------------------------------------------------------------
 	void FoldersModel::_updateSelection( const QModelIndex& current,
 										 const QModelIndex& )
 	{
-		_selectedFolderPath = this->fileInfo( current ).absoluteFilePath();
-		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _selectedFolderPath ) );
+		Project* p = Singleton<Project>::instancePtr();
+		//TODO DO I need to reflect _lastPath changes in Project???
+		_lastPath = fileInfo( current ).absoluteFilePath();
+		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _lastPath ) );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::_itemExpandedCollapsed( const QModelIndex& )
@@ -220,61 +321,11 @@ namespace depgraphV
 		_treeView->resizeColumnToContents( 0 );
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::_on_changeRoot_triggered()
+	void FoldersModel::_connectView()
 	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		QString root = QFileDialog::getExistingDirectory(
-					_treeView,
-					tr( "Change Root..." ),
-					c->rootFolder()
-		);
+		if( _viewConnected )
+			return;
 
-		this->changeRoot( root );
-	}
-	//-------------------------------------------------------------------------
-	void FoldersModel::_createContextMenu()
-	{
-		_treeView->setContextMenuPolicy( Qt::ActionsContextMenu );
-
-		//Separators
-		QAction* sep1 = new QAction( this );
-		sep1->setSeparator( true );
-		QAction* sep2 = new QAction( this );
-		sep2->setSeparator( true );
-
-		//Actions
-		_changeRoot = new QAction( _treeView );
-		_changeRoot->setText( tr( "Change Root..." ) );
-
-		_showHiddenFolders = new QAction( _treeView );
-		_showHiddenFolders->setText( tr( "Show Hidden Folders" ) );
-		_showHiddenFolders->setCheckable( true );
-
-		_expandAll = new QAction( _treeView );
-		_expandAll->setText( tr( "Expand All" ) );
-
-		_collapseAll = new QAction( _treeView );
-		_collapseAll->setText( tr( "Collapse All" ) );
-
-		//Tooltips
-#ifndef QT_NO_TOOLTIP
-		_changeRoot->setToolTip( tr( "Change root folder being inspected" ) );
-		_showHiddenFolders->setToolTip( tr( "Show Hidden Folders" ) );
-		_expandAll->setToolTip( tr( "Expand all visible folders" ) );
-		_collapseAll->setToolTip( tr( "Collapse all visible folders" ) );
-#endif
-
-		//Context Menu
-		_treeView->addAction( _changeRoot );
-		_treeView->addAction( sep1 );
-		_treeView->addAction( _showHiddenFolders );
-		_treeView->addAction( sep2 );
-		_treeView->addAction( _expandAll );
-		_treeView->addAction( _collapseAll );
-	}
-	//-------------------------------------------------------------------------
-	void FoldersModel::_connectSignalsToSlots()
-	{
 		connect( _treeView->selectionModel(),
 				 SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
 				 this,
@@ -290,24 +341,59 @@ namespace depgraphV
 				 this,
 				 SLOT( _itemExpandedCollapsed( QModelIndex ) )
 		);
-		connect( _treeView,
-				 SIGNAL( doubleClicked( QModelIndex ) ),
-				 this,
-				 SLOT( invertSelection( QModelIndex ) )
-		);
 
-		//Context Menu actions
-		connect( _changeRoot, SIGNAL( triggered() ),
-				 this, SLOT( _on_changeRoot_triggered() )
-		);
-		connect( _showHiddenFolders, SIGNAL( toggled( bool ) ),
-				 this, SLOT( showHiddenFolders( bool ) )
-		);
-		connect( _expandAll, SIGNAL( triggered() ),
-				 this, SLOT( _on_expandAll() )
-		);
-		connect( _collapseAll, SIGNAL( triggered() ),
-				 this, SLOT( _on_collapseAll() )
-		);
+		_viewConnected = true;
+	}
+	//-------------------------------------------------------------------------
+	void FoldersModel::_disconnectView()
+	{
+		if( !_viewConnected )
+			return;
+
+		_treeView->selectionModel()->disconnect( _treeView->model() );
+		_treeView->disconnect( _treeView->model() );
+		_viewConnected = false;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator << ( QDataStream& out, const FoldersModel* object )
+	{
+		const QMap<QString, Qt::CheckState>& l = object->_checkedFolders;
+		QMapIterator<QString, Qt::CheckState> it( l );
+		out << l.count();
+
+		while( it.hasNext() )
+		{
+			it.next();
+			out << it.key();
+			out << static_cast<short>( it.value() );
+		}
+
+		out << *object->_filesModel;
+		return out;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator >> ( QDataStream& in, FoldersModel* object )
+	{
+		int count = 0;
+		in >> count;
+
+		QMap<QString, Qt::CheckState>& l = object->_checkedFolders;
+
+		if( !l.isEmpty() )
+			l.clear();
+
+		//QMap<QString, Qt::CheckState> data;
+
+		for( int i = 0; i < count; i++ )
+		{
+			QString key;
+			short value;
+			in >> key >> value;
+			l.insert( key, static_cast<Qt::CheckState>( value ) );
+		}
+
+		//object->_checkedFolders.setState( data );
+		in >> *object->_filesModel;
+		return in;
 	}
 }

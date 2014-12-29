@@ -271,22 +271,61 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_onProjectOpened( Project* p )
 	{
-		QDataWidgetMapper* m = p->createOrRetrieveMapper( "tabMapper", true );
-
 		connect( p, SIGNAL( graphCreated( QString, Graph* ) ),
 				 this, SLOT( _newGraph( QString, Graph* ) )
 		);
 
 		//TODO What about the connections in CustomItemDelegate?
-		connect( this, SIGNAL( currentChanged( int ) ),
-				 m, SLOT( setCurrentIndex( int ) )
-		);
+		_blockCurrentChangedSignal( false );
+		_blockMapperCurrentIndexChangedSignal( p->mapper(), false );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_onProjectClosed()
 	{
 		_disableCloseTabQuestion = true;
 		_closeAllTabs();
+		_blockCurrentChangedSignal( true );
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_changeCurrentTab( int index )
+	{
+		if( sender() == this )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			_blockMapperCurrentIndexChangedSignal( p->mapper(), true );
+			p->mapper()->setCurrentIndex( index );
+			_blockMapperCurrentIndexChangedSignal( p->mapper(), false );
+		}
+		else
+		{
+			_blockCurrentChangedSignal( true );
+			setCurrentIndex( index );
+			_blockCurrentChangedSignal( false );
+		}
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_blockCurrentChangedSignal( bool block )
+	{
+		if( block )
+			disconnect( this, SLOT( _changeCurrentTab( int ) ) );
+		else
+		{
+			connect( this, SIGNAL( currentChanged( int ) ),
+					 this, SLOT( _changeCurrentTab( int ) )
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
+	void CustomTabWidget::_blockMapperCurrentIndexChangedSignal( QDataWidgetMapper* m, bool block )
+	{
+		if( block )
+			m->disconnect( this, SLOT( _changeCurrentTab( int ) ) );
+		else
+		{
+			connect( m, SIGNAL( currentIndexChanged( int ) ),
+					 this, SLOT( _changeCurrentTab( int ) )
+			);
+		}
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_retranslate()

@@ -49,11 +49,10 @@
 
 namespace depgraphV
 {
+	unsigned short Graph::_instances = 0;
 	GVC_t* Graph::_context = 0;
 	QMap<QString, QStringList*> Graph::_availablePlugins;
 	QMap<QString, QStringList*> Graph::_parsedFiles;
-
-	unsigned short Graph::_instances = 0;
 
 	Graph::Graph( QWidget* parent )
 		: QGraphicsView( parent ),
@@ -65,10 +64,6 @@ namespace depgraphV
 
 		if( !_context )
 			_context = gvContext();
-
-		//TODO After last changes, Do I still need these following two lines?
-		/*qRegisterMetaType<NameValuePair>( "NameValuePair" );
-		qRegisterMetaTypeStreamOperators<NameValuePair>( "NameValuePair" );*/
 
 		NEW_GRAPH();
 
@@ -573,39 +568,5 @@ namespace depgraphV
 			return _availablePlugins[ kind ]->contains( format );
 
 		return false;
-	}
-	//-------------------------------------------------------------------------
-	QDataStream& operator << ( QDataStream& out, const Graph& object )
-	{
-		out << static_cast<short>( object.renderer() );
-		out << object.layoutAlgorithm();
-
-		out << object.highQualityAA();
-		out << object._graphAttributes;
-		out << object._verticesAttributes;
-		out << object._edgesAttributes;
-		out << *object._foldersModel;
-
-		return out;
-	}
-	//-------------------------------------------------------------------------
-	QDataStream& operator >> ( QDataStream& in, Graph& object )
-	{
-		short r;
-		in >> r;
-		object.setRenderer( static_cast<Graph::RendererType>( r ) );
-
-		in >> object._layoutAlgorithm;
-
-		bool aa;
-		in >> aa;
-		object.setHighQualityAA( aa );
-
-		in >> object._graphAttributes;
-		in >> object._verticesAttributes;
-		in >> object._edgesAttributes;
-		in >> *object._foldersModel;
-
-		return in;
 	}
 } // end of depgraphV namespace

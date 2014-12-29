@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * filterpage.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,23 +38,19 @@
 #include "depgraphv_pch.h"
 #include "filterpage.h"
 #include "ui_filterpage.h"
-#include "appconfig.h"
-#include "helpers.h"
+#include "project.h"
 
 namespace depgraphV
 {
-	FilterPage::FilterPage( SettingsDialog* parent, bool worksWithHeaders )
-		: SettingsPage( parent ),
+	FilterPage::FilterPage( MainWindow* w, SettingsDialog* parent, bool worksWithHeaders )
+		: SettingsPage( w, parent ),
 		_ui( new Ui::FilterPage ),
 		_worksWithHeaders( worksWithHeaders )
 	{
 		_ui->setupUi( this );
 
 		QRegExp rx( "\\*\\.\\*|(\\s*\\*\\.\\w+\\s*;?)+" );
-		_ui->customFilters->setValidator( new QRegExpValidator( rx ) );
-
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		connect( c, SIGNAL( configRestored() ), this, SLOT( onConfigRestored() ) );
+		_ui->customFilters->setValidator( new QRegExpValidator( rx, this ) );
 
 		if( _worksWithHeaders )
 		{
@@ -52,18 +58,9 @@ namespace depgraphV
 			_ui->parseEnabled->setText( tr( "Parse headers" ) );
 			setWindowTitle( tr( "Headers filter" ) );
 
-			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
-					 c, SLOT( hdr_setParseEnabled( bool ) )
-			);
-			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
-					 c, SLOT( hdr_setStandardFiltersEnabled( bool ) )
-			);
-			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
-					 c, SLOT( hdr_setCurrentStandardFilter( QString ) )
-			);
-			connect( c, SIGNAL( headerNameFiltersChanging( bool& ) ),
+			/*connect( c, SIGNAL( headerNameFiltersChanging( bool& ) ),
 					 this, SLOT( onFiltersChanging( bool& ) )
-			);
+			);*/
 		}
 		else
 		{
@@ -71,24 +68,14 @@ namespace depgraphV
 			_ui->parseEnabled->setText( tr( "Parse sources" ) );
 			setWindowTitle( tr( "Sources filter" ) );
 
-			connect( _ui->parseEnabled, SIGNAL( toggled( bool ) ),
-					 c, SLOT( src_setParseEnabled( bool ) )
-			);
-			connect( _ui->standardFiltersRadio, SIGNAL( toggled( bool ) ),
-					 c, SLOT( src_setStandardFiltersEnabled( bool ) )
-			);
-			connect( _ui->standardFilters, SIGNAL( currentIndexChanged( QString ) ),
-					 c, SLOT( src_setCurrentStandardFilter( QString ) )
-			);
-			connect( c, SIGNAL( sourceNameFiltersChanging( bool& ) ),
+			/*connect( c, SIGNAL( sourceNameFiltersChanging( bool& ) ),
 					 this, SLOT( onFiltersChanging( bool& ) )
-			);
+			);*/
 		}
 
 		connect( parent, SIGNAL( pageChanging( SettingsPage*, SettingsPage*, bool& ) ),
-				 this, SLOT( onPageChanging( SettingsPage*, SettingsPage*, bool& ) ) );
+				 this, SLOT( _onPageChanging( SettingsPage*, SettingsPage*, bool& ) ) );
 
-		_ui->customFilters->setText( _defaultCustomExts.join( "; " ) );
 		_ui->standardFilters->addItems( _defaultCustomExts );
 	}
 	//-------------------------------------------------------------------------
@@ -124,56 +111,18 @@ namespace depgraphV
 		QWidget::changeEvent( event );
 	}
 	//-------------------------------------------------------------------------
-	void FilterPage::onConfigRestored()
-	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		if( _worksWithHeaders )
-		{
-			_ui->parseEnabled->setChecked( c->hdr_parseEnabled() );
-			QRadioButton* radio = c->hdr_standardFiltersEnabled() ?
-									  _ui->standardFiltersRadio :
-									  _ui->customFilterRadio;
-			radio->setChecked( true );
-
-			Helpers::setCurrentText( _ui->standardFilters, c->hdr_currentStandardFilter() );
-			_ui->customFilters->setText( c->hdr_customFilters() );
-		}
-		else
-		{
-			_ui->parseEnabled->setChecked( c->src_parseEnabled() );
-			QRadioButton* radio = c->src_standardFiltersEnabled() ?
-									  _ui->standardFiltersRadio :
-									  _ui->customFilterRadio;
-			radio->setChecked( true );
-
-			Helpers::setCurrentText( _ui->standardFilters, c->src_currentStandardFilter() );
-			_ui->customFilters->setText( c->src_customFilters() );
-		}
-	}
-	//-------------------------------------------------------------------------
-	void FilterPage::onCustomFilterTextChanged( QString )
+	void FilterPage::_onCustomFilterTextChanged( QString )
 	{
 		Qt::GlobalColor c = _ui->customFilters->hasAcceptableInput() ? Qt::black : Qt::red;
-		if( _ui->customFilters->palette().color( QPalette::Text ) != c )
+		QPalette p = _ui->customFilters->palette();
+		if( p.color( QPalette::Text ) != c )
 		{
-			QPalette p;
 			p.setColor( QPalette::Text, c );
 			_ui->customFilters->setPalette( p );
 		}
 	}
 	//-------------------------------------------------------------------------
-	void FilterPage::onCustomFiltersEditFinished()
-	{
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		QLineEdit* l = _ui->customFilters;
-
-		if( _worksWithHeaders )
-			c->hdr_setCustomFilters( l->text() );
-		else
-			c->src_setCustomFilters( l->text() );
-	}
-	//-------------------------------------------------------------------------
-	void FilterPage::onPageChanging( SettingsPage* currentPage,
+	void FilterPage::_onPageChanging( SettingsPage* currentPage,
 									 SettingsPage*, bool& accept )
 	{
 		if( currentPage == this && !_ui->customFilters->hasAcceptableInput() )
@@ -188,20 +137,16 @@ namespace depgraphV
 
 			if( answer == QMessageBox::No )
 				accept = false;
-			else
-			{
-				AppConfig* c = Singleton<AppConfig>::instancePtr();
-				_ui->customFilters->setText(
-							_worksWithHeaders ? c->hdr_customFilters() : c->src_customFilters()
-				);
-			}
 		}
 	}
 	//-------------------------------------------------------------------------
-	void FilterPage::onFiltersChanging( bool& accept )
+	void FilterPage::_onFiltersChanging( bool& accept )
 	{
+		Project* p = Singleton<Project>::instancePtr();
+		Q_ASSERT( p );
+
 		//TODO Check also selected files count > 0
-		if( Singleton<AppConfig>::instancePtr()->scanByFolders() )
+		if( p->currentValue( "scanByFolders" ).toBool() )
 			return;
 
 		QMessageBox::StandardButton answer = QMessageBox::warning(
@@ -214,5 +159,25 @@ namespace depgraphV
 		);
 
 		accept = answer != QMessageBox::No;
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onProjectOpened( Project* p )
+	{
+		SettingsPage::onProjectOpened( p );
+		QString prefix = _worksWithHeaders ? "hdr_" : "src_";
+
+		p->addMapping( _ui->parseEnabled, "parseEnabled", prefix, true );
+
+		QRadioButton* radios[] = { _ui->standardFiltersRadio, _ui-> customFilterRadio };
+		p->addMapping( radios, "standardFiltersEnabled", prefix );
+
+		p->addMapping( _ui->standardFilters, "currentStandardFilter", prefix, _defaultCustomExts[ 0 ] );
+		p->addMapping( _ui->customFilters, "customFilters", prefix, _defaultCustomExts.join( "; " ) );
+	}
+	//-------------------------------------------------------------------------
+	void FilterPage::onProjectClosed()
+	{
+		//TODO
+		SettingsPage::onProjectClosed();
 	}
 } // end of depgraphV namespace

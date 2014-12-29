@@ -374,7 +374,6 @@ namespace depgraphV
 		_ui->menuBar->setEnabled( false );
 		_ui->tabWidget->setCurrentTabUnclosable();
 
-		_project->setCurrentMapper( "tabMapper" );
 		if( _project->currentValue( "scanByFolders" ).toBool() )
 			_scanFolders();
 		else
@@ -863,11 +862,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_onSelectFilesOrFolders()
 	{
-		_project->setCurrentMapper( "tabMapper" );
 		if( _project->currentValue( "scanByFolders" ).toBool() )
-			_rootsDlg->exec( "tabMapper" );
+			_rootsDlg->exec();
 		else
-			_filesDlg->exec( _project->currentGraph()->model() );
+			_filesDlg->exec();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_onLanguageActionTriggered( QAction* action )

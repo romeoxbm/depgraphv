@@ -77,13 +77,9 @@ namespace depgraphV
 	void ScanModePage::_modifySelection()
 	{
 		if( _ui->selectRootFoldersRadio->isChecked() )
-			Singleton<HandleRootsDialog>::instancePtr()->exec( "settingsMapper" );
+			Singleton<HandleRootsDialog>::instancePtr()->exec();
 		else
-		{
-			Project* p = Singleton<Project>::instancePtr();
-			FoldersModel* model = p->currentGraph( "settingsMapper" )->model();
-			Singleton<SelectFilesDialog>::instancePtr()->exec( model );
-		}
+			Singleton<SelectFilesDialog>::instancePtr()->exec();
 
 		_updateSelectionCount();
 	}

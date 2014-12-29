@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * filesmodel.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,79 +38,70 @@
 #ifndef FILESMODEL_H
 #define FILESMODEL_H
 
-#include <QListView>
-#include <QAction>
-
-#include "checkablefilesystemmodel.h"
+#ifndef CHECKABLEFILESYSTEMMODEL_H
+#	include "checkablefilesystemmodel.h"
+#endif
 
 namespace depgraphV
 {
+	class FoldersModel;
+
 	class FilesModel : public CheckableFileSystemModel
 	{
 		Q_OBJECT
 
 	public:
-		explicit FilesModel( QObject* parent = 0 );
-		~FilesModel();
-
-		virtual QAbstractItemView* view() const { return _listView; }
-
-		void initialize( QListView* view );
-
-	protected:
-		virtual bool isCheckable( const QModelIndex& i, int role ) const;
-
-	public slots:
-
-	private slots:
-		void onActionTriggered( QAction* );
-		void onShowAllTriggered();
-
-	private:
-		class PackedParameters
+		enum FileGroup
 		{
-		public:
-			Qt::CheckState checkState() const { return _checkstate; }
-			CheckableFileSystemModel::FilesGroup filesGroup() const { return _group; }
-
-			static PackedParameters* getPtr( const QVariant& v )
-			{
-				return static_cast<PackedParameters*>( v.value<void*>() );
-			}
-
-			static QVariant toQVariant( Qt::CheckState c,
-										CheckableFileSystemModel::FilesGroup g = CheckableFileSystemModel::All )
-			{
-				PackedParameters* p = new PackedParameters( c, g );
-				return qVariantFromValue( static_cast<void*>( p ) );
-			}
-
-		private:
-			PackedParameters( Qt::CheckState c, CheckableFileSystemModel::FilesGroup g )
-				: _checkstate( c ),
-				  _group( g )
-			{
-			}
-
-			Qt::CheckState _checkstate;
-			CheckableFileSystemModel::FilesGroup _group;
+			Hdr,
+			Src,
+			All
 		};
 
+		explicit FilesModel( FoldersModel* fmodel, QObject* parent = 0 );
+		void initialize();
+
+		virtual QAbstractItemView* view() const { return _listView; }
+		virtual void setView( QAbstractItemView* view );
+
+		int selectedCount( const QString& rootPath = "", FileGroup g = FilesModel::All ) const;
+		QStringList checkedFiles() const;
+
+		QVariant data( const QModelIndex& i, int role ) const;
+
+		//virtual void commitChanges();
+		//virtual void revertChanges();
+
+		bool belongsToFileGroup( const QString& filePath, FileGroup v ) const;
+		bool belongsToFileGroup( const QModelIndex& i, FileGroup v ) const;
+
+		void setListeningFoldersModelDataChanged( bool value ) const;
+
+		friend QDataStream& operator << ( QDataStream& out, const FilesModel& object );
+		friend QDataStream& operator >> ( QDataStream& in, FilesModel& object );
+
+	protected:
+		virtual bool eventFilter( QObject* obj, QEvent* evt );
+		virtual bool isCheckable( const QModelIndex& i, int role ) const;
+		virtual bool setDataImpl( const QString& path, Qt::CheckState v );
+
+	public slots:
+		virtual void clearSelection();
+		void contextMenuActionTriggered();
+		void showAllFiles();
+
+	private slots:
+		void onFoldersModelDataChanged( QModelIndex, QModelIndex );
+
+	private:
 		QListView* _listView;
-		QAction* _showAllFiles;
-		QAction* _selectAll;
-		QAction* _selectNone;
-		QAction* _invertSelection;
+		FoldersModel* _foldersModel;
 
-		QAction* _hdr_selectAll;
-		QAction* _hdr_selectNone;
-		QAction* _hdr_invertSelection;
+		//Memento<QMap<QString, QStringList*> > _checkedFiles;
+		QMap<QString, QStringList*> _checkedFiles;
 
-		QAction* _src_selectAll;
-		QAction* _src_selectNone;
-		QAction* _src_invertSelection;
-
-		void _createContextMenu();
+		void _updateEnabledFlags();
+		int _filesCount( const QModelIndex& parent, FileGroup g = FilesModel::All ) const;
 	};
 }
 

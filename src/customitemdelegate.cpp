@@ -38,6 +38,7 @@
 #include "depgraphv_pch.h"
 #include "customitemdelegate.h"
 #include "binaryradiowidget.h"
+#include "selectfilesdialog.h"
 
 namespace depgraphV
 {
@@ -69,6 +70,12 @@ namespace depgraphV
 
 			l->model()->blockSignals( false );
 			_connect( l );
+		}
+		else if( SelectFilesDialog* d = qobject_cast<SelectFilesDialog*>( editor ) )
+		{
+			connect( d, SIGNAL( selectionChanged() ),
+					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
+			);
 		}
 		else
 		{
@@ -115,7 +122,7 @@ namespace depgraphV
 	void CustomItemDelegate::_connect( QWidget* widget ) const
 	{
 		//TODO Qt::UniqueConnection prevent signals being connected more than one time,
-		// but, every call to setEditorData does require 2 qobjects casts (6 in the worst case)...
+		//but every call to setEditorData does require 3 qobjects casts (7 in the worst case)...
 
 		if( QLineEdit* w = qobject_cast<QLineEdit*>( widget ) )
 		{

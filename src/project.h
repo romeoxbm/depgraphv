@@ -131,31 +131,10 @@ namespace depgraphV
 		int recordCount() const;
 
 		//Mapper methods
-		QDataWidgetMapper* createOrRetrieveMapper( const QString& name, bool setCurrent = false );
-		QDataWidgetMapper* mapper( const QString& name ) const;
-
-		QDataWidgetMapper* currentMapper() const { return _currentMapper; }
-		const QString& currentMapperName() const { return _currentMapperName; }
-
-		void setCurrentMapper( const QString& name );
-		void setCurrentMapper( QDataWidgetMapper* mapper );
-
-		/**
-		 * @brief Force update for the data widget mapper called \a name.
-		 * @param name The name of the data widget mapper
-		 */
-		void updateMapper( const QString& name ) const;
-
-		/**
-		 * @brief Force update for \a mapper.
-		 * @param mapper The data widget mapper to update.
-		 */
-		void updateMapper( QDataWidgetMapper* mapper ) const;
+		QDataWidgetMapper* mapper() const { return _mapper; }
 
 		Graph* graph( int index ) const;
-
-		Graph* currentGraph( const QString& mapperName = "tabMapper" ) const;
-		Graph* currentGraph( QDataWidgetMapper* mapper ) const;
+		Graph* currentGraph() const;
 
 		bool load();
 		bool save();
@@ -203,9 +182,7 @@ namespace depgraphV
 		QStandardItemModel* _model;
 		CustomItemDelegate* _delegate;
 
-		QDataWidgetMapper* _currentMapper;
-		QString _currentMapperName;
-		QHash<QString, QDataWidgetMapper*> _mappers;
+		QDataWidgetMapper* _mapper;
 
 		QVector<Graph*> _graphs;
 

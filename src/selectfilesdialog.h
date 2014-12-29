@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * selectfilesdialog.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,9 +38,13 @@
 #ifndef SELECTFILESDIALOG_H
 #define SELECTFILESDIALOG_H
 
-#include <QDialog>
-#include "foldersmodel.h"
-#include "appconfig.h"
+#ifndef FOLDERSMODEL_H
+#	include "foldersmodel.h"
+#endif
+
+#ifndef PROJECT_H
+#	include "project.h"
+#endif
 
 namespace depgraphV
 {
@@ -39,27 +53,48 @@ namespace depgraphV
 		class SelectFilesDialog;
 	}
 
+	//Forward declaration
+	class MainWindow;
+
 	class SelectFilesDialog : public QDialog, public Singleton<SelectFilesDialog>
 	{
 		Q_OBJECT
+		Q_PROPERTY( QByteArray graphModel READ graphModel WRITE setGraphModel USER true )
 
 	public:
-		explicit SelectFilesDialog( QWidget* parent = 0 );
+		/**
+		 * @brief \a SelectFilesDialog constructor
+		 * @param parent The parent \a MainWindow.
+		 */
+		explicit SelectFilesDialog( MainWindow* parent );
+
+		/**
+		 * @brief \a SelectFilesDialog destructor.
+		 */
 		~SelectFilesDialog();
 
-		const QStringList& selectedFiles() const { return _folderModel->checkedFiles(); }
+		int exec();
+
+		QByteArray graphModel() const;
+		void setGraphModel( const QByteArray& );
+
+	signals:
+		void selectionChanged();
 
 	protected:
 		virtual void changeEvent( QEvent* );
 
 	private slots:
-		void onClose( int );
-		void onConfigRestored();
-		void onNameFiltersChanged();
+		void _onClose( int );
+		void _onProjectOpened( Project* );
+		void _onProjectClosed();
 
 	private:
 		Ui::SelectFilesDialog* _ui;
-		FoldersModel* _folderModel;
+		FoldersModel* _previousModel;
+
+		void _connect();
+		void _disconnect();
 	};
 }
 

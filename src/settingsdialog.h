@@ -80,12 +80,17 @@ namespace depgraphV
 	private slots:
 		void _changePage( QListWidgetItem* current, QListWidgetItem* previous );
 		void _onProjectOpened( Project* );
+		void _onProjectClosed();
+		void _changeCurrentGraph( int );
 		void _onButtonClicked( QAbstractButton* );
 
 	private:
 		Ui::SettingsDialog* _ui;
 		SettingsPage* _currentPage;
 		QMap<QString, SettingsPage*> _pages;
+
+		void _blockActivatedSignal( bool );
+		void _blockMapperCurrentIndexChangedSignal( QDataWidgetMapper*, bool );
 	};
 }
 

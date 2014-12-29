@@ -73,11 +73,15 @@ namespace depgraphV
 
 		void _onProjectOpened( Project* );
 		void _onProjectClosed();
+		void _changeCurrentTab( int );
 
 	private:
 		MainWindow* _mainW;
 		bool _disableCloseTabQuestion;
 		int _unclosableTabIndex;
+
+		void _blockCurrentChangedSignal( bool );
+		void _blockMapperCurrentIndexChangedSignal( QDataWidgetMapper*, bool );
 
 		void _retranslate();
 	};

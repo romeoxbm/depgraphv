@@ -304,7 +304,7 @@ namespace depgraphV
 	void GraphPage::_onValueChanged()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		Graph* g = p->currentGraph( "settingsMapper" );
+		Graph* g = p->currentGraph();
 		if( !_uncommittedChanges.contains( g ) )
 			_uncommittedChanges.insert( g, QList<QWidget*>() );
 

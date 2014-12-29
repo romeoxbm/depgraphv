@@ -201,9 +201,6 @@ namespace depgraphV
 		 */
 		static QStringList* pluginsListByKind( const QString& kind );
 
-		inline friend QDataStream& operator << ( QDataStream& out, const Graph& object );
-		inline friend QDataStream& operator >> ( QDataStream& in, Graph& object );
-
 	signals:
 		void vertexCreated( Agnode_t* );
 		void edgeCreated( Agedge_t* );
@@ -258,6 +255,7 @@ namespace depgraphV
 		virtual void wheelEvent( QWheelEvent* event );
 
 	private:
+		static unsigned short _instances;
 		RendererType _renderer;
 		QString _layoutAlgorithm;
 
@@ -306,8 +304,6 @@ namespace depgraphV
 
 		static void _lookForAvailablePlugins();
 		static bool _isPluginAvailable( const QString& format, const QString& kind = "" );
-
-		static unsigned short _instances;
 	};
 }
 

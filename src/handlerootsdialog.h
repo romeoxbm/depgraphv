@@ -38,8 +38,8 @@
 #ifndef HANDLEROOTSDIALOG_H
 #define HANDLEROOTSDIALOG_H
 
-#ifndef SINGLETON_H
-#	include "singleton.h"
+#ifndef PROJECT_H
+#	include "project.h"
 #endif
 
 namespace depgraphV
@@ -59,16 +59,14 @@ namespace depgraphV
 	public:
 		/**
 		 * @brief \a HandleRootsDialog constructor.
-		 * @param parent The parent widget (default \a NULL)
+		 * @param parent The parent \a MainWindow.
 		 */
-		HandleRootsDialog( MainWindow* parent = 0 );
+		HandleRootsDialog( MainWindow* parent );
 
 		/**
 		 * @brief \a HandleRootsDialog destructor.
 		 */
 		~HandleRootsDialog();
-
-		int exec( const QString& mapper );
 
 	protected:
 		virtual bool event( QEvent* evt );
@@ -79,10 +77,10 @@ namespace depgraphV
 		void _onRootFolderAdded();
 		void _onRemoveSelection();
 		void _onClose( int );
+		void _onProjectOpened( Project* );
 
 	private:
 		Ui::HandleRootsDialog* _ui;
-		QString _mapperName;
 
 		void _updateEnabledFlags();
 	};

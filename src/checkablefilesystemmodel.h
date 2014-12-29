@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * checkablefilesystemmodel.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,68 +38,52 @@
 #ifndef CHECKABLEFILESYSTEMMODEL_H
 #define CHECKABLEFILESYSTEMMODEL_H
 
-#include <QFileSystemModel>
-#include <QAbstractItemView>
-#include <functional>
-
-#include "iserializableobject.h"
-#include "memento.h"
+/*#ifndef MEMENTO_H
+#	include "memento.h"
+#endif*/
 
 namespace depgraphV
 {
-	class CheckableFileSystemModel : public QFileSystemModel, public ISerializableObject
+	class CheckableFileSystemModel : public QFileSystemModel
 	{
 		Q_OBJECT
-		Q_PROPERTY( QStringList checkedItems READ checkedItems WRITE setCheckedItems )
 
 	public:
 		explicit CheckableFileSystemModel( QObject* parent = 0 );
 		virtual ~CheckableFileSystemModel() = 0;
 
 		virtual QAbstractItemView* view() const = 0;
+		virtual void setView( QAbstractItemView* ) = 0;
 
 		Qt::ItemFlags flags( const QModelIndex& index ) const;
 
-		QVariant data( const QModelIndex& i, int role ) const;
 		bool setData( const QModelIndex& i, const QVariant& value, int role );
 
-		inline const QStringList& checkedItems() const { return _checkedItemsList.state(); }
-
-		virtual QList<const char*> propList() const;
-
-		virtual void commitChanges();
-		virtual void revertChanges();
+		//virtual void commitChanges() = 0;
+		//virtual void revertChanges() = 0;
 
 		bool initialized() const { return _initialized; }
-
-		enum FilesGroup
-		{
-			Hdr,
-			Src,
-			All
-		};
 
 	protected:
 		bool _initialized;
 
 		virtual bool isCheckable( const QModelIndex& i, int role ) const;
+		virtual bool setDataImpl( const QString& path, Qt::CheckState v ) = 0;
 
 	public slots:
-		void setCheckedItems( const QStringList& value ) { _checkedItemsList.setState( value ); commitChanges(); }
-		virtual void clearSelection();
-		void changeAllCheckStates( const QModelIndex& parent, Qt::CheckState state, FilesGroup v = All );
-		void invertSelection( const QModelIndex& parent, FilesGroup v = All );
+		virtual void clearSelection() {}
 
 	private slots:
 		void _folderLoaded( const QString& folder );
 
 	private:
-		bool _skipOperation( const QModelIndex& i, const std::function<void()>& f );
-		bool _skipChild( const QModelIndex& child, FilesGroup v );
 		QStringList _loadedFolders;
-		QMap<QString, std::function<void()> > _queuedOperations;
 
-		Memento<QStringList> _checkedItemsList;
+		//TODO _skipOperation isn't referenced anymore, so _queuedOperations has been commented out too
+		//QMap<QString, std::function<void()> > _queuedOperations;
+
+		//TODO _skipOperation isn't referenced anymore..
+		//bool _skipOperation( const QModelIndex& i, const std::function<void()>& f );
 	};
 }
 

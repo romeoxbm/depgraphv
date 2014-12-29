@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * filesmodel.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -25,44 +35,197 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "filesmodel.h"
-#include <QActionGroup>
+#include "depgraphv_pch.h"
+#include "foldersmodel.h"
+#include "project.h"
+#include "helpers.h"
 
 namespace depgraphV
 {
-	FilesModel::FilesModel( QObject* parent )
+	FilesModel::FilesModel( FoldersModel* fModel, QObject* parent )
 		: CheckableFileSystemModel( parent ),
 		  _listView( 0 ),
-		  _showAllFiles( 0 ),
-		  _selectAll( 0 ),
-		  _selectNone( 0 ),
-		  _invertSelection( 0 ),
-		  _hdr_selectAll( 0 ),
-		  _hdr_selectNone( 0 ),
-		  _hdr_invertSelection( 0 ),
-		  _src_selectAll( 0 ),
-		  _src_selectNone( 0 ),
-		  _src_invertSelection( 0 )
+		  _foldersModel( fModel )
 	{
-		this->setFilter( QDir::NoDotAndDotDot | QDir::Files );
-		this->setNameFilterDisables( false );
-	}
-	//-------------------------------------------------------------------------
-	FilesModel::~FilesModel()
-	{
-	}
-	//-------------------------------------------------------------------------
-	void FilesModel::initialize( QListView* view )
-	{
-		if( _initialized )
-			return;
+		setFilter( QDir::NoDotAndDotDot | QDir::Files );
+		setNameFilterDisables( false );
 
-		Q_ASSERT( view );
-		_listView = view;
+		setListeningFoldersModelDataChanged( true );
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::initialize()
+	{
 		_listView->setModel( this );
 
-		_createContextMenu();
+		Project* p = Singleton<Project>::instancePtr();
+		//TODO
+		/*_checkedFiles.setState(
+					p->currentBinaryValue<QMap<QString, QStringList*> >( "checkedFiles" )
+		);*/
+		setNameFilters( p->nameFilters() );
+
 		_initialized = true;
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::setView( QAbstractItemView* view )
+	{
+		//Sanity checks first of all: view cannot be null
+		Q_ASSERT( view );
+
+		//setting the same view?
+		if( view == _listView )
+			return;
+
+		_listView = qobject_cast<QListView*>( view );
+
+		//Second sanity check: view MUST be a QListView*
+		Q_ASSERT( _listView );
+		_listView->viewport()->removeEventFilter( view->model() );
+		_listView->viewport()->installEventFilter( this );
+	}
+	//-------------------------------------------------------------------------
+	int FilesModel::selectedCount( const QString& rootPath, FileGroup g ) const
+	{
+		int count = -1;
+
+		if( !rootPath.isEmpty() )
+		{
+			if( _checkedFiles.contains( rootPath ) )
+			{
+				if( g == FilesModel::All )
+					count = _checkedFiles[ rootPath ]->count();
+				else
+				{
+					count = 0;
+					foreach( QString f, *_checkedFiles[ rootPath ] )
+					{
+						if( belongsToFileGroup( f, g ) )
+							count++;
+					}
+				}
+			}
+			else
+				count = 0;
+		}
+		else
+		{
+			//Count ALL selected files, not just in a single directory
+			count = 0;
+			QMapIterator<QString, QStringList*> it( _checkedFiles );
+			while( it.hasNext() )
+			{
+				it.next();
+
+				if( g == FilesModel::All )
+					count += it.value()->count();
+				else
+				{
+					foreach( QString f, *it.value() )
+					{
+						if( belongsToFileGroup( f, g ) )
+							count++;
+					}
+				}
+			}
+		}
+
+		return count;
+	}
+	//-------------------------------------------------------------------------
+	QStringList FilesModel::checkedFiles() const
+	{
+		QStringList res;
+		foreach( QStringList* l, _checkedFiles )
+			res.append( *l );
+
+		return res;
+	}
+	//-------------------------------------------------------------------------
+	QVariant FilesModel::data( const QModelIndex& i, int role ) const
+	{
+		if( isCheckable( i, role ) )
+		{
+			QString fp = filePath( i );
+			QString dp = filePath( i.parent() );
+			//QMap<QString, QStringList*>& items = _checkedFiles.state();
+
+			if( _checkedFiles.contains( dp ) && _checkedFiles[ dp ]->contains( fp ) )
+				return Qt::Checked;
+
+			return Qt::Unchecked;
+		}
+
+		return QFileSystemModel::data( i, role );
+	}
+	//-------------------------------------------------------------------------
+	/*void FilesModel::commitChanges()
+	{
+		if( !_checkedFiles.commit() )
+			return;
+
+		Project* p = Singleton<Project>::instancePtr();
+		//TODO
+		//p->setCurrentBinaryValue( _checkedFiles.state(), "checkedFiles" );
+	}*/
+	//-------------------------------------------------------------------------
+	/*void FilesModel::revertChanges()
+	{
+		_checkedFiles.revert();
+	}*/
+	//-------------------------------------------------------------------------
+	bool FilesModel::belongsToFileGroup( const QString& filePath, FileGroup v ) const
+	{
+		return belongsToFileGroup( index( filePath ), v );
+	}
+	//-------------------------------------------------------------------------
+	bool FilesModel::belongsToFileGroup( const QModelIndex& i, FileGroup v ) const
+	{
+		if( !i.flags().testFlag( Qt::ItemIsEnabled ) )
+			return false;
+
+		if( v != All )
+		{
+			QFileInfo fi = fileInfo( i );
+			QString filter = "*." + fi.completeSuffix();
+
+			//TODO Where should I take name filters? (probably from Project)
+			/*AppConfig* c = Singleton<AppConfig>::instancePtr();
+			QStringList filters;
+			if( v == Hdr )
+				filters = c->headerNameFilters();
+
+			else if( v == Src )
+				filters = c->sourceNameFilters();
+
+			if( !filters.contains( filter ) )
+				return false;*/
+		}
+
+		return true;
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::setListeningFoldersModelDataChanged( bool value ) const
+	{
+		if( value )
+		{
+			connect( _foldersModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+				 this, SLOT( onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
+			);
+		}
+		else
+		{
+			_foldersModel->disconnect( this,
+				SLOT( onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
+			);
+		}
+	}
+	//-------------------------------------------------------------------------
+	bool FilesModel::eventFilter( QObject* obj, QEvent* evt )
+	{
+		if( obj == _listView->viewport() && evt->type() == QEvent::ContextMenu )
+			_updateEnabledFlags();
+
+		return CheckableFileSystemModel::eventFilter( obj, evt );
 	}
 	//-------------------------------------------------------------------------
 	bool FilesModel::isCheckable( const QModelIndex& i, int role ) const
@@ -72,126 +235,183 @@ namespace depgraphV
 		return baseRes && nameFilters().contains( filter );
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::onActionTriggered( QAction* a )
+	bool FilesModel::setDataImpl( const QString& path, Qt::CheckState v )
 	{
-		Q_ASSERT( a );
-		PackedParameters* p = PackedParameters::getPtr( a->data() );
+		QMap<QString, QStringList*>& l = _checkedFiles;
+		QModelIndex pIdx = index( path );
+		QString fp = filePath( pIdx );
+		QString dp = filePath( pIdx.parent() );
+		if( l.contains( dp ) )
+		{
+			if( v == Qt::Checked && !l[ dp ]->contains( fp ) )
+				l[ dp ]->append( fp );
+
+			else if( v == Qt::Unchecked && l[ dp ]->contains( fp ) )
+				l[ dp ]->removeAll( fp );
+
+			if( l[ dp ]->isEmpty() )
+			{
+				delete l[ dp ];
+				l.remove( dp );
+			}
+		}
+		else if( v == Qt::Checked )
+		{
+			l.insert( dp, new QStringList );
+			l[ dp ]->append( fp );
+		}
+
+		return true;
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::clearSelection()
+	{
+		foreach( QStringList* l, _checkedFiles )
+			delete l;
+
+		_checkedFiles.clear();
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::contextMenuActionTriggered()
+	{
+		QAction* a = static_cast<QAction*>( sender() );
+		typedef QPair<Qt::CheckState, FileGroup> Pair;
+		Pair* p;
+		p = Helpers::fromQVariant<Pair>( a->data() );
 		Q_ASSERT( p );
 
-		if( p->checkState() == -1 )
-			this->invertSelection( _listView->rootIndex(), p->filesGroup() );
+		QModelIndex root = _listView->rootIndex();
+		int rows = rowCount( root );
 
-		else
+		for( int i = 0; i < rows; i ++ )
 		{
-			this->changeAllCheckStates(
-						_listView->rootIndex(),
-						p->checkState(),
-						p->filesGroup()
-			);
+			QModelIndex child = root.child( i, 0 );
+
+			if( !belongsToFileGroup( child, p->second ) )
+				continue;
+
+			//Invert selection
+			if( p->first == -1 )
+			{
+				Qt::CheckState c = (Qt::CheckState)data( child, Qt::CheckStateRole ).toInt();
+				setDataImpl( filePath( child ), c == Qt::Unchecked ? Qt::Checked : Qt::Unchecked );
+			}
+			else
+				setDataImpl( filePath( child ), p->first );
 		}
+		emit dataChanged( index( 0, 0, root ), index( rows - 1, 0, root ) );
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::onShowAllTriggered()
+	void FilesModel::showAllFiles()
 	{
-		this->setNameFilterDisables( _showAllFiles->isChecked() );
+		QAction* a = static_cast<QAction*>( sender() );
+		setNameFilterDisables( a->isChecked() );
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::_createContextMenu()
+	void FilesModel::onFoldersModelDataChanged( QModelIndex i, QModelIndex )
 	{
-		_listView->setContextMenuPolicy( Qt::ActionsContextMenu );
+		QModelIndex parent = index( _foldersModel->filePath( i ) );
+		int rows = rowCount( parent );
+		blockSignals( true );
+		for( int j = 0; j < rows; j++ )
+		{
+			QModelIndex childIdx = parent.child( j, 0 );
+			setData( childIdx, i.data( Qt::CheckStateRole ), Qt::CheckStateRole );
+		}
+		blockSignals( false );
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::_updateEnabledFlags()
+	{
+		QString path = filePath( _listView->rootIndex() );
+		int allSelectedCount = selectedCount( path );
+		int headersSelectedCount = selectedCount( path, FilesModel::Hdr );
+		int sourcesSelectedCount = selectedCount( path, FilesModel::Src );
 
-		QActionGroup* group = new QActionGroup( _listView );
-		connect( group, SIGNAL( triggered( QAction* ) ),
-								this, SLOT( onActionTriggered( QAction* ) ) );
+		int count = _filesCount( _listView->rootIndex() );
+		int headersCount = _filesCount( _listView->rootIndex(), FilesModel::Hdr );
+		int sourcesCount = _filesCount( _listView->rootIndex(), FilesModel::Src );
 
-		//Actions
-		_showAllFiles = new QAction( tr( "Show All Files" ), _listView );
-		_showAllFiles->setCheckable( true );
-		connect( _showAllFiles, SIGNAL( triggered() ),
-				 this, SLOT( onShowAllTriggered() ) );
+		QList<QAction*> aList = _listView->actions();
+		//All
+		aList[ 2 ]->setEnabled( count && allSelectedCount < count );
+		aList[ 3 ]->setEnabled( count && allSelectedCount );
+		aList[ 4 ]->setEnabled( count );
 
-		QAction* sep = new QAction( group );
-		sep->setSeparator( true );
-		group->addAction( sep );
+		//Headers
+		aList[ 6 ]->setEnabled( headersCount&& headersSelectedCount < headersCount );
+		aList[ 7 ]->setEnabled( headersCount && headersSelectedCount );
+		aList[ 8 ]->setEnabled( headersCount );
 
-		_selectAll = new QAction( tr( "Select All" ), group );
-		_selectAll->setData( PackedParameters::toQVariant( Qt::Checked ) );
-		group->addAction( _selectAll );
+		//Sources
+		aList[ 10 ]->setEnabled( sourcesCount && sourcesSelectedCount < sourcesCount );
+		aList[ 11 ]->setEnabled( sourcesCount && sourcesSelectedCount );
+		aList[ 12 ]->setEnabled( sourcesCount );
+	}
+	//-------------------------------------------------------------------------
+	int FilesModel::_filesCount( const QModelIndex& parent, FileGroup g ) const
+	{
+		Q_ASSERT( parent.isValid() );
+		int count = rowCount( parent );
+		if( nameFilterDisables() )
+		{
+			for( int i = 0; i < rowCount( parent ); i++ )
+			{
+				QModelIndex c = parent.child( i, 0 );
+				if( !c.flags().testFlag( Qt::ItemIsEnabled ) ||
+					( g != FilesModel::All && !belongsToFileGroup( c, g ) ) )
+				{
+					count--;
+				}
+			}
+		}
+		else if( g != FilesModel::All )
+		{
+			for( int i = 0; i < rowCount( parent ); i++ )
+			{
+				QModelIndex c = parent.child( i, 0 );
+				if( !belongsToFileGroup( c, g ) )
+					count--;
+			}
+		}
 
-		_selectNone = new QAction( tr( "Select None" ), group );
-		_selectNone->setData( PackedParameters::toQVariant( Qt::Unchecked ) );
-		group->addAction( _selectNone );
+		return count;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator << ( QDataStream& out, const FilesModel& object )
+	{
+		QMapIterator<QString, QStringList*> it( object._checkedFiles );
+		out << object._checkedFiles.count();
 
-		_invertSelection = new QAction( tr( "Invert Selection" ), group );
-		_invertSelection->setData(
-					PackedParameters::toQVariant(
-						static_cast<Qt::CheckState>( -1 )
-					)
-		);
-		group->addAction( _invertSelection );
+		while( it.hasNext() )
+		{
+			it.next();
+			out << it.key();
+			out << *it.value();
+		}
 
-		sep = new QAction( group );
-		sep->setSeparator( true );
-		sep->setText( tr( "Headers" ) );
-		group->addAction( sep );
+		return out;
+	}
+	//-------------------------------------------------------------------------
+	QDataStream& operator >> ( QDataStream& in, FilesModel& object )
+	{
+		int count = 0;
+		in >> count;
+		//QMap<QString, QStringList*> data;
+		QMap<QString, QStringList*>& l = object._checkedFiles;
 
-		_hdr_selectAll = new QAction( tr( "Select All Headers" ), group );
-		_hdr_selectAll->setData( PackedParameters::toQVariant( Qt::Checked, Hdr ) );
-		group->addAction( _hdr_selectAll );
+		if( !l.isEmpty() )
+			l.clear();
 
-		_hdr_selectNone = new QAction( tr( "Deselect All Headers" ), group );
-		_hdr_selectNone->setData( PackedParameters::toQVariant( Qt::Unchecked, Hdr ) );
-		group->addAction( _hdr_selectNone );
+		for( int i = 0; i < count; i++ )
+		{
+			QString key;
+			in >> key;
+			l.insert( key, new QStringList );
+			in >> *l[ key ];
+		}
 
-		_hdr_invertSelection = new QAction( tr( "Invert Headers Selection" ), group );
-		_hdr_invertSelection->setData(
-					PackedParameters::toQVariant(
-						static_cast<Qt::CheckState>( -1 ),
-						Hdr
-					)
-		);
-		group->addAction( _hdr_invertSelection );
-
-		sep = new QAction( group );
-		sep->setSeparator( true );
-		sep->setText( tr( "Sources" ) );
-		group->addAction( sep );
-
-		_src_selectAll = new QAction( tr( "Select All Sources" ), group );
-		_src_selectAll->setData( PackedParameters::toQVariant( Qt::Checked, Src ) );
-		group->addAction( _src_selectAll );
-
-		_src_selectNone = new QAction( tr( "Deselect All Sources" ), group );
-		_src_selectNone->setData( PackedParameters::toQVariant( Qt::Unchecked, Src ) );
-		group->addAction( _src_selectNone );
-
-		_src_invertSelection = new QAction( tr( "Invert Sources Selection" ), group );
-		_src_invertSelection->setData(
-					PackedParameters::toQVariant(
-						static_cast<Qt::CheckState>( -1 ),
-						Src
-					)
-		);
-		group->addAction( _src_invertSelection );
-
-		_listView->addAction( _showAllFiles );
-		_listView->addActions( group->actions() );
-
-		//Tooltips
-#ifndef QT_NO_TOOLTIP
-		_showAllFiles->setToolTip( tr( "Show all files, including filtered ones" ) );
-
-		_selectAll->setToolTip( tr( "Select all valid files in this folder" ) );
-		_selectNone->setToolTip( tr( "Clear selection" ) );
-		_invertSelection->setToolTip( tr( "Invert current files selection" ) );
-
-		_hdr_selectAll->setToolTip( tr( "Select all headers in this folder" ) );
-		_hdr_selectNone->setToolTip( tr( "Clear headers selection" ) );
-		_hdr_invertSelection->setToolTip( tr( "Invert current headers selection" ) );
-
-		_src_selectAll->setToolTip( tr( "Select all sources in this folder" ) );
-		_src_selectNone->setToolTip( tr( "Clear sources selection" ) );
-		_src_invertSelection->setToolTip( tr( "Invert current sources selection" ) );
-#endif
+		//object._checkedFiles.setState( data );
+		return in;
 	}
 }

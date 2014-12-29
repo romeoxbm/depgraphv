@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * checkablefilesystemmodel.cpp
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -25,9 +35,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include "depgraphv_pch.h"
 #include "checkablefilesystemmodel.h"
-#include "buildsettings.h"
-#include "appconfig.h"
 
 namespace depgraphV
 {
@@ -35,15 +44,11 @@ namespace depgraphV
 		: QFileSystemModel( parent ),
 		  _initialized( false )
 	{
-		this->setReadOnly( true );
+		setReadOnly( true );
 
-		connect( this,
-				 SIGNAL( directoryLoaded( QString ) ),
-				 this,
-				 SLOT( _folderLoaded( QString ) )
+		connect( this, SIGNAL( directoryLoaded( QString ) ),
+				 this, SLOT( _folderLoaded( QString ) )
 		);
-
-		Singleton<AppConfig>::instance().registerSerializable( this );
 	}
 	//-------------------------------------------------------------------------
 	CheckableFileSystemModel::~CheckableFileSystemModel()
@@ -59,128 +64,33 @@ namespace depgraphV
 		return f;
 	}
 	//-------------------------------------------------------------------------
-	QVariant CheckableFileSystemModel::data( const QModelIndex& i, int role ) const
-	{
-		if( isCheckable( i, role ) )
-		{
-			return _checkedItemsList.state().contains( filePath( i ) ) ?
-						Qt::Checked : Qt::Unchecked;
-		}
-
-		return QFileSystemModel::data( i, role );
-	}
-	//-------------------------------------------------------------------------
 	bool CheckableFileSystemModel::setData( const QModelIndex& i,
 											const QVariant& value, int role )
 	{
 		if( !isCheckable( i, role ) )
 			return QFileSystemModel::setData( i, value, role );
 
-		bool isChecked = value.toInt() == Qt::Checked;
 		QString path = filePath( i );
+		Qt::CheckState v = static_cast<Qt::CheckState>( value.toInt() );
 
-		if( !( isChecked ^ (bool)_checkedItemsList.state().contains( path ) ) )
+		if( !setDataImpl( path, v ) )
 			return QFileSystemModel::setData( i, value, role );
-
-		if( isChecked )
-			_checkedItemsList.state().append( path );
 		else
-			_checkedItemsList.state().removeAll( path );
-
-#ifdef QT_USE_QT5
-		QVector<int> roles;
-		roles << role;
-		emit dataChanged( i, i, roles );
-#else
-		emit dataChanged( i, i );
-#endif
-		return true;
-	}
-	//-------------------------------------------------------------------------
-	QList<const char*> CheckableFileSystemModel::propList() const
-	{
-		QList<const char*> props;
-		props << "checkedItems";
-		return props;
-	}
-	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::commitChanges()
-	{
-		_checkedItemsList.commit();
-	}
-	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::revertChanges()
-	{
-		_checkedItemsList.revert();
+		{
+			emit dataChanged( i, i );
+			return true;
+		}
 	}
 	//-------------------------------------------------------------------------
 	bool CheckableFileSystemModel::isCheckable( const QModelIndex& i, int role ) const
 	{
-		bool result = i.isValid() &&
+		return i.isValid() &&
 				i.column() == 0 &&
 				role == Qt::CheckStateRole;
-
-		return result;
 	}
 	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::clearSelection()
-	{
-		/*QVector<int> roles;
-		roles << Qt::CheckStateRole;*/
-		if( _initialized )
-			_checkedItemsList.state().clear();
-		//TODO emit dataChanged signal
-	}
-	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::changeAllCheckStates( const QModelIndex& parent,
-										   Qt::CheckState state, FilesGroup v )
-	{
-		std::function<void()> f = std::bind(
-									  &CheckableFileSystemModel::changeAllCheckStates,
-									  this,
-									  parent,
-									  state,
-									  v
-		);
-
-		if( _skipOperation( parent, f ) )
-			return;
-
-		for( int i = 0; i < rowCount( parent ); i++ )
-		{
-			const QModelIndex child = index( i, 0, parent );
-			if( _skipChild( child, v ) )
-				continue;
-
-			setData( child, state, Qt::CheckStateRole );
-		}
-	}
-	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::invertSelection( const QModelIndex& parent, FilesGroup v )
-	{
-		std::function<void()> f = std::bind(
-									  &CheckableFileSystemModel::invertSelection,
-									  this,
-									  parent,
-									  v
-		);
-
-		if( _skipOperation( parent, f ) )
-			return;
-
-		for( int i = 0; i < rowCount( parent ); i++ )
-		{
-			const QModelIndex child = index( i, 0, parent );
-			if( _skipChild( child, v ) )
-				continue;
-
-			Qt::CheckState c = (Qt::CheckState)data( child, Qt::CheckStateRole ).toInt();
-			setData( child, c == Qt::Unchecked ? Qt::Checked : Qt::Unchecked,
-					 Qt::CheckStateRole );
-		}
-	}
-	//-------------------------------------------------------------------------
-	bool CheckableFileSystemModel::_skipOperation( const QModelIndex& i,
+	//TODO _skipOperation isn't referenced anymore..
+	/*bool CheckableFileSystemModel::_skipOperation( const QModelIndex& i,
 									   const std::function<void()>& f )
 	{
 		if( isDir( i ) )
@@ -194,36 +104,16 @@ namespace depgraphV
 		}
 
 		return false;
-	}
-	//-------------------------------------------------------------------------
-	bool CheckableFileSystemModel::_skipChild( const QModelIndex& child, FilesGroup v )
-	{
-		if( v != All )
-		{
-			QFileInfo fi = fileInfo( child );
-			QString filter = "*." + fi.completeSuffix();
-			AppConfig* c = Singleton<AppConfig>::instancePtr();
-			QStringList filters;
-			if( v == Hdr )
-				filters = c->headerNameFilters();
-
-			else if( v == Src )
-				filters = c->sourceNameFilters();
-
-			if( !filters.contains( filter ) )
-				return true;
-		}
-
-		return false;
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	void CheckableFileSystemModel::_folderLoaded( const QString& folder )
 	{
 		_loadedFolders.append( folder );
-		if( _queuedOperations.contains( folder ) )
+		//TODO commented because _skipOperation isn't referenced anymore..
+		/*if( _queuedOperations.contains( folder ) )
 		{
 			_queuedOperations[ folder ]();
 			_queuedOperations.remove( folder );
-		}
+		}*/
 	}
 }

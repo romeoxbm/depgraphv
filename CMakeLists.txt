@@ -52,7 +52,7 @@ if( WIN32 )
 else()
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
-	
+
 	#Force CMAKE_BUILD_TYPE to DEBUG on Linux when is not defined
 	if( "${CMAKE_BUILD_TYPE}" STREQUAL "" )
 		set( CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." )
@@ -79,7 +79,6 @@ set( Headers
 	src/helpers.h
 	src/iserializableobject.h
 	src/mainwindow.h
-	src/memento.h
 	src/project.h
 	src/scanmodepage.h
 	src/selectfilesdialog.h
@@ -174,7 +173,7 @@ option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS FALSE )
 option( DEPGRAPHV_ENABLE_PCH_SUPPORT TRUE )
 
 if( UNIX )
-    set( DEPGRAPHV_PREFERRED_PACKAGE "DEB" CACHE STRING "Choose the type of generated package. Valid options are RPM or DEB." )
+	set( DEPGRAPHV_PREFERRED_PACKAGE "DEB" CACHE STRING "Choose the type of generated package. Valid options are RPM or DEB." )
 endif()
 
 #Detecting if we're on x86 system (or not) when using gnu compiler
@@ -225,18 +224,18 @@ endif( DEPGRAPHV_USE_QT5 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
 	set( definitions "-fPIC -Wall -std=c++0x" )
-	
+
 	if( BUILD_32 )
 		set( definitions "${definitions} -m32" )
 	else()
 		set( definitions "${definitions} -m64" )
 	endif( BUILD_32 )
-	
+
 elseif( MSVC_IDE )
 	set( definitions "/W4 /MP" )
 	list( APPEND RCCSrcs "res/${ProjectName}.rc" )
 	list( APPEND RCCSrcs "res/resource.h" )
-	
+
 	if( ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
 		list( APPEND Sources src/depgraphv_pch.cpp )
 	endif()
@@ -271,7 +270,7 @@ include( PCH_Support )
 
 if( WIN32 )
 	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}/bin;${GraphViz_INSTALL_DIRS}/bin" )
-	
+
 	if( MSVC_IDE )
 		include( CreateLaunchers )
 		create_target_launcher( ${ProjectName} WORKING_DIRECTORY "$(OutDir)" RUNTIME_LIBRARY_DIRS ${RUNTIME_LIBS_PATH} )
@@ -281,14 +280,14 @@ if( WIN32 )
 		source_group( "Resources" FILES ${Resources} ${RCCSrcs} )
 		source_group( "Ui" FILES ${Sources_ui} ${UISrcs} )
 	endif( MSVC_IDE )
-			
+
 	#Configure installDeps.cmake
 	configure_file(
 		"${CMAKE_TEMPLATES_PATH}/installDeps.cmake.in"
 		"${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake"
 		IMMEDIATE @ONLY
 	)
-	
+
 	#Configure installConfig6.cmake
 	configure_file(
 		"${CMAKE_TEMPLATES_PATH}/installConfig6.cmake.in"
@@ -301,17 +300,17 @@ if( WIN32 )
 
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" COMPONENT runtime )
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installConfig6.cmake" COMPONENT runtime )
-	
-else()	
+
+else()
 	#TODO .desktop file
 	#See http://techbase.kde.org/Development/Tutorials/Desktop_File
-	
+
 	#Configure .desktop file
 	configure_file(
 		"${CMAKE_TEMPLATES_PATH}/${ProjectName}.desktop.in"
 		"${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop"
 		IMMEDIATE @ONLY
-	)	
+	)
 	set( icoResolutions
 		"512x512"
 		"256x256"
@@ -322,11 +321,11 @@ else()
 		"24x24"
 		"16x16"
 	)
-	
+
 	foreach( r ${icoResolutions} )
 		install( FILES "res/png/${ProjectName}-${r}.png" DESTINATION "share/icons/hicolor/${r}/apps" RENAME "${ProjectName}.png" )
 	endforeach()
-	
+
 	#install( PROGRAMS "${ProjectName}.desktop" DESTINATION ${XDG_APPS_INSTALL_DIR} )
 	install( PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${ProjectName}.desktop" DESTINATION "share/applications/kde4" )
 endif( WIN32 )
@@ -350,7 +349,7 @@ configure_file(
 add_custom_target( uninstall COMMAND "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" )
 
 if( PCHSupport_FOUND AND ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
-	ADD_PRECOMPILED_HEADER( ${ProjectName} 
+	ADD_PRECOMPILED_HEADER( ${ProjectName}
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/depgraphv_pch.h"
 		"${CMAKE_CURRENT_SOURCE_DIR}/src/depgraphv_pch.cpp"
 	)

@@ -62,7 +62,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void SettingsPage::onProjectOpened( Project* p )
 	{
-		p->setCurrentMapper( "settingsMapper" );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsPage::onProjectLoaded( Project* p )

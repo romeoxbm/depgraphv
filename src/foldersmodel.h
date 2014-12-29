@@ -1,4 +1,14 @@
 /**
+ ******************************************************************************
+ *                _                                        _
+ *             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+ *            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+ *           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+ *            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+ *                      |_|          |___/          |_|
+ *
+ ******************************************************************************
+ *
  * foldersmodel.h
  *
  * This source file is part of dep-graphV - An useful tool to analize header
@@ -28,26 +38,28 @@
 #ifndef FOLDERSMODEL_H
 #define FOLDERSMODEL_H
 
-#include <QTreeView>
-#include "filesmodel.h"
+#ifndef FILESMODEL_H
+#	include "filesmodel.h"
+#endif
 
 namespace depgraphV
 {
 	class FoldersModel : public CheckableFileSystemModel
 	{
 		Q_OBJECT
-		Q_PROPERTY( QString selectedFolderPath READ selectedFolderPath WRITE setSelectedFolderPath )
 
 	public:
 		explicit FoldersModel( QObject* parent = 0 );
+		void initialize();
 
 		virtual QAbstractItemView* view() const { return _treeView; }
+		virtual void setView( QAbstractItemView* view );
 
-		inline const QStringList& checkedFiles() const { return _filesModel->checkedItems(); }
+		void setFilesView( QAbstractItemView* view );
 
-		void initialize( QTreeView* view, QListView* filesView, const QString& rootPath );
+		FilesModel* filesModel() const { return _filesModel; }
 
-		const QString& selectedFolderPath() const { return _selectedFolderPath; }
+		inline QStringList checkedFiles() const { return _filesModel->checkedFiles(); }
 
 		/**
 		 * @brief Returns true if parent has any children and haven't
@@ -62,47 +74,45 @@ namespace depgraphV
 		bool hasChildren( const QModelIndex& parent ) const;
 
 		QVariant data( const QModelIndex& i, int role ) const;
-		bool setData( const QModelIndex& i, const QVariant& value, int role );
+
+		Qt::ItemFlags flags( const QModelIndex& index ) const;
 
 		void setFileNameFilters( const QStringList& filters );
 
-		virtual QList<const char*> propList() const;
+		//virtual void commitChanges();
+		//virtual void revertChanges();
 
-		virtual void commitChanges();
-		virtual void revertChanges();
+		friend QDataStream& operator << ( QDataStream& out, const FoldersModel* object );
+		friend QDataStream& operator >> ( QDataStream& in, FoldersModel* object );
 
 	protected:
+		virtual bool eventFilter( QObject* obj, QEvent* evt );
 		virtual bool isCheckable( const QModelIndex& i, int role ) const;
+		virtual bool setDataImpl( const QString& path, Qt::CheckState v );
 
 	public slots:
 		virtual void clearSelection();
-		void changeRoot( const QString& newRoot );
+		void changeRoot();
 		void showHiddenFolders( bool show );
-
-		void setSelectedFolderPath( const QString& value );
-
-	signals:
-		void folderCheckStateChanged( QModelIndex, Qt::CheckState );
+		void expandAll();
+		void collapseAll();
 
 	private slots:
 		void _updateSelection( const QModelIndex& current, const QModelIndex& );
 		void _itemExpandedCollapsed( const QModelIndex& );
-		void _on_changeRoot_triggered();
-		void _on_expandAll();
-		void _on_collapseAll();
+		void _onFilesModelDataChanged( QModelIndex, QModelIndex );
 
 	private:
 		QTreeView* _treeView;
 		FilesModel* _filesModel;
-		QAction* _changeRoot;
-		QAction* _showHiddenFolders;
-		QAction* _expandAll;
-		QAction* _collapseAll;
 
-		QString _selectedFolderPath;
+		QString _lastPath;
+		//Memento<QMap<QString, Qt::CheckState> > _checkedFolders;
+		QMap<QString, Qt::CheckState> _checkedFolders;
 
-		void _createContextMenu();
-		void _connectSignalsToSlots();
+		void _connectView();
+		void _disconnectView();
+		bool _viewConnected;
 	};
 }
 
