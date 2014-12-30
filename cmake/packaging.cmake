@@ -91,6 +91,8 @@ else()
     elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
 	   include( pack_rpm )
 
+	endif()
+
 endif( WIN32 )
 
 #Resources
