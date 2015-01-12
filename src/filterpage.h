@@ -75,7 +75,6 @@ namespace depgraphV
 	private slots:
 		void _onCustomFilterTextChanged( QString );
 		void _onPageChanging( SettingsPage* currentPage, SettingsPage* nextPage, bool& accept );
-		void _onFiltersChanging( bool& accept );
 		virtual void onProjectOpened( Project* p );
 		virtual void onProjectClosed();
 

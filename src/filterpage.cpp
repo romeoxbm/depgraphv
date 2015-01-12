@@ -49,7 +49,7 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		QRegExp rx( "\\*\\.\\*|(\\s*\\*\\.\\w+\\s*;?)+" );
+		QRegExp rx( "\\*\\.\\*|(\\s*\\*\\.[^\\\\/:\\*\\?|<>\\0]+\\s*;?)+" );
 		_ui->customFilters->setValidator( new QRegExpValidator( rx, this ) );
 
 		if( _worksWithHeaders )
@@ -57,20 +57,12 @@ namespace depgraphV
 			_defaultCustomExts << "*.h" << "*.hh" << "*.hxx" << "*.hpp" << "*.hp";
 			_ui->parseEnabled->setText( tr( "Parse headers" ) );
 			setWindowTitle( tr( "Headers filter" ) );
-
-			/*connect( c, SIGNAL( headerNameFiltersChanging( bool& ) ),
-					 this, SLOT( onFiltersChanging( bool& ) )
-			);*/
 		}
 		else
 		{
 			_defaultCustomExts << "*.cpp" << "*.cc" << "*.cp" << "*.cxx" << "*.c++" << "*.C";
 			_ui->parseEnabled->setText( tr( "Parse sources" ) );
 			setWindowTitle( tr( "Sources filter" ) );
-
-			/*connect( c, SIGNAL( sourceNameFiltersChanging( bool& ) ),
-					 this, SLOT( onFiltersChanging( bool& ) )
-			);*/
 		}
 
 		connect( parent, SIGNAL( pageChanging( SettingsPage*, SettingsPage*, bool& ) ),
@@ -113,7 +105,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FilterPage::_onCustomFilterTextChanged( QString )
 	{
-		Qt::GlobalColor c = _ui->customFilters->hasAcceptableInput() ? Qt::black : Qt::red;
+		Qt::GlobalColor c = Qt::black;
+		if( !_ui->customFilters->hasAcceptableInput() )
+			c = Qt::red;
+
 		QPalette p = _ui->customFilters->palette();
 		if( p.color( QPalette::Text ) != c )
 		{
@@ -138,27 +133,6 @@ namespace depgraphV
 			if( answer == QMessageBox::No )
 				accept = false;
 		}
-	}
-	//-------------------------------------------------------------------------
-	void FilterPage::_onFiltersChanging( bool& accept )
-	{
-		Project* p = Singleton<Project>::instancePtr();
-		Q_ASSERT( p );
-
-		//TODO Check also selected files count > 0
-		if( p->currentValue( "scanByFolders" ).toBool() )
-			return;
-
-		QMessageBox::StandardButton answer = QMessageBox::warning(
-			this,
-			tr( "Filters" ),
-			tr( "By changing filters, you invalidate your current files selection"
-				".\nWould you like to continue?" ),
-			QMessageBox::Yes | QMessageBox::No,
-			QMessageBox::No
-		);
-
-		accept = answer != QMessageBox::No;
 	}
 	//-------------------------------------------------------------------------
 	void FilterPage::onProjectOpened( Project* p )
