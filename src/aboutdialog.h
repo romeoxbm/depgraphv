@@ -63,7 +63,8 @@ namespace depgraphV
 
 		/**
 		 * @brief Show this dialog as a modal dialog.
-		 * @param showDonationsTab If true, the donation tab page will be set as the first active page.
+		 * @param showDonationsTab If true, the donation tab page will be set as
+		 * the first active page.
 		 */
 		int exec( bool showDonationsTab );
 
