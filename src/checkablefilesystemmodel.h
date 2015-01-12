@@ -16,7 +16,7 @@
  *
  * This software is distributed under the MIT License:
  *
- * Copyright (c) 2013 - 2014 Francesco Guastella aka romeoxbm
+ * Copyright (c) 2013 - 2015 Francesco Guastella aka romeoxbm
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -38,10 +38,6 @@
 #ifndef CHECKABLEFILESYSTEMMODEL_H
 #define CHECKABLEFILESYSTEMMODEL_H
 
-/*#ifndef MEMENTO_H
-#	include "memento.h"
-#endif*/
-
 namespace depgraphV
 {
 	class CheckableFileSystemModel : public QFileSystemModel
@@ -58,9 +54,6 @@ namespace depgraphV
 		Qt::ItemFlags flags( const QModelIndex& index ) const;
 
 		bool setData( const QModelIndex& i, const QVariant& value, int role );
-
-		//virtual void commitChanges() = 0;
-		//virtual void revertChanges() = 0;
 
 		bool initialized() const { return _initialized; }
 
