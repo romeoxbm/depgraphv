@@ -42,7 +42,8 @@
 namespace depgraphV
 {
 	SettingsPage::SettingsPage( MainWindow* w, SettingsDialog* parent )
-		: QWidget( parent )
+		: QWidget( parent ),
+		  _dialog( parent )
 	{
 		Q_ASSERT( w );
 		connect( w, SIGNAL( projectOpened( Project* ) ),

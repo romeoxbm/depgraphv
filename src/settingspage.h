@@ -59,13 +59,18 @@ namespace depgraphV
 		virtual void commitChanges() {}
 		virtual void revertChanges() {}
 
+		SettingsDialog* settingsDialog() const { return _dialog; }
+
 	protected:
-		explicit SettingsPage( MainWindow* w, SettingsDialog* parent = 0 );
+		explicit SettingsPage( MainWindow* w, SettingsDialog* parent );
 
 	protected slots:
 		virtual void onProjectOpened( Project* );
 		virtual void onProjectLoaded( Project* );
 		virtual void onProjectClosed();
+
+	private:
+		SettingsDialog* _dialog;
 	};
 }
 #endif // SETTINGSPAGE_H

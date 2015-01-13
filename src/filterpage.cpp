@@ -107,7 +107,16 @@ namespace depgraphV
 	{
 		Qt::GlobalColor c = Qt::black;
 		if( !_ui->customFilters->hasAcceptableInput() )
+		{
 			c = Qt::red;
+			settingsDialog()->disableApplyChanges( true );
+			settingsDialog()->lockToCurrentGraph( true );
+		}
+		else
+		{
+			settingsDialog()->disableApplyChanges( false );
+			settingsDialog()->lockToCurrentGraph( false );
+		}
 
 		QPalette p = _ui->customFilters->palette();
 		if( p.color( QPalette::Text ) != c )
@@ -122,16 +131,14 @@ namespace depgraphV
 	{
 		if( currentPage == this && !_ui->customFilters->hasAcceptableInput() )
 		{
-			QMessageBox::StandardButton answer = QMessageBox::warning(
+			QMessageBox::information(
 				this,
-				tr( "Invalid name filters specified!" ),
-				tr( "Would you like to discard last changes?" ),
-				QMessageBox::Yes | QMessageBox::No,
-				QMessageBox::No
+				tr( "Invalid name filters" ),
+				tr( "Invalid custom filters specified.\nYou'll be unable to "
+					"apply changes, change page or graph until you fix it." )
 			);
 
-			if( answer == QMessageBox::No )
-				accept = false;
+			accept = false;
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -142,11 +149,19 @@ namespace depgraphV
 
 		p->addMapping( _ui->parseEnabled, "parseEnabled", prefix, true );
 
-		QRadioButton* radios[] = { _ui->standardFiltersRadio, _ui-> customFilterRadio };
+		QRadioButton* radios[] = { _ui->standardFiltersRadio,
+								   _ui-> customFilterRadio
+		};
 		p->addMapping( radios, "standardFiltersEnabled", prefix );
 
-		p->addMapping( _ui->standardFilters, "currentStandardFilter", prefix, _defaultCustomExts[ 0 ] );
-		p->addMapping( _ui->customFilters, "customFilters", prefix, _defaultCustomExts.join( "; " ) );
+		p->addMapping( _ui->standardFilters, "currentStandardFilter",
+					   prefix,
+					   _defaultCustomExts[ 0 ]
+		);
+		p->addMapping( _ui->customFilters, "customFilters",
+					   prefix,
+					   _defaultCustomExts.join( "; " )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void FilterPage::onProjectClosed()

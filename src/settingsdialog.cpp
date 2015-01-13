@@ -83,8 +83,7 @@ namespace depgraphV
 		if( !_currentPage )
 		{
 			_currentPage = page;
-			_ui->graphName->setEnabled( _currentPage->dependsOnGraphs() );
-			_ui->graphNameLabel->setEnabled( _currentPage->dependsOnGraphs() );
+			lockToCurrentGraph( false );
 			_ui->pageLabel->setText( _currentPage->windowTitle() );
 		}
 
@@ -97,6 +96,21 @@ namespace depgraphV
 			return _pages[ key ];
 
 		return 0;
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::lockToCurrentGraph( bool lockEnabled ) const
+	{
+		Q_ASSERT( _currentPage );
+
+		bool value = !lockEnabled && _currentPage->dependsOnGraphs();
+		_ui->graphName->setEnabled( value );
+		_ui->graphNameLabel->setEnabled( value );
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::disableApplyChanges( bool disabled ) const
+	{
+		_ui->buttonBox->button( QDialogButtonBox::Apply )->setEnabled( !disabled );
+		_ui->buttonBox->button( QDialogButtonBox::Close )->setEnabled( !disabled );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::changeEvent( QEvent* event )
@@ -134,12 +148,9 @@ namespace depgraphV
 			_ui->stackedWidget->setCurrentWidget( nextPage );
 			_ui->pageLabel->setText( nextPage->windowTitle() );
 			_currentPage = nextPage;
-			_ui->graphName->setEnabled( _currentPage->dependsOnGraphs() );
-			_ui->graphNameLabel->setEnabled( _currentPage->dependsOnGraphs() );
+			lockToCurrentGraph( false );
 			emit pageChanged( nextPage );
 		}
-		else
-			_ui->listWidget->setCurrentItem( previous );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_onProjectOpened( Project* p )

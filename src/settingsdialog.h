@@ -70,6 +70,14 @@ namespace depgraphV
 		bool addPage( const QString& key, SettingsPage* page );
 		SettingsPage* page( const QString& key ) const;
 
+		/**
+		 * @brief Enable or disable the graph selector combobox.
+		 * @param lockEnabled When true, the current graph can't be changed.
+		 */
+		void lockToCurrentGraph( bool lockEnabled ) const;
+
+		void disableApplyChanges( bool disabled ) const;
+
 	protected:
 		virtual void changeEvent( QEvent* );
 
