@@ -52,7 +52,7 @@ namespace depgraphV
 		void setValue( bool value );
 
 	signals:
-		void toggled( bool );
+		void toggled();
 
 	private:
 		QRadioButton* _trueButton;

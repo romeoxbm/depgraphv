@@ -144,7 +144,7 @@ namespace depgraphV
 		}
 		else if( BinaryRadioWidget* w = qobject_cast<BinaryRadioWidget*>( widget ) )
 		{
-			connect( w, SIGNAL( toggled( bool ) ),
+			connect( w, SIGNAL( toggled() ),
 					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
 			);
 		}

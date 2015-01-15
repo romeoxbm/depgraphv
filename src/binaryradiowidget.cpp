@@ -45,8 +45,11 @@ namespace depgraphV
 		  _trueButton( radios[ 0 ] ),
 		  _falseButton( radios[ 1 ] )
 	{
-		connect( _trueButton, SIGNAL( toggled( bool ) ),
-				 this, SIGNAL( toggled( bool ) )
+		connect( _trueButton, SIGNAL( clicked() ),
+				 this, SIGNAL( toggled() )
+		);
+		connect( _falseButton, SIGNAL( clicked() ),
+				 this, SIGNAL( toggled() )
 		);
 	}
 	//-------------------------------------------------------------------------
