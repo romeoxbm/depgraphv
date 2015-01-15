@@ -123,6 +123,8 @@ namespace depgraphV
 			_disconnect();
 
 		Project* p = Singleton<Project>::instancePtr();
+
+		//_previousModel now contains the current model
 		_previousModel = p->currentGraph()->model();
 		_connect();
 		_previousModel->setView( _ui->treeView );

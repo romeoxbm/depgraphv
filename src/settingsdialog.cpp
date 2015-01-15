@@ -76,7 +76,7 @@ namespace depgraphV
 		button->setIcon( QIcon( page->iconPath() ) );
 		button->setText( page->windowTitle() );
 		button->setTextAlignment( Qt::AlignHCenter );
-		button->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+		_enablePage( button, !page->dependsOnGraphs() );
 
 		_ui->stackedWidget->addWidget( page );
 		_pages.insert( key, page );
@@ -104,6 +104,7 @@ namespace depgraphV
 		Q_ASSERT( _currentPage );
 
 		bool value = !lockEnabled && _currentPage->dependsOnGraphs();
+
 		_ui->graphName->setEnabled( value );
 		_ui->graphNameLabel->setEnabled( value );
 	}
@@ -162,11 +163,13 @@ namespace depgraphV
 		//TODO What about connections in CustomItemDelegate?
 		_blockActivatedSignal( false );
 		_blockMapperCurrentIndexChangedSignal( p->mapper(), false );
+		_enablePages( true );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_onProjectClosed()
 	{
 		_blockActivatedSignal( true );
+		_enablePages( false );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_changeCurrentGraph( int index )
@@ -194,7 +197,9 @@ namespace depgraphV
 		QDialogButtonBox::ButtonRole r = _ui->buttonBox->buttonRole( button );
 		if( r == QDialogButtonBox::ApplyRole || r == QDialogButtonBox::RejectRole )
 		{
-			p->submitChanges();
+			if( p )
+				p->submitChanges();
+
 			foreach( SettingsPage* page, _pages )
 				page->commitChanges();
 
@@ -203,7 +208,9 @@ namespace depgraphV
 		}
 		else if( r == QDialogButtonBox::DestructiveRole )
 		{
-			p->revertChanges();
+			if( p )
+				p->revertChanges();
+
 			foreach( SettingsPage* page, _pages )
 				page->revertChanges();
 
@@ -223,7 +230,8 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void SettingsDialog::_blockMapperCurrentIndexChangedSignal( QDataWidgetMapper* m, bool block )
+	void SettingsDialog::_blockMapperCurrentIndexChangedSignal(
+			QDataWidgetMapper* m, bool block )
 	{
 		if( block )
 			m->disconnect( this, SLOT( _changeCurrentGraph( int ) ) );
@@ -233,5 +241,28 @@ namespace depgraphV
 					 this, SLOT( _changeCurrentGraph( int ) )
 			);
 		}
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_enablePages( bool enabled ) const
+	{
+		for( int i = 0; i < _ui->listWidget->count(); i++ )
+		{
+			SettingsPage* page = static_cast<SettingsPage*>(
+						_ui->stackedWidget->widget( i )
+			);
+
+			if( page->dependsOnGraphs() )
+				_enablePage( _ui->listWidget->item( i ), enabled );
+		}
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_enablePage( QListWidgetItem* pageButton, bool enabled ) const
+	{
+		Qt::ItemFlags flags = Qt::ItemIsSelectable;
+
+		if( enabled )
+			flags |= Qt::ItemIsEnabled;
+
+		pageButton->setFlags( flags );
 	}
 }

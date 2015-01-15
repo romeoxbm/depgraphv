@@ -100,6 +100,9 @@ namespace depgraphV
 
 		void _blockActivatedSignal( bool );
 		void _blockMapperCurrentIndexChangedSignal( QDataWidgetMapper*, bool );
+
+		void _enablePages( bool enabled ) const;
+		void _enablePage( QListWidgetItem* pageButton, bool enabled ) const;
 	};
 }
 
