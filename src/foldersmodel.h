@@ -79,9 +79,6 @@ namespace depgraphV
 
 		void setFileNameFilters( const QStringList& filters );
 
-		//virtual void commitChanges();
-		//virtual void revertChanges();
-
 		friend QDataStream& operator << ( QDataStream& out, const FoldersModel* object );
 		friend QDataStream& operator >> ( QDataStream& in, FoldersModel* object );
 
@@ -107,7 +104,6 @@ namespace depgraphV
 		FilesModel* _filesModel;
 
 		QString _lastPath;
-		//Memento<QMap<QString, Qt::CheckState> > _checkedFolders;
 		QMap<QString, Qt::CheckState> _checkedFolders;
 
 		void _connectView();

@@ -85,7 +85,6 @@ namespace depgraphV
 	void CustomTabWidget::setCurrentTabUnclosable()
 	{
 		_unclosableTabIndex = currentIndex();
-		qDebug() << _unclosableTabIndex << widget( _unclosableTabIndex );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::resetUnclosableTab()

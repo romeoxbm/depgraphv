@@ -69,9 +69,6 @@ namespace depgraphV
 
 		QVariant data( const QModelIndex& i, int role ) const;
 
-		//virtual void commitChanges();
-		//virtual void revertChanges();
-
 		bool belongsToFileGroup( const QString& filePath, FileGroup v ) const;
 		bool belongsToFileGroup( const QModelIndex& i, FileGroup v ) const;
 
@@ -97,7 +94,6 @@ namespace depgraphV
 		QListView* _listView;
 		FoldersModel* _foldersModel;
 
-		//Memento<QMap<QString, QStringList*> > _checkedFiles;
 		QMap<QString, QStringList*> _checkedFiles;
 
 		void _updateEnabledFlags();

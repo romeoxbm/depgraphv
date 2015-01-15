@@ -58,12 +58,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FoldersModel::initialize()
 	{
-		Project* p = Singleton<Project>::instancePtr();
-		//TODO
-		/*_checkedFolders.setState(
-			p->currentBinaryValue<QMap<QString, Qt::CheckState> >( "checkedFolders" )
-		);*/
-
 		_filesModel->initialize();
 		_treeView->setModel( this );
 		_treeView->setRootIndex( setRootPath( _lastPath ) );
@@ -155,23 +149,6 @@ namespace depgraphV
 		clearSelection();
 		_filesModel->setNameFilters( filters );
 	}
-	//-------------------------------------------------------------------------
-	/*void FoldersModel::commitChanges()
-	{
-		if( _checkedFolders.commit() )
-		{
-			Project* p = Singleton<Project>::instancePtr();
-			//TODO
-			//p->setCurrentBinaryValue( _checkedFolders.state(), "checkedFolders" );
-		}
-		_filesModel->commitChanges();
-	}*/
-	//-------------------------------------------------------------------------
-	/*void FoldersModel::revertChanges()
-	{
-		_checkedFolders.revert();
-		_filesModel->revertChanges();
-	}*/
 	//-------------------------------------------------------------------------
 	bool FoldersModel::isCheckable( const QModelIndex& i, int role ) const
 	{

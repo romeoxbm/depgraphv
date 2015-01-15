@@ -58,10 +58,6 @@ namespace depgraphV
 		_listView->setModel( this );
 
 		Project* p = Singleton<Project>::instancePtr();
-		//TODO
-		/*_checkedFiles.setState(
-					p->currentBinaryValue<QMap<QString, QStringList*> >( "checkedFiles" )
-		);*/
 		setNameFilters( p->nameFilters() );
 
 		_initialized = true;
@@ -147,7 +143,6 @@ namespace depgraphV
 		{
 			QString fp = filePath( i );
 			QString dp = filePath( i.parent() );
-			//QMap<QString, QStringList*>& items = _checkedFiles.state();
 
 			if( _checkedFiles.contains( dp ) && _checkedFiles[ dp ]->contains( fp ) )
 				return Qt::Checked;
@@ -157,21 +152,6 @@ namespace depgraphV
 
 		return QFileSystemModel::data( i, role );
 	}
-	//-------------------------------------------------------------------------
-	/*void FilesModel::commitChanges()
-	{
-		if( !_checkedFiles.commit() )
-			return;
-
-		Project* p = Singleton<Project>::instancePtr();
-		//TODO
-		//p->setCurrentBinaryValue( _checkedFiles.state(), "checkedFiles" );
-	}*/
-	//-------------------------------------------------------------------------
-	/*void FilesModel::revertChanges()
-	{
-		_checkedFiles.revert();
-	}*/
 	//-------------------------------------------------------------------------
 	bool FilesModel::belongsToFileGroup( const QString& filePath, FileGroup v ) const
 	{
@@ -397,7 +377,6 @@ namespace depgraphV
 	{
 		int count = 0;
 		in >> count;
-		//QMap<QString, QStringList*> data;
 		QMap<QString, QStringList*>& l = object._checkedFiles;
 
 		if( !l.isEmpty() )
@@ -411,7 +390,6 @@ namespace depgraphV
 			in >> *l[ key ];
 		}
 
-		//object._checkedFiles.setState( data );
 		return in;
 	}
 }
