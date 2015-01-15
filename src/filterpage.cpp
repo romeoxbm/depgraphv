@@ -109,14 +109,11 @@ namespace depgraphV
 		if( !_ui->customFilters->hasAcceptableInput() )
 		{
 			c = Qt::red;
-			settingsDialog()->disableApplyChanges( true );
+			settingsDialog()->enableApplyChanges( false );
 			settingsDialog()->lockToCurrentGraph( true );
 		}
 		else
-		{
-			settingsDialog()->disableApplyChanges( false );
 			settingsDialog()->lockToCurrentGraph( false );
-		}
 
 		QPalette p = _ui->customFilters->palette();
 		if( p.color( QPalette::Text ) != c )

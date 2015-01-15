@@ -76,7 +76,8 @@ namespace depgraphV
 		 */
 		void lockToCurrentGraph( bool lockEnabled ) const;
 
-		void disableApplyChanges( bool disabled ) const;
+	public slots:
+		void enableApplyChanges( bool enabled ) const;
 
 	protected:
 		virtual void changeEvent( QEvent* );

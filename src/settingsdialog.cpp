@@ -50,6 +50,7 @@ namespace depgraphV
 		_currentPage( 0 )
 	{
 		_ui->setupUi( this );
+		enableApplyChanges( false );
 
 		connect( w, SIGNAL( projectOpened( Project* ) ),
 				 this, SLOT( _onProjectOpened( Project* ) )
@@ -107,10 +108,10 @@ namespace depgraphV
 		_ui->graphNameLabel->setEnabled( value );
 	}
 	//-------------------------------------------------------------------------
-	void SettingsDialog::disableApplyChanges( bool disabled ) const
+	void SettingsDialog::enableApplyChanges( bool enabled ) const
 	{
-		_ui->buttonBox->button( QDialogButtonBox::Apply )->setEnabled( !disabled );
-		_ui->buttonBox->button( QDialogButtonBox::Close )->setEnabled( !disabled );
+		_ui->buttonBox->button( QDialogButtonBox::Apply )->setEnabled( enabled );
+		_ui->buttonBox->button( QDialogButtonBox::Close )->setEnabled( enabled );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::changeEvent( QEvent* event )

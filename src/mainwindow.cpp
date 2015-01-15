@@ -682,6 +682,9 @@ namespace depgraphV
 		connect( _project, SIGNAL( modified( bool ) ),
 				 _ui->actionSave, SLOT( setEnabled( bool ) )
 		);
+		connect( _project, SIGNAL( unsubmittedChanges( bool ) ),
+				 _settingsDlg, SLOT( enableApplyChanges( bool ) )
+		);
 		connect( _project, SIGNAL( graphCountChanged( int ) ),
 				 this, SLOT( _onGraphCountChanged( int ) )
 		);
