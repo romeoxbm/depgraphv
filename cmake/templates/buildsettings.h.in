@@ -52,10 +52,6 @@
 	#cmakedefine GraphViz_USE_CGRAPH
 #endif //GraphViz_USE_CGRAPH
 
-#ifndef DEPGRAPHV_USE_QT5
-	#cmakedefine DEPGRAPHV_USE_QT5
-#endif //DEPGRAPHV_USE_QT5
-
 #ifndef DEPGRAPHV_USE_OPENGL
 	#cmakedefine DEPGRAPHV_USE_OPENGL
 #endif //DEPGRAPHV_USE_OPENGL

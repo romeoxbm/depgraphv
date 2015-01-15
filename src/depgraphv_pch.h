@@ -104,7 +104,7 @@
 #endif
 
 #ifndef QT_NO_CONCURRENT
-#	ifdef DEPGRAPHV_USE_QT5
+#	if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
 #		include <QtConcurrent>
 #	else
 #		include <QtCore>

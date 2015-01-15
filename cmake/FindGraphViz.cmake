@@ -101,7 +101,7 @@ if( GRAPHVIZ_FOUND )
 		#TODO Should we always use cgraph when graphviz_version.h does not exists?
 		set( GraphViz_USE_CGRAPH ON )
 	endif()
-  
+
 else( GRAPHVIZ_FOUND )
 	set( GraphViz_LIBRARIES )
 	set( GraphViz_INCLUDE_DIRS )

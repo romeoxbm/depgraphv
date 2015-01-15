@@ -12,10 +12,10 @@ IF( CMAKE_COMPILER_IS_GNUCXX )
 	execute_process( COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION )
 	if( GCC_VERSION VERSION_GREATER 3.4 )
 		SET( PCHSupport_FOUND TRUE )
-    else()
+	else()
 		SET( PCHSupport_FOUND FALSE )
 	endif()
-            
+
 elseif( MSVC_IDE )
 
 	SET( PCHSupport_FOUND TRUE )

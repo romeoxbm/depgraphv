@@ -39,22 +39,22 @@
 
 #Checking prerequisites for UNIX systems
 if( UNIX )
-    #First of all, we need to check for valid DEPGRAPHV_PREFERRED_PACKAGE value
-    if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
-	   find_program( DPKG_SHLIBDEPS_FOUND NAMES dpkg-shlibdeps DOC "path to the dpkg-shlibdeps script." )
-	   if( NOT DPKG_SHLIBDEPS_FOUND )
-		  message( WARNING "dpkg-shlibdeps must be installed in order to create a .deb package! (package name: dpkg-dev)" )
-		  return()
-	   endif()
+	#First of all, we need to check for valid DEPGRAPHV_PREFERRED_PACKAGE value
+	if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
+		find_program( DPKG_SHLIBDEPS_FOUND NAMES dpkg-shlibdeps DOC "path to the dpkg-shlibdeps script." )
+		if( NOT DPKG_SHLIBDEPS_FOUND )
+			message( WARNING "dpkg-shlibdeps must be installed in order to create a .deb package! (package name: dpkg-dev)" )
+			return()
+		endif()
 
-    elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
-	   #TODO Check for rpmbuild for rpm package
-	   message( WARNING "At this time, it is not possibile to build an .rpm package.\nThis feature will be soon available." )
-	   return()
+	elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
+		#TODO Check for rpmbuild for rpm package
+		message( WARNING "At this time, it is not possibile to build an .rpm package.\nThis feature will be soon available." )
+		return()
 
-    else()
-	   message( SEND_ERROR "${DEPGRAPHV_PREFERRED_PACKAGE} is an invalid value for DEPGRAPHV_PREFERRED_PACKAGE option!" )
-    endif()
+	else()
+		message( SEND_ERROR "${DEPGRAPHV_PREFERRED_PACKAGE} is an invalid value for DEPGRAPHV_PREFERRED_PACKAGE option!" )
+	endif()
 endif( UNIX )
 
 set( CPACK_PACKAGE_VENDOR "Guastella Francesco" )
@@ -83,13 +83,13 @@ else()
 endif( DEPGRAPHV_USE_OPENGL )
 
 if( WIN32 )
-    include( pack_nsis )
+	include( pack_nsis )
 else()
-    if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
-	   include( pack_deb )
+	if( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "DEB" )
+		include( pack_deb )
 
-    elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
-	   include( pack_rpm )
+	elseif( ${DEPGRAPHV_PREFERRED_PACKAGE} STREQUAL "RPM" )
+		include( pack_rpm )
 
 	endif()
 

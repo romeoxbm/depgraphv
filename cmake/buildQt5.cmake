@@ -149,7 +149,7 @@ foreach( mod ${qt5Modules} )
 endforeach()
 
 if( DEFINED Sources_moc )
-        qt5_wrap_cpp( Mocs ${Sources_moc} OPTIONS -bdepgraphv_pch.h )
+	qt5_wrap_cpp( Mocs ${Sources_moc} OPTIONS -bdepgraphv_pch.h )
 endif()
 
 if( DEFINED Sources_ui )

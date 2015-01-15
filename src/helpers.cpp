@@ -45,7 +45,7 @@ namespace depgraphV
 	//TODO This method should/could be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
-#ifdef DEPGRAPHV_USE_QT5S
+#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
 		combo->setCurrentText( text );
 #else
 		int idx = combo->findText( text );
