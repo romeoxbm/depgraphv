@@ -281,10 +281,8 @@ namespace depgraphV
 			"customFilters"
 		};
 
-		const int count = g == FilesModel::All ? 2 : 1;
-		int init = 0;
-		if( g == FilesModel::Src )
-			init = 1;
+		const int count = g != FilesModel::Hdr ? 2 : 1;
+		int init = g == FilesModel::Src ? 1 : 0;
 
 		for( int i = init; i < count; i++ )
 		{
