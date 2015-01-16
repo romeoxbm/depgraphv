@@ -268,10 +268,7 @@ namespace depgraphV
 		delete _project;
 		_project = 0;
 
-		_ui->actionNew_Graph->setEnabled( false );
-		_ui->menuProject->setEnabled( false );
-		_ui->actionClose->setEnabled( false );
-		_ui->actionSave_As->setEnabled( false );
+		_setActionsAndMenusEnabledOnProjectEvents( false );
 		_ui->statusBar->showMessage(
 					tr( "Project \"%1\" has been closed." ).arg( pName )
 		);
@@ -283,6 +280,8 @@ namespace depgraphV
 		}
 
 		_updateWindowTitle();
+		_ui->actionDraw->setEnabled( false );
+		_ui->actionSelect_FilesFolders->setEnabled( false );
 		emit projectClosed();
 		_ui->tabWidget->blockSignals( false );
 	}
@@ -455,7 +454,6 @@ namespace depgraphV
 		_ui->actionDraw->setEnabled( g && !g->drawn() );
 
 		_ui->actionSelect_FilesFolders->setEnabled( count > 0 );
-		_ui->actionSettings->setEnabled( count > 0 );
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_doSaveProject( bool saveAs )
@@ -659,21 +657,18 @@ namespace depgraphV
 		_ui->action_Check_for_updates->setEnabled( true );
 	}
 	//-------------------------------------------------------------------------
-	/*void MainWindow::_setButtonsAndActionsEnabled( bool value ) const
+	void MainWindow::_setActionsAndMenusEnabledOnProjectEvents( bool enabled ) const
 	{
-		_ui->actionDraw->setEnabled( !value );
-		_ui->actionClear->setEnabled( value );
-		_ui->actionSave_as_dot->setEnabled( value );
-		_ui->actionSave_as_Image->setEnabled( value );
-	}*/
+		_ui->actionNew_Graph->setEnabled( enabled );
+		_ui->menuProject->setEnabled( enabled );
+		_ui->actionClose->setEnabled( enabled );
+		_ui->actionSave_As->setEnabled( enabled );
+	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_onProjectOpened( const QString& statusBarMessage )
 	{
 		emit projectOpened( _project );
-		_ui->actionNew_Graph->setEnabled( true );
-		_ui->actionClose->setEnabled( true );
-		_ui->actionSave_As->setEnabled( true );
-		_ui->menuProject->setEnabled( true );
+		_setActionsAndMenusEnabledOnProjectEvents( true );
 		_updateWindowTitle( false );
 
 		connect( _ui->actionNew_Graph, SIGNAL( triggered() ),

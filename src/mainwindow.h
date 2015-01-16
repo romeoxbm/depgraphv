@@ -174,6 +174,7 @@ namespace depgraphV
 		void _scanFolders() const;
 		void _scanFiles( const QStringList& files ) const;
 		void _doClearGraph() const;
+		void _setActionsAndMenusEnabledOnProjectEvents( bool enabled ) const;
 		void _onProjectOpened( const QString& statusBarMessage );
 		bool _lookForRequiredImageFormats();
 
