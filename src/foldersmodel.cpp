@@ -46,7 +46,6 @@ namespace depgraphV
 		: CheckableFileSystemModel( parent ),
 		  _treeView( 0 ),
 		  _filesModel( new FilesModel( this, parent ) ),
-		  _lastPath( QDir::homePath() ),
 		  _viewConnected( false )
 	{
 		setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks );
@@ -59,8 +58,10 @@ namespace depgraphV
 	{
 		_filesModel->initialize();
 		_treeView->setModel( this );
-		_treeView->setRootIndex( setRootPath( _lastPath ) );
-		QModelIndex i = index( _lastPath );
+		_treeView->setRootIndex( setRootPath( _rootPath ) );
+
+		QString p = !_lastSelectedPath.isEmpty() ? _lastSelectedPath : _rootPath;
+		QModelIndex i = index( p );
 		_treeView->setCurrentIndex( i );
 		_updateSelection( i, QModelIndex() );
 
@@ -205,20 +206,18 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FoldersModel::changeRoot()
 	{
-		//Project* p = Singleton<Project>::instancePtr();
 		QString root = QFileDialog::getExistingDirectory(
 					_treeView,
 					tr( "Change Root..." ),
-					_lastPath
-					//p->currentValue( "rootFolder" ).toString()
+					_rootPath
 		);
 
 		if( root.isNull() )
 			return;
 
+		_rootPath = root;
 		_treeView->setRootIndex( setRootPath( root ) );
 		_filesModel->view()->setRootIndex( _filesModel->setRootPath( root ) );
-		//p->setCurrentValue( root, "rootFolder" );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::showHiddenFolders( bool show )
@@ -286,10 +285,8 @@ namespace depgraphV
 	void FoldersModel::_updateSelection( const QModelIndex& current,
 										 const QModelIndex& )
 	{
-		//TODO DO I need to reflect _lastPath changes in Project???
-		//Project* p = Singleton<Project>::instancePtr();
-		_lastPath = fileInfo( current ).absoluteFilePath();
-		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _lastPath ) );
+		_lastSelectedPath = fileInfo( current ).absoluteFilePath();
+		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _lastSelectedPath ) );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::_itemExpandedCollapsed( const QModelIndex& )
@@ -333,7 +330,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QDataStream& operator << ( QDataStream& out, const FoldersModel* object )
 	{
-		out<< object->_lastPath;
+		out << object->_rootPath;
+		out << object->_lastSelectedPath;
 
 		const QMap<QString, Qt::CheckState>& l = object->_checkedFolders;
 		QMapIterator<QString, Qt::CheckState> it( l );
@@ -352,7 +350,11 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QDataStream& operator >> ( QDataStream& in, FoldersModel* object )
 	{
-		in >> object->_lastPath;
+		in >> object->_rootPath;
+		in >> object->_lastSelectedPath;
+
+		if( object->_rootPath.isEmpty() )
+			object->_rootPath = QDir::homePath();
 
 		int count = 0;
 		in >> count;

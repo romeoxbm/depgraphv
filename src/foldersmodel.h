@@ -103,7 +103,8 @@ namespace depgraphV
 		QTreeView* _treeView;
 		FilesModel* _filesModel;
 
-		QString _lastPath;
+		QString _rootPath;
+		QString _lastSelectedPath;
 		QMap<QString, Qt::CheckState> _checkedFolders;
 
 		void _connectView();
