@@ -91,17 +91,19 @@ namespace depgraphV
 		void _onProjectOpened( Project* );
 		void _onProjectClosed();
 		void _changeCurrentGraph( int );
+		void _onGraphCountChanged( int );
 		void _onButtonClicked( QAbstractButton* );
 
 	private:
 		Ui::SettingsDialog* _ui;
 		SettingsPage* _currentPage;
 		QMap<QString, SettingsPage*> _pages;
+		bool _arePagesEnabled;
 
 		void _blockActivatedSignal( bool );
 		void _blockMapperCurrentIndexChangedSignal( QDataWidgetMapper*, bool );
 
-		void _enablePages( bool enabled ) const;
+		void _enablePages( bool enabled );
 		void _enablePage( QListWidgetItem* pageButton, bool enabled ) const;
 	};
 }

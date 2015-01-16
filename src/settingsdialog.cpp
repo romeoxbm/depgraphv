@@ -47,7 +47,8 @@ namespace depgraphV
 	SettingsDialog::SettingsDialog( MainWindow* w )
 		: QDialog( w ),
 		_ui( new Ui::SettingsDialog ),
-		_currentPage( 0 )
+		_currentPage( 0 ),
+		_arePagesEnabled( false )
 	{
 		_ui->setupUi( this );
 		enableApplyChanges( false );
@@ -163,7 +164,10 @@ namespace depgraphV
 		//TODO What about connections in CustomItemDelegate?
 		_blockActivatedSignal( false );
 		_blockMapperCurrentIndexChangedSignal( p->mapper(), false );
-		_enablePages( true );
+
+		connect( p, SIGNAL( graphCountChanged( int ) ),
+				 this, SLOT( _onGraphCountChanged( int ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_onProjectClosed()
@@ -188,6 +192,11 @@ namespace depgraphV
 			_ui->graphName->setCurrentIndex( index );
 			_blockActivatedSignal( false );
 		}
+	}
+	//-------------------------------------------------------------------------
+	void SettingsDialog::_onGraphCountChanged( int count )
+	{
+		_enablePages( count != 0 );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_onButtonClicked( QAbstractButton* button )
@@ -243,8 +252,11 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void SettingsDialog::_enablePages( bool enabled ) const
+	void SettingsDialog::_enablePages( bool enabled )
 	{
+		if( !( _arePagesEnabled ^ enabled ) )
+			return;
+
 		for( int i = 0; i < _ui->listWidget->count(); i++ )
 		{
 			SettingsPage* page = static_cast<SettingsPage*>(
@@ -254,6 +266,8 @@ namespace depgraphV
 			if( page->dependsOnGraphs() )
 				_enablePage( _ui->listWidget->item( i ), enabled );
 		}
+
+		_arePagesEnabled = enabled;
 	}
 	//-------------------------------------------------------------------------
 	void SettingsDialog::_enablePage( QListWidgetItem* pageButton, bool enabled ) const
