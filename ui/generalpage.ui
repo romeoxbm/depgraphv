@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>250</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>250</width>
-    <height>250</height>
+    <height>385</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>250</height>
+    <height>385</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -90,7 +90,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="drawGraphs">
         <property name="title">
          <string>Draw Graphs</string>
         </property>
@@ -101,6 +101,9 @@
          <bool>false</bool>
         </property>
         <layout class="QFormLayout" name="formLayout">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="font">
@@ -119,20 +122,53 @@
            </property>
           </widget>
          </item>
+         <item row="1" column="0">
+          <widget class="QRadioButton" name="loadFirstOneRadio">
+           <property name="text">
+            <string>Only the first selected</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
          <item row="2" column="0">
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QRadioButton" name="loadAllRadio">
            <property name="text">
             <string>Load all graphs
 (it could take a while)</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QRadioButton" name="radioButton_2">
-           <property name="text">
-            <string>Only the first selected</string>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="autoApplyChanges">
+        <property name="title">
+         <string>Auto-Apply Changes</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
            </property>
-           <property name="checked">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If &lt;span style=&quot; font-style:italic;&quot;&gt;Auto-Apply&lt;/span&gt; is not enabled, any setting changes will be lost if you don't click on &lt;span style=&quot; font-style:italic;&quot;&gt;Apply&lt;/span&gt; button before switching from a graph to another one in this dialog.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Auto-Apply&lt;/span&gt; prevent this behaviour.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="wordWrap">
             <bool>true</bool>
            </property>
           </widget>
