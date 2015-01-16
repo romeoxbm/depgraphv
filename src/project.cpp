@@ -256,10 +256,17 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Graph* Project::currentGraph() const
 	{
-		if( _mapper->currentIndex() == -1 )
+		int idx = _mapper->currentIndex();
+		if( idx == -1 )
+		{
 			_mapper->toFirst();
+			idx = 0;
+		}
 
-		return _graphs[ _mapper->currentIndex() ];
+		if( idx >= 0 && idx < _graphs.count() )
+			return _graphs[ idx ];
+
+		return 0;
 	}
 	//-------------------------------------------------------------------------
 	QStringList Project::nameFilters( FilesModel::FileGroup g )
