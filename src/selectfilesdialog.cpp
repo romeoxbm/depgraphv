@@ -120,11 +120,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	int SelectFilesDialog::exec()
 	{
-		if( _model )
-			_disconnect();
-
-		Project* p = Singleton<Project>::instancePtr();
-		_model = p->currentGraph()->model();
 		_connect();
 		_model->setView( _ui->treeView );
 		_model->setFilesView( _ui->listView );
@@ -135,6 +130,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QByteArray SelectFilesDialog::graphModel()
 	{
+		if( _model )
+			_disconnect();
+
 		_getModelFromGraphIndex();
 		QByteArray data;
 		QDataStream stream( &data, QIODevice::WriteOnly );
