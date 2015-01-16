@@ -75,8 +75,15 @@ namespace depgraphV
 
 		int exec();
 
-		QByteArray graphModel() const;
+		QByteArray graphModel();
 		void setGraphModel( const QByteArray& );
+
+		/**
+		 * @brief \a setGraphIndex set the graph index we're are working on
+		 * when loading/saving a project file.
+		 * @param index The index of the graph.
+		 */
+		void setGraphIndex( int index ) { _graphIndex = index; }
 
 	signals:
 		void selectionChanged();
@@ -91,8 +98,10 @@ namespace depgraphV
 
 	private:
 		Ui::SelectFilesDialog* _ui;
-		FoldersModel* _previousModel;
+		FoldersModel* _model;
+		int _graphIndex;
 
+		void _getModelFromGraphIndex();
 		void _connect();
 		void _disconnect();
 	};

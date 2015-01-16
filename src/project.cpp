@@ -43,9 +43,10 @@ namespace depgraphV
 {
 	const QString Project::_defaultExtension = ".dProj";
 
-	#define LATEST_VER		1
-	#define MAGIC			( ( 'A' << 24 ) + ( 'V' << 16 ) + ( 'G' << 8 ) + 'G' )
+	#define LATEST_VER	1
+	#define MAGIC		( ( 'A' << 24 ) + ( 'V' << 16 ) + ( 'G' << 8 ) + 'G' )
 
+	//-------------------------------------------------------------------------
 	Project::Project( const QString& filePath, QObject* parent )
 		: QObject( parent ),
 		  Singleton<Project>(),
@@ -70,8 +71,9 @@ namespace depgraphV
 			//HandleRootsDialog-specific column
 			<< "selectedFolders"
 
+			//TODO
 			//Root folder being used by both SelectFilesDialog and HandleRootsDialog
-			<< "rootFolder"
+			//<< "rootFolder"
 
 			//Scan Mode
 			<< "scanByFolders"
@@ -250,8 +252,10 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	Graph* Project::graph( int index ) const
 	{
-		Q_ASSERT( index >= 0 && index < _graphs.count() && "Invalid graph index!" );
-		return _graphs[ index ];
+		if( index >= 0 && index < _graphs.count() )
+			return _graphs[ index ];
+
+		return 0;
 	}
 	//-------------------------------------------------------------------------
 	Graph* Project::currentGraph() const
@@ -263,10 +267,7 @@ namespace depgraphV
 			idx = 0;
 		}
 
-		if( idx >= 0 && idx < _graphs.count() )
-			return _graphs[ idx ];
-
-		return 0;
+		return graph( idx );
 	}
 	//-------------------------------------------------------------------------
 	QStringList Project::nameFilters( FilesModel::FileGroup g )

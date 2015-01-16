@@ -56,7 +56,11 @@ namespace depgraphV
 		if( QComboBox* c = qobject_cast<QComboBox*>( editor ) )
 		{
 			c->setCurrentIndex( c->findText( index.data().toString() ) );
-			_connect( c );
+
+			//Connect signals
+			connect( c, SIGNAL( activated( int ) ),
+					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
+			);
 		}
 		else if( QListWidget* l = qobject_cast<QListWidget*>( editor ) )
 		{
@@ -69,10 +73,21 @@ namespace depgraphV
 				l->addItems( list );
 
 			l->model()->blockSignals( false );
-			_connect( l );
+
+			//Connect signals
+			connect( l->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
+					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
+			);
+			connect( l->model(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
+			);
 		}
 		else if( SelectFilesDialog* d = qobject_cast<SelectFilesDialog*>( editor ) )
 		{
+			d->setGraphIndex( index.row() );
+			QItemDelegate::setEditorData( editor, index );
+
+			//Connect signals
 			connect( d, SIGNAL( selectionChanged() ),
 					 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
 			);
@@ -98,25 +113,13 @@ namespace depgraphV
 
 			model->setData( index, data );
 		}
+		else if( SelectFilesDialog* d = qobject_cast<SelectFilesDialog*>( editor ) )
+		{
+			d->setGraphIndex( index.row() );
+			QItemDelegate::setModelData( editor, model, index );
+		}
 		else
 			QItemDelegate::setModelData( editor, model, index );
-	}
-	//-------------------------------------------------------------------------
-	void CustomItemDelegate::_connect( QComboBox* combo ) const
-	{
-		connect( combo, SIGNAL( activated( int ) ),
-				 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
-		);
-	}
-	//-------------------------------------------------------------------------
-	void CustomItemDelegate::_connect( QListWidget* list ) const
-	{
-		connect( list->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ),
-				 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
-		);
-		connect( list->model(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-				 this, SIGNAL( editingStarted() ), Qt::UniqueConnection
-		);
 	}
 	//-------------------------------------------------------------------------
 	void CustomItemDelegate::_connect( QWidget* widget ) const

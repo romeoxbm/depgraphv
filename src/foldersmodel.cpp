@@ -46,14 +46,13 @@ namespace depgraphV
 		: CheckableFileSystemModel( parent ),
 		  _treeView( 0 ),
 		  _filesModel( new FilesModel( this, parent ) ),
+		  _lastPath( QDir::homePath() ),
 		  _viewConnected( false )
 	{
 		setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::NoSymLinks );
 		connect( _filesModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
 				 this, SLOT( _onFilesModelDataChanged( QModelIndex, QModelIndex ) )
 		);
-
-		_lastPath = Singleton<Project>::instancePtr()->currentValue( "rootFolder" ).toString();
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::initialize()
@@ -125,7 +124,6 @@ namespace depgraphV
 		if( isCheckable( i, role ) )
 		{
 			QString p = filePath( i );
-			//QMap<QString, Qt::CheckState>& items = _checkedFolders.state();
 			return _checkedFolders.contains( p ) ? _checkedFolders[ p ] : Qt::Unchecked;
 		}
 
@@ -207,11 +205,12 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void FoldersModel::changeRoot()
 	{
-		Project* p = Singleton<Project>::instancePtr();
+		//Project* p = Singleton<Project>::instancePtr();
 		QString root = QFileDialog::getExistingDirectory(
 					_treeView,
 					tr( "Change Root..." ),
-					p->currentValue( "rootFolder" ).toString()
+					_lastPath
+					//p->currentValue( "rootFolder" ).toString()
 		);
 
 		if( root.isNull() )
@@ -219,7 +218,7 @@ namespace depgraphV
 
 		_treeView->setRootIndex( setRootPath( root ) );
 		_filesModel->view()->setRootIndex( _filesModel->setRootPath( root ) );
-		p->setCurrentValue( root, "rootFolder" );
+		//p->setCurrentValue( root, "rootFolder" );
 	}
 	//-------------------------------------------------------------------------
 	void FoldersModel::showHiddenFolders( bool show )
@@ -287,8 +286,8 @@ namespace depgraphV
 	void FoldersModel::_updateSelection( const QModelIndex& current,
 										 const QModelIndex& )
 	{
-		Project* p = Singleton<Project>::instancePtr();
 		//TODO DO I need to reflect _lastPath changes in Project???
+		//Project* p = Singleton<Project>::instancePtr();
 		_lastPath = fileInfo( current ).absoluteFilePath();
 		_filesModel->view()->setRootIndex( _filesModel->setRootPath( _lastPath ) );
 	}
@@ -334,6 +333,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QDataStream& operator << ( QDataStream& out, const FoldersModel* object )
 	{
+		out<< object->_lastPath;
+
 		const QMap<QString, Qt::CheckState>& l = object->_checkedFolders;
 		QMapIterator<QString, Qt::CheckState> it( l );
 		out << l.count();
@@ -351,6 +352,8 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QDataStream& operator >> ( QDataStream& in, FoldersModel* object )
 	{
+		in >> object->_lastPath;
+
 		int count = 0;
 		in >> count;
 
@@ -358,8 +361,6 @@ namespace depgraphV
 
 		if( !l.isEmpty() )
 			l.clear();
-
-		//QMap<QString, Qt::CheckState> data;
 
 		for( int i = 0; i < count; i++ )
 		{
@@ -369,7 +370,6 @@ namespace depgraphV
 			l.insert( key, static_cast<Qt::CheckState>( value ) );
 		}
 
-		//object->_checkedFolders.setState( data );
 		in >> *object->_filesModel;
 		return in;
 	}

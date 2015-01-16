@@ -47,7 +47,8 @@ namespace depgraphV
 		: QDialog( parent ),
 		Singleton<SelectFilesDialog>(),
 		_ui( new Ui::SelectFilesDialog ),
-		_previousModel( 0 )
+		_model( 0 ),
+		_graphIndex( -1 )
 	{
 		_ui->setupUi( this );
 
@@ -119,36 +120,33 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	int SelectFilesDialog::exec()
 	{
-		if( _previousModel )
+		if( _model )
 			_disconnect();
 
 		Project* p = Singleton<Project>::instancePtr();
-
-		//_previousModel now contains the current model
-		_previousModel = p->currentGraph()->model();
+		_model = p->currentGraph()->model();
 		_connect();
-		_previousModel->setView( _ui->treeView );
-		_previousModel->setFilesView( _ui->listView );
-		_previousModel->initialize();
+		_model->setView( _ui->treeView );
+		_model->setFilesView( _ui->listView );
+		_model->initialize();
 
 		return QDialog::exec();
 	}
 	//-------------------------------------------------------------------------
-	QByteArray SelectFilesDialog::graphModel() const
+	QByteArray SelectFilesDialog::graphModel()
 	{
-		Project* p = Singleton<Project>::instancePtr();
+		_getModelFromGraphIndex();
 		QByteArray data;
 		QDataStream stream( &data, QIODevice::WriteOnly );
-		stream << p->currentGraph()->model();
-
+		stream << _model;
 		return data;
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::setGraphModel( const QByteArray& data )
 	{
-		Project* p = Singleton<Project>::instancePtr();
+		_getModelFromGraphIndex();
 		QDataStream stream( data );
-		stream >> p->currentGraph()->model();
+		stream >> _model;
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::changeEvent( QEvent* event )
@@ -175,26 +173,33 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::_onProjectClosed()
 	{
-		_previousModel = 0;
+		_model = 0;
+	}
+	//-------------------------------------------------------------------------
+	void SelectFilesDialog::_getModelFromGraphIndex()
+	{
+		if( _graphIndex == -1 )
+			return;
+
+		Project* p = Singleton<Project>::instancePtr();
+		_model = p->graph( _graphIndex )->model();
+		_graphIndex = -1;
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::_connect()
 	{
-		Project* p = Singleton<Project>::instancePtr();
-		FoldersModel* m = p->currentGraph()->model();
-
 		//ContextMenu for Folders view
 		connect( _ui->changeRoot, SIGNAL( triggered() ),
-			m, SLOT( changeRoot() )
+			_model, SLOT( changeRoot() )
 		);
 		connect( _ui->showHiddenFolders, SIGNAL( toggled( bool ) ),
-			m, SLOT( showHiddenFolders( bool ) )
+			_model, SLOT( showHiddenFolders( bool ) )
 		);
 		connect( _ui->expandAll, SIGNAL( triggered() ),
-			m, SLOT( expandAll() )
+			_model, SLOT( expandAll() )
 		);
 		connect( _ui->collapseAll, SIGNAL( triggered() ),
-			m, SLOT( collapseAll() )
+			_model, SLOT( collapseAll() )
 		);
 
 		//ContextMenu for Files view
@@ -204,7 +209,7 @@ namespace depgraphV
 			if( i == 0 )
 			{
 				connect( q, SIGNAL( triggered() ),
-					m->filesModel(), SLOT( showAllFiles() )
+					_model->filesModel(), SLOT( showAllFiles() )
 				);
 				continue;
 			}
@@ -213,15 +218,15 @@ namespace depgraphV
 				continue;
 
 			connect( q, SIGNAL( triggered() ),
-				m->filesModel(), SLOT( contextMenuActionTriggered() )
+				_model->filesModel(), SLOT( contextMenuActionTriggered() )
 			);
 		}
 
 		//selectionChanged signal
-		connect( m, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+		connect( _model, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
 				 this, SIGNAL( selectionChanged() )
 		);
-		connect( m->filesModel(), SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
+		connect( _model->filesModel(), SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
 				 this, SIGNAL( selectionChanged() )
 		);
 	}
@@ -229,10 +234,10 @@ namespace depgraphV
 	void SelectFilesDialog::_disconnect()
 	{
 		//ContextMenu for Folders view
-		_ui->changeRoot->disconnect( _previousModel );
-		_ui->showHiddenFolders->disconnect( _previousModel );
-		_ui->expandAll->disconnect( _previousModel );
-		_ui->collapseAll->disconnect( _previousModel );
+		_ui->changeRoot->disconnect( _model );
+		_ui->showHiddenFolders->disconnect( _model );
+		_ui->expandAll->disconnect( _model );
+		_ui->collapseAll->disconnect( _model );
 
 		//ContextMenu for Files view
 		for( int i = 0; i < _ui->listView->actions().count(); i++ )
@@ -241,10 +246,10 @@ namespace depgraphV
 			if( q->isSeparator() )
 				continue;
 
-			q->disconnect( _previousModel->filesModel() );
+			q->disconnect( _model->filesModel() );
 		}
 
-		_previousModel->disconnect( this, SIGNAL( selectionChanged() ) );
-		_previousModel->filesModel()->disconnect( this, SIGNAL( selectionChanged() ) );
+		_model->disconnect( this, SIGNAL( selectionChanged() ) );
+		_model->filesModel()->disconnect( this, SIGNAL( selectionChanged() ) );
 	}
 }

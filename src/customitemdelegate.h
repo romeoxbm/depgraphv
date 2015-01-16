@@ -58,8 +58,6 @@ namespace depgraphV
 	private:
 		bool _disableConnections;
 
-		void _connect( QComboBox* ) const;
-		void _connect( QListWidget* ) const;
 		void _connect( QWidget* ) const;
 	};
 }

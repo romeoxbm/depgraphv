@@ -112,7 +112,9 @@ namespace depgraphV
 		QString root = QFileDialog::getExistingDirectory(
 					_ui->rootFolders,
 					tr( "Add root folder" ),
-					p->currentValue( "rootFolder" ).toString()
+					QDir::homePath()
+					//TODO
+					//p->currentValue( "rootFolder" ).toString()
 		);
 
 		if( root.isNull() )
