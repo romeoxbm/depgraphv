@@ -168,17 +168,9 @@ namespace depgraphV
 			QFileInfo fi = fileInfo( i );
 			QString filter = "*." + fi.completeSuffix();
 
-			//TODO Where should I take name filters? (probably from Project)
-			/*AppConfig* c = Singleton<AppConfig>::instancePtr();
-			QStringList filters;
-			if( v == Hdr )
-				filters = c->headerNameFilters();
-
-			else if( v == Src )
-				filters = c->sourceNameFilters();
-
-			if( !filters.contains( filter ) )
-				return false;*/
+			Project* p = Singleton<Project>::instancePtr();
+			if( !p->nameFilters( v ).contains( filter ) )
+				return false;
 		}
 
 		return true;

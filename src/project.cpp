@@ -288,7 +288,8 @@ namespace depgraphV
 
 		for( int i = init; i < count; i++ )
 		{
-			QString prefix = ( (FilesModel::FileGroup)i ) == FilesModel::Hdr ? "hdr_" : "src_";
+			FilesModel::FileGroup cG = ( (FilesModel::FileGroup)i );
+			QString prefix = cG == FilesModel::Hdr ? "hdr_" : "src_";
 			if( !currentValue( fieldNames[ 0 ], prefix ).toBool() )
 				continue;
 
