@@ -158,7 +158,7 @@ namespace depgraphV
 	{
 		Q_ASSERT( fieldIndex != -1 && "Invalid field index!" );
 
-		if( !_defaultValues.contains( fieldIndex ) )
+		if( !_defaultValues.contains( fieldIndex ) && defaultValue.isValid() )
 			_defaultValues.insert( fieldIndex, defaultValue );
 
 		_mapper->addMapping( w, fieldIndex );
