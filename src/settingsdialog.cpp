@@ -183,6 +183,16 @@ namespace depgraphV
 			Project* p = Singleton<Project>::instancePtr();
 			QDataWidgetMapper* m = p->mapper();
 			_blockMapperCurrentIndexChangedSignal( m, true );
+
+			AppConfig* c = Singleton<AppConfig>::instancePtr();
+			if( c->autoApplySettingChanges() && p->hasUnsubmittedChanges() )
+			{
+				QAbstractButton* b = _ui->buttonBox->button(
+							QDialogButtonBox::Apply
+				);
+				_onButtonClicked( b );
+			}
+
 			m->setCurrentIndex( index );
 			_blockMapperCurrentIndexChangedSignal( m, false );
 		}

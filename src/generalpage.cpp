@@ -47,9 +47,8 @@ namespace depgraphV
 	{
 		_ui->setupUi( this );
 
-		AppConfig* c = Singleton<AppConfig>::instancePtr();
-		connect( _ui->warnOnGraphRemoval, SIGNAL( toggled( bool ) ),
-				 c, SLOT( setWarnOnGraphRemoval( bool ) )
+		connect( Singleton<AppConfig>::instancePtr(), SIGNAL( configRestored() ),
+				 this, SLOT( _onConfigRestored() )
 		);
 	}
 	//-------------------------------------------------------------------------
@@ -71,4 +70,20 @@ namespace depgraphV
 
 		return QWidget::event( evt );
 	}
+	//-------------------------------------------------------------------------
+	void GeneralPage::_onConfigRestored()
+	{
+		AppConfig* c = Singleton<AppConfig>::instancePtr();
+
+		_ui->warnOnGraphRemoval->setChecked( c->warnOnGraphRemoval() );
+		_ui->autoApplyChanges->setChecked( c->autoApplySettingChanges() );
+
+		connect( _ui->warnOnGraphRemoval, SIGNAL( toggled( bool ) ),
+				 c, SLOT( setWarnOnGraphRemoval( bool ) )
+		);
+		connect( _ui->autoApplyChanges, SIGNAL( toggled( bool ) ),
+				 c, SLOT( setAutoApplySettingChanges( bool ) )
+		);
+	}
+
 } // end of depgraphV namespace

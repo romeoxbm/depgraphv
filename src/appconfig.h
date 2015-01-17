@@ -62,6 +62,7 @@ namespace depgraphV
 		Q_PROPERTY( QString language READ language WRITE setLanguage )
 		Q_PROPERTY( bool showDonateOnExit READ showDonateOnExit WRITE setShowDonateOnExit )
 		Q_PROPERTY( bool warnOnGraphRemoval READ warnOnGraphRemoval WRITE setWarnOnGraphRemoval )
+		Q_PROPERTY( bool autoApplySettingChanges READ autoApplySettingChanges WRITE setAutoApplySettingChanges )
 
 	public:
 		/**
@@ -127,6 +128,8 @@ namespace depgraphV
 
 		bool warnOnGraphRemoval() const { return _warnOnGraphRemoval; }
 
+		bool autoApplySettingChanges() const { return _autoApplySettingChanges; }
+
 	public slots:
 		void setRecentDocuments( const QStringList& value ) { _recentDocs = value; }
 		void setLanguage( const QString& value );
@@ -138,6 +141,8 @@ namespace depgraphV
 		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
 
 		void setWarnOnGraphRemoval( bool value ) { _warnOnGraphRemoval = value; }
+
+		void setAutoApplySettingChanges( bool value ) { _autoApplySettingChanges = value; }
 
 	signals:
 		void configSaved();
@@ -173,6 +178,7 @@ namespace depgraphV
 
 		bool _showDonateOnExit;
 		bool _warnOnGraphRemoval;
+		bool _autoApplySettingChanges;
 	};
 }
 

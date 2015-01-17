@@ -73,11 +73,8 @@ namespace depgraphV
 	protected:
 		virtual bool event( QEvent* evt );
 
-	signals:
-
-	public slots:
-
 	private slots:
+		void _onConfigRestored();
 
 	private:
 		Ui::GeneralPage* _ui;

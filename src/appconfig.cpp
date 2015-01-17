@@ -145,7 +145,8 @@ namespace depgraphV
 		props 	 << "recentDocuments"
 				 << "language"
 				 << "showDonateOnExit"
-				 << "warnOnGraphRemoval";
+				 << "warnOnGraphRemoval"
+				 << "autoApplySettingChanges";
 
 		return props;
 	}
