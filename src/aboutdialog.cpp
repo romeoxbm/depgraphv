@@ -75,7 +75,7 @@ namespace depgraphV
 		gvFreeContext( context );
 
 		connect( Singleton<AppConfig>::instancePtr(), SIGNAL( configRestored() ),
-				 this, SLOT( onConfigRestored() )
+				 this, SLOT( _onConfigRestored() )
 		);
 	}
 	//-------------------------------------------------------------------------
@@ -115,7 +115,7 @@ namespace depgraphV
 		return QDialog::event( evt );
 	}
 	//-------------------------------------------------------------------------
-	void AboutDialog::on_donateButton_clicked()
+	void AboutDialog::_onDonateButtonClicked()
 	{
 		QString itemName = tr( "Donation+to+dep-graphV" );
 		QUrl url( "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&"
@@ -123,13 +123,13 @@ namespace depgraphV
 		QDesktopServices::openUrl( url );
 	}
 	//-------------------------------------------------------------------------
-	void AboutDialog::on_donateCheckBox_clicked()
+	void AboutDialog::_onDonateCheckBoxClicked()
 	{
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		c->setShowDonateOnExit( !_ui->donateCheckBox->isChecked() );
 	}
 	//-------------------------------------------------------------------------
-	void AboutDialog::onConfigRestored()
+	void AboutDialog::_onConfigRestored()
 	{
 		AppConfig* c = Singleton<AppConfig>::instancePtr();
 		_ui->donateCheckBox->setChecked( !c->showDonateOnExit() );

@@ -571,5 +571,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>donateButton</sender>
+   <signal>clicked()</signal>
+   <receiver>depgraphV::AboutDialog</receiver>
+   <slot>_onDonateButtonClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>576</x>
+     <y>389</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>334</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>donateCheckBox</sender>
+   <signal>clicked()</signal>
+   <receiver>depgraphV::AboutDialog</receiver>
+   <slot>_onDonateCheckBoxClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>152</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>334</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>_onDonateButtonClicked()</slot>
+  <slot>_onDonateCheckBoxClicked()</slot>
+ </slots>
 </ui>

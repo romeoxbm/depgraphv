@@ -76,9 +76,9 @@ namespace depgraphV
 	public slots:
 
 	private slots:
-		void on_donateButton_clicked();
-		void on_donateCheckBox_clicked();
-		void onConfigRestored();
+		void _onDonateButtonClicked();
+		void _onDonateCheckBoxClicked();
+		void _onConfigRestored();
 
 	private:
 		Ui::AboutDialog* _ui;
