@@ -77,7 +77,7 @@ namespace depgraphV
 
 		Qt::ItemFlags flags( const QModelIndex& index ) const;
 
-		void setFileNameFilters( const QStringList& filters );
+		//void setFileNameFilters( const QStringList& filters );
 
 		friend QDataStream& operator << ( QDataStream& out, const FoldersModel* object );
 		friend QDataStream& operator >> ( QDataStream& in, FoldersModel* object );
@@ -88,7 +88,7 @@ namespace depgraphV
 		virtual bool setDataImpl( const QString& path, Qt::CheckState v );
 
 	public slots:
-		virtual void clearSelection();
+		//virtual void clearSelection();
 		void changeRoot();
 		void showHiddenFolders( bool show );
 		void expandAll();

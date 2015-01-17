@@ -83,18 +83,22 @@ namespace depgraphV
 		virtual bool setDataImpl( const QString& path, Qt::CheckState v );
 
 	public slots:
-		virtual void clearSelection();
+		//virtual void clearSelection();
 		void contextMenuActionTriggered();
 		void showAllFiles();
 
 	private slots:
-		void onFoldersModelDataChanged( QModelIndex, QModelIndex );
+		void _onFolderLoaded( const QString& folder );
+		void _onFoldersModelDataChanged( QModelIndex, QModelIndex );
 
 	private:
 		QListView* _listView;
 		FoldersModel* _foldersModel;
 
 		QMap<QString, QStringList*> _checkedFiles;
+
+		QStringList _loadedFolders;
+		QMap<QString, std::function<void()> > _queuedOperations;
 
 		void _updateEnabledFlags();
 		int _filesCount( const QModelIndex& parent, FileGroup g = FilesModel::All ) const;

@@ -64,19 +64,7 @@ namespace depgraphV
 		virtual bool setDataImpl( const QString& path, Qt::CheckState v ) = 0;
 
 	public slots:
-		virtual void clearSelection() {}
-
-	private slots:
-		void _folderLoaded( const QString& folder );
-
-	private:
-		QStringList _loadedFolders;
-
-		//TODO _skipOperation isn't referenced anymore, so _queuedOperations has been commented out too
-		//QMap<QString, std::function<void()> > _queuedOperations;
-
-		//TODO _skipOperation isn't referenced anymore..
-		//bool _skipOperation( const QModelIndex& i, const std::function<void()>& f );
+		//virtual void clearSelection() {}
 	};
 }
 

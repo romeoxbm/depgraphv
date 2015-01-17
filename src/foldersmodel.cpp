@@ -143,11 +143,11 @@ namespace depgraphV
 		return f;
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::setFileNameFilters( const QStringList& filters )
+	/*void FoldersModel::setFileNameFilters( const QStringList& filters )
 	{
 		clearSelection();
 		_filesModel->setNameFilters( filters );
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	bool FoldersModel::isCheckable( const QModelIndex& i, int role ) const
 	{
@@ -198,11 +198,11 @@ namespace depgraphV
 		return res;
 	}
 	//-------------------------------------------------------------------------
-	void FoldersModel::clearSelection()
+	/*void FoldersModel::clearSelection()
 	{
 		_filesModel->clearSelection();
 		_checkedFolders.clear();
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	void FoldersModel::changeRoot()
 	{

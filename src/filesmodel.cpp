@@ -51,6 +51,10 @@ namespace depgraphV
 		setNameFilterDisables( false );
 
 		setListeningFoldersModelDataChanged( true );
+
+		connect( this, SIGNAL( directoryLoaded( QString ) ),
+				 this, SLOT( _onFolderLoaded( QString ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void FilesModel::initialize()
@@ -82,46 +86,34 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	int FilesModel::selectedCount( const QString& rootPath, FileGroup g ) const
 	{
-		int count = -1;
+		int count = 0;
+		auto calc = [&]( const QStringList& list )
+		{
+			if( g == FilesModel::All )
+				count += list.count();
+			else
+			{
+				foreach( QString f, list )
+				{
+					if( belongsToFileGroup( f, g ) )
+						count++;
+				}
+			}
+		};
 
 		if( !rootPath.isEmpty() )
 		{
 			if( _checkedFiles.contains( rootPath ) )
-			{
-				if( g == FilesModel::All )
-					count = _checkedFiles[ rootPath ]->count();
-				else
-				{
-					count = 0;
-					foreach( QString f, *_checkedFiles[ rootPath ] )
-					{
-						if( belongsToFileGroup( f, g ) )
-							count++;
-					}
-				}
-			}
-			else
-				count = 0;
+				calc( *_checkedFiles[ rootPath ] );
 		}
 		else
 		{
 			//Count ALL selected files, not just in a single directory
-			count = 0;
 			QMapIterator<QString, QStringList*> it( _checkedFiles );
 			while( it.hasNext() )
 			{
 				it.next();
-
-				if( g == FilesModel::All )
-					count += it.value()->count();
-				else
-				{
-					foreach( QString f, *it.value() )
-					{
-						if( belongsToFileGroup( f, g ) )
-							count++;
-					}
-				}
+				calc( *it.value() );
 			}
 		}
 
@@ -181,13 +173,13 @@ namespace depgraphV
 		if( value )
 		{
 			connect( _foldersModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ),
-				 this, SLOT( onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
+				 this, SLOT( _onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
 			);
 		}
 		else
 		{
 			_foldersModel->disconnect( this,
-				SLOT( onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
+				SLOT( _onFoldersModelDataChanged( QModelIndex, QModelIndex ) )
 			);
 		}
 	}
@@ -236,13 +228,13 @@ namespace depgraphV
 		return true;
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::clearSelection()
+	/*void FilesModel::clearSelection()
 	{
 		foreach( QStringList* l, _checkedFiles )
 			delete l;
 
 		_checkedFiles.clear();
-	}
+	}*/
 	//-------------------------------------------------------------------------
 	void FilesModel::contextMenuActionTriggered()
 	{
@@ -280,9 +272,33 @@ namespace depgraphV
 		setNameFilterDisables( a->isChecked() );
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::onFoldersModelDataChanged( QModelIndex i, QModelIndex )
+	void FilesModel::_onFolderLoaded( const QString& folder )
 	{
-		QModelIndex parent = index( _foldersModel->filePath( i ) );
+		_loadedFolders.append( folder );
+
+		if( _queuedOperations.contains( folder ) )
+		{
+			_queuedOperations[ folder ]();
+			_queuedOperations.remove( folder );
+		}
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::_onFoldersModelDataChanged( QModelIndex i, QModelIndex )
+	{
+		QString path = _foldersModel->filePath( i );
+		if( !_loadedFolders.contains( path ) )
+		{
+			auto f = std::bind(
+						&FilesModel::_onFoldersModelDataChanged,
+						this,
+						i,
+						QModelIndex()
+			);
+			_queuedOperations.insert( path, f );
+			return;
+		}
+
+		QModelIndex parent = index( path );
 		int rows = rowCount( parent );
 		blockSignals( true );
 		for( int j = 0; j < rows; j++ )

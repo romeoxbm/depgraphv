@@ -371,11 +371,11 @@ namespace depgraphV
 		{
 			QString filter = tr( "Project Files (*%1)" ).arg( _defaultExtension );
 			_fullPath = QFileDialog::getSaveFileName(
-							   static_cast<QWidget*>( parent() ),
-							   tr( "Create a new project..." ),
-							   QDir::homePath(),
-							   filter,
-							   &filter
+						static_cast<QWidget*>( parent() ),
+						tr( "Create a new project..." ),
+						QDir::homePath(),
+						filter,
+						&filter
 			);
 
 			if( !Helpers::addExtension( _fullPath, _defaultExtension ) )

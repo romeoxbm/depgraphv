@@ -45,10 +45,6 @@ namespace depgraphV
 		  _initialized( false )
 	{
 		setReadOnly( true );
-
-		connect( this, SIGNAL( directoryLoaded( QString ) ),
-				 this, SLOT( _folderLoaded( QString ) )
-		);
 	}
 	//-------------------------------------------------------------------------
 	CheckableFileSystemModel::~CheckableFileSystemModel()
@@ -87,33 +83,5 @@ namespace depgraphV
 		return i.isValid() &&
 				i.column() == 0 &&
 				role == Qt::CheckStateRole;
-	}
-	//-------------------------------------------------------------------------
-	//TODO _skipOperation isn't referenced anymore..
-	/*bool CheckableFileSystemModel::_skipOperation( const QModelIndex& i,
-									   const std::function<void()>& f )
-	{
-		if( isDir( i ) )
-		{
-			QString path = filePath( i );
-			if( !_loadedFolders.contains( path ) )
-			{
-				_queuedOperations.insert( path, f );
-				return true;
-			}
-		}
-
-		return false;
-	}*/
-	//-------------------------------------------------------------------------
-	void CheckableFileSystemModel::_folderLoaded( const QString& folder )
-	{
-		_loadedFolders.append( folder );
-		//TODO commented because _skipOperation isn't referenced anymore..
-		/*if( _queuedOperations.contains( folder ) )
-		{
-			_queuedOperations[ folder ]();
-			_queuedOperations.remove( folder );
-		}*/
 	}
 }
