@@ -71,10 +71,6 @@ namespace depgraphV
 			//HandleRootsDialog-specific column
 			<< "selectedFolders"
 
-			//TODO
-			//Root folder being used by both SelectFilesDialog and HandleRootsDialog
-			//<< "rootFolder"
-
 			//Scan Mode
 			<< "scanByFolders"
 			<< "scanRecursively"

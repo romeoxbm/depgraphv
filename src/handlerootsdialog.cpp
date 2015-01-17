@@ -113,17 +113,19 @@ namespace depgraphV
 					_ui->rootFolders,
 					tr( "Add root folder" ),
 					QDir::homePath()
-					//TODO
-					//p->currentValue( "rootFolder" ).toString()
 		);
 
 		if( root.isNull() )
 			return;
 
-		//TODO Check if root is a subfolder of an already added folder
-		//and if recursive scan is enabled; If so, do not add root.
 		if( p->currentValue( "scanRecursively" ).toBool() )
 		{
+			for( int i = 0; i < _ui->rootFolders->count(); i++ )
+			{
+				QString currentFolder = _ui->rootFolders->item( i )->text();
+				if( root.contains( currentFolder ) )
+					return;
+			}
 		}
 
 		_ui->rootFolders->addItem( root );
