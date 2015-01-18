@@ -194,6 +194,11 @@ namespace depgraphV
 			}
 
 			m->setCurrentIndex( index );
+
+			//Notify current graph has changed
+			foreach( SettingsPage* page, _pages )
+				page->onGraphChanged();
+
 			_blockMapperCurrentIndexChangedSignal( m, false );
 		}
 		else

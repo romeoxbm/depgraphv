@@ -504,8 +504,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_scanFolders() const
 	{
-		QString f = _project->currentValue( "selectedFolders" ).toString();
-		QStringList folders = f.split( ';', QString::SkipEmptyParts );
+		QStringList folders = _project->currentValue( "selectedFolders" ).toStringList();
 		QStringList filesList;
 		_startSlowOperation(
 					tr( "Scanning folders..." ),

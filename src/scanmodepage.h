@@ -70,6 +70,8 @@ namespace depgraphV
 
 		virtual bool dependsOnGraphs() const { return true; }
 
+		virtual void onGraphChanged();
+
 	protected:
 		virtual bool event( QEvent* evt );
 
@@ -79,12 +81,12 @@ namespace depgraphV
 
 	private slots:
 		void _modifySelection();
-		void _updateSelectionCount( bool = true );
-
 		virtual void onProjectOpened( Project* p );
 
 	private:
 		Ui::ScanModePage* _ui;
+
+		void _updateSelectionCount();
 	};
 }
 

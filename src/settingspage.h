@@ -59,6 +59,13 @@ namespace depgraphV
 		virtual void commitChanges() {}
 		virtual void revertChanges() {}
 
+		/**
+		 * @brief \a onGraphChanged is called by \a SettingsDialog to notify
+		 * current graph has changed. \a SettingsDialog will call this method
+		 * ONLY when user has clicked on graphName combobox.
+		 */
+		virtual void onGraphChanged() {}
+
 		SettingsDialog* settingsDialog() const { return _dialog; }
 
 	protected:

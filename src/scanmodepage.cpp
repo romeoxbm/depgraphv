@@ -60,6 +60,11 @@ namespace depgraphV
 		return ":/settingsDlgIcons/folder-scan_96x96.png";
 	}
 	//-------------------------------------------------------------------------
+	void ScanModePage::onGraphChanged()
+	{
+		_updateSelectionCount();
+	}
+	//-------------------------------------------------------------------------
 	bool ScanModePage::event( QEvent* evt )
 	{
 		if( evt )
@@ -84,17 +89,6 @@ namespace depgraphV
 		_updateSelectionCount();
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::_updateSelectionCount( bool )
-	{
-		int c;
-		if( _ui->selectRootFoldersRadio->isChecked() )
-			c = 15; //TODO
-		else
-			c = 27; //TODO
-
-		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
-	}
-	//-------------------------------------------------------------------------
 	void ScanModePage::onProjectOpened( Project* p )
 	{
 		SettingsPage::onProjectOpened( p );
@@ -103,5 +97,20 @@ namespace depgraphV
 		p->addMapping( radios, "scanByFolders" );
 		p->addMapping( _ui->recursiveScanCheckBox, "scanRecursively" );
 		p->addMapping( _ui->hiddenFoldersCheckbox, "includeHiddenFolders" );
+	}
+	//-------------------------------------------------------------------------
+	void ScanModePage::_updateSelectionCount()
+	{
+		Project* p = Singleton<Project>::instancePtr();
+		int c;
+		if( _ui->selectRootFoldersRadio->isChecked() )
+		{
+			QStringList sel = p->currentValue( "selectedFolders" ).toStringList();
+			c = sel.count();
+		}
+		else
+			c = 27; //TODO
+
+		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
 	}
 } // end of depgraphV namespace

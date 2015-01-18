@@ -64,7 +64,7 @@ namespace depgraphV
 		}
 		else if( QListWidget* l = qobject_cast<QListWidget*>( editor ) )
 		{
-			QStringList list = index.data().toString().split( ';', QString::SkipEmptyParts );
+			QStringList list = index.data().toStringList();
 
 			//Disable signals (prevent firing of both rowsInserted and rowsRemoved signals)
 			l->model()->blockSignals( true );
@@ -107,9 +107,9 @@ namespace depgraphV
 
 		else if( QListWidget* l = qobject_cast<QListWidget*>( editor ) )
 		{
-			QString data;
+			QStringList data;
 			for( int i = 0; i < l->count(); i++ )
-				data += l->item( i )->text() + ";";
+				data << l->item( i )->text();
 
 			model->setData( index, data );
 		}
