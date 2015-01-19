@@ -190,8 +190,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>selectRootFoldersRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>depgraphV::ScanModePage</receiver>
+   <slot>_updateSelectionCount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>13</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>_modifySelection()</slot>
+  <slot>_updateSelectionCount()</slot>
  </slots>
 </ui>

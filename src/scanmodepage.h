@@ -81,12 +81,11 @@ namespace depgraphV
 
 	private slots:
 		void _modifySelection();
+		void _updateSelectionCount();
 		virtual void onProjectOpened( Project* p );
 
 	private:
 		Ui::ScanModePage* _ui;
-
-		void _updateSelectionCount();
 	};
 }
 

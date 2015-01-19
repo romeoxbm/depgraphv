@@ -89,16 +89,6 @@ namespace depgraphV
 		_updateSelectionCount();
 	}
 	//-------------------------------------------------------------------------
-	void ScanModePage::onProjectOpened( Project* p )
-	{
-		SettingsPage::onProjectOpened( p );
-
-		QRadioButton* radios[] = { _ui->selectRootFoldersRadio, _ui->selectFilesRadio };
-		p->addMapping( radios, "scanByFolders" );
-		p->addMapping( _ui->recursiveScanCheckBox, "scanRecursively" );
-		p->addMapping( _ui->hiddenFoldersCheckbox, "includeHiddenFolders" );
-	}
-	//-------------------------------------------------------------------------
 	void ScanModePage::_updateSelectionCount()
 	{
 		Project* p = Singleton<Project>::instancePtr();
@@ -109,8 +99,18 @@ namespace depgraphV
 			c = sel.count();
 		}
 		else
-			c = 27; //TODO
+			c = p->currentGraph()->model()->filesModel()->selectedCount();
 
 		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
+	}
+	//-------------------------------------------------------------------------
+	void ScanModePage::onProjectOpened( Project* p )
+	{
+		SettingsPage::onProjectOpened( p );
+
+		QRadioButton* radios[] = { _ui->selectRootFoldersRadio, _ui->selectFilesRadio };
+		p->addMapping( radios, "scanByFolders" );
+		p->addMapping( _ui->recursiveScanCheckBox, "scanRecursively" );
+		p->addMapping( _ui->hiddenFoldersCheckbox, "includeHiddenFolders" );
 	}
 } // end of depgraphV namespace
