@@ -70,6 +70,9 @@ namespace depgraphV
 
 		static bool addExtension( QString& filename, const QString& ext );
 		static QString ucFirst( const QString& value );
+		static void showInExplorer( const QString& pathIn );
+
+		static QString pathShortener( const QString& path, ushort maxLen );
 
 		template<typename T>
 		static bool QStringToType( const QString& s, T* value, typename std::enable_if<!std::is_same<bool, T>::value, T>::type* = 0 )

@@ -118,4 +118,23 @@ namespace depgraphV
 
 		return split.join( " " );
 	}
+	//-------------------------------------------------------------------------
+	void Helpers::showInExplorer( const QString& path )
+	{
+		QString pathF = QDir::toNativeSeparators( path );
+		QDesktopServices::openUrl( QUrl( "file://" + pathF ) );
+	}
+	//-------------------------------------------------------------------------
+	QString Helpers::pathShortener( const QString& path, ushort maxLen )
+	{
+		Q_ASSERT( maxLen > 0 );
+		if( path.length() <= maxLen )
+			return path;
+
+		ushort m = maxLen / 2;
+		return QString( "%1...%2" ).arg(
+					path.mid( 0, m -3 ),
+					path.mid( path.length() - m , m )
+		);
+	}
 }
