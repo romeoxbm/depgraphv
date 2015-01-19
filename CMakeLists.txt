@@ -80,6 +80,7 @@ set( Headers
 	src/iserializableobject.h
 	src/mainwindow.h
 	src/project.h
+	src/projectinfodialog.h
 	src/scanmodepage.h
 	src/selectfilesdialog.h
 	src/settingsdialog.h
@@ -106,6 +107,7 @@ set( Sources
 	src/main.cpp
 	src/mainwindow.cpp
 	src/project.cpp
+	src/projectinfodialog.cpp
 	src/scanmodepage.cpp
 	src/selectfilesdialog.cpp
 	src/settingsdialog.cpp
@@ -120,6 +122,7 @@ set( Sources_ui
 	ui/graphpage.ui
 	ui/handlerootsdialog.ui
 	ui/mainwindow.ui
+	ui/projectinfodialog.ui
 	ui/scanmodepage.ui
 	ui/selectfilesdialog.ui
 	ui/settingsdialog.ui

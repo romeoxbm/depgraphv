@@ -50,6 +50,10 @@
 #	include "selectfilesdialog.h"
 #endif
 
+#ifndef PROJECTINFODIALOG_H
+#	include "projectinfodialog.h"
+#endif
+
 #ifndef PROJECT_H
 #	include "project.h"
 #endif
@@ -113,14 +117,16 @@ namespace depgraphV
 		void _saveAsProject();
 		void _closeProject();
 
-		void _saveAsDot();
-		void _saveAsImage();
-
 		void _clearRecentDocs();
 
 		void _onDraw();
 		void _onClear();
 		void _onConfigRestored();
+
+		//Project Menu
+		void _saveAsDot();
+		void _saveAsImage();
+		void _showProjectInfo();
 
 		//Tabwidget slots
 		void _onCurrentTabChanged( int );
@@ -158,6 +164,7 @@ namespace depgraphV
 		SettingsDialog* _settingsDlg;
 		HandleRootsDialog* _rootsDlg;
 		SelectFilesDialog* _filesDlg;
+		ProjectInfoDialog* _projectInfoDlg;
 
 		QActionGroup* _langGroup;
 

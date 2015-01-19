@@ -431,6 +431,9 @@
    </property>
   </action>
   <action name="actionProjectInfo">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Info...</string>
    </property>
@@ -713,6 +716,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionProjectInfo</sender>
+   <signal>triggered()</signal>
+   <receiver>depgraphV::MainWindow</receiver>
+   <slot>_showProjectInfo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>_newProject()</slot>
@@ -730,5 +749,6 @@
   <slot>_restoreDefaultSettings()</slot>
   <slot>_checkForUpdates()</slot>
   <slot>_onSelectFilesOrFolders()</slot>
+  <slot>_showProjectInfo()</slot>
  </slots>
 </ui>
