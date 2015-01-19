@@ -64,11 +64,23 @@ namespace depgraphV
 		static Project* create( QObject* parent = 0 );
 		static Project* open( QObject* parent = 0, const QString& fileName = "" );
 
+		static const QString defaultExtension;
+
 		~Project();
 
 		const QString& name() const { return _name; }
 		const QString& path() const { return _path; }
 		const QString& fullPath() const { return _fullPath; }
+
+		/**
+		 * @brief Return the project file version.
+		 */
+		unsigned short version() const { return _version; }
+
+		/**
+		 * @brief Return the project file size in bytes.
+		 */
+		qint64 size() const { return _size; }
 
 		bool isModified() const { return _modified; }
 		bool hasUnsubmittedChanges() const { return _hasUnsubmittedChanges; }
@@ -169,11 +181,10 @@ namespace depgraphV
 		void _triggerUnsubmittedChanges( bool );
 		void _newGraph( QStandardItem* = 0 );
 
-		static const QString _defaultExtension;
-
 		QString _name;
 		QString _path;
 		QString _fullPath;
+		qint64 _size;
 		unsigned short _version;
 
 		QHash<QString, int> _fields;

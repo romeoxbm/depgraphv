@@ -41,7 +41,7 @@
 
 namespace depgraphV
 {
-	const QString Project::_defaultExtension = ".dProj";
+	const QString Project::defaultExtension = ".dProj";
 
 	#define LATEST_VER	1
 	#define MAGIC		( ( 'A' << 24 ) + ( 'V' << 16 ) + ( 'G' << 8 ) + 'G' )
@@ -51,6 +51,7 @@ namespace depgraphV
 		: QObject( parent ),
 		  Singleton<Project>(),
 		  _fullPath( filePath ),
+		  _size( 0 ),
 		  _version( LATEST_VER ),
 		  _model( new QStandardItemModel( this ) ),
 		  _delegate( new CustomItemDelegate( this ) ),
@@ -127,7 +128,7 @@ namespace depgraphV
 		QString file = fileName;
 		if( file.isEmpty() )
 		{
-			QString filter = tr( "Project Files (*%1)" ).arg( _defaultExtension );
+			QString filter = tr( "Project Files (*%1)" ).arg( defaultExtension );
 			file = QFileDialog::getOpenFileName(
 							   static_cast<QWidget*>( parent ),
 							   tr( "Create a new project..." ),
@@ -138,7 +139,7 @@ namespace depgraphV
 		}
 
 		Project* p = 0;
-		if( Helpers::addExtension( file, _defaultExtension ) )
+		if( Helpers::addExtension( file, defaultExtension ) )
 			p = new Project( file, parent );
 
 		return p;
@@ -365,7 +366,7 @@ namespace depgraphV
 		_fullPath = filePath;
 		if( _fullPath.isEmpty() )
 		{
-			QString filter = tr( "Project Files (*%1)" ).arg( _defaultExtension );
+			QString filter = tr( "Project Files (*%1)" ).arg( defaultExtension );
 			_fullPath = QFileDialog::getSaveFileName(
 						static_cast<QWidget*>( parent() ),
 						tr( "Create a new project..." ),
@@ -374,7 +375,7 @@ namespace depgraphV
 						&filter
 			);
 
-			if( !Helpers::addExtension( _fullPath, _defaultExtension ) )
+			if( !Helpers::addExtension( _fullPath, defaultExtension ) )
 			{
 				_fullPath = "";
 				_updateProjectProperties();
@@ -479,6 +480,9 @@ namespace depgraphV
 			QFileInfo f( _fullPath );
 			_name = f.baseName();
 			_path = f.absolutePath();
+
+			if( f.exists() )
+				_size = f.size();
 		}
 		else
 			_name = "Unnamed";
