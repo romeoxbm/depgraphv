@@ -59,8 +59,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QString GeneralPage::iconPath() const
 	{
-		//TODO Icon for General Settings
-		return ":/settingsDlgIcons/folder-scan_96x96.png";
+		return ":/settingsDlgIcons/general-settings_96x96.png";
 	}
 	//-------------------------------------------------------------------------
 	bool GeneralPage::event( QEvent* evt )
