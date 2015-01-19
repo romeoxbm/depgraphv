@@ -310,7 +310,6 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_onDraw()
 	{
-		//TODO Warn when no file/folder has been selected
 		_ui->toolBar->setEnabled( false );
 		_ui->menuBar->setEnabled( false );
 		_ui->tabWidget->setCurrentTabUnclosable();
@@ -449,8 +448,11 @@ namespace depgraphV
 			return;
 
 		Graph* g = _project->graph( idx );
+		bool scanByFolders = _project->value( idx, "scanByFolders" ).toBool();
 
-		_ui->actionDraw->setEnabled( !g->drawn() );
+		_ui->actionDraw->setEnabled(
+					!g->drawn() && g->selectionCount( scanByFolders ) != 0
+		);
 		_ui->actionClear->setEnabled( g->drawn() );
 		_ui->actionSave_as_dot->setEnabled( g->drawn() );
 		_ui->actionSave_as_Image->setEnabled( g->drawn() );
@@ -459,7 +461,10 @@ namespace depgraphV
 	void MainWindow::_onGraphCountChanged( int count )
 	{
 		Graph* g = _project->currentGraph();
-		_ui->actionDraw->setEnabled( g && !g->drawn() );
+		bool scanByFolders = _project->currentValue( "scanByFolders" ).toBool();
+		_ui->actionDraw->setEnabled(
+					g && !g->drawn() && g->selectionCount( scanByFolders ) != 0
+		);
 
 		_ui->actionSelect_FilesFolders->setEnabled( count > 0 );
 	}

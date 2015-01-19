@@ -131,7 +131,7 @@
       <item>
        <widget class="QLabel" name="selectionCount">
         <property name="text">
-         <string>Current selection: 0 item(s)</string>
+         <string notr="true"/>
         </property>
        </widget>
       </item>
@@ -192,13 +192,29 @@
   </connection>
   <connection>
    <sender>selectRootFoldersRadio</sender>
-   <signal>toggled(bool)</signal>
+   <signal>clicked()</signal>
    <receiver>depgraphV::ScanModePage</receiver>
    <slot>_updateSelectionCount()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>124</x>
      <y>13</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>124</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>selectFilesRadio</sender>
+   <signal>clicked()</signal>
+   <receiver>depgraphV::ScanModePage</receiver>
+   <slot>_updateSelectionCount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>160</y>
     </hint>
     <hint type="destinationlabel">
      <x>124</x>

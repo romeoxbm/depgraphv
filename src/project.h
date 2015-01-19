@@ -145,6 +145,7 @@ namespace depgraphV
 		//Mapper methods
 		QDataWidgetMapper* mapper() const { return _mapper; }
 
+		int indexOf( Graph* g ) const;
 		Graph* graph( int index ) const;
 		Graph* currentGraph() const;
 

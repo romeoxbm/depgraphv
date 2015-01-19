@@ -38,6 +38,7 @@
 #include "depgraphv_pch.h"
 #include "graph.h"
 #include "helpers.h"
+#include "project.h"
 
 #define G_STR( str ) str.toUtf8().data()
 
@@ -384,6 +385,22 @@ namespace depgraphV
 			return _availablePlugins[ kind ];
 
 		return 0;
+	}
+	//-------------------------------------------------------------------------
+	unsigned int Graph::selectionCount( bool scanByFolders ) const
+	{
+		int c;
+		if( scanByFolders )
+		{
+			Project* p = Singleton<Project>::instancePtr();
+			int idx = p->indexOf( const_cast<Graph*>( this ) );
+			QStringList sel = p->value( idx, "selectedFolders" ).toStringList();
+			c = sel.count();
+		}
+		else
+			c = model()->filesModel()->selectedCount();
+
+		return c;
 	}
 	//-------------------------------------------------------------------------
 	void Graph::clearLayout()

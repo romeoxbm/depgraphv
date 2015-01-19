@@ -247,6 +247,11 @@ namespace depgraphV
 		return _model->rowCount();
 	}
 	//-------------------------------------------------------------------------
+	int Project::indexOf( Graph* g ) const
+	{
+		return _graphs.indexOf( g );
+	}
+	//-------------------------------------------------------------------------
 	Graph* Project::graph( int index ) const
 	{
 		if( index >= 0 && index < _graphs.count() )

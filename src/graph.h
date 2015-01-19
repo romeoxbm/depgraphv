@@ -201,6 +201,12 @@ namespace depgraphV
 		 */
 		static QStringList* pluginsListByKind( const QString& kind );
 
+		/**
+		 * @brief Return how many items has been selected to draw this graph.
+		 * @param scanByFolders
+		 */
+		unsigned int selectionCount( bool scanByFolders ) const;
+
 	signals:
 		void vertexCreated( Agnode_t* );
 		void edgeCreated( Agedge_t* );

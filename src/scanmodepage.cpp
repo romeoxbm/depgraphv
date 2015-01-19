@@ -92,16 +92,12 @@ namespace depgraphV
 	void ScanModePage::_updateSelectionCount()
 	{
 		Project* p = Singleton<Project>::instancePtr();
-		int c;
-		if( _ui->selectRootFoldersRadio->isChecked() )
-		{
-			QStringList sel = p->currentValue( "selectedFolders" ).toStringList();
-			c = sel.count();
-		}
-		else
-			c = p->currentGraph()->model()->filesModel()->selectedCount();
-
-		_ui->selectionCount->setText( tr( "Current selection: %1 item(s)" ).arg( c ) );
+		int c = p->currentGraph()->selectionCount(
+					_ui->selectRootFoldersRadio->isChecked()
+		);
+		_ui->selectionCount->setText(
+					tr( "Current selection: %1 item(s)" ).arg( c )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void ScanModePage::onProjectOpened( Project* p )
