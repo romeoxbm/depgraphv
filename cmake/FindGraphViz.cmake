@@ -16,7 +16,7 @@
 # GRAPHVIZ_FOUND - True if GraphViz found.
 
 if( WIN32 )
-	find_path( GraphViz_INSTALL_DIRS
+	find_path( GraphViz_INSTALL_DIR
 	"include\\graphviz"
 	HINTS "$ENV{PROGRAMFILES}\\Graphviz*"
 )
@@ -28,45 +28,45 @@ if( WIN32 )
 	endif()
 
 else()
-	set( GraphViz_INSTALL_DIRS "$ENV{GRAPHVIZ_DIR}" )
+	set( GraphViz_INSTALL_DIR "$ENV{GRAPHVIZ_DIR}" )
 	set( GRAPHVIZ_LIB_PATH_SUFFIX "lib" )
 endif()
 
 # Look for the header file.
 find_path( GraphViz_INCLUDE_DIR
 	NAMES graph.h cgraph.h
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES "include/graphviz"
 )
 
 # Look for the library.
 find_library( GraphViz_gvc_LIBRARY
 	NAMES gvc
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
 )
 
 find_library( GraphViz_graph_LIBRARY
 	NAMES graph
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
 )
 
 find_library( GraphViz_cgraph_LIBRARY
 	NAMES cgraph
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
 )
 
 find_library( GraphViz_cdt_LIBRARY
 	NAMES cdt
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
 )
 
 find_library( GraphViz_pathplan_LIBRARY
 	NAMES pathplan
-	HINTS ${GraphViz_INSTALL_DIRS}
+	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
 )
 
