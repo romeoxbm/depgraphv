@@ -78,21 +78,17 @@ namespace depgraphV
 	Graph::~Graph()
 	{
 		_instances--;
-		clearGraph();
+		clearLayout();
 
+		_vertices.clear();
 		_graphAttributes.clear();
 		_verticesAttributes.clear();
 		_edgesAttributes.clear();
 
 		if( !_instances )
 		{
-			foreach( QStringList* l, _availablePlugins )
-				delete l;
-
 			foreach( QStringList* l, _parsedFiles )
 				delete l;
-
-			_availablePlugins.clear();
 
 			gvFreeContext( _context );
 			_context = 0;
@@ -350,9 +346,10 @@ namespace depgraphV
 			if( !result )
 			{
 				QMessageBox::critical(
-					this->parentWidget(),
-					tr( "Save as image" ),
-					tr( "Unable to save file;\n" ) + QString::fromUtf8( aglasterr() )
+							parentWidget(),
+							tr( "Save as image" ),
+							tr( "Unable to save file;\n%1" )
+							.arg( QString::fromUtf8( aglasterr() ) )
 				);
 			}
 		}
@@ -368,7 +365,8 @@ namespace depgraphV
 			return retValue;
 
 		QString data;
-		if( _isPluginAvailable( "dot", "render" ) && _renderDataAs( _graph, "dot", &data ) )
+		if( _isPluginAvailable( "dot", "render" )
+			&& _renderDataAs( _graph, "dot", &data ) )
 		{
 			QTextStream stream( &f );
 			stream << data;
@@ -388,6 +386,14 @@ namespace depgraphV
 			return _availablePlugins[ kind ];
 
 		return 0;
+	}
+	//-------------------------------------------------------------------------
+	void Graph::clearPluginsList()
+	{
+		foreach( QStringList* l, _availablePlugins )
+			delete l;
+
+		_availablePlugins.clear();
 	}
 	//-------------------------------------------------------------------------
 	unsigned int Graph::selectionCount( bool scanByFolders ) const
@@ -410,7 +416,7 @@ namespace depgraphV
 	{
 		if( _svgItem )
 		{
-			this->scene()->removeItem( _svgItem );
+			scene()->removeItem( _svgItem );
 			delete _svgItem;
 			_svgItem = 0;
 		}
@@ -435,7 +441,8 @@ namespace depgraphV
 		event->accept();
 	}
 	//-------------------------------------------------------------------------
-	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest, const QString& label )
+	Agedge_t* Graph::_createEdge( Agnode_t* src, Agnode_t* dest,
+								  const QString& label )
 	{
 		Q_ASSERT( src && dest && "src and dst vertices cannot be null!" );
 #ifdef GraphViz_USE_CGRAPH
@@ -453,7 +460,8 @@ namespace depgraphV
 		return e;
 	}
 	//-------------------------------------------------------------------------
-	bool Graph::_renderDataAs( Agraph_t* graph, const QString& format, QString* outString )
+	bool Graph::_renderDataAs( Agraph_t* graph, const QString& format,
+							   QString* outString )
 	{
 		unsigned int length;
 		char* rawData = 0;
@@ -513,26 +521,32 @@ namespace depgraphV
 		if( !_availablePlugins.empty() )
 			return;
 
-		qDebug() << qPrintable( tr( "Looking for available GraphViz plugins..." ) );
+		qDebug() << qPrintable(
+						tr( "Looking for available GraphViz plugins..." )
+		);
 
 #ifdef GraphViz_USE_CGRAPH
 		int size;
-		QString kinds[ 5 ] = { "render", "layout", "textlayout", "device", "loadimage" };
+		QString kinds[ 5 ] = { "render", "layout", "textlayout",
+							   "device", "loadimage"
+		};
 		for( int k = 0; k < 5; ++k )
 		{
 			QString debugList;
 
-			qDebug() << qPrintable( tr( "Plugins for kind \"%1\":" ).arg( kinds[ k ] ) );
+			qDebug() << qPrintable(
+							tr( "Plugins for kind \"%1\":" ).arg( kinds[ k ] )
+			);
 			_availablePlugins.insert( kinds[ k ], new QStringList() );
 
 			if( !_context )
 				_context = gvContext();
 
 			char** list = gvPluginList(
-							  _context,
-							  const_cast<char*>( kinds[ k ].toStdString().c_str() ),
-							  &size,
-							  0
+						_context,
+						const_cast<char*>( kinds[ k ].toStdString().c_str() ),
+						&size,
+						0
 			);
 			for( int i = 0; i < size; ++i )
 			{
@@ -551,8 +565,10 @@ namespace depgraphV
 		}
 #else
 		//TODO
-		//Older versions of GraphViz (2.26 for instance) doesn't have gvPluginList function.
-		//Following code is just a workaround, until I get a better and cleaner solution..
+		//Older versions of GraphViz (2.26 for instance) doesn't have
+		//gvPluginList function.
+		//Following code is just a workaround, until I get a better and
+		//cleaner solution..
 		_availablePlugins.insert( "render", new QStringList );
 		_availablePlugins[ "render" ]->append( "dot" );
 		_availablePlugins[ "render" ]->append( "svg" );

@@ -157,6 +157,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	MainWindow::~MainWindow()
 	{
+		Graph::clearPluginsList();
 		delete _ui;
 		delete _settingsDlg;
 		delete _aboutDlg;

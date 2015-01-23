@@ -209,6 +209,11 @@ namespace depgraphV
 		static QStringList* pluginsListByKind( const QString& kind );
 
 		/**
+		 * @brief Clear available plugins list.
+		 */
+		static void clearPluginsList();
+
+		/**
 		 * @brief Return how many items has been selected to draw this graph.
 		 * @param scanByFolders
 		 */
