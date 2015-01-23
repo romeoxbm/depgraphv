@@ -63,6 +63,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void SettingsPage::onProjectOpened( Project* p )
 	{
+		Q_UNUSED( p );
 	}
 	//-------------------------------------------------------------------------
 	void SettingsPage::onProjectLoaded( Project* p )
