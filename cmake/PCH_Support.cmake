@@ -29,7 +29,7 @@ MACRO( ADD_PRECOMPILED_HEADER _targetName _input _src_file )
 	if( MSVC_IDE )
 
 		add_definitions( /Yu"${_name}" )
-		add_definitions( /Zm1000 )
+		add_definitions( /Zm${DEPGRAPHV_PCH_FACTOR} )
 		set_source_files_properties( ${_src_file} PROPERTIES COMPILE_FLAGS /Yc"${_name}" )
 
 	elseif( CMAKE_COMPILER_IS_GNUCXX )

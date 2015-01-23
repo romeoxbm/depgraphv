@@ -177,6 +177,8 @@ option( DEPGRAPHV_ENABLE_PCH_SUPPORT TRUE )
 
 if( UNIX )
 	set( DEPGRAPHV_PREFERRED_PACKAGE "DEB" CACHE STRING "Choose the type of generated package. Valid options are RPM or DEB." )
+elseif( MSVC_IDE )
+	set( DEPGRAPHV_PCH_FACTOR "100" CACHE STRING "Heap allocation factor" )
 endif()
 
 #Detecting if we're on x86 system (or not) when using gnu compiler
