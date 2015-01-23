@@ -95,6 +95,7 @@ namespace depgraphV
 		void _onClose( int );
 		void _onProjectOpened( Project* );
 		void _onProjectClosed();
+		void _onGraphRemoving( Graph* );
 
 	private:
 		Ui::SelectFilesDialog* _ui;

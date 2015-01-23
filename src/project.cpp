@@ -434,8 +434,17 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void Project::removeGraph( int index )
 	{
+		Graph* g = graph( index );
+		Q_ASSERT( g );
+
+		//Graph g is about to be removed...
+		emit graphRemoving( g );
+
+		//..and now, removing the g graph
 		_model->removeRow( index );
 		_graphs.remove( index );
+		delete g;
+
 		emit graphRemoved( index );
 		emit graphCountChanged( _model->rowCount() );
 		_triggerModified( true );

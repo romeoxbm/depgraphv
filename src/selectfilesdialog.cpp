@@ -69,41 +69,58 @@ namespace depgraphV
 
 		typedef QPair<Qt::CheckState, FilesModel::FileGroup> Pair;
 		_ui->listView->addAction( _ui->selectAll );
-		_ui->selectAll->setData( Helpers::toQVariant( new Pair( Qt::Checked, FilesModel::All ) ) );
+		QVariant value = Helpers::toQVariant(
+							 new Pair( Qt::Checked, FilesModel::All )
+		);
+		_ui->selectAll->setData( value );
 
 		_ui->listView->addAction( _ui->selectNone );
-		_ui->selectNone->setData( Helpers::toQVariant( new Pair( Qt::Unchecked, FilesModel::All ) ) );
+		value = Helpers::toQVariant(
+					new Pair( Qt::Unchecked, FilesModel::All )
+		);
+		_ui->selectNone->setData( value );
 
 		_ui->listView->addAction( _ui->invertSelection );
-		_ui->invertSelection->setData(
-					Helpers::toQVariant( new Pair( static_cast<Qt::CheckState>( -1 ), FilesModel::All ) )
+		value = Helpers::toQVariant(
+					new Pair( (Qt::CheckState) -1, FilesModel::All )
 		);
+		_ui->invertSelection->setData( value );
 
 		Helpers::insertSeparator( _ui->listView );
 
 		_ui->listView->addAction( _ui->hdr_selectAll );
-		_ui->hdr_selectAll->setData( Helpers::toQVariant( new Pair( Qt::Checked, FilesModel::Hdr ) ) );
+		value = Helpers::toQVariant( new Pair( Qt::Checked, FilesModel::Hdr ) );
+		_ui->hdr_selectAll->setData( value );
 
 		_ui->listView->addAction( _ui->hdr_selectNone );
-		_ui->hdr_selectNone->setData( Helpers::toQVariant( new Pair( Qt::Unchecked, FilesModel::Hdr ) ) );
+		value = Helpers::toQVariant(
+					new Pair( Qt::Unchecked, FilesModel::Hdr )
+		);
+		_ui->hdr_selectNone->setData( value );
 
 		_ui->listView->addAction( _ui->hdr_invertSelection );
-		_ui->hdr_invertSelection->setData(
-					Helpers::toQVariant( new Pair( static_cast<Qt::CheckState>( -1 ), FilesModel::Hdr ) )
+		value = Helpers::toQVariant(
+					new Pair( (Qt::CheckState) -1, FilesModel::Hdr )
 		);
+		_ui->hdr_invertSelection->setData( value );
 
 		Helpers::insertSeparator( _ui->listView );
 
 		_ui->listView->addAction( _ui->src_selectAll );
-		_ui->src_selectAll->setData( Helpers::toQVariant( new Pair( Qt::Checked, FilesModel::Src ) ) );
+		value = Helpers::toQVariant( new Pair( Qt::Checked, FilesModel::Src ) );
+		_ui->src_selectAll->setData( value );
 
 		_ui->listView->addAction( _ui->src_selectNone );
-		_ui->src_selectNone->setData( Helpers::toQVariant( new Pair( Qt::Unchecked, FilesModel::Src ) ) );
+		value = Helpers::toQVariant(
+					new Pair( Qt::Unchecked, FilesModel::Src )
+		);
+		_ui->src_selectNone->setData( value );
 
 		_ui->listView->addAction( _ui->src_invertSelection );
-		_ui->src_invertSelection->setData(
-					Helpers::toQVariant( new Pair( static_cast<Qt::CheckState>( -1 ), FilesModel::Src ) )
+		value = Helpers::toQVariant(
+					new Pair( (Qt::CheckState) -1, FilesModel::Src )
 		);
+		_ui->src_invertSelection->setData( value );
 
 		connect( parent, SIGNAL( projectOpened( Project* ) ),
 				 this, SLOT( _onProjectOpened( Project* ) )
@@ -167,10 +184,22 @@ namespace depgraphV
 	void SelectFilesDialog::_onProjectOpened( Project* p )
 	{
 		p->addMapping( this, "graphModel" );
+		connect( p, SIGNAL( graphRemoving( Graph* ) ),
+				 this, SLOT( _onGraphRemoving( Graph* ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void SelectFilesDialog::_onProjectClosed()
 	{
+		_model = 0;
+	}
+	//-------------------------------------------------------------------------
+	void SelectFilesDialog::_onGraphRemoving( Graph* g )
+	{
+		if( g->model() != _model )
+			return;
+
+		_disconnect();
 		_model = 0;
 	}
 	//-------------------------------------------------------------------------

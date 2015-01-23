@@ -87,48 +87,79 @@ namespace depgraphV
 
 		QStandardItemModel* tableModel() const { return _model; }
 
-		void addMapping( QWidget* w, const QString& fieldName, const QString& prefix = "",
-						 const QVariant& defaultValue = QVariant() );
+		void addMapping( QWidget* w, const QString& fieldName,
+						 const QString& prefix = "",
+						 const QVariant& defaultValue = QVariant()
+		);
 
-		void addMapping( QWidget* w, int fieldIndex, const QVariant& defaultValue = QVariant() );
+		void addMapping( QWidget* w, int fieldIndex,
+						 const QVariant& defaultValue = QVariant()
+		);
 
-		void addMapping( QRadioButton* radios[ 2 ], const QString& fieldName, const QString& prefix = "",
-						 bool defaultValue = true );
+		void addMapping( QRadioButton* radios[ 2 ],
+						 const QString& fieldName,
+						 const QString& prefix = "",
+						 bool defaultValue = true
+		);
 
-		void addMapping( QRadioButton* radios[ 2 ], int fieldIndex, bool defaultValue = true );
+		void addMapping( QRadioButton* radios[ 2 ],
+						 int fieldIndex,
+						 bool defaultValue = true
+		);
 
 		/**
-		 * @brief Return the index of the field \a "prefix + fieldName", or -1 if not found.
+		 * @brief Return the index of the field \a "prefix + fieldName", or -1
+		 * if not found.
 		 * @param fieldName The field name.
-		 * @param prefix The field name prefix. The default value is an empty string.
+		 * @param prefix The field name prefix. The default value is an empty
+		 * string.
 		 */
-		int fieldIndex( const QString& fieldName, const QString& prefix = "" ) const;
+		int fieldIndex( const QString& fieldName,
+						const QString& prefix = ""
+		) const;
 
 		/**
-		 * @brief Return the value of the field specified by \a "prefix + fieldName" at \a recordIndex.
+		 * @brief Return the value of the field specified by
+		 * \a "prefix + fieldName" at \a recordIndex.
 		 * @param recordIndex Index of the record (row).
 		 * @param fieldName The field name.
-		 * @param prefix The field name prefix. The default value is an empty string.
+		 * @param prefix The field name prefix. The default value is an empty
+		 * string.
 		 */
-		QVariant value( int recordIndex, const QString& fieldName, const QString& prefix = "" ) const;
+		QVariant value( int recordIndex,
+						const QString& fieldName,
+						const QString& prefix = ""
+		)const;
 
 		/**
-		 * @brief Return the value of the field specified by \a fieldIndex at \a recordIndex.
+		 * @brief Return the value of the field specified by \a fieldIndex at
+		 * \a recordIndex.
 		 * @param recordIndex Index of the record (row).
 		 * @param fieldIndex Field index.
 		 */
 		QVariant value( int recordIndex, int fieldIndex ) const;
 
-		void setValue( const QVariant& value, int recordIndex, const QString& fieldName, const QString& prefix = "" );
-		void setValue( const QVariant& value, int recordIndex, int fieldIndex );
+		void setValue( const QVariant& value,
+					   int recordIndex,
+					   const QString& fieldName,
+					   const QString& prefix = ""
+		);
+
+		void setValue( const QVariant& value,
+					   int recordIndex,
+					   int fieldIndex
+		);
 
 		/**
-		 * @brief Return the value of the field specified by \a "prefix + fieldName" at
-		 * the index of the current shown graph.
+		 * @brief Return the value of the field specified by
+		 * \a "prefix + fieldName" at the index of the current shown graph.
 		 * @param fieldName The field name.
-		 * @param prefix The field name prefix. The default value is an empty string.
+		 * @param prefix The field name prefix. The default value is an empty
+		 * string.
 		 */
-		QVariant currentValue( const QString& fieldName, const QString& prefix = "" ) const;
+		QVariant currentValue( const QString& fieldName,
+							   const QString& prefix = ""
+		) const;
 
 		/**
 		 * @brief Return the value of the field specified by \a fieldIndex at
@@ -137,7 +168,11 @@ namespace depgraphV
 		 */
 		QVariant currentValue( int fieldIndex ) const;
 
-		void setCurrentValue( const QVariant& value, const QString& fieldName, const QString& prefix = "" );
+		void setCurrentValue( const QVariant& value,
+							  const QString& fieldName,
+							  const QString& prefix = ""
+		);
+
 		void setCurrentValue( const QVariant& value, int fieldIndex );
 
 		int recordCount() const;
@@ -160,6 +195,7 @@ namespace depgraphV
 		void unsubmittedChanges( bool );
 
 		void graphCreated( const QString& name, Graph* );
+		void graphRemoving( Graph* g );
 		void graphRemoved( int index );
 		void graphRenamed( int index, const QString& newName );
 		void graphCountChanged( int count );

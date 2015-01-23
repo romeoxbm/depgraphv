@@ -185,10 +185,8 @@ namespace depgraphV
 				return;
 		}
 
-		delete widget( index );
 		Project* p = Singleton<Project>::instancePtr();
-		if( p )
-			p->removeGraph( index );
+		p->removeGraph( index );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_closeAllButCurrentTab()
