@@ -132,7 +132,7 @@ if( WIN32 )
 		file( GLOB QT_INSTALL_PATH "${QT_INSTALL_PATH_PREFIX}/mingw48_32/" )
 	endif( MSVC12 )
 	
-	set( CMAKE_PREFIX_PATH "${QT_INSTALL_PATH};${CMAKE_PREFIX_PATH}" )
+	set( CMAKE_PREFIX_PATH "${QT_INSTALL_PATH}" )
 	#TODO It doesn't override the wrong QT_QMAKE_EXECUTABLE value...
 	find_program( QT_QMAKE_EXECUTABLE NAMES qmake qmake5 qmake-qt5 qmake-mac PATHS "${QT_INSTALL_PATH}/bin" )
 endif( WIN32 )
