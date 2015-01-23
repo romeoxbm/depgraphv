@@ -16,11 +16,11 @@
 # GRAPHVIZ_FOUND - True if GraphViz found.
 
 if( WIN32 )
-	find_path( GraphViz_INSTALL_DIR
-	"include\\graphviz"
-	HINTS "$ENV{PROGRAMFILES}\\Graphviz*"
-)
-
+	file( GLOB GraphViz_INSTALL_DIR "$ENV{PROGRAMFILES}/Graphviz*" )
+	
+	#TODO This always link using release libraries as when
+	#configuring for Visual Studio, there's no CMAKE_BUILD_TYPE
+	#(but CMAKE_CONFIGURATION_TYPES)
 	if( CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" )
 		set( GRAPHVIZ_LIB_PATH_SUFFIX "lib/debug/lib" )
 	else()
