@@ -272,7 +272,7 @@ install( FILES ${DOCS} DESTINATION ${DOCS_INSTALL_PATH} COMPONENT docs )
 include( PCH_Support )
 
 if( WIN32 )
-	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}/bin;${GraphViz_INSTALL_DIRS}/bin" )
+	set( RUNTIME_LIBS_PATH "${CMAKE_PREFIX_PATH}/bin;${GraphViz_INSTALL_DIR}/bin" )
 
 	if( MSVC_IDE )
 		include( CreateLaunchers )

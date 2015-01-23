@@ -16,7 +16,8 @@
 # GRAPHVIZ_FOUND - True if GraphViz found.
 
 if( WIN32 )
-	file( GLOB GraphViz_INSTALL_DIR "$ENV{PROGRAMFILES}/Graphviz*" )
+	file( GLOB _iPath "$ENV{PROGRAMFILES}/Graphviz*" )
+	file( TO_CMAKE_PATH "${_iPath}" GraphViz_INSTALL_DIR )
 	
 	#TODO This always link using release libraries as when
 	#configuring for Visual Studio, there's no CMAKE_BUILD_TYPE
