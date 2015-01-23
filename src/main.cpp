@@ -42,8 +42,10 @@ namespace depgraphV
 {
 #ifdef WIN32
 	/**
-	 * @brief toggleConsole function allocate/free a log console. Only available on Windows.
-	 * @param enabled True when a console allocation is required, false when the already allocated console should be freed.
+	 * @brief toggleConsole function allocate/free a log console. Only available
+	 * on Windows.
+	 * @param enabled True when a console allocation is required, false when the
+	 * already allocated console should be freed.
 	 */
 	void toggleConsole( bool enabled );
 #endif
@@ -60,7 +62,8 @@ namespace depgraphV
 	}
 
 	/**
-	 * @brief This function prints out an help message showing all the command line arguments available and their usage.
+	 * @brief This function prints out an help message showing all the command
+	 * line arguments available and their usage.
 	 */
 	void printHelp()
 	{
@@ -69,18 +72,28 @@ namespace depgraphV
 		printf( "\t%s [options] [filename]\n\n", APP_NAME );
 		printf( "Options\n" );
 		printf( "\t-h (--help) \t\t= Print this help message and quit.\n" );
-		printf( "\t-V (--version) \t\t= Print %s version and quit.\n", APP_NAME );
-		printf( "\t-l (--with-log)\t\t= Enable log messages (disabled by default).\n" );
+		printf( "\t-V (--version) \t\t= Print %s version and quit.\n",
+				APP_NAME
+		);
+		printf( "\t-l (--with-log)\t\t= Enable log messages "
+				"(disabled by default).\n"
+		);
 	}
 
 	/**
-	 * @brief This function is being used when it is necessary to disable log messages sent by this application
+	 * @brief This function is being used when it is necessary to disable log
+	 * messages sent by this application
 	 *		  via qDebug(), qWarning(), etc.
 	 */
 #if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
-	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& ) {}
+	void noMessageOutput( QtMsgType,
+						  const QMessageLogContext&, const QString& )
+	{
+	}
 #else
-	void noMessageOutput( QtMsgType, const char* ) {}
+	void noMessageOutput( QtMsgType, const char* )
+	{
+	}
 #endif
 
 #ifdef WIN32
@@ -147,14 +160,19 @@ int main( int argc, char* argv[] )
 	{
 		//First of all, check for valid option..
 		QStringList validOptions;
-		validOptions << "-h" << "--help" << "-V" << "--version" << "-l" << "--with-log";
+		validOptions << "-h" << "--help" << "-V" << "--version"
+					 << "-l" << "--with-log";
 		for( unsigned short i = 1; i < app.arguments().count(); i++ )
 		{
 			QString current = app.arguments()[ i ];
-			if( ( current.startsWith( '-' ) && !validOptions.contains( current ) ) || !filename.isEmpty() )
+			if( !filename.isEmpty() ||
+				( current.startsWith( '-' ) &&
+				  !validOptions.contains( current ) ) )
 			{
 				//Wrong option. Print help and quit
-				printf( "WRONG USAGE: Unknown option \"%s\"\n\n", current.toStdString().c_str() );
+				printf( "WRONG USAGE: Unknown option \"%s\"\n\n",
+						current.toStdString().c_str()
+				);
 				depgraphV::printHelp();
 				return 0;
 			}

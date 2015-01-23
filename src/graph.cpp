@@ -129,7 +129,10 @@ namespace depgraphV
 	void Graph::setHighQualityAA( bool highQualityAntialiasing )
 	{
 #ifdef DEPGRAPHV_USE_OPENGL
-		setRenderHint( QPainter::HighQualityAntialiasing, highQualityAntialiasing );
+		setRenderHint(
+					QPainter::HighQualityAntialiasing,
+					highQualityAntialiasing
+		);
 #else
 		Q_UNUSED( highQualityAntialiasing );
 #endif

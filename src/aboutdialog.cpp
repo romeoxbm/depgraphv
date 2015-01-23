@@ -54,19 +54,29 @@ namespace depgraphV
 		_ui->glSupportValue->setText( "NO" );
 #endif
 		_ui->projectNameLabel->setText( QApplication::applicationName() );
-		_ui->projectVersionLabel->setText( "v" + QApplication::applicationVersion() );
+		_ui->projectVersionLabel->setText(
+					"v" + QApplication::applicationVersion()
+		);
 
 		_setTabStopWidth( _ui->authorsText );
-		_ui->authorsText->setPlainText( Helpers::LoadTextFromResources( "AUTHORS" ) );
+		_ui->authorsText->setPlainText(
+					Helpers::LoadTextFromResources( "AUTHORS" )
+		);
 
 		_setTabStopWidth( _ui->todoText );
-		_ui->todoText->setPlainText( Helpers::LoadTextFromResources( "TODO" ) );
+		_ui->todoText->setPlainText(
+					Helpers::LoadTextFromResources( "TODO" )
+		);
 
 		_setTabStopWidth( _ui->changelogText );
-		_ui->changelogText->setPlainText( Helpers::LoadTextFromResources( "Changelog" ) );
+		_ui->changelogText->setPlainText(
+					Helpers::LoadTextFromResources( "Changelog" )
+		);
 
 		_setTabStopWidth( _ui->licenseText );
-		_ui->licenseText->setPlainText( Helpers::LoadTextFromResources( "COPYING" ) );
+		_ui->licenseText->setPlainText(
+					Helpers::LoadTextFromResources( "COPYING" )
+		);
 
 		_ui->qtVersion->setText( QT_VERSION_STR );
 

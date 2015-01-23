@@ -57,7 +57,8 @@ namespace depgraphV
 
 	public:
 		/**
-		 * @brief The RendererType enum which is used to set the render method used by Graph
+		 * @brief The RendererType enum which is used to set the render method
+		 * used by Graph
 		 */
 		enum RendererType
 		{
@@ -88,7 +89,8 @@ namespace depgraphV
 		static RendererType defaultRenderer() { return Graph::Native; }
 
 		/**
-		 * @brief Return the default value for renderer property (Native) as QString.
+		 * @brief Return the default value for renderer property (Native)
+		 * as QString.
 		 */
 		static QString defaultRendererString() { return "Native"; }
 
@@ -115,21 +117,24 @@ namespace depgraphV
 		/**
 		 * @brief Return the graph attribute value.
 		 * @param name The name of the graph attribute.
-		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 * @return An empty string if the attribute wasn't previously set,
+		 * its value otherwise.
 		 */
 		QString graphAttribute( const QString& name ) const;
 
 		/**
 		 * @brief Return the vertices attribute value.
 		 * @param name The name of the vertices attribute.
-		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 * @return An empty string if the attribute wasn't previously set,
+		 * its value otherwise.
 		 */
 		QString verticesAttribute( const QString& name ) const;
 
 		/**
 		 * @brief Return the edges attribute value.
 		 * @param name The name of the edges attribute.
-		 * @return An empty string if the attribute wasn't previously set, its value otherwise.
+		 * @return An empty string if the attribute wasn't previously set,
+		 * its value otherwise.
 		 */
 		QString edgesAttribute( const QString& name ) const;
 
@@ -157,8 +162,10 @@ namespace depgraphV
 		//TODO Should I need getter methods for edges?
 
 		/**
-		 * @brief Create all the outgoing edges of the graph vertex with label vertexLabel.
-		 * @param absPath The absolute path to the file( required to parse includes ).
+		 * @brief Create all the outgoing edges of the graph vertex with
+		 * label vertexLabel.
+		 * @param absPath The absolute path to the file
+		 * ( required to parse includes ).
 		 * @param vertexLabel The graph vertex label.
 		 */
 		void createEdges( const QString& absPath, const QString& vertexLabel );
@@ -170,8 +177,8 @@ namespace depgraphV
 		bool applyLayout();
 
 		/**
-		 * @return True if this graph has been drawn (structure created and layout applied),
-		 *	false otherwise.
+		 * @return True if this graph has been drawn
+		 * (structure created and layout applied), false otherwise.
 		 */
 		bool drawn() const { return _drawn; }
 
@@ -223,7 +230,8 @@ namespace depgraphV
 
 		/**
 		 * @brief Enable (or disable) high quality antialiasing.
-		 * @param highQualityAA The new value for high quality antialiasing property.
+		 * @param highQualityAA The new value for high quality antialiasing
+		 * property.
 		 */
 		void setHighQualityAA( bool highQualityAA );
 
@@ -288,18 +296,25 @@ namespace depgraphV
 		 * @param src The source vertex.
 		 * @param dest The destination vertex.
 		 * @param label Optional label of the new edge.
-		 * @return An edge pointer if everything went fine, or NULL if an error occurred.
+		 * @return An edge pointer if everything went fine, or NULL if an error
+		 * occurred.
 		 */
-		Agedge_t* _createEdge( Agnode_t* src, Agnode_t* dest, const QString& label = "" );
+		Agedge_t* _createEdge( Agnode_t* src, Agnode_t* dest,
+							   const QString& label = ""
+		);
 
 		/**
-		 * @brief Helper method used to "translate" the graph into different formats.
+		 * @brief Helper method used to "translate" the graph into different
+		 * formats.
 		 * @param graph
 		 * @param format The selected format.
-		 * @param outString A string containing the graph representation in the selected format.
+		 * @param outString A string containing the graph representation in the
+		 * selected format.
 		 * @return True if everything went fine, false otherwise.
 		 */
-		static bool _renderDataAs( Agraph_t* graph, const QString& format, QString* outString );
+		static bool _renderDataAs( Agraph_t* graph, const QString& format,
+								   QString* outString
+		);
 
 		/**
 		 * @brief This method restore all attributes after clearing this graph.
@@ -309,7 +324,9 @@ namespace depgraphV
 		void _setDefaultAttributes();
 
 		static void _lookForAvailablePlugins();
-		static bool _isPluginAvailable( const QString& format, const QString& kind = "" );
+		static bool _isPluginAvailable( const QString& format,
+										const QString& kind = ""
+		);
 	};
 }
 

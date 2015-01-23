@@ -174,7 +174,8 @@ namespace depgraphV
 			QMessageBox::StandardButton answer = QMessageBox::question(
 						this,
 						tr( "Remove Graph" ),
-						tr( "Closing this tab, you will also remove this graph from your project\n"
+						tr( "Closing this tab, you will also remove this graph "
+							"from your project\n"
 							"Would you like to continue?" ),
 						QMessageBox::Yes | QMessageBox::No,
 						QMessageBox::No
@@ -315,7 +316,8 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void CustomTabWidget::_blockMapperCurrentIndexChangedSignal( QDataWidgetMapper* m, bool block )
+	void CustomTabWidget::_blockMapperCurrentIndexChangedSignal(
+			QDataWidgetMapper* m, bool block )
 	{
 		if( block )
 			m->disconnect( this, SLOT( _changeCurrentTab( int ) ) );
