@@ -525,6 +525,12 @@ namespace depgraphV
 		if( !i )
 		{
 			graphName = QString( tr( "New Graph %1" ) ).arg( QString::number( _graphs.count() ) );
+
+			//Look for existing items with same name
+			QList<QStandardItem*> r = _model->findItems( graphName );
+			if( !r.isEmpty() )
+				graphName += " (1)";
+
 			i = new QStandardItem( graphName );
 			triggerGraphCountChangedSignal = true;
 		}
