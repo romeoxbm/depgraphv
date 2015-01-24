@@ -532,7 +532,9 @@ namespace depgraphV
 
 		if( !i )
 		{
-			graphName = tr( "New Graph %1" ).arg( QString::number( _graphs.count() ) );
+			graphName = tr( "New Graph %1" ).arg(
+				QString::number( _graphs.count() )
+			);
 
 			//Look for existing items with same name
 			ushort collisionIdx = 1;

@@ -15,10 +15,28 @@
 # GraphViz_LIBRARIES - List of libraries when using GraphViz.
 # GRAPHVIZ_FOUND - True if GraphViz found.
 
+#Libs this script is looking for...
+set( libs
+	gvc
+	graph
+	cgraph
+	cdt
+	pathplan
+)
+
 if( WIN32 )
-	file( GLOB _iPath "$ENV{PROGRAMFILES}/Graphviz*" )
-	file( TO_CMAKE_PATH "${_iPath}" GraphViz_INSTALL_DIR )
-	
+	set( variables GraphViz_INCLUDE_DIR )
+	foreach( lib ${libs} )
+		list( APPEND variables "GraphViz_LIB_${lib}" )
+	endforeach()
+		
+	getPathFromPattern( 
+		GraphViz_INSTALL_DIR
+		"$ENV{PROGRAMFILES}/Graphviz*"
+		"Installation paths found for Graphviz"
+		"${variables}"
+	)
+		
 	#TODO This always link using release libraries as when
 	#configuring for Visual Studio, there's no CMAKE_BUILD_TYPE
 	#(but CMAKE_CONFIGURATION_TYPES)
@@ -33,53 +51,30 @@ else()
 	set( GRAPHVIZ_LIB_PATH_SUFFIX "lib" )
 endif()
 
-# Look for the header file.
+# Look for the include path.
 find_path( GraphViz_INCLUDE_DIR
 	NAMES graph.h cgraph.h
 	HINTS ${GraphViz_INSTALL_DIR}
 	PATH_SUFFIXES "include/graphviz"
 )
 
-# Look for the library.
-find_library( GraphViz_gvc_LIBRARY
-	NAMES gvc
-	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
-)
-
-find_library( GraphViz_graph_LIBRARY
-	NAMES graph
-	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
-)
-
-find_library( GraphViz_cgraph_LIBRARY
-	NAMES cgraph
-	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
-)
-
-find_library( GraphViz_cdt_LIBRARY
-	NAMES cdt
-	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
-)
-
-find_library( GraphViz_pathplan_LIBRARY
-	NAMES pathplan
-	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
-)
-
-set( GraphViz_LIBRARY ${GraphViz_gvc_LIBRARY} ${GraphViz_graph_LIBRARY} ${GraphViz_cgraph_LIBRARY} ${GraphViz_cdt_LIBRARY} ${GraphViz_pathplan_LIBRARY} )
+#Look for libraries
+foreach( lib ${libs} )
+	find_library( GraphViz_LIB_${lib}
+		NAMES ${lib}
+		HINTS ${GraphViz_INSTALL_DIR}
+		PATH_SUFFIXES ${GRAPHVIZ_LIB_PATH_SUFFIX}
+	)
+	list( APPEND libraries_found ${GraphViz_LIB_${lib}} )
+endforeach()
 
 # Handle the QUIETLY and REQUIRED arguments and set GraphViz_FOUND to TRUE if all listed variables are TRUE.
 include( FindPackageHandleStandardArgs )
-find_package_handle_standard_args( GraphViz DEFAULT_MSG GraphViz_LIBRARY GraphViz_INCLUDE_DIR )
+find_package_handle_standard_args( GraphViz DEFAULT_MSG libraries_found GraphViz_INCLUDE_DIR )
 
 # Copy the results to the output variables.
 if( GRAPHVIZ_FOUND )
-	set( GraphViz_LIBRARIES ${GraphViz_LIBRARY} )
+	set( GraphViz_LIBRARIES ${libraries_found} )
 	set( GraphViz_INCLUDE_DIRS ${GraphViz_INCLUDE_DIR} )
 	
 	#Getting GraphViz version

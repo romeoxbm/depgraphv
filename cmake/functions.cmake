@@ -1,0 +1,67 @@
+################################################################################
+#                _                                        _
+#             __| | ___ _ __         __ _ _ __ __ _ _ __ | |__/\   /\
+#            / _` |/ _ \ '_ \ _____ / _` | '__/ _` | '_ \| '_ \ \ / /
+#           | (_| |  __/ |_) |_____| (_| | | | (_| | |_) | | | \ V /
+#            \__,_|\___| .__/       \__, |_|  \__,_| .__/|_| |_|\_/
+#                      |_|          |___/          |_|
+#
+################################################################################
+#
+# functions.cmake
+#
+# This file is part of dep-graphV - An useful tool to analize header
+# dependendencies via graphs.
+#
+# This software is distributed under the MIT License:
+#
+# Copyright (c) 2013 - 2015 Francesco Guastella aka romeoxbm
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+################################################################################
+
+################################################################################
+# getPathFromPattern
+################################################################################
+function( getPathFromPattern result pattern desc varList )
+	file( GLOB _iPaths ${pattern} )
+	file( TO_CMAKE_PATH "${_iPaths}" paths )
+	list( LENGTH paths len )
+	if( ${len} GREATER 1 )
+		#In event of multiple matches, this function create a drop-down list
+		#containing matching paths.
+		list( GET paths 0 firstElem )
+		set( ${result} ${firstElem} CACHE STRING ${desc} )
+		set_property( CACHE ${result} PROPERTY STRINGS ${paths} )
+		
+		if( NOT DEFINED ${result}_LAST )
+			set( ${result}_LAST ${firstElem} CACHE STRING "" )
+			mark_as_advanced( ${result}_LAST )
+		endif()
+
+		if( NOT "${${result}}" STREQUAL "${${result}_LAST}" )
+			foreach( var ${varList} )
+				unset( ${var} CACHE )
+			endforeach()
+			set( ${result}_LAST ${${result}} CACHE STRING "" FORCE )
+		endif()
+	else()
+		set( ${result} ${paths} PARENT_SCOPE )
+	endif()
+endfunction()
