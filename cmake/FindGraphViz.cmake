@@ -1,12 +1,14 @@
 # Copyright (C) 2007-2009 LuaDist.
 # Created by Peter Kapec <kapecp@gmail.com>
-# Redistribution and use of this file is allowed according to the terms of the MIT license.
+# Redistribution and use of this file is allowed according to the terms of the
+# MIT license.
 # For details see the COPYRIGHT file distributed with LuaDist.
 # Note:
-# Searching headers and libraries is very simple and is NOT as powerful as scripts
-# distributed with CMake, because LuaDist defines directories to search for.
-# Everyone is encouraged to contact the author with improvements. Maybe this file
-# becomes part of CMake distribution sometimes.
+# Searching headers and libraries is very simple and is NOT as powerful as
+# scripts distributed with CMake, because LuaDist defines directories to search
+# for.
+# Everyone is encouraged to contact the author with improvements.
+# Maybe this file becomes part of CMake distribution sometimes.
 
 # - Find GraphViz
 # Find the native GraphViz headers and libraries.
@@ -30,7 +32,7 @@ if( WIN32 )
 		list( APPEND variables "GraphViz_LIB_${lib}" )
 	endforeach()
 		
-	getPathFromPattern( 
+	getPathFromPattern(
 		GraphViz_INSTALL_DIR
 		"$ENV{PROGRAMFILES}/Graphviz*"
 		"Installation paths found for Graphviz"
@@ -68,7 +70,8 @@ foreach( lib ${libs} )
 	list( APPEND libraries_found ${GraphViz_LIB_${lib}} )
 endforeach()
 
-# Handle the QUIETLY and REQUIRED arguments and set GraphViz_FOUND to TRUE if all listed variables are TRUE.
+# Handle the QUIETLY and REQUIRED arguments and set GraphViz_FOUND to TRUE if
+#all listed variables are TRUE.
 include( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( GraphViz DEFAULT_MSG libraries_found GraphViz_INCLUDE_DIR )
 
@@ -80,7 +83,8 @@ if( GRAPHVIZ_FOUND )
 	#Getting GraphViz version
 	set( versionFile "${GraphViz_INCLUDE_DIR}/graphviz_version.h" )
 	if( EXISTS ${versionFile} )
-		#from graphviz version 2.36, there isn't VERSION define anymore, so in that case, we look for PACKAGE_VERSION define.
+		#from graphviz version 2.36, there isn't VERSION define anymore,
+		#so in that case, we look for PACKAGE_VERSION define.
 		file( STRINGS ${versionFile} defineVer REGEX "#define VERSION" )
 		if( defineVer STREQUAL "" )
 			file( STRINGS ${versionFile} defineVer REGEX "#define PACKAGE_VERSION" )
@@ -94,7 +98,8 @@ if( GRAPHVIZ_FOUND )
 			set( GraphViz_USE_CGRAPH 0 )
 		endif()
 	else()
-		#TODO Should we always use cgraph when graphviz_version.h does not exists?
+		#TODO Should we always use cgraph when graphviz_version.h
+		#does not exists?
 		set( GraphViz_USE_CGRAPH ON )
 	endif()
 
