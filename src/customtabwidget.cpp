@@ -148,8 +148,16 @@ namespace depgraphV
 		if( ok && !newName.isEmpty() )
 		{
 			Project* p = Singleton<Project>::instancePtr();
-			p->renameGraph( index, newName );
-			setTabText( index, newName );
+			if( p->renameGraph( index, newName ) )
+				setTabText( index, newName );
+			else
+			{
+				QMessageBox::warning( this,
+									  tr( "Rename Graph \"%1\"" ).arg( oldName ),
+									  tr( "Selected name \"%1\" is already in use!" )
+									  .arg( newName )
+				);
+			}
 		}
 	}
 	//-------------------------------------------------------------------------

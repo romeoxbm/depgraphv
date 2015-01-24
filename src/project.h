@@ -190,6 +190,8 @@ namespace depgraphV
 
 		QStringList nameFilters( FilesModel::FileGroup g = FilesModel::All );
 
+		bool renameGraph( int index, const QString& newName );
+
 	signals:
 		void modified( bool );
 		void unsubmittedChanges( bool );
@@ -203,7 +205,6 @@ namespace depgraphV
 	public slots:
 		void createGraph();
 		void removeGraph( int index );
-		void renameGraph( int index, const QString& newName );
 
 		void submitChanges();
 		void revertChanges();

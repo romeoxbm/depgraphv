@@ -305,6 +305,21 @@ namespace depgraphV
 		return result;
 	}
 	//-------------------------------------------------------------------------
+	bool Project::renameGraph( int index, const QString& newName )
+	{
+		Q_ASSERT( index >= 0 && index < _graphs.count() && "index out of range" );
+		Q_ASSERT( !newName.isEmpty() );
+
+		if( !_model->findItems( newName ).isEmpty() )
+			return false;
+
+		setValue( newName, index, "name" );
+		emit graphRenamed( index, newName );
+		_triggerModified( true );
+
+		return true;
+	}
+	//-------------------------------------------------------------------------
 	bool Project::load()
 	{
 		QFile f( _fullPath );
@@ -450,13 +465,6 @@ namespace depgraphV
 		_triggerModified( true );
 	}
 	//-------------------------------------------------------------------------
-	void Project::renameGraph( int index, const QString& newName )
-	{
-		setValue( newName, index, "name" );
-		emit graphRenamed( index, newName );
-		_triggerModified( true );
-	}
-	//-------------------------------------------------------------------------
 	void Project::submitChanges()
 	{
 		if( !_hasUnsubmittedChanges )
@@ -524,12 +532,24 @@ namespace depgraphV
 
 		if( !i )
 		{
-			graphName = QString( tr( "New Graph %1" ) ).arg( QString::number( _graphs.count() ) );
+			graphName = tr( "New Graph %1" ).arg( QString::number( _graphs.count() ) );
 
 			//Look for existing items with same name
+			ushort collisionIdx = 1;
+			QString collisionStr;
 			QList<QStandardItem*> r = _model->findItems( graphName );
-			if( !r.isEmpty() )
-				graphName += " (1)";
+			while( !r.isEmpty() )
+			{
+				collisionStr = QString( "%1 (%2)" ).arg(
+					graphName,
+					QString::number( collisionIdx )
+				);
+				collisionIdx++;
+				r = _model->findItems( collisionStr );
+			}
+
+			if( !collisionStr.isEmpty() )
+				graphName = collisionStr;
 
 			i = new QStandardItem( graphName );
 			triggerGraphCountChangedSignal = true;
