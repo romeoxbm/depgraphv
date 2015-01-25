@@ -36,6 +36,24 @@
 # THE SOFTWARE.
 ################################################################################
 
+
+################################################################################
+# varHasChanged
+################################################################################
+function( varHasChanged var value unsetVars )
+	if( NOT DEFINED ${var}_LAST )
+		set( ${var}_LAST ${value} CACHE STRING "" )
+		mark_as_advanced( ${var}_LAST )
+	endif()
+	
+	if( NOT "${${var}}" STREQUAL "${${var}_LAST}" )
+		foreach( uVar ${unsetVars} )
+			unset( ${uVar} CACHE )
+		endforeach()
+		set( ${var}_LAST ${${var}} CACHE STRING "" FORCE )
+	endif()
+endfunction()
+
 ################################################################################
 # getPathFromPattern
 ################################################################################
@@ -50,17 +68,7 @@ function( getPathFromPattern result pattern desc varList )
 		set( ${result} ${firstElem} CACHE STRING ${desc} )
 		set_property( CACHE ${result} PROPERTY STRINGS ${paths} )
 		
-		if( NOT DEFINED ${result}_LAST )
-			set( ${result}_LAST ${firstElem} CACHE STRING "" )
-			mark_as_advanced( ${result}_LAST )
-		endif()
-
-		if( NOT "${${result}}" STREQUAL "${${result}_LAST}" )
-			foreach( var ${varList} )
-				unset( ${var} CACHE )
-			endforeach()
-			set( ${result}_LAST ${${result}} CACHE STRING "" FORCE )
-		endif()
+		varHasChanged( ${result} ${firstElem} "${varList}" )
 	else()
 		set( ${result} ${paths} PARENT_SCOPE )
 	endif()

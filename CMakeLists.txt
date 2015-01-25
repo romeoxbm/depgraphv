@@ -49,7 +49,6 @@ if( WIN32 )
 	set( TRANSLATION_INSTALL_PATH "translations" )
 	set( DOCS_INSTALL_PATH "docs" )
 	set( SRC_INSTALL_PATH "src" )
-	include( functions )
 else()
 	set( TRANSLATION_INSTALL_PATH "share/${ProjectName}/translations" )
 	set( DOCS_INSTALL_PATH "share/doc/${ProjectName}" )
@@ -60,6 +59,7 @@ else()
 	endif()
 endif()
 
+include( functions )
 project( ${ProjectName} )
 
 set( Headers

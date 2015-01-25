@@ -40,10 +40,11 @@ if( NOT DEFINED qt4Modules )
 endif()
 
 include( functions-qt4 )
+varHasChanged( DEPGRAPHV_USE_QT5 ${DEPGRAPHV_USE_QT5} "QT_QMAKE_EXECUTABLE" )
 
 if( WIN32 )
-	set( QT_INSTALL_PATH "C:/Qt/4.8.6" CACHE PATH "Installation path of Qt4 libraries." )
-	set( CMAKE_PREFIX_PATH "${QT_INSTALL_PATH}" )
+	set( QT_INSTALL_DIR "C:/Qt/4.8.6" CACHE PATH "Installation path of Qt4 libraries." )
+	set( CMAKE_PREFIX_PATH "${QT_INSTALL_DIR}" )
 endif( WIN32 )
 
 #Looking for Qt4 modules

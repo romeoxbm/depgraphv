@@ -40,6 +40,7 @@ if( NOT DEFINED qt5Modules )
 endif()
 
 include( functions-qt5 )
+varHasChanged( DEPGRAPHV_USE_QT5 ${DEPGRAPHV_USE_QT5} "QT_QMAKE_EXECUTABLE" )
 
 if( WIN32 )
 	set( QT_INSTALL_DIR_PREFIX "C:/Qt/Qt*/*.*" )
@@ -70,8 +71,6 @@ if( WIN32 )
 	)
 	
 	set( CMAKE_PREFIX_PATH ${QT_INSTALL_DIR} )
-	unset( QT_QMAKE_EXECUTABLE CACHE )
-	find_program( QT_QMAKE_EXECUTABLE NAMES qmake qmake5 qmake-qt5 qmake-mac PATHS "${QT_INSTALL_DIR}/bin" )
 endif( WIN32 )
 
 #Looking for Qt5 modules
