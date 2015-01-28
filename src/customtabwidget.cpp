@@ -288,6 +288,7 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_onProjectClosed()
 	{
+		_blockCurrentChangedSignal( true );
 	}
 	//-------------------------------------------------------------------------
 	void CustomTabWidget::_changeCurrentTab( int index )

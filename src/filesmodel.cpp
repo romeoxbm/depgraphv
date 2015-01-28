@@ -309,15 +309,15 @@ namespace depgraphV
 		blockSignals( false );
 	}
 	//-------------------------------------------------------------------------
-	void FilesModel::_onFileChanged( const QString& filePath )
+	void FilesModel::_onFileChanged( const QString& path )
 	{
-		QModelIndex pIdx = index( filePath );
+		QModelIndex pIdx = index( path );
 		QString dp = filePath( pIdx.parent() );
 		if( _checkedFiles.contains( dp ) &&
-			_checkedFiles[ dp ]->contains( filePath ) &&
+			_checkedFiles[ dp ]->contains( path ) &&
 			!fileInfo( pIdx ).exists() )
 		{
-			_checkedFiles[ dp ]->removeAll( filePath );
+			_checkedFiles[ dp ]->removeAll( path );
 		}
 	}
 	//-------------------------------------------------------------------------

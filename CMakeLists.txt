@@ -203,12 +203,12 @@ endif()
 
 #Setting up Graphviz includes and libraries
 set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${CMAKE_CURRENT_BINARY_DIR}/src" )
-set( libraries "${GraphViz_gvc_LIBRARY}" )
+set( libraries "${GraphViz_LIB_gvc}" )
 
 if( GraphViz_USE_CGRAPH )
-	list( APPEND libraries "${GraphViz_cgraph_LIBRARY}" )
+	list( APPEND libraries "${GraphViz_LIB_cgraph}" )
 else()
-	list( APPEND libraries "${GraphViz_graph_LIBRARY}" )
+	list( APPEND libraries "${GraphViz_LIB_graph}" )
 endif()
 
 #Include right file depending on selected Qt version.

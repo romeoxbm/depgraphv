@@ -158,6 +158,17 @@ namespace depgraphV
 	MainWindow::~MainWindow()
 	{
 		Graph::clearPluginsList();
+
+		//Project must be deleted before _ui, in order
+		//to avoid an access violation (Project's destructor will try
+		//to delete its graphs, already deleted by CustomTabWidget)
+		if( _project )
+		{
+			_ui->tabWidget->blockSignals( true );
+			delete _project;
+			_project = 0;
+		}
+
 		delete _ui;
 		delete _settingsDlg;
 		delete _aboutDlg;
