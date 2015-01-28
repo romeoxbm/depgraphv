@@ -45,7 +45,8 @@ namespace depgraphV
 	FilesModel::FilesModel( FoldersModel* fModel, QObject* parent )
 		: CheckableFileSystemModel( parent ),
 		  _listView( 0 ),
-		  _foldersModel( fModel )
+		  _foldersModel( fModel ),
+		  _project( Singleton<Project>::instancePtr() )
 	{
 		setFilter( QDir::NoDotAndDotDot | QDir::Files );
 		setNameFilterDisables( false );
@@ -55,15 +56,15 @@ namespace depgraphV
 		connect( this, SIGNAL( directoryLoaded( QString ) ),
 				 this, SLOT( _onFolderLoaded( QString ) )
 		);
+		connect( _project, SIGNAL( fileHasChanged( QString ) ),
+				 this, SLOT( _onFileChanged( QString ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	void FilesModel::initialize()
 	{
 		_listView->setModel( this );
-
-		Project* p = Singleton<Project>::instancePtr();
-		setNameFilters( p->nameFilters() );
-
+		setNameFilters( _project->nameFilters() );
 		_initialized = true;
 	}
 	//-------------------------------------------------------------------------
@@ -160,8 +161,7 @@ namespace depgraphV
 			QFileInfo fi = fileInfo( i );
 			QString filter = "*." + fi.completeSuffix();
 
-			Project* p = Singleton<Project>::instancePtr();
-			if( !p->nameFilters( v ).contains( filter ) )
+			if( !_project->nameFilters( v ).contains( filter ) )
 				return false;
 		}
 
@@ -307,6 +307,18 @@ namespace depgraphV
 			setData( childIdx, i.data( Qt::CheckStateRole ), Qt::CheckStateRole );
 		}
 		blockSignals( false );
+	}
+	//-------------------------------------------------------------------------
+	void FilesModel::_onFileChanged( const QString& filePath )
+	{
+		QModelIndex pIdx = index( filePath );
+		QString dp = filePath( pIdx.parent() );
+		if( _checkedFiles.contains( dp ) &&
+			_checkedFiles[ dp ]->contains( filePath ) &&
+			!fileInfo( pIdx ).exists() )
+		{
+			_checkedFiles[ dp ]->removeAll( filePath );
+		}
 	}
 	//-------------------------------------------------------------------------
 	void FilesModel::_updateEnabledFlags()

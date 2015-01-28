@@ -57,7 +57,8 @@ namespace depgraphV
 		  _delegate( new CustomItemDelegate( this ) ),
 		  _mapper( new QDataWidgetMapper( this ) ),
 		  _hasUnsubmittedChanges( false ),
-		  _modified( false )
+		  _modified( false ),
+		  _watcher( new QFileSystemWatcher( this ) )
 	{
 		_updateProjectProperties();
 
@@ -112,10 +113,20 @@ namespace depgraphV
 		connect( _delegate, SIGNAL( editingStarted() ),
 				 this, SLOT( _onDataChanged() )
 		);
+		connect( _watcher, SIGNAL( fileChanged( QString ) ),
+				 this, SLOT( _onFileChanged( QString ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	Project::~Project()
 	{
+		delete _watcher;
+		_watcher = 0;
+
+		foreach( Graph* g, _graphs )
+			delete g;
+
+		_graphs.clear();
 	}
 	//-------------------------------------------------------------------------
 	Project* Project::create( QObject* parent )
@@ -320,6 +331,11 @@ namespace depgraphV
 		return true;
 	}
 	//-------------------------------------------------------------------------
+	void Project::watchFile( const QString& filePath )
+	{
+		_watcher->addPath( filePath );
+	}
+	//-------------------------------------------------------------------------
 	bool Project::load()
 	{
 		QFile f( _fullPath );
@@ -337,7 +353,8 @@ namespace depgraphV
 			QMessageBox::warning(
 						static_cast<QWidget*>( parent() ),
 						tr( "Load Project" ),
-						tr( "It seems you're trying to load an invalid project file;\nloading aborted!" )
+						tr( "It seems you're trying to load an invalid project "
+							"file;\nloading aborted!" )
 			);
 			return false;
 		}
@@ -493,6 +510,12 @@ namespace depgraphV
 	void Project::_onDataChanged()
 	{
 		_triggerUnsubmittedChanges( true );
+	}
+	//-------------------------------------------------------------------------
+	void Project::_onFileChanged( const QString& filePath )
+	{
+		Graph::notifyFileHasChanged( filePath );
+		emit fileHasChanged( filePath );
 	}
 	//-------------------------------------------------------------------------
 	void Project::_updateProjectProperties()

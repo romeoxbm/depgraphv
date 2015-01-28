@@ -219,6 +219,13 @@ namespace depgraphV
 		 */
 		unsigned int selectionCount( bool scanByFolders ) const;
 
+		/**
+		 * @brief This method remove from parsed files list a file that
+		 * has changed, has been renamed or removed from disk.
+		 * @param absoluteFilePath The absolute path to the modified file.
+		 */
+		static void notifyFileHasChanged( const QString& absoluteFilePath );
+
 	signals:
 		void vertexCreated( Agnode_t* );
 		void edgeCreated( Agedge_t* );

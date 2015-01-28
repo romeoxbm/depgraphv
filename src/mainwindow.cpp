@@ -654,8 +654,8 @@ namespace depgraphV
 								  "You're using the latest version of " ) + APP_NAME;
 				else
 				{
-					message = tr( "A new version of " ) + APP_NAME +
-							  " (v" + res[ 1 ] + tr ( ") is available for download." );
+					message = tr( "A new version of %1 (v%2) is available for "
+								  "download." ).arg( APP_NAME, res[ 1 ] );
 				}
 			}
 			else
@@ -699,6 +699,9 @@ namespace depgraphV
 		);
 		connect( _project, SIGNAL( graphCountChanged( int ) ),
 				 this, SLOT( _onGraphCountChanged( int ) )
+		);
+		connect( _project, SIGNAL( fileHasChanged( QString ) ),
+				 this, SLOT( _onFileChanged( QString ) )
 		);
 
 		_ui->statusBar->showMessage( statusBarMessage.arg( _project->name() ) );
@@ -955,6 +958,13 @@ namespace depgraphV
 		_onCurrentTabChanged( _ui->tabWidget->currentIndex() );
 		delete _layoutWatcher;
 		_layoutWatcher = 0;
+	}
+	//-------------------------------------------------------------------------
+	void MainWindow::_onFileChanged( const QString& filePath )
+	{
+		_ui->statusBar->showMessage(
+					tr( "Detected changes on \"%1\"" ).arg( filePath )
+		);
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::_postData()

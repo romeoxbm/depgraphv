@@ -45,6 +45,7 @@
 namespace depgraphV
 {
 	class FoldersModel;
+	class Project;
 
 	class FilesModel : public CheckableFileSystemModel
 	{
@@ -90,10 +91,12 @@ namespace depgraphV
 	private slots:
 		void _onFolderLoaded( const QString& folder );
 		void _onFoldersModelDataChanged( QModelIndex, QModelIndex );
+		void _onFileChanged( const QString& );
 
 	private:
 		QListView* _listView;
 		FoldersModel* _foldersModel;
+		Project* _project;
 
 		QMap<QString, QStringList*> _checkedFiles;
 

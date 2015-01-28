@@ -248,8 +248,6 @@ namespace depgraphV
 		Q_ASSERT( !absPath.isEmpty() && "Path is empty!" );
 		QString absFilePath = QString( "%1/%2" ).arg( absPath, vertexLabel );
 
-		//TODO By doing this way, any future change in already parsed files
-		//will be undetectable.
 		if( !_parsedFiles.contains( absFilePath ) )
 		{
 			QFile f( absFilePath );
@@ -279,6 +277,7 @@ namespace depgraphV
 				_parsedFiles[ absFilePath ]->append( currentInclude );
 				pos += rExp.matchedLength();
 			}
+			Singleton<Project>::instance().watchFile( absFilePath );
 		}
 
 		Agnode_t* src = createOrRetrieveVertex( vertexLabel );
@@ -410,6 +409,15 @@ namespace depgraphV
 			c = model()->filesModel()->selectedCount();
 
 		return c;
+	}
+	//-------------------------------------------------------------------------
+	void Graph::notifyFileHasChanged( const QString& absoluteFilePath )
+	{
+		if( !_parsedFiles.contains( absoluteFilePath ) )
+			return;
+
+		delete _parsedFiles[ absoluteFilePath ];
+		_parsedFiles.remove( absoluteFilePath );
 	}
 	//-------------------------------------------------------------------------
 	void Graph::clearLayout()

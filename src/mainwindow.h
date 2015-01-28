@@ -147,6 +147,7 @@ namespace depgraphV
 		void _onRecentDocumentTriggered();
 
 		void _onGraphLayoutApplied();
+		void _onFileChanged( const QString& );
 
 	private:
 		Ui::MainWindow* _ui;

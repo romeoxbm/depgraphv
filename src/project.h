@@ -192,6 +192,12 @@ namespace depgraphV
 
 		bool renameGraph( int index, const QString& newName );
 
+		/**
+		 * @brief Start keeping track of any change on file in \a filePath.
+		 * @param The path to the file being watched.
+		 */
+		void watchFile( const QString& filePath );
+
 	signals:
 		void modified( bool );
 		void unsubmittedChanges( bool );
@@ -202,6 +208,8 @@ namespace depgraphV
 		void graphRenamed( int index, const QString& newName );
 		void graphCountChanged( int count );
 
+		void fileHasChanged( const QString& );
+
 	public slots:
 		void createGraph();
 		void removeGraph( int index );
@@ -211,6 +219,7 @@ namespace depgraphV
 
 	private slots:
 		void _onDataChanged();
+		void _onFileChanged( const QString& );
 
 	private:
 		explicit Project( const QString& filePath, QObject* parent = 0 );
@@ -237,6 +246,8 @@ namespace depgraphV
 
 		bool _hasUnsubmittedChanges;
 		bool _modified;
+
+		QFileSystemWatcher* _watcher;
 	};
 }
 
