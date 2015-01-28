@@ -46,7 +46,8 @@ namespace depgraphV
 		  _settings( APP_VENDOR, APP_NAME ),
 		  _language( "en" ),
 		  _showDonateOnExit( true ),
-		  _warnOnGraphRemoval( true )
+		  _warnOnGraphRemoval( true ),
+		  _warnOnGraphClearing( true )
 	{
 		registerSerializable( this );
 		_availableTranslations.insert( "en", "" );
@@ -146,6 +147,7 @@ namespace depgraphV
 				 << "language"
 				 << "showDonateOnExit"
 				 << "warnOnGraphRemoval"
+				 << "warnOnGraphClearing"
 				 << "autoApplySettingChanges";
 
 		return props;

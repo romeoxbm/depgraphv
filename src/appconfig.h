@@ -62,6 +62,7 @@ namespace depgraphV
 		Q_PROPERTY( QString language READ language WRITE setLanguage )
 		Q_PROPERTY( bool showDonateOnExit READ showDonateOnExit WRITE setShowDonateOnExit )
 		Q_PROPERTY( bool warnOnGraphRemoval READ warnOnGraphRemoval WRITE setWarnOnGraphRemoval )
+		Q_PROPERTY( bool warnOnGraphClearing READ warnOnGraphClearing WRITE setWarnOnGraphClearing )
 		Q_PROPERTY( bool autoApplySettingChanges READ autoApplySettingChanges WRITE setAutoApplySettingChanges )
 
 	public:
@@ -87,8 +88,8 @@ namespace depgraphV
 		void restore();
 
 		/**
-		 * @brief Save default settings, only the first time this application run, so when there's
-		 *					  still no default settings saved.
+		 * @brief Save default settings, only the first time this application
+		 * run, so when there's still no default settings saved.
 		 */
 		void saveDefault();
 
@@ -103,7 +104,8 @@ namespace depgraphV
 
 		/**
 		 * @brief Return the installation prefix.
-		 * @return On Linux, when building with Debug symbols, it returns ".", otherwise the installation prefix.
+		 * @return On Linux, when building with Debug symbols, it returns ".",
+		 * otherwise the installation prefix.
 		 */
 		const QString& installPrefix();
 
@@ -117,16 +119,20 @@ namespace depgraphV
 		const QStringList& recentDocuments() const { return _recentDocs; }
 
 		/**
-		 * @return Return a string containing the language currently in use (for instance, "en").
+		 * @return Return a string containing the language currently in use
+		 * (for instance, "en").
 		 */
 		const QString& language() const { return _language; }
 
 		/**
-		 * @return True if the donation tab page will be shown when closing this application, false otherwise.
+		 * @return True if the donation tab page will be shown when closing this
+		 * application, false otherwise.
 		 */
 		bool showDonateOnExit() const { return _showDonateOnExit; }
 
 		bool warnOnGraphRemoval() const { return _warnOnGraphRemoval; }
+
+		bool warnOnGraphClearing() const { return _warnOnGraphClearing; }
 
 		bool autoApplySettingChanges() const { return _autoApplySettingChanges; }
 
@@ -135,12 +141,15 @@ namespace depgraphV
 		void setLanguage( const QString& value );
 
 		/**
-		 * @brief This method change the on-closing policy concerning donation tab page visibility.
+		 * @brief This method change the on-closing policy concerning donation
+		 * tab page visibility.
 		 * @param value The new "visibility" value used by _showDonateOnExit field.
 		 */
 		void setShowDonateOnExit( bool value ) { _showDonateOnExit = value; }
 
 		void setWarnOnGraphRemoval( bool value ) { _warnOnGraphRemoval = value; }
+
+		void setWarnOnGraphClearing( bool value ) { _warnOnGraphClearing = value; }
 
 		void setAutoApplySettingChanges( bool value ) { _autoApplySettingChanges = value; }
 
@@ -153,13 +162,15 @@ namespace depgraphV
 		/**
 		 * @brief It does the save/restore job.
 		 * @param save True when saving, false when restoring.
-		 * @param def True if saving default settings, false if saving current settings.
+		 * @param def True if saving default settings, false if saving current
+		 * settings.
 		 */
 		void _doSaveRestore( bool save, bool def );
 
 		void _lookForTranslationsByPath( const QString& path );
 		void _switchTranslator( QTranslator* t, const QString& fileName,
-								const QString& directory = "", bool justRemoveTranslator = false );
+								const QString& directory = "",
+								bool justRemoveTranslator = false );
 
 		QSettings _settings;
 		QList<ISerializableObject*> _serializableObjects;
@@ -178,6 +189,7 @@ namespace depgraphV
 
 		bool _showDonateOnExit;
 		bool _warnOnGraphRemoval;
+		bool _warnOnGraphClearing;
 		bool _autoApplySettingChanges;
 	};
 }

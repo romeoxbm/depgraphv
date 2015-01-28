@@ -334,16 +334,19 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_onClear()
 	{
-		QMessageBox::StandardButton answer = QMessageBox::question(
-			this,
-			tr( "Clear graph" ),
-			tr( "Are you sure?" ),
-			QMessageBox::Yes | QMessageBox::No,
-			QMessageBox::No
-		);
+		if( _config->warnOnGraphClearing() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Clear graph" ),
+				tr( "Are you sure?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
 
-		if( answer == QMessageBox::No )
-			return;
+			if( answer == QMessageBox::No )
+				return;
+		}
 
 		_project->currentGraph()->clearGraph();
 		//Force toolbar buttons update
