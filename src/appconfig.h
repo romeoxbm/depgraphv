@@ -65,6 +65,7 @@ namespace depgraphV
 		Q_PROPERTY( bool warnOnGraphClearing READ warnOnGraphClearing WRITE setWarnOnGraphClearing )
 		Q_PROPERTY( bool autoApplySettingChanges READ autoApplySettingChanges WRITE setAutoApplySettingChanges )
 		Q_PROPERTY( QString lastImgFormat READ lastImgFormat WRITE setLastImgFormat )
+		Q_PROPERTY( QString lastImgSavePath READ lastImgSavePath WRITE setLastImgSavePath )
 
 	public:
 		/**
@@ -139,6 +140,8 @@ namespace depgraphV
 
 		const QString& lastImgFormat() const { return _lastImgFormat; }
 
+		const QString& lastImgSavePath() const { return _lastImgSavePath; }
+
 	public slots:
 		void setRecentDocuments( const QStringList& value ) { _recentDocs = value; }
 		void setLanguage( const QString& value );
@@ -157,6 +160,8 @@ namespace depgraphV
 		void setAutoApplySettingChanges( bool value ) { _autoApplySettingChanges = value; }
 
 		void setLastImgFormat( const QString& value ) { _lastImgFormat = value; }
+
+		void setLastImgSavePath( const QString& value ) { _lastImgSavePath = value; }
 
 	signals:
 		void configSaved();
@@ -197,6 +202,7 @@ namespace depgraphV
 		bool _warnOnGraphClearing;
 		bool _autoApplySettingChanges;
 		QString _lastImgFormat;
+		QString _lastImgSavePath;
 	};
 }
 

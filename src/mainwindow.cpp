@@ -438,10 +438,14 @@ namespace depgraphV
 		}
 
 		QString selectedFilter = _config->lastImgFormat();
+		QString d = _config->lastImgSavePath();
+		if( d.isEmpty() )
+			d = QDir::currentPath();
+
 		QString path = QFileDialog::getSaveFileName(
 					this,
 					tr( "Select path and name of the image file" ),
-					QDir::currentPath(),
+					d,
 					_imageFilters,
 					&selectedFilter
 		);
@@ -454,6 +458,7 @@ namespace depgraphV
 		{
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
 			_config->setLastImgFormat( selectedFilter );
+			_config->setLastImgSavePath( QFileInfo( path ).absolutePath() );
 		}
 	}
 	//-------------------------------------------------------------------------

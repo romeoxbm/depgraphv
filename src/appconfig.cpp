@@ -149,7 +149,8 @@ namespace depgraphV
 				 << "warnOnGraphRemoval"
 				 << "warnOnGraphClearing"
 				 << "autoApplySettingChanges"
-				 << "lastImgFormat";
+				 << "lastImgFormat"
+				 << "lastImgSavePath";
 
 		return props;
 	}
