@@ -393,20 +393,33 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	void MainWindow::_saveAsDot()
 	{
+		QString d = _config->lastDotSavePath();
+		if( d.isEmpty() )
+			d = QDir::currentPath();
+
 		QString path = QFileDialog::getSaveFileName(
-						   this,
-						   tr( "Select path and name of the dot file" ),
-						   QDir::currentPath(),
-						   "DOT (*.dot)"
+					this,
+					tr( "Select path and name of the dot file" ),
+					d,
+					"DOT (*.dot)"
 		);
 
 		if( !Helpers::addExtension( path, ".dot" ) )
 			return;
 
 		if( _project->currentGraph()->saveDot( path ) )
+		{
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
+			_config->setLastDotSavePath( QFileInfo( path ).absolutePath() );
+		}
 		else
-			QMessageBox::critical( this, tr( "Save as dot" ), tr( "Unable to save file" ) );
+		{
+			QMessageBox::critical(
+						this,
+						tr( "Save as dot" ),
+						tr( "Unable to save file" )
+			);
+		}
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_saveAsImage()

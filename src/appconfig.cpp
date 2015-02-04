@@ -150,7 +150,8 @@ namespace depgraphV
 				 << "warnOnGraphClearing"
 				 << "autoApplySettingChanges"
 				 << "lastImgFormat"
-				 << "lastImgSavePath";
+				 << "lastImgSavePath"
+				 << "lastDotSavePath";
 
 		return props;
 	}
