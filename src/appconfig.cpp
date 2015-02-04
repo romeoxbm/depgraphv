@@ -148,7 +148,8 @@ namespace depgraphV
 				 << "showDonateOnExit"
 				 << "warnOnGraphRemoval"
 				 << "warnOnGraphClearing"
-				 << "autoApplySettingChanges";
+				 << "autoApplySettingChanges"
+				 << "lastImgFormat";
 
 		return props;
 	}

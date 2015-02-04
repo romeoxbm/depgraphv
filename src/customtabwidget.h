@@ -42,10 +42,6 @@
 #	include "mainwindow.h"
 #endif
 
-#ifndef PROJECT_H
-#	include "project.h"
-#endif
-
 namespace depgraphV
 {
 	class CustomTabWidget : public QTabWidget

@@ -54,10 +54,6 @@
 #	include "projectinfodialog.h"
 #endif
 
-#ifndef PROJECT_H
-#	include "project.h"
-#endif
-
 #ifndef APPCONFIG_H
 #	include "appconfig.h"
 #endif

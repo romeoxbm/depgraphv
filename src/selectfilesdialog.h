@@ -38,10 +38,6 @@
 #ifndef SELECTFILESDIALOG_H
 #define SELECTFILESDIALOG_H
 
-#ifndef FOLDERSMODEL_H
-#	include "foldersmodel.h"
-#endif
-
 #ifndef PROJECT_H
 #	include "project.h"
 #endif

@@ -437,18 +437,24 @@ namespace depgraphV
 			_imageFiltersUpdated = true;
 		}
 
-		QString selectedFilter;
+		QString selectedFilter = _config->lastImgFormat();
 		QString path = QFileDialog::getSaveFileName(
-			this,
-			tr( "Select path and name of the image file" ),
-			QDir::currentPath(), _imageFilters, &selectedFilter );
+					this,
+					tr( "Select path and name of the image file" ),
+					QDir::currentPath(),
+					_imageFilters,
+					&selectedFilter
+		);
 
 		QString format = _imageFiltersByExt[ selectedFilter ];
 		if( !Helpers::addExtension( path, format ) )
 			return;
 
 		if( _project->currentGraph()->saveImage( path, format ) )
+		{
 			_ui->statusBar->showMessage( tr( "File successfully saved." ) );
+			_config->setLastImgFormat( selectedFilter );
+		}
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::_showProjectInfo()

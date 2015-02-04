@@ -360,19 +360,19 @@ namespace depgraphV
 	{
 		bool retValue = false;
 		QFile f( filename );
-		if( !f.open( QIODevice::WriteOnly | QIODevice::Text ) )
-			return retValue;
-
-		QString data;
-		if( _isPluginAvailable( "dot", "render" )
-			&& _renderDataAs( _graph, "dot", &data ) )
+		if( f.open( QIODevice::WriteOnly | QIODevice::Text ) )
 		{
-			QTextStream stream( &f );
-			stream << data;
-			retValue = true;
-		}
+			QString data;
+			if( _isPluginAvailable( "dot", "render" )
+				&& _renderDataAs( _graph, "dot", &data ) )
+			{
+				QTextStream stream( &f );
+				stream << data;
+				retValue = true;
+			}
 
-		f.close();
+			f.close();
+		}
 		return retValue;
 	}
 	//-------------------------------------------------------------------------
