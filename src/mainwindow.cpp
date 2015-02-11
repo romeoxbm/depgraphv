@@ -343,9 +343,9 @@ namespace depgraphV
 		);
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::_onClear()
+	void MainWindow::_onClear( bool enableQuestion )
 	{
-		if( _config->warnOnGraphClearing() )
+		if( enableQuestion && _config->warnOnGraphClearing() )
 		{
 			QMessageBox::StandardButton answer = QMessageBox::question(
 				this,
@@ -754,12 +754,12 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::windowState() const
 	{
-		return this->saveState();
+		return saveState();
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::geometryState() const
 	{
-		return this->saveGeometry();
+		return saveGeometry();
 	}
 	//-------------------------------------------------------------------------
 	void MainWindow::setWindowState( const QByteArray& value )
@@ -1000,6 +1000,27 @@ namespace depgraphV
 		_ui->statusBar->showMessage(
 					tr( "Detected changes on \"%1\"" ).arg( filePath )
 		);
+
+		QStringList l = _project->currentGraph()->model()->filesModel()->checkedFiles();
+		if( !l.contains( filePath ) )
+			return;
+
+		if( !_config->redrawGraphOnFileSystemChanges() )
+		{
+			QMessageBox::StandardButton answer = QMessageBox::question(
+				this,
+				tr( "Files changes detected" ),
+				tr( "One file has changed; Do you want to refresh the current graph?" ),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No
+			);
+
+			if( answer == QMessageBox::No )
+				return;
+		}
+
+		_onClear( false );
+		_onDraw();
 	}
 	//-------------------------------------------------------------------------
 	QByteArray MainWindow::_postData()

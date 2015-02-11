@@ -116,7 +116,7 @@ namespace depgraphV
 		void _clearRecentDocs();
 
 		void _onDraw();
-		void _onClear();
+		void _onClear( bool = true );
 		void _onConfigRestored();
 
 		//Project Menu

@@ -148,6 +148,7 @@ namespace depgraphV
 				 << "showDonateOnExit"
 				 << "warnOnGraphRemoval"
 				 << "warnOnGraphClearing"
+				 << "redrawGraphOnFileSystemChanges"
 				 << "autoApplySettingChanges"
 				 << "lastImgFormat"
 				 << "lastImgSavePath"

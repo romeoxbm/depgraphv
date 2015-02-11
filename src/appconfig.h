@@ -63,6 +63,7 @@ namespace depgraphV
 		Q_PROPERTY( bool showDonateOnExit READ showDonateOnExit WRITE setShowDonateOnExit )
 		Q_PROPERTY( bool warnOnGraphRemoval READ warnOnGraphRemoval WRITE setWarnOnGraphRemoval )
 		Q_PROPERTY( bool warnOnGraphClearing READ warnOnGraphClearing WRITE setWarnOnGraphClearing )
+		Q_PROPERTY( bool redrawGraphOnFileSystemChanges READ redrawGraphOnFileSystemChanges WRITE setRedrawGraphOnFileSystemChanges )
 		Q_PROPERTY( bool autoApplySettingChanges READ autoApplySettingChanges WRITE setAutoApplySettingChanges )
 		Q_PROPERTY( QString lastImgFormat READ lastImgFormat WRITE setLastImgFormat )
 		Q_PROPERTY( QString lastImgSavePath READ lastImgSavePath WRITE setLastImgSavePath )
@@ -137,6 +138,8 @@ namespace depgraphV
 
 		bool warnOnGraphClearing() const { return _warnOnGraphClearing; }
 
+		bool redrawGraphOnFileSystemChanges() const { return _redrawGraphOnFileSystemChanges; }
+
 		bool autoApplySettingChanges() const { return _autoApplySettingChanges; }
 
 		const QString& lastImgFormat() const { return _lastImgFormat; }
@@ -159,6 +162,8 @@ namespace depgraphV
 		void setWarnOnGraphRemoval( bool value ) { _warnOnGraphRemoval = value; }
 
 		void setWarnOnGraphClearing( bool value ) { _warnOnGraphClearing = value; }
+
+		void setRedrawGraphOnFileSystemChanges( bool value ) { _redrawGraphOnFileSystemChanges = value; }
 
 		void setAutoApplySettingChanges( bool value ) { _autoApplySettingChanges = value; }
 
@@ -205,6 +210,7 @@ namespace depgraphV
 		bool _showDonateOnExit;
 		bool _warnOnGraphRemoval;
 		bool _warnOnGraphClearing;
+		bool _redrawGraphOnFileSystemChanges;
 		bool _autoApplySettingChanges;
 		QString _lastImgFormat;
 		QString _lastImgSavePath;
