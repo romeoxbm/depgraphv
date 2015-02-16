@@ -25,4 +25,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
- #include "depgraphv_pch.h"
+
+//Do not add nothing in this file. It should just contains the pch include statement,
+//but it is included forcedly via /FI command line parameter.
+ 

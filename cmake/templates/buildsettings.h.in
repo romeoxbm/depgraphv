@@ -56,6 +56,10 @@
 	#cmakedefine DEPGRAPHV_USE_OPENGL
 #endif //DEPGRAPHV_USE_OPENGL
 
+#ifndef DEPGRAPHV_ENABLE_PCH_SUPPORT
+	#cmakedefine DEPGRAPHV_ENABLE_PCH_SUPPORT
+#endif //DEPGRAPHV_ENABLE_PCH_SUPPORT
+
 //Works with MSVC and GCC
 #ifndef ARCH
 #	if defined( _WIN64 ) || defined( __amd64__ )

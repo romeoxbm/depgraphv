@@ -38,6 +38,14 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
+#ifndef BUILDSETTINGS_H
+#	include "buildsettings.h"
+#endif
+
+#ifndef DEPGRAPHV_ENABLE_PCH_SUPPORT
+#	include "depgraphv_pch.h"
+#endif
+
 namespace depgraphV
 {
 	class Helpers

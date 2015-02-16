@@ -202,7 +202,7 @@ else()
 endif()
 
 #Setting up Graphviz includes and libraries
-set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${CMAKE_CURRENT_BINARY_DIR}/src" )
+set( includes "${CMAKE_SOURCE_DIR}/src;${GraphViz_INCLUDE_DIRS};${CMAKE_CURRENT_BINARY_DIR}" )
 set( libraries "${GraphViz_LIB_gvc}" )
 
 if( GraphViz_USE_CGRAPH )
@@ -301,7 +301,7 @@ if( WIN32 )
 		IMMEDIATE @ONLY
 	)
 
-	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/src/buildsettings.h
+	install( FILES ${Headers} ${Sources} ${Sources_ui} ${Resources} ${Translations} ${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h
 		 DESTINATION ${SRC_INSTALL_PATH} COMPONENT sources )
 
 	install( SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/installDeps.cmake" COMPONENT runtime )
@@ -341,7 +341,7 @@ include( packaging )
 #Configure buildsettings file
 configure_file(
 	"${CMAKE_TEMPLATES_PATH}/buildsettings.h.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/src/buildsettings.h"
+	"${CMAKE_CURRENT_BINARY_DIR}/buildsettings.h"
 	IMMEDIATE @ONLY
 )
 

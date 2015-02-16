@@ -39,7 +39,6 @@ if( NOT DEFINED qt4Modules )
 	set( qt4Modules "QtCore" )
 endif()
 
-include( functions-qt4 )
 varHasChanged( DEPGRAPHV_USE_QT5 ${DEPGRAPHV_USE_QT5} "QT_QMAKE_EXECUTABLE" )
 
 if( WIN32 )
@@ -58,20 +57,16 @@ endif()
 include( ${QT_USE_FILE} )
 
 if( DEFINED Sources_moc )
-	custom_qt4_wrap_cpp( Mocs ${Sources_moc} )
+	qt4_wrap_cpp( Mocs ${Sources_moc} )
 endif()
 
 if( DEFINED Sources_ui )
-	custom_qt4_wrap_ui( UISrcs ${Sources_ui} )
+	qt4_wrap_ui( UISrcs ${Sources_ui} )
 endif()
 
 if( DEFINED Resources )
 	# generate rules for building source files from the resources
-	if( ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
-		custom_qt4_add_resources( RCCSrcs ${Resources} )
-	else()
-		qt4_add_resources( RCCSrcs ${Resources} )
-	endif()
+	qt4_add_resources( RCCSrcs ${Resources} )
 endif()
 
 foreach( t ${AvailableLanguages} )

@@ -35,7 +35,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "depgraphv_pch.h"
 #include "graph.h"
 #include "helpers.h"
 #include "project.h"
@@ -73,6 +72,10 @@ namespace depgraphV
 
 		//TODO Following code line needs to be tested
 		setResizeAnchor( QGraphicsView::AnchorUnderMouse );
+
+		connect( this, SIGNAL( layoutApplied( bool, const QString& ) ),
+				 this, SLOT( _onLayoutApplied( bool, const QString& ) )
+		);
 	}
 	//-------------------------------------------------------------------------
 	Graph::~Graph()
@@ -285,31 +288,47 @@ namespace depgraphV
 			_createEdge( src, createOrRetrieveVertex( inc ) );
 	}
 	//-------------------------------------------------------------------------
-	bool Graph::applyLayout()
+	void Graph::applyLayout()
 	{
 		Q_ASSERT( !_svgItem );
+		bool result = true;
+		QString errorMessage;
 		if( !_isPluginAvailable( _layoutAlgorithm, "layout" ) ||
 				!_isPluginAvailable( "svg", "render" ) )
 		{
-			return false;
+			errorMessage = tr( "Required plugins unavailable!" );
+			result = false;
 		}
 
-		if( gvLayout( _context, _graph, G_STR( _layoutAlgorithm ) ) != 0 )
+		if( result && gvLayout( _context, _graph, G_STR( _layoutAlgorithm ) ) != 0 )
 		{
-			QMessageBox::critical(
-				this->parentWidget(),
-				tr( "Layout render error" ),
-				QString::fromUtf8( aglasterr() )
-			);
-
-			return false;
+			errorMessage = QString::fromUtf8( aglasterr() );
+			result = false;
 		}
-
-		emit layoutApplied();
 
 		QString data;
-		if( !_renderDataAs( _graph, "svg", &data ) )
-			return false;
+		if( result && !_renderDataAs( _graph, "svg", &data ) )
+		{
+			errorMessage = tr( "Unable to render data as svg!" );
+			result = false;
+		}
+
+		emit layoutApplied( result, result ? data : errorMessage );
+	}
+	//-------------------------------------------------------------------------
+	void Graph::_onLayoutApplied( bool result, const QString& data )
+	{
+		if( !result )
+		{
+			QMessageBox::critical(
+				parentWidget(),
+				tr( "Layout render error" ),
+				data
+				);
+
+			clearGraph();
+			return;
+		}
 
 		QXmlStreamReader xmlReader( data );
 		QSvgRenderer* r = new QSvgRenderer( &xmlReader );
@@ -324,7 +343,6 @@ namespace depgraphV
 		s->addItem( _svgItem );
 		s->setSceneRect( _svgItem->boundingRect().adjusted( -10, -10, 10, 10 ) );
 		_drawn = true;
-		return true;
 	}
 	//-------------------------------------------------------------------------
 	bool Graph::saveImage( const QString& filename, const QString& format ) const

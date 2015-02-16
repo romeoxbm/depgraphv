@@ -35,7 +35,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "depgraphv_pch.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "appconfig.h"
@@ -325,21 +324,24 @@ namespace depgraphV
 		_ui->toolBar->setEnabled( false );
 		_ui->menuBar->setEnabled( false );
 		_ui->tabWidget->setCurrentTabUnclosable();
+		Graph* g = _project->currentGraph();
 
 		if( _project->currentValue( "scanByFolders" ).toBool() )
 			_scanFolders();
 		else
-			_scanFiles( _project->currentGraph()->model()->checkedFiles() );
+			_scanFiles( g->model()->checkedFiles() );
 
 		//Start layouting...
 		_startSlowOperation( tr( "Applying layout (it could take a while)..." ), 0 );
-		_layoutWatcher = new QFutureWatcher<bool>();
-		_layoutWatcher->setFuture( QtConcurrent::run(
-							  _project->currentGraph(),
-							  &Graph::applyLayout )
+		connect( g, SIGNAL( layoutApplied( bool, const QString& ) ),
+				 this, SLOT( _onGraphLayoutApplied( bool, const QString& ) ),
+				 Qt::UniqueConnection
 		);
-		connect( _layoutWatcher, SIGNAL( finished() ),
-				 this, SLOT( _onGraphLayoutApplied() )
+
+		_layoutWatcher = new QFutureWatcher<void>();
+		_layoutWatcher->setFuture( QtConcurrent::run(
+							  g,
+							  &Graph::applyLayout )
 		);
 	}
 	//-------------------------------------------------------------------------
@@ -979,16 +981,15 @@ namespace depgraphV
 		}
 	}
 	//-------------------------------------------------------------------------
-	void MainWindow::_onGraphLayoutApplied()
+	void MainWindow::_onGraphLayoutApplied( bool result, const QString& )
 	{
-		if( !_layoutWatcher->future().result() )
-			_project->currentGraph()->clearGraph();
-
 		_ui->toolBar->setEnabled( true );
 		_ui->menuBar->setEnabled( true );
 		_ui->tabWidget->resetUnclosableTab();
 		_progressBar->setVisible( false );
-		_ui->statusBar->showMessage( tr( "All done" ) );
+		_ui->statusBar->showMessage(
+			result ? tr( "All done" ) : tr( "An error occurred while layouting..." )
+		);
 		//Force toolbar buttons update
 		_onCurrentTabChanged( _ui->tabWidget->currentIndex() );
 		delete _layoutWatcher;

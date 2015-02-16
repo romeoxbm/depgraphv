@@ -172,9 +172,8 @@ namespace depgraphV
 
 		/**
 		 * @brief Calculate the graph layout.
-		 * @return true if everything went fine, false otherwise.
 		 */
-		bool applyLayout();
+		void applyLayout();
 
 		/**
 		 * @return True if this graph has been drawn
@@ -230,7 +229,7 @@ namespace depgraphV
 		void vertexCreated( Agnode_t* );
 		void edgeCreated( Agedge_t* );
 
-		void layoutApplied();
+		void layoutApplied( bool, const QString& );
 
 	public slots:
 		/**
@@ -279,6 +278,9 @@ namespace depgraphV
 
 	protected:
 		virtual void wheelEvent( QWheelEvent* event );
+
+	private slots:
+		void _onLayoutApplied( bool, const QString& );
 
 	private:
 		static unsigned short _instances;

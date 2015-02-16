@@ -39,7 +39,6 @@ if( NOT DEFINED qt5Modules )
 	set( qt5Modules "Widgets" )
 endif()
 
-include( functions-qt5 )
 varHasChanged( DEPGRAPHV_USE_QT5 ${DEPGRAPHV_USE_QT5} "QT_QMAKE_EXECUTABLE" )
 
 if( WIN32 )
@@ -89,21 +88,17 @@ foreach( mod ${qt5Modules} )
 endforeach()
 
 if( DEFINED Sources_moc )
-	qt5_wrap_cpp( Mocs ${Sources_moc} OPTIONS -bdepgraphv_pch.h )
+	qt5_wrap_cpp( Mocs ${Sources_moc} )
 endif()
 
 if( DEFINED Sources_ui )
-	custom_qt5_wrap_ui( UISrcs ${Sources_ui} )
+	qt5_wrap_ui( UISrcs ${Sources_ui} )
 endif()
 
 # generate rules for building source files from the resources
 if( DEFINED Resources )
 	# generate rules for building source files from the resources
-	if( ${DEPGRAPHV_ENABLE_PCH_SUPPORT} )
-		custom_qt5_add_resources( RCCSrcs ${Resources} )
-	else()
-		qt5_add_resources( RCCSrcs ${Resources} )
-	endif()
+	qt5_add_resources( RCCSrcs ${Resources} )
 endif()
 
 foreach( t ${AvailableLanguages} )

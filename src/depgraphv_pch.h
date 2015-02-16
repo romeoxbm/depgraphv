@@ -38,7 +38,9 @@
 #ifndef DEPGRAPHV_PCH_H
 #define DEPGRAPHV_PCH_H
 
-#include "buildsettings.h"
+#ifndef BUILDSETTINGS_H
+#	include "buildsettings.h"
+#endif
 
 //Qt Includes
 #include <QAbstractButton>
@@ -115,14 +117,14 @@
 
 //Graphviz includes
 #ifndef Q_MOC_RUN
-#	include <gvc.h>
+#	include <graphviz/gvc.h>
 #	ifdef GraphViz_USE_CGRAPH
-#		include <cgraph.h>
+#		include <graphviz/cgraph.h>
 #		ifndef WITH_CGRAPH
 #			define WITH_CGRAPH 1
 #		endif
 #	else
-#		include <graph.h>
+#		include <graphviz/graph.h>
 #	endif // Using_CGRAPH
 #endif // Q_MOC_RUN
 

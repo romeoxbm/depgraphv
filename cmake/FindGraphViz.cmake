@@ -55,9 +55,9 @@ endif()
 
 # Look for the include path.
 find_path( GraphViz_INCLUDE_DIR
-	NAMES graph.h cgraph.h
+	NAMES graphviz/graph.h graphviz/cgraph.h
 	HINTS ${GraphViz_INSTALL_DIR}
-	PATH_SUFFIXES "include/graphviz"
+	PATH_SUFFIXES "include"
 )
 
 #Look for libraries

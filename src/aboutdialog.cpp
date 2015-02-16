@@ -35,7 +35,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#include "depgraphv_pch.h"
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
 #include "appconfig.h"

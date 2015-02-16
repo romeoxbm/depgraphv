@@ -142,7 +142,7 @@ namespace depgraphV
 
 		void _onRecentDocumentTriggered();
 
-		void _onGraphLayoutApplied();
+		void _onGraphLayoutApplied( bool, const QString& );
 		void _onFileChanged( const QString& );
 
 	private:
@@ -154,7 +154,7 @@ namespace depgraphV
 
 		QNetworkAccessManager* _netManager;
 
-		QFutureWatcher<bool>* _layoutWatcher;
+		QFutureWatcher<void>* _layoutWatcher;
 
 		//Dialogs
 		AboutDialog* _aboutDlg;
