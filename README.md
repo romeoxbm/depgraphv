@@ -1,7 +1,7 @@
 # dep-graphV - A useful tool to analize header dependendencies via graphs
 
 Copyright (C) 2013 - 2015, by Francesco Guastella (guastella.francesco@gmail.com)
-Report bugs and download new versions at http://sourceforge.net/projects/depgraphv
+Report bugs and download new versions at https://github.com/romeoxbm/depgraphv
 
 This is the distribution of dep-graphV, which is a useful development tool, written in C++ and powered by Qt and GraphViz, that creates a graph of your codebase, by parsing every #include statement found in the project's root folder.
 
