@@ -1,6 +1,6 @@
 # dep-graphV - A useful tool to analize header dependendencies via graphs
 
-Copyright (C) 2013 - 2015, by Francesco Guastella (guastella.francesco@gmail.com)
+Copyright (C) 2013 - 2017, by Francesco Guastella (guastella.francesco@gmail.com)
 Report bugs and download new versions at https://github.com/romeoxbm/depgraphv
 
 This is the distribution of dep-graphV, which is a useful development tool, written in C++ and powered by Qt and GraphViz, that creates a graph of your codebase, by parsing every #include statement found in the project's root folder.
@@ -9,7 +9,6 @@ It is helpful when you need to analize and visualize the dependecy tree, highlig
 
 ## Main Features
 * CMake based build, so it's easy to switch between different platforms/IDEs;
-* Build against Qt4 or Qt5 by simply changing DEPGRAPHV_USE_QT5 variable value in CMake;
 * OpenGL rendering support;
 * Optional recursive folder scan;
 * Customizable file extension filters (for both header and source files);
@@ -31,7 +30,7 @@ The sources distribution contains the following folders and files:
 | ChangeLog      |                                            |
 | CMakeLists.txt |                                            |
 | COPYING        |                                            | 
-| README         | This file                                  |
+| README.md      | This file                                  |
 | TODO           |                                            |
 	
 ## Installing	
@@ -44,7 +43,7 @@ When installing dep-graphV on Windows, the installer will create the following f
 | AUTHORS       |                                                                                            |
 | ChangeLog     |                                                                                            |
 | COPYING       |                                                                                            |
-| README        |                                                                                            |
+| README.md     |                                                                                            |
 | TODO          |                                                                                            |
 | src/          | (optional) Headers, sources translation files (.ts), ui files and the resource file (.qrc) |
 | translations/ | (optional) Translation files used by dep-graphV (.qm)                                      |
