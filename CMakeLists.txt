@@ -156,7 +156,7 @@ set( DOCS
 	AUTHORS
 	ChangeLog
 	COPYING
-	README
+	README.md
 	TODO
 )
 
