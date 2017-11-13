@@ -15,7 +15,7 @@
 #
 # This software is distributed under the MIT License:
 #
-# Copyright (c) 2013 - 2015 Francesco Guastella aka romeoxbm
+# Copyright (c) 2013 - 2017 Francesco Guastella aka romeoxbm
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -171,7 +171,6 @@ foreach( t ${AvailableLanguages} )
 endforeach()
 
 #Options
-option( DEPGRAPHV_USE_QT5 "Build against Qt5 libraries (instead of Qt4)." FALSE )
 option( DEPGRAPHV_USE_OPENGL FALSE )
 option( DEPGRAPHV_UPDATE_QT_TRANSLATIONS FALSE )
 option( DEPGRAPHV_ENABLE_PCH_SUPPORT TRUE )
@@ -211,22 +210,13 @@ else()
 	list( APPEND libraries "${GraphViz_LIB_graph}" )
 endif()
 
-#Include right file depending on selected Qt version.
-if( DEPGRAPHV_USE_QT5 )
-	set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
+set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
 
-	if( DEPGRAPHV_USE_OPENGL )
-		list( APPEND qt5Modules "OpenGL" )
-	endif( DEPGRAPHV_USE_OPENGL )
-	include( buildQt5 )
-else()
-	set( qt4Modules "QtCore;QtGui;QtSvg;QtNetwork" )
-
-	if( DEPGRAPHV_USE_OPENGL )
-		list( APPEND qt4Modules "QtOpenGL" )
-	endif( DEPGRAPHV_USE_OPENGL )
-	include( buildQt4 )
-endif( DEPGRAPHV_USE_QT5 )
+#Qt5
+if( DEPGRAPHV_USE_OPENGL )
+    list( APPEND qt5Modules "OpenGL" )
+endif( DEPGRAPHV_USE_OPENGL )
+include( buildQt5 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
 	set( definitions "-fPIC -Wall -std=c++0x" )

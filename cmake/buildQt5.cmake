@@ -15,7 +15,7 @@
 #
 # This software is distributed under the MIT License:
 #
-# Copyright (c) 2013 - 2015 Francesco Guastella aka romeoxbm
+# Copyright (c) 2013 - 2017 Francesco Guastella aka romeoxbm
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,6 @@
 if( NOT DEFINED qt5Modules )
 	set( qt5Modules "Widgets" )
 endif()
-
-varHasChanged( DEPGRAPHV_USE_QT5 ${DEPGRAPHV_USE_QT5} "QT_QMAKE_EXECUTABLE" )
 
 if( WIN32 )
 	set( QT_INSTALL_DIR_PREFIX "C:/Qt/Qt*/*.*" )

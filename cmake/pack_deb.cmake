@@ -46,19 +46,11 @@ else()
 endif( BUILD_32 )
 
 #Conflicts
-if( DEPGRAPHV_USE_QT5 )
-	if( DEPGRAPHV_USE_OPENGL )
-		set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-nogl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
-	else()
-		set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-gl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
-	endif( DEPGRAPHV_USE_OPENGL )
+if( DEPGRAPHV_USE_OPENGL )
+    set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-nogl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
 else()
-	if( DEPGRAPHV_USE_OPENGL )
-		set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt4-nogl, dep-graphv-qt5-gl, dep-graphv-qt5-nogl" )
-	else()
-		set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt4-gl, dep-graphv-qt5-gl, dep-graphv-qt5-nogl" )
-	endif( DEPGRAPHV_USE_OPENGL )
-endif( DEPGRAPHV_USE_QT5 )
+    set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-gl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
+endif( DEPGRAPHV_USE_OPENGL )
 
 #deb settings
 set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <${VENDOR_EMAIL}>" )
