@@ -44,13 +44,7 @@ namespace depgraphV
 	//TODO This method should/could be removed
 	void Helpers::setCurrentText( QComboBox* combo, const QString& text )
 	{
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
 		combo->setCurrentText( text );
-#else
-		int idx = combo->findText( text );
-		if( idx != -1 )
-			combo->setCurrentIndex( idx );
-#endif
 	}
 	//-------------------------------------------------------------------------
 	QString Helpers::LoadTextFromResources( const QString& filename )

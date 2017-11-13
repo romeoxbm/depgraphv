@@ -103,11 +103,9 @@ namespace depgraphV
 	//-------------------------------------------------------------------------
 	bool FoldersModel::hasChildren( const QModelIndex& parent ) const
 	{
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
 		// return false if item can't have children
 		if( parent.flags().testFlag( Qt::ItemNeverHasChildren ) )
 			return false;
-#endif
 
 		// return if at least one child exists
 		return QDirIterator(

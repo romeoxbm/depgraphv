@@ -81,19 +81,10 @@ namespace depgraphV
 
 	/**
 	 * @brief This function is being used when it is necessary to disable log
-	 * messages sent by this application
-	 *		  via qDebug(), qWarning(), etc.
+	 * messages sent by this application via qDebug(), qWarning(), etc.
 	 */
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
-	void noMessageOutput( QtMsgType,
-						  const QMessageLogContext&, const QString& )
-	{
-	}
-#else
-	void noMessageOutput( QtMsgType, const char* )
-	{
-	}
-#endif
+	void noMessageOutput( QtMsgType, const QMessageLogContext&, const QString& )
+	{}
 
 #ifdef WIN32
 	void toggleConsole( bool enabled )
@@ -145,12 +136,7 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, INT )
 int main( int argc, char* argv[] )
 {
 	QApplication app( argc, argv );
-
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
-	//Required to show menu icons with Qt4
 	app.setAttribute( Qt::AA_DontShowIconsInMenus, false );
-#endif
-
 #endif
 
 	bool logEnabled = false;
@@ -204,11 +190,7 @@ int main( int argc, char* argv[] )
 	}
 	else
 	{
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
 		qInstallMessageHandler( &depgraphV::noMessageOutput );
-#else
-		qInstallMsgHandler( &depgraphV::noMessageOutput );
-#endif
 	}
 
 	app.setApplicationName( APP_NAME );

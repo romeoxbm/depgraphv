@@ -106,11 +106,7 @@
 #endif
 
 #ifndef QT_NO_CONCURRENT
-#	if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
-#		include <QtConcurrent>
-#	else
-#		include <QtCore>
-#	endif
+#	include <QtConcurrent>
 #else
 //TODO Warn on missing QtConcurrent support
 #endif // QT_NO_CONCURRENT

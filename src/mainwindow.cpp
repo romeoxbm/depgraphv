@@ -1036,12 +1036,7 @@ namespace depgraphV
 #else
 			"Linux"
 #endif
-			"&arch=" ARCH "&qt="
-#if( QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 ) )
-			"5&gl="
-#else
-			"4&gl="
-#endif
+			"&arch=" ARCH "&qt=5&gl="
 #ifdef DEPGRAPHV_USE_OPENGL
 			"yes";
 #else
