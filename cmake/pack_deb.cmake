@@ -47,12 +47,12 @@ endif( BUILD_32 )
 
 #Conflicts
 if( DEPGRAPHV_USE_OPENGL )
-    set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-nogl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
+	set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-nogl" )
 else()
-    set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-gl, dep-graphv-qt4-gl, dep-graphv-qt4-nogl" )
+	set( CPACK_DEBIAN_PACKAGE_CONFLICTS "dep-graphv-qt5-gl" )
 endif( DEPGRAPHV_USE_OPENGL )
 
 #deb settings
 set( CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_VENDOR} <${VENDOR_EMAIL}>" )
-set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://sourceforge.net/projects/depgraphv/" )
+set( CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/romeoxbm/depgraphv" )
 set( CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON )
