@@ -6,7 +6,7 @@
 #
 # This software is distributed under the MIT License:
 #
-# Copyright (c) 2013 - 2014 Francesco Guastella aka romeoxbm
+# Copyright (c) 2013 - 2017 Francesco Guastella aka romeoxbm
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,15 +34,11 @@ get_bundle_keys( "@CMAKE_CURRENT_BINARY_DIR@/Release/@ProjectName@.exe" "" "@RUN
 set( deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_core.dll" )
 list( APPEND deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_dot_layout.dll" )
 list( APPEND deps "@GraphViz_INSTALL_DIRS@/bin/gvplugin_gdiplus.dll" )
+list( APPEND deps "@CMAKE_PREFIX_PATH@bin/libEGL.dll" )
 
 #gvplugin_gd.dll
 #gvplugin_neato_layout.dll
 #gvplugin_pango.dll
-
-set( QT5 @DEPGRAPHV_USE_QT5@ )
-if( QT5 )
-	list( APPEND deps "@CMAKE_PREFIX_PATH@bin/libEGL.dll" )
-endif()
 
 foreach( key ${keys} )
 	string( REGEX MATCH "@ProjectName@.exe$" result "${${key}_RESOLVED_ITEM}" )
@@ -53,13 +49,8 @@ endforeach()
 
 file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@" TYPE FILE FILES ${deps} )
 
-if( QT5 )
-	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/platforms" TYPE FILE 
-			FILES "@CMAKE_PREFIX_PATH@plugins/platforms/qwindows.dll" )
-			
-	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/imageformats" TYPE FILE 
-			FILES "@CMAKE_PREFIX_PATH@plugins/imageformats/qico.dll" )
-else()
-	file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/imageformats" TYPE FILE 
-			FILES "@CMAKE_PREFIX_PATH@plugins/imageformats/qico4.dll" )
-endif()
+file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/platforms" TYPE FILE
+		FILES "@CMAKE_PREFIX_PATH@plugins/platforms/qwindows.dll" )
+
+file( INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/@BIN_INSTALL_PATH@/imageformats" TYPE FILE
+		FILES "@CMAKE_PREFIX_PATH@plugins/imageformats/qico.dll" )

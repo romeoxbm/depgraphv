@@ -210,11 +210,10 @@ else()
 	list( APPEND libraries "${GraphViz_LIB_graph}" )
 endif()
 
-set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
-
 #Qt5
+set( qt5Modules "Widgets;Svg;LinguistTools;Concurrent;Network" )
 if( DEPGRAPHV_USE_OPENGL )
-    list( APPEND qt5Modules "OpenGL" )
+	list( APPEND qt5Modules "OpenGL" )
 endif( DEPGRAPHV_USE_OPENGL )
 include( buildQt5 )
 
